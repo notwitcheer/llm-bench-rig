@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ meta.name }} — Benchmark Report</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'SF Mono', 'Fira Code', monospace; background: #0a0a0a; color: #e0e0e0; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+  h1 { font-size: 1.6em; color: #76b900; }
+  h2 { font-size: 1.1em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 12px; }
+  .card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .meta-item .label { font-size: 0.75em; color: #666; text-transform: uppercase; }
+  .meta-item .value { font-size: 1.1em; color: #e0e0e0; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th { text-align: left; color: #888; font-size: 0.8em; text-transform: uppercase; padding: 8px; border-bottom: 1px solid #333; }
+  td { padding: 8px; border-bottom: 1px solid #222; }
+  td.num { text-align: right; color: #76b900; font-weight: bold; }
+  .chart-container { height: 300px; margin: 16px 0; }
+  .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #222; color: #555; font-size: 0.8em; }
+</style>
+</head>
+<body>
+<h1>{{ meta.name }}</h1>
+<p style="color:#888; margin-top:4px;">{{ meta.quant }} · {{ meta.engine }} · {{ meta.size_gib }} GiB</p>
+<h2>Model Info</h2>
+<div class="card">
+  <div class="meta-grid">
+    <div class="meta-item"><div class="label">Architecture</div><div class="value">{{ meta.get('architecture', 'unknown') }}</div></div>
+    <div class="meta-item"><div class="label">Parameters</div><div class="value">{{ speed.get('params', 'unknown') }}</div></div>
+    <div class="meta-item"><div class="label">Quantisation</div><div class="value">{{ meta.quant }}</div></div>
+    <div class="meta-item"><div class="label">File Size</div><div class="value">{{ meta.size_gib }} GiB</div></div>
+    <div class="meta-item"><div class="label">Engine</div><div class="value">{{ meta.engine }}</div></div>
+    <div class="meta-item"><div class="label">VRAM (idle)</div><div class="value">{{ speed.get('vram_idle_mib', '—') }} MiB</div></div>
+  </div>
+</div>
+<h2>Speed</h2>
+<div class="card">
+  <table>
+    <tr><th>Test</th><th style="text-align:right">t/s</th><th style="text-align:right">±</th></tr>
+    {% for test in ['pp128', 'pp512', 'pp2048', 'tg128'] %}
+    {% if test in speed %}
+    <tr>
+      <td>{{ test }}</td>
+      <td class="num">{{ "{:,.1f}".format(speed[test].tokens_per_sec) }}</td>
+      <td class="num" style="color:#888">{{ "± {:.1f}".format(speed[test].get('stddev', 0)) }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+  <div class="chart-container"><canvas id="speed-chart"></canvas></div>
+</div>
+{% if quality %}
+<h2>Quality</h2>
+<div class="card">
+  <table>
+    <tr><th>Benchmark</th><th style="text-align:right">Score</th><th style="text-align:right">Metric</th></tr>
+    {% for task, result in quality.items() %}
+    <tr>
+      <td>{{ task }}</td>
+      <td class="num">{{ result.score }}%</td>
+      <td style="color:#888">{{ result.metric }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="chart-container"><canvas id="quality-chart"></canvas></div>
+</div>
+{% endif %}
+<div class="footer">
+  <p>{{ hardware.gpu }} · {{ hardware.vram }} VRAM · {{ hardware.cpu }} · {{ hardware.ram }}</p>
+  <p>{{ hardware.os }} · CUDA {{ hardware.cuda }} · {{ meta.engine }}</p>
+  <p>Generated {{ date }} · WITCHEER benchmark-rig</p>
+</div>
+<script>
+new Chart(document.getElementById('speed-chart'), {
+  type: 'bar',
+  data: {
+    labels: {{ speed_labels | tojson }},
+    datasets: [{ data: {{ speed_values | tojson }}, backgroundColor: '#76b900', borderRadius: 4 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#222' }, ticks: { color: '#888' } },
+      x: { grid: { display: false }, ticks: { color: '#888' } }
+    }
+  }
+});
+{% if quality %}
+new Chart(document.getElementById('quality-chart'), {
+  type: 'radar',
+  data: {
+    labels: {{ quality_labels | tojson }},
+    datasets: [{
+      data: {{ quality_values | tojson }},
+      backgroundColor: 'rgba(118,185,0,0.2)',
+      borderColor: '#76b900',
+      pointBackgroundColor: '#76b900',
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { r: { beginAtZero: true, max: 100, grid: { color: '#333' }, ticks: { color: '#888', backdropColor: 'transparent' }, pointLabels: { color: '#aaa' } } }
+  }
+});
+{% endif %}
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 675px; background: #0a0a0a; color: #e0e0e0; font-family: 'SF Mono', monospace; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  h1 { font-size: 2em; color: #76b900; }
+  .subtitle { color: #888; font-size: 1em; margin-top: 4px; }
+  .content { display: flex; gap: 40px; flex: 1; align-items: center; }
+  .chart-wrap { width: 400px; height: 400px; }
+  .scores { flex: 1; }
+  .score-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222; font-size: 1.2em; }
+  .score-row .val { color: #76b900; font-weight: bold; }
+  .footer { display: flex; justify-content: space-between; color: #555; font-size: 0.8em; }
+</style>
+</head><body>
+  <div>
+    <h1>{{ meta.name }}</h1>
+    <div class="subtitle">{{ meta.quant }} · Quality Scores</div>
+  </div>
+  <div class="content">
+    <div class="chart-wrap"><canvas id="radar"></canvas></div>
+    <div class="scores">
+      {% for task, result in quality.items() %}
+      <div class="score-row"><span>{{ task }}</span><span class="val">{{ result.score }}%</span></div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="footer">
+    <span>{{ hardware.gpu }} · {{ hardware.vram }}</span>
+    <span>WITCHEER benchmark-rig · {{ date }}</span>
+  </div>
+<script>
+new Chart(document.getElementById('radar'), {
+  type: 'radar',
+  data: {
+    labels: {{ quality_labels | tojson }},
+    datasets: [{ data: {{ quality_values | tojson }}, backgroundColor: 'rgba(118,185,0,0.2)', borderColor: '#76b900', pointBackgroundColor: '#76b900' }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 100, grid: { color: '#333' }, ticks: { display: false }, pointLabels: { color: '#aaa', font: { size: 14 } } } } }
+});
+</script>
+</body></html>

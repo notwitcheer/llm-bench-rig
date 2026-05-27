@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 675px; background: #0a0a0a; color: #e0e0e0; font-family: 'SF Mono', monospace; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  h1 { font-size: 2em; color: #76b900; }
+  .subtitle { color: #888; font-size: 1em; margin-top: 4px; }
+  .content { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; align-items: center; }
+  .section h3 { font-size: 0.8em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
+  .row .val { color: #76b900; font-weight: bold; }
+  .footer { display: flex; justify-content: space-between; color: #555; font-size: 0.8em; }
+</style>
+</head><body>
+  <div>
+    <h1>{{ meta.name }}</h1>
+    <div class="subtitle">{{ meta.quant }} · {{ meta.size_gib }} GiB · {{ meta.engine }}</div>
+  </div>
+  <div class="content">
+    <div class="section">
+      <h3>Speed</h3>
+      {% for test in ['pp128', 'pp512', 'pp2048', 'tg128'] %}
+      {% if test in speed %}
+      <div class="row"><span>{{ test }}</span><span class="val">{{ "{:,.0f}".format(speed[test].tokens_per_sec) }} t/s</span></div>
+      {% endif %}
+      {% endfor %}
+      <div class="row"><span>VRAM</span><span class="val">{{ speed.get('vram_idle_mib', '—') }} MiB</span></div>
+    </div>
+    <div class="section">
+      <h3>Quality</h3>
+      {% if quality %}
+      {% for task, result in quality.items() %}
+      <div class="row"><span>{{ task }}</span><span class="val">{{ result.score }}%</span></div>
+      {% endfor %}
+      {% else %}
+      <div class="row"><span style="color:#666">No quality data</span></div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="footer">
+    <span>{{ hardware.gpu }} · {{ hardware.vram }}</span>
+    <span>WITCHEER benchmark-rig · {{ date }}</span>
+  </div>
+</body></html>

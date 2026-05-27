@@ -1,0 +1,35 @@
+llama_cpp:
+  bench_bin: ~/llama.cpp/build/bin/llama-bench
+  server_bin: ~/llama.cpp/build/bin/llama-server
+  server_port: 8090
+
+vllm:
+  api_base: http://127.0.0.1:8000/v1
+
+dashboard:
+  port: 8085
+  gpu_poll_interval: 2
+
+speed:
+  context_lengths: [128, 512, 2048]
+  generation_length: 128
+  n_gpu_layers: 99
+
+quality:
+  tasks:
+    - mmlu
+    - arc_challenge
+    - hellaswag
+    - humaneval
+    - gsm8k
+
+models_dir: ~/.cache/huggingface/hub
+results_dir: ./results
+
+hardware:
+  gpu: "YOUR GPU HERE"
+  vram: "32GB"
+  cpu: "YOUR CPU HERE"
+  ram: "64GB DDR5"
+  os: "Ubuntu 24.04 LTS"
+  cuda: "12.8"

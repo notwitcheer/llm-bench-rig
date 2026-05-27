@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Benchmark Rig — RTX 5090</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'SF Mono', 'Fira Code', monospace; background: #0a0a0a; color: #e0e0e0; padding: 20px; }
+  h1 { font-size: 1.4em; color: #76b900; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .panel { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 16px; }
+  .panel h2 { font-size: 0.9em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .metric { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #222; }
+  .metric:last-child { border-bottom: none; }
+  .metric .label { color: #aaa; }
+  .metric .value { color: #76b900; font-weight: bold; font-size: 1.1em; }
+  .metric .value.warn { color: #ff6600; }
+  .metric .value.hot { color: #ff3333; }
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .status-running { background: #1a3d00; color: #76b900; }
+  .status-done { background: #003d1a; color: #00cc66; }
+  .status-pending { background: #1a1a1a; color: #666; }
+  .status-error { background: #3d0000; color: #ff3333; }
+  .progress-bar { width: 100%; height: 8px; background: #333; border-radius: 4px; margin: 8px 0; }
+  .progress-fill { height: 100%; background: #76b900; border-radius: 4px; transition: width 0.5s; }
+  .queue-item { padding: 6px 0; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
+  .speed-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .speed-cell { text-align: center; padding: 12px 8px; background: #111; border-radius: 6px; }
+  .speed-cell .num { font-size: 1.4em; color: #76b900; font-weight: bold; }
+  .speed-cell .unit { font-size: 0.7em; color: #666; }
+  .chart-container { height: 200px; margin-top: 12px; }
+  .full-width { grid-column: 1 / -1; }
+  .disconnected { color: #ff3333; text-align: center; padding: 20px; }
+</style>
+</head>
+<body>
+
+<h1>&#9608; BENCHMARK RIG — RTX 5090</h1>
+
+<div class="grid">
+  <div class="panel">
+    <h2>Current Benchmark</h2>
+    <div id="status-content">
+      <div class="metric"><span class="label">Model</span><span class="value" id="s-model">—</span></div>
+      <div class="metric"><span class="label">Step</span><span class="value" id="s-step">—</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="s-pct" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>GPU</h2>
+    <div class="metric"><span class="label">VRAM</span><span class="value" id="g-vram">—</span></div>
+    <div class="metric"><span class="label">Utilisation</span><span class="value" id="g-util">—</span></div>
+    <div class="metric"><span class="label">Temperature</span><span class="value" id="g-temp">—</span></div>
+  </div>
+
+  <div class="panel full-width">
+    <h2>Speed Results</h2>
+    <div class="speed-grid">
+      <div class="speed-cell"><div class="num" id="r-pp128">—</div><div class="unit">pp128 t/s</div></div>
+      <div class="speed-cell"><div class="num" id="r-pp512">—</div><div class="unit">pp512 t/s</div></div>
+      <div class="speed-cell"><div class="num" id="r-pp2048">—</div><div class="unit">pp2048 t/s</div></div>
+      <div class="speed-cell"><div class="num" id="r-tg128">—</div><div class="unit">tg128 t/s</div></div>
+    </div>
+    <div class="chart-container"><canvas id="speed-chart"></canvas></div>
+  </div>
+
+  <div class="panel">
+    <h2>Quality Scores</h2>
+    <div id="quality-list">
+      <div class="metric"><span class="label">MMLU</span><span class="value" id="q-mmlu">—</span></div>
+      <div class="metric"><span class="label">ARC-Challenge</span><span class="value" id="q-arc_challenge">—</span></div>
+      <div class="metric"><span class="label">HellaSwag</span><span class="value" id="q-hellaswag">—</span></div>
+      <div class="metric"><span class="label">HumanEval</span><span class="value" id="q-humaneval">—</span></div>
+      <div class="metric"><span class="label">GSM8K</span><span class="value" id="q-gsm8k">—</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Queue</h2>
+    <div id="queue-list"><em style="color:#666">No queue active</em></div>
+  </div>
+</div>
+
+<script>
+const speedChart = new Chart(document.getElementById('speed-chart'), {
+  type: 'bar',
+  data: {
+    labels: ['pp128', 'pp512', 'pp2048', 'tg128'],
+    datasets: [{
+      label: 't/s',
+      data: [0, 0, 0, 0],
+      backgroundColor: ['#76b900', '#5a9000', '#3d6600', '#2d4d00'],
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#222' }, ticks: { color: '#888' } },
+      x: { grid: { display: false }, ticks: { color: '#888' } }
+    }
+  }
+});
+
+function updateDashboard(data) {
+  const p = data.progress || {};
+  const g = data.gpu || {};
+  const partial = p.partial || {};
+
+  document.getElementById('s-model').textContent = p.model || '—';
+  document.getElementById('s-step').textContent = p.step || '—';
+  document.getElementById('s-pct').style.width = (p.pct || 0) + '%';
+
+  if (g.vram_used_mib != null) {
+    const pct = Math.round(g.vram_used_mib / g.vram_total_mib * 100);
+    document.getElementById('g-vram').textContent = `${g.vram_used_mib} / ${g.vram_total_mib} MiB (${pct}%)`;
+  }
+  if (g.gpu_util_pct != null) {
+    const el = document.getElementById('g-util');
+    el.textContent = g.gpu_util_pct + '%';
+    el.className = 'value' + (g.gpu_util_pct > 90 ? ' warn' : '');
+  }
+  if (g.temp_c != null) {
+    const el = document.getElementById('g-temp');
+    el.textContent = g.temp_c + '°C';
+    el.className = 'value' + (g.temp_c > 80 ? ' hot' : g.temp_c > 70 ? ' warn' : '');
+  }
+
+  const speedKeys = ['pp128', 'pp512', 'pp2048', 'tg128'];
+  const chartData = [];
+  speedKeys.forEach(k => {
+    const val = partial[k]?.tokens_per_sec;
+    document.getElementById('r-' + k).textContent = val ? val.toLocaleString() : '—';
+    chartData.push(val || 0);
+  });
+  speedChart.data.datasets[0].data = chartData;
+  speedChart.update('none');
+
+  ['mmlu', 'arc_challenge', 'hellaswag', 'humaneval', 'gsm8k'].forEach(k => {
+    const el = document.getElementById('q-' + k);
+    if (el && partial[k]?.score != null) {
+      el.textContent = partial[k].score + '%';
+    }
+  });
+
+  const queueEl = document.getElementById('queue-list');
+  if (data.queue && data.queue.length > 0) {
+    queueEl.innerHTML = data.queue.map(q => {
+      const status = q.status || 'pending';
+      return `<div class="queue-item"><span>${q.name || q.path}</span><span class="status-badge status-${status}">${status}</span></div>`;
+    }).join('');
+  }
+}
+
+const evtSource = new EventSource('/api/stream');
+evtSource.onmessage = (e) => { updateDashboard(JSON.parse(e.data)); };
+evtSource.onerror = () => {
+  document.getElementById('s-step').textContent = 'disconnected';
+  document.getElementById('s-step').className = 'value hot';
+};
+</script>
+
+</body>
+</html>

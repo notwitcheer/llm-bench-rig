@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Model Comparison — RTX 5090 Benchmarks</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'SF Mono', 'Fira Code', monospace; background: #0a0a0a; color: #e0e0e0; max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+  h1 { font-size: 1.6em; color: #76b900; }
+  h2 { font-size: 1.1em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 12px; }
+  table { width: 100%; border-collapse: collapse; background: #1a1a1a; border-radius: 8px; overflow: hidden; }
+  th { text-align: left; color: #888; font-size: 0.8em; text-transform: uppercase; padding: 12px; background: #111; border-bottom: 1px solid #333; }
+  td { padding: 10px 12px; border-bottom: 1px solid #222; }
+  td.num { text-align: right; color: #76b900; font-weight: bold; }
+  td.best { color: #00ff88; }
+  tr:hover { background: #222; }
+  .chart-container { height: 400px; margin: 20px 0; }
+  .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #222; color: #555; font-size: 0.8em; }
+</style>
+</head>
+<body>
+<h1>Model Comparison — RTX 5090</h1>
+<p style="color:#888; margin-top:4px;">{{ models | length }} models benchmarked</p>
+<h2>Speed Comparison</h2>
+<table>
+  <tr>
+    <th>Model</th><th>Quant</th><th>Size</th><th>Engine</th>
+    <th style="text-align:right">pp128</th>
+    <th style="text-align:right">pp512</th>
+    <th style="text-align:right">pp2048</th>
+    <th style="text-align:right">tg128</th>
+  </tr>
+  {% for m in models %}
+  <tr>
+    <td>{{ m.meta.name }}</td>
+    <td>{{ m.meta.quant }}</td>
+    <td>{{ m.meta.size_gib }} GiB</td>
+    <td>{{ m.meta.engine }}</td>
+    {% for k in ['pp128', 'pp512', 'pp2048', 'tg128'] %}
+    <td class="num">{{ "{:,.0f}".format(m.speed[k].tokens_per_sec) if k in m.speed else '—' }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+<div class="chart-container"><canvas id="compare-chart"></canvas></div>
+{% if models[0].quality is defined and models[0].quality %}
+<h2>Quality Comparison</h2>
+<table>
+  <tr>
+    <th>Model</th>
+    {% for task in models[0].quality.keys() %}
+    <th style="text-align:right">{{ task }}</th>
+    {% endfor %}
+  </tr>
+  {% for m in models %}
+  {% if m.quality %}
+  <tr>
+    <td>{{ m.meta.name }}</td>
+    {% for task, result in m.quality.items() %}
+    <td class="num">{{ result.score }}%</td>
+    {% endfor %}
+  </tr>
+  {% endif %}
+  {% endfor %}
+</table>
+{% endif %}
+<div class="footer">
+  <p>{{ hardware.gpu }} · {{ hardware.vram }} VRAM · {{ hardware.cpu }} · {{ hardware.ram }}</p>
+  <p>Generated {{ date }} · WITCHEER benchmark-rig</p>
+</div>
+<script>
+const models = {{ models | tojson }};
+const labels = models.map(m => m.meta.name);
+const colors = ['#76b900', '#00b9b9', '#b97600', '#b90076', '#0076b9', '#76b900aa', '#00b9b9aa', '#b97600aa'];
+const datasets = ['pp512', 'tg128'].map((key, i) => ({
+  label: key,
+  data: models.map(m => m.speed[key]?.tokens_per_sec || 0),
+  backgroundColor: colors[i],
+  borderRadius: 4,
+}));
+new Chart(document.getElementById('compare-chart'), {
+  type: 'bar',
+  data: { labels, datasets },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: '#888' } } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#222' }, ticks: { color: '#888' } },
+      x: { grid: { display: false }, ticks: { color: '#888' } }
+    }
+  }
+});
+</script>
+</body>
+</html>

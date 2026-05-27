@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 675px; background: #0a0a0a; color: #e0e0e0; font-family: 'SF Mono', monospace; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  h1 { font-size: 2em; color: #76b900; }
+  .subtitle { color: #888; font-size: 1em; margin-top: 4px; }
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; align-items: center; }
+  .cell { text-align: center; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 24px 16px; }
+  .cell .num { font-size: 2.4em; color: #76b900; font-weight: bold; }
+  .cell .label { font-size: 0.85em; color: #888; margin-top: 4px; }
+  .footer { display: flex; justify-content: space-between; color: #555; font-size: 0.8em; }
+</style>
+</head><body>
+  <div>
+    <h1>{{ meta.name }}</h1>
+    <div class="subtitle">{{ meta.quant }} · {{ meta.size_gib }} GiB · {{ meta.engine }}</div>
+  </div>
+  <div class="metrics">
+    {% for test in ['pp128', 'pp512', 'pp2048', 'tg128'] %}
+    <div class="cell">
+      <div class="num">{{ "{:,.0f}".format(speed[test].tokens_per_sec) if test in speed else '—' }}</div>
+      <div class="label">{{ test }} t/s</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="footer">
+    <span>{{ hardware.gpu }} · {{ hardware.vram }}</span>
+    <span>WITCHEER benchmark-rig · {{ date }}</span>
+  </div>
+</body></html>

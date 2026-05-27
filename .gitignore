@@ -1,0 +1,29 @@
+# Private config (contains local paths, hardware details)
+config.yaml
+
+# Benchmark results (generated, can be large)
+results/
+
+# Queue state
+queue.json
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment
+.env
+*.env
+venv/
+
+# Internal design/planning docs (contain infrastructure details)
+2026-05-27-benchmark-rig-design.md
+2026-05-27-benchmark-rig-plan.md
+
+# ALIVE system files
+context.manifest.yaml
+raw/
+
+# OS
+.DS_Store
