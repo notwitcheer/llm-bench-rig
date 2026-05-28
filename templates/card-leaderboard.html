@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html><head>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1200px; height: 675px;
+    background: #0a0a0a;
+    color: #00ff41;
+    font-family: 'IBM Plex Mono', monospace;
+    overflow: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 55%,
+      rgba(0,0,0,0.5) 85%,
+      rgba(0,0,0,0.8) 100%
+    );
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  .screen {
+    width: 100%; height: 100%;
+    padding: 20px 36px 14px;
+    display: flex; flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  .glow { color: #00ff41; text-shadow: 0 0 2px #00ff41, 0 0 8px rgba(0,255,65,0.4), 0 0 20px rgba(0,255,65,0.15); }
+  .glow-bright { color: #00ff41; text-shadow: 0 0 4px #00ff41, 0 0 12px rgba(0,255,65,0.5), 0 0 30px rgba(0,255,65,0.2); }
+  .glow-amber { color: #ffb000; text-shadow: 0 0 2px #ffb000, 0 0 8px rgba(255,176,0,0.4), 0 0 20px rgba(255,176,0,0.12); }
+  .glow-dim { color: #007a20; text-shadow: 0 0 2px rgba(0,122,32,0.5); }
+  .glow-off { color: #003d10; text-shadow: none; }
+
+  .header {
+    border-bottom: 1px solid #003d10;
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+  }
+  .prompt-line { font-size: 0.6em; margin-bottom: 2px; }
+  .cursor { animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  h1 { font-size: 1.45em; font-weight: 700; letter-spacing: 2px; }
+  .meta-line { font-size: 0.56em; margin-top: 3px; letter-spacing: 1px; }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 28px 200px 1fr 1fr;
+    gap: 0 16px;
+    padding: 6px 0 4px;
+    border-bottom: 1px solid #003d10;
+    margin-bottom: 2px;
+    font-size: 0.5em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .leaderboard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .model-row {
+    display: grid;
+    grid-template-columns: 28px 200px 1fr 1fr;
+    gap: 0 16px;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0,61,16,0.3);
+  }
+  .model-row:last-child { border-bottom: none; }
+
+  .rank {
+    font-size: 1.3em;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .model-name {
+    font-size: 0.75em;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .model-meta {
+    font-size: 0.5em;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .metric {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bar-wrap {
+    flex: 1;
+    height: 14px;
+  }
+  .bar {
+    height: 100%;
+    background: #00ff41;
+    box-shadow: 0 0 6px rgba(0,255,65,0.4), 0 0 12px rgba(0,255,65,0.15);
+    min-width: 2px;
+  }
+  .metric-val {
+    font-size: 0.7em;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 52px;
+    text-align: right;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid #003d10;
+    font-size: 0.53em;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  .footer .brand {
+    font-weight: 700;
+    font-size: 1.2em;
+    letter-spacing: 4px;
+  }
+</style>
+</head><body>
+
+  {% set pp_max = namespace(val=0) %}
+  {% set tg_max = namespace(val=0) %}
+  {% for m in leaderboard %}
+    {% if m.pp512 > pp_max.val %}{% set pp_max.val = m.pp512 %}{% endif %}
+    {% if m.tg128 > tg_max.val %}{% set tg_max.val = m.tg128 %}{% endif %}
+  {% endfor %}
+
+  <div class="screen">
+
+    <div class="header">
+      <div class="prompt-line glow-dim">witcheer@capsule:~$ ./bench --leaderboard<span class="cursor glow">█</span></div>
+      <h1 class="glow">RTX 5090 SPEED LEADERBOARD</h1>
+      <div class="meta-line glow-dim">{{ hardware.gpu }} · {{ hardware.vram }} · llama.cpp · {{ date }}</div>
+    </div>
+
+    <div class="col-headers">
+      <span class="glow-off">#</span>
+      <span class="glow-off">MODEL</span>
+      <span class="glow-dim">Prompt Processing — pp512 t/s</span>
+      <span class="glow-dim">Text Generation — tg128 t/s</span>
+    </div>
+
+    <div class="leaderboard">
+      {% for m in leaderboard %}
+      <div class="model-row">
+        <div class="rank glow-amber">{{ loop.index }}</div>
+        <div class="model-info">
+          <div class="model-name glow">{{ m.name }}</div>
+          <div class="model-meta glow-dim">{{ m.arch }} · {{ m.params_b }}B · {{ m.size_gib }} GiB</div>
+        </div>
+        <div class="metric">
+          <div class="bar-wrap">
+            <div class="bar" style="width: {{ (m.pp512 / pp_max.val * 100)|round(1) }}%;"></div>
+          </div>
+          <div class="metric-val glow">{{ "{:,.0f}".format(m.pp512) }}</div>
+        </div>
+        <div class="metric">
+          <div class="bar-wrap">
+            <div class="bar" style="width: {{ (m.tg128 / tg_max.val * 100)|round(1) }}%;"></div>
+          </div>
+          <div class="metric-val glow">{{ "{:,.0f}".format(m.tg128) }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="footer">
+      <span class="glow-off">{{ hardware.gpu }} · {{ hardware.vram }}</span>
+      <span class="brand glow-amber">WITCHEER</span>
+      <span class="glow-off">{{ leaderboard|length }} models · Q2–Q4 quants</span>
+    </div>
+
+  </div>
+</body></html>

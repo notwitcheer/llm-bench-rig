@@ -162,6 +162,72 @@ def export_comparison():
         print(f"Comparison card template error: {e}", file=sys.stderr)
 
 
+def _infer_architecture(meta: dict, speed: dict) -> str:
+    name = meta.get("name", "")
+    params_str = speed.get("params", "")
+    params_b = float(params_str.replace(" B", "")) if params_str else 0
+    size_gib = speed.get("model_size_gib", 0)
+
+    if "MTP" in name:
+        return "Dense + MTP"
+    if "A3B" in name:
+        return "MoE (3B active)"
+    if params_b > 50 and size_gib < 30:
+        return "MoE"
+    return "Dense"
+
+
+def export_leaderboard():
+    load_config()
+    results_dir = Path(get("results_dir", "./results"))
+    env = Environment(loader=FileSystemLoader("templates"))
+    hardware = get("hardware", {})
+
+    entries = []
+    for model_dir in sorted(results_dir.iterdir()):
+        if not model_dir.is_dir():
+            continue
+        data = load_model_data(model_dir)
+        if "meta" not in data or "speed" not in data:
+            continue
+        meta, speed = data["meta"], data["speed"]
+        pp512 = speed.get("pp512", {}).get("tokens_per_sec", 0)
+        tg128 = speed.get("tg128", {}).get("tokens_per_sec", 0)
+        if pp512 == 0 and tg128 == 0:
+            continue
+
+        params_str = speed.get("params", "")
+        params_b = params_str.replace(" B", "") if params_str else "?"
+
+        display_name = meta["name"]
+        if model_dir.name == "qwen3-6-27b-mtp-q4-k-m":
+            display_name = "Qwen3.6-27B-MTP"
+
+        entries.append({
+            "name": display_name,
+            "arch": _infer_architecture(meta, speed),
+            "params_b": params_b,
+            "size_gib": speed.get("model_size_gib", meta.get("size_gib", "?")),
+            "pp512": pp512,
+            "tg128": tg128,
+        })
+
+    entries.sort(key=lambda e: e["tg128"], reverse=True)
+
+    ctx = {
+        "leaderboard": entries,
+        "hardware": hardware,
+        "date": date.today().isoformat(),
+    }
+
+    tmpl = env.get_template("card-leaderboard.html")
+    html = tmpl.render(**ctx)
+    card_html = results_dir / "card-leaderboard.html"
+    card_html.write_text(html)
+    print(f"Leaderboard card: {card_html}")
+    _render_card_png(card_html, results_dir / "card-leaderboard.png")
+
+
 def _render_card_png(html_path: Path, png_path: Path):
     try:
         from playwright.sync_api import sync_playwright
@@ -181,11 +247,13 @@ def _render_card_png(html_path: Path, png_path: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Export benchmark results")
-    parser.add_argument("target", help="Model slug to export, or 'compare' for cross-model comparison")
+    parser.add_argument("target", help="Model slug, 'compare', or 'leaderboard'")
     args = parser.parse_args()
 
     if args.target == "compare":
         export_comparison()
+    elif args.target == "leaderboard":
+        export_leaderboard()
     else:
         export_report(args.target)
 

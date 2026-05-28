@@ -327,14 +327,32 @@
           <span class="glow-dim">{{ "{:,.0f}".format(tg1) }} t/s</span>
         </div>
 
+        {% set ns2 = namespace(total_ratio=0, count=0) %}
+        {% for key in pp_keys %}
+          {% set v0 = m0.speed[key].tokens_per_sec if key in m0.speed else 0 %}
+          {% set v1 = m1.speed[key].tokens_per_sec if key in m1.speed else 0 %}
+          {% if v0 > 0 and v1 > 0 %}
+            {% set ns2.total_ratio = ns2.total_ratio + (v0 / v1 if v0 >= v1 else v1 / v0) %}
+            {% set ns2.count = ns2.count + 1 %}
+          {% endif %}
+        {% endfor %}
+        {% set avg_pp = ns2.total_ratio / ns2.count if ns2.count > 0 else 0 %}
         <div class="pp-summary glow-dim">
           Prompt processing<br>
-          <span class="glow-amber">2.4x</span> <span class="glow-dim">across all context</span>
+          <span class="glow-amber">{{ "%.1f" | format(avg_pp) }}x</span> <span class="glow-dim">avg across context lengths</span>
         </div>
 
+        {% set peak_key = pp_keys[1] if pp_keys|length > 1 else pp_keys[0] %}
+        {% set last_key = pp_keys[-1] %}
+        {% set m0_peak = m0.speed[peak_key].tokens_per_sec if peak_key in m0.speed else 0 %}
+        {% set m0_last = m0.speed[last_key].tokens_per_sec if last_key in m0.speed else 0 %}
+        {% set m1_peak = m1.speed[peak_key].tokens_per_sec if peak_key in m1.speed else 0 %}
+        {% set m1_last = m1.speed[last_key].tokens_per_sec if last_key in m1.speed else 0 %}
+        {% set m0_drop = ((1 - m0_last / m0_peak) * 100)|round(0)|int if m0_peak > 0 else 0 %}
+        {% set m1_drop = ((1 - m1_last / m1_peak) * 100)|round(0)|int if m1_peak > 0 else 0 %}
         <div class="insight glow-dim">
-          MoE: 3B of 35B params active<br>
-          both degrade ~17% at 16K context
+          {{ m0.meta.name }}: {{ m0.meta.size_gib }} GiB, −{{ m0_drop }}% at {{ last_key }}<br>
+          {{ m1.meta.name }}: {{ m1.meta.size_gib }} GiB, −{{ m1_drop }}% at {{ last_key }}
         </div>
       </div>
     </div>
