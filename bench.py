@@ -78,7 +78,7 @@ def _run_quality(model_path, engine, meta, out_dir, progress):
     print("[quality] Starting eval harness...")
     progress.update("quality_init", 45)
 
-    quality_results = run_quality_bench(model_path, engine)
+    quality_results = run_quality_bench(model_path, engine, results_dir=out_dir)
 
     quality_file = out_dir / "quality.json"
     with open(quality_file, "w") as f:
