@@ -13,10 +13,10 @@ def test_load_config():
     cfg = load_config()
     assert "llama_cpp" in cfg
     assert "speed" in cfg
-    assert cfg["speed"]["context_lengths"] == [128, 512, 2048]
+    assert cfg["speed"]["context_lengths"] == [128, 512, 2048, 4096, 8192, 16384]
 
 def test_get_nested():
-    assert get("speed.context_lengths") == [128, 512, 2048]
+    assert get("speed.context_lengths") == [128, 512, 2048, 4096, 8192, 16384]
     assert get("llama_cpp.server_port") == 8090
 
 def test_get_missing():

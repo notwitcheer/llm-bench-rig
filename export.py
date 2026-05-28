@@ -26,10 +26,17 @@ def build_template_context(data: dict) -> dict:
 
     speed_labels = []
     speed_values = []
-    for k in ["pp128", "pp512", "pp2048", "tg128"]:
-        if k in speed:
-            speed_labels.append(k)
-            speed_values.append(speed[k]["tokens_per_sec"])
+    pp_keys = sorted(
+        [k for k in speed if k.startswith("pp") and isinstance(speed[k], dict)],
+        key=lambda k: int(k[2:]),
+    )
+    tg_keys = sorted(
+        [k for k in speed if k.startswith("tg") and isinstance(speed[k], dict)],
+        key=lambda k: int(k[2:]),
+    )
+    for k in pp_keys + tg_keys:
+        speed_labels.append(k)
+        speed_values.append(speed[k]["tokens_per_sec"])
 
     quality_labels = list(quality.keys())
     quality_values = [v["score"] for v in quality.values()]

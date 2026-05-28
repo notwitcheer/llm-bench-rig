@@ -11,7 +11,7 @@ dashboard:
   gpu_poll_interval: 2
 
 speed:
-  context_lengths: [128, 512, 2048]
+  context_lengths: [128, 512, 2048, 4096, 8192, 16384]
   generation_length: 128
   n_gpu_layers: 99
 

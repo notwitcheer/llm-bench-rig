@@ -39,12 +39,12 @@
 <div class="card">
   <table>
     <tr><th>Test</th><th style="text-align:right">t/s</th><th style="text-align:right">±</th></tr>
-    {% for test in ['pp128', 'pp512', 'pp2048', 'tg128'] %}
-    {% if test in speed %}
+    {% for label in speed_labels %}
+    {% if label in speed %}
     <tr>
-      <td>{{ test }}</td>
-      <td class="num">{{ "{:,.1f}".format(speed[test].tokens_per_sec) }}</td>
-      <td class="num" style="color:#888">{{ "± {:.1f}".format(speed[test].get('stddev', 0)) }}</td>
+      <td>{{ label }}</td>
+      <td class="num">{{ "{:,.1f}".format(speed[label].tokens_per_sec) }}</td>
+      <td class="num" style="color:#888">{{ "± {:.1f}".format(speed[label].get('stddev', 0)) }}</td>
     </tr>
     {% endif %}
     {% endfor %}

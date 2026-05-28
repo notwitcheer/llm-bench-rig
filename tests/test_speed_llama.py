@@ -10,6 +10,9 @@ def test_parse_llama_bench_output():
     assert results["pp128"]["tokens_per_sec"] == pytest.approx(10234.56, abs=0.01)
     assert results["pp512"]["tokens_per_sec"] == pytest.approx(9302.33, abs=0.01)
     assert results["pp2048"]["tokens_per_sec"] == pytest.approx(8150.21, abs=0.01)
+    assert results["pp4096"]["tokens_per_sec"] == pytest.approx(7420.88, abs=0.01)
+    assert results["pp8192"]["tokens_per_sec"] == pytest.approx(6135.44, abs=0.01)
+    assert results["pp16384"]["tokens_per_sec"] == pytest.approx(4802.17, abs=0.01)
     assert results["tg128"]["tokens_per_sec"] == pytest.approx(273.05, abs=0.01)
     assert results["pp512"]["stddev"] == pytest.approx(52.36, abs=0.01)
 
