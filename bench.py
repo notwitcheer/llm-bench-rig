@@ -15,7 +15,7 @@ from lib.progress import Progress
 def run_benchmark(model_path: str, speed_only: bool = False, quality_only: bool = False):
     load_config()
     results_dir = Path(get("results_dir", "./results"))
-    model_path = str(Path(model_path).expanduser().resolve())
+    model_path = str(Path(model_path).expanduser())
 
     meta = extract_metadata(Path(model_path))
     out_dir = save_metadata(meta, results_dir)
