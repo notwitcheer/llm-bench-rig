@@ -25,5 +25,8 @@ venv/
 context.manifest.yaml
 raw/
 
+# Video project (Remotion, local content tool)
+video/
+
 # OS
 .DS_Store

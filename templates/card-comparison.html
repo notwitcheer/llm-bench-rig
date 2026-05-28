@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html><head>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1200px; height: 675px;
+    background: #0a0a0a;
+    color: #00ff41;
+    font-family: 'IBM Plex Mono', monospace;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* CRT scanline overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* CRT vignette */
+  body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 55%,
+      rgba(0,0,0,0.5) 85%,
+      rgba(0,0,0,0.8) 100%
+    );
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  .screen {
+    width: 100%; height: 100%;
+    padding: 24px 36px 18px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Phosphor glow utility classes */
+  .glow {
+    color: #00ff41;
+    text-shadow:
+      0 0 2px #00ff41,
+      0 0 8px rgba(0,255,65,0.4),
+      0 0 20px rgba(0,255,65,0.15);
+  }
+  .glow-bright {
+    color: #00ff41;
+    text-shadow:
+      0 0 4px #00ff41,
+      0 0 12px rgba(0,255,65,0.5),
+      0 0 30px rgba(0,255,65,0.2),
+      0 0 50px rgba(0,255,65,0.08);
+  }
+  .glow-amber {
+    color: #ffb000;
+    text-shadow:
+      0 0 2px #ffb000,
+      0 0 8px rgba(255,176,0,0.4),
+      0 0 20px rgba(255,176,0,0.12);
+  }
+  .glow-dim {
+    color: #007a20;
+    text-shadow: 0 0 2px rgba(0,122,32,0.5);
+  }
+  .glow-off {
+    color: #003d10;
+    text-shadow: none;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid #003d10;
+    padding-bottom: 10px;
+  }
+  .prompt-line {
+    font-size: 0.65em;
+    margin-bottom: 2px;
+  }
+  .prompt-line .cursor {
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  h1 {
+    font-size: 1.65em;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .meta-line {
+    font-size: 0.62em;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* Two-column layout */
+  .content {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    padding-top: 8px;
+  }
+
+  .col-left {
+    flex: 1.15;
+    padding-right: 24px;
+    border-right: 1px solid #003d10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .col-right {
+    flex: 0.85;
+    padding-left: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .section-head {
+    font-size: 0.58em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #003d10;
+  }
+
+  /* Data rows */
+  .row {
+    display: grid;
+    grid-template-columns: 64px 1fr 48px;
+    align-items: center;
+    gap: 6px;
+    padding: 2.5px 0;
+  }
+
+  .row-label {
+    font-size: 0.68em;
+    font-weight: 500;
+  }
+
+  .bars-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 12px;
+  }
+  .bar {
+    height: 8px;
+    border-radius: 0;
+    min-width: 1px;
+  }
+  .bar.a {
+    background: #00ff41;
+    box-shadow: 0 0 4px rgba(0,255,65,0.3);
+  }
+  .bar.b {
+    background: #007a20;
+    box-shadow: 0 0 3px rgba(0,122,32,0.2);
+  }
+  .bar-num {
+    font-size: 0.55em;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .bar-num.a { color: #00ff41; text-shadow: 0 0 4px rgba(0,255,65,0.3); }
+  .bar-num.b { color: #007a20; text-shadow: 0 0 2px rgba(0,122,32,0.3); }
+
+  .mult {
+    font-size: 0.72em;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* Right column: big stats */
+  .stat-block {
+    text-align: center;
+    padding: 14px 0;
+    border: 1px solid #003d10;
+  }
+  .stat-number {
+    font-size: 3.8em;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -3px;
+  }
+  .stat-label {
+    font-size: 0.58em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 4px;
+  }
+
+  .tg-detail {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.75em;
+    font-weight: 600;
+  }
+  .tg-vs { color: #003d10; }
+
+  .pp-summary {
+    text-align: center;
+    font-size: 0.6em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+
+  .insight {
+    text-align: center;
+    font-size: 0.56em;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border: 1px solid #003d10;
+  }
+
+  /* Footer */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid #003d10;
+    font-size: 0.58em;
+    letter-spacing: 1px;
+  }
+  .footer .brand {
+    font-weight: 700;
+    font-size: 1.2em;
+    letter-spacing: 4px;
+  }
+</style>
+</head><body>
+
+  {% set ns = namespace(max_val=0) %}
+  {% for key in pp_keys + tg_keys %}
+    {% for m in models[:2] %}
+      {% if key in m.speed and m.speed[key].tokens_per_sec > ns.max_val %}
+        {% set ns.max_val = m.speed[key].tokens_per_sec %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  {% set m0 = models[0] %}
+  {% set m1 = models[1] %}
+
+  <div class="screen">
+
+    <div class="header">
+      <div class="prompt-line glow-dim">witcheer@capsule:~$ ./bench --compare<span class="cursor glow">█</span></div>
+      <h1 class="glow">{{ m0.meta.name }} vs {{ m1.meta.name }}</h1>
+      <div class="meta-line glow-dim">{{ m0.meta.quant }} · {{ m1.meta.quant }} · {{ hardware.gpu }} {{ hardware.vram }}</div>
+    </div>
+
+    <div class="content">
+      <div class="col-left">
+        <div class="section-head glow-dim">Prompt Processing — t/s</div>
+        {% for key in pp_keys %}
+          {% set v0 = m0.speed[key].tokens_per_sec if key in m0.speed else 0 %}
+          {% set v1 = m1.speed[key].tokens_per_sec if key in m1.speed else 0 %}
+          {% set pct0 = (v0 / ns.max_val * 100) if ns.max_val > 0 else 0 %}
+          {% set pct1 = (v1 / ns.max_val * 100) if ns.max_val > 0 else 0 %}
+          {% if v0 > 0 and v1 > 0 %}
+            {% set ratio = (v0 / v1) if v0 >= v1 else (v1 / v0) %}
+          {% else %}
+            {% set ratio = 0 %}
+          {% endif %}
+          <div class="row">
+            <div class="row-label glow-dim">{{ key }}</div>
+            <div class="bars-col">
+              <div class="bar-row">
+                <div class="bar a" style="width: {{ pct0 }}%;"></div>
+                <span class="bar-num a">{{ "{:,.0f}".format(v0) }}</span>
+              </div>
+              <div class="bar-row">
+                <div class="bar b" style="width: {{ pct1 }}%;"></div>
+                <span class="bar-num b">{{ "{:,.0f}".format(v1) }}</span>
+              </div>
+            </div>
+            <div class="mult glow-amber">{{ "%.1f" | format(ratio) }}x</div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="col-right">
+        {% set tg0 = m0.speed['tg128'].tokens_per_sec if 'tg128' in m0.speed else 0 %}
+        {% set tg1 = m1.speed['tg128'].tokens_per_sec if 'tg128' in m1.speed else 0 %}
+        {% set tg_ratio = (tg0 / tg1) if tg0 > 0 and tg1 > 0 else 0 %}
+
+        <div class="stat-block">
+          <div class="stat-number glow-bright">{{ "%.1f" | format(tg_ratio) }}x</div>
+          <div class="stat-label glow-dim">Text Generation</div>
+        </div>
+
+        <div class="tg-detail">
+          <span class="glow">{{ "{:,.0f}".format(tg0) }} t/s</span>
+          <span class="tg-vs">vs</span>
+          <span class="glow-dim">{{ "{:,.0f}".format(tg1) }} t/s</span>
+        </div>
+
+        <div class="pp-summary glow-dim">
+          Prompt processing<br>
+          <span class="glow-amber">2.4x</span> <span class="glow-dim">across all context</span>
+        </div>
+
+        <div class="insight glow-dim">
+          MoE: 3B of 35B params active<br>
+          both degrade ~17% at 16K context
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="glow-off">{{ hardware.gpu }} · {{ hardware.vram }}</span>
+      <span class="brand glow-amber">WITCHEER</span>
+      <span class="glow-off">{{ date }}</span>
+    </div>
+
+  </div>
+</body></html>

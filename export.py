@@ -121,7 +121,25 @@ def export_comparison():
 
     env = Environment(loader=FileSystemLoader("templates"))
     hardware = get("hardware", {})
-    ctx = {"models": models, "hardware": hardware, "date": date.today().isoformat()}
+
+    # Compute sorted speed keys from first model for templates
+    first_speed = models[0].get("speed", {})
+    pp_keys = sorted(
+        [k for k in first_speed if k.startswith("pp") and isinstance(first_speed[k], dict)],
+        key=lambda k: int(k[2:]),
+    )
+    tg_keys = sorted(
+        [k for k in first_speed if k.startswith("tg") and isinstance(first_speed[k], dict)],
+        key=lambda k: int(k[2:]),
+    )
+
+    ctx = {
+        "models": models,
+        "hardware": hardware,
+        "date": date.today().isoformat(),
+        "pp_keys": pp_keys,
+        "tg_keys": tg_keys,
+    }
 
     try:
         tmpl = env.get_template("comparison.html")
@@ -131,6 +149,35 @@ def export_comparison():
         print(f"Comparison: {out}")
     except Exception as e:
         print(f"Comparison template error: {e}", file=sys.stderr)
+
+    # Render comparison card (social media infographic)
+    try:
+        tmpl = env.get_template("card-comparison.html")
+        html = tmpl.render(**ctx)
+        card_html = results_dir / "card-comparison.html"
+        card_html.write_text(html)
+        print(f"Comparison card: {card_html}")
+        _render_card_png(card_html, results_dir / "card-comparison.png")
+    except Exception as e:
+        print(f"Comparison card template error: {e}", file=sys.stderr)
+
+
+def _render_card_png(html_path: Path, png_path: Path):
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("Playwright not installed — skipping PNG export. Run: pip install playwright && playwright install chromium")
+        return
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width": 1200, "height": 675})
+        page.goto(f"file://{html_path.resolve()}")
+        page.wait_for_timeout(1000)
+        page.screenshot(path=str(png_path))
+        print(f"Card PNG: {png_path}")
+        page.close()
+        browser.close()
 
 def main():
     parser = argparse.ArgumentParser(description="Export benchmark results")
