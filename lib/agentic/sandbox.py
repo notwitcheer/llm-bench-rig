@@ -20,7 +20,7 @@ try:
     if "result" not in globals():
         print(json.dumps({"ok": False, "error": "no `result` assigned"}))
     else:
-        print(json.dumps({"ok": True, "result": result}, default=str))
+        print(json.dumps({"ok": True, "result": globals()["result"]}, default=str))
 except Exception as e:
     print(json.dumps({"ok": False, "error": f"{type(e).__name__}: {e}"}))
 '''
