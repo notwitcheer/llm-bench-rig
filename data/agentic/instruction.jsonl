@@ -18,3 +18,33 @@
 {"id": "if-018", "instruction": "Output a single integer between 1 and 100 (inclusive), written in decimal digits only, with no other text.", "check": {"type": "regex", "value": "^([1-9][0-9]?|100)$"}}
 {"id": "if-019", "instruction": "Output only valid JSON with keys \"title\", \"author\", and \"year\" for any book you know. No extra prose.", "check": {"type": "json_keys", "value": ["title", "author", "year"]}}
 {"id": "if-020", "instruction": "List the days of the weekend as a comma-separated lowercase string with no spaces. Do not apologize or say you are sorry.", "check": {"type": "forbids", "value": "sorry"}}
+{"id": "if-021", "instruction": "Reply with exactly the single uppercase word NO and nothing else.", "check": {"type": "exact", "value": "NO"}}
+{"id": "if-022", "instruction": "Reply with exactly the two-letter ISO 3166-1 alpha-2 country code for Japan and nothing else.", "check": {"type": "exact", "value": "JP"}}
+{"id": "if-023", "instruction": "Reply with exactly the single uppercase word FALSE and nothing else.", "check": {"type": "exact", "value": "FALSE"}}
+{"id": "if-024", "instruction": "Reply with exactly the two-character HTTP status code abbreviation: the word OK, in all caps, and nothing else.", "check": {"type": "exact", "value": "OK"}}
+{"id": "if-025", "instruction": "Reply with exactly the integer representing the number of days in a standard week and nothing else.", "check": {"type": "exact", "value": "7"}}
+{"id": "if-026", "instruction": "Reply with exactly the chemical formula for water using standard notation (no spaces, no extra text).", "check": {"type": "exact", "value": "H2O"}}
+{"id": "if-027", "instruction": "Reply with exactly the two-letter ISO 3166-1 alpha-2 country code for France and nothing else.", "check": {"type": "exact", "value": "FR"}}
+{"id": "if-028", "instruction": "Reply with exactly the single digit representing the number of sides on a triangle and nothing else.", "check": {"type": "exact", "value": "3"}}
+{"id": "if-029", "instruction": "Output only the 4-digit year in which the Apollo 11 mission landed on the Moon. No other text.", "check": {"type": "regex", "value": "^\\d{4}$"}}
+{"id": "if-030", "instruction": "Output exactly two uppercase letters: the ISO 3166-1 alpha-2 country code for Brazil. Nothing else.", "check": {"type": "regex", "value": "^[A-Z]{2}$"}}
+{"id": "if-031", "instruction": "Output a valid CSS hex color code for pure green using exactly 6 lowercase hex digits after the #. Output only the code.", "check": {"type": "regex", "value": "^#[0-9a-f]{6}$"}}
+{"id": "if-032", "instruction": "Output the value of pi rounded to exactly two decimal places. Output only the number in decimal notation (e.g. 3.14), nothing else.", "check": {"type": "regex", "value": "^\\d+\\.\\d{2}$"}}
+{"id": "if-033", "instruction": "Output exactly four lowercase English words separated by single spaces, no punctuation. The words must form a grammatically valid noun phrase or short sentence.", "check": {"type": "regex", "value": "^[a-z]+ [a-z]+ [a-z]+ [a-z]+$"}}
+{"id": "if-034", "instruction": "Output the time for midnight in 24-hour HH:MM format. Output only the time string, nothing else.", "check": {"type": "regex", "value": "^\\d{2}:\\d{2}$"}}
+{"id": "if-035", "instruction": "Output the single lowercase vowel letter that is used as the English indefinite article before consonant sounds. Nothing else.", "check": {"type": "regex", "value": "^[aeiou]$"}}
+{"id": "if-036", "instruction": "Output the five Great Lakes as a comma-separated lowercase list with no spaces between items, in any order. Output only the list.", "check": {"type": "regex", "value": "^[a-z]+,[a-z]+,[a-z]+,[a-z]+,[a-z]+$"}}
+{"id": "if-037", "instruction": "Output only valid JSON with keys \"question\" and \"answer\". Write any trivia question and its answer. No extra text.", "check": {"type": "json_keys", "value": ["question", "answer"]}}
+{"id": "if-038", "instruction": "Output only valid JSON with keys \"capital\", \"country\", and \"continent\". Use any real capital city. No prose.", "check": {"type": "json_keys", "value": ["capital", "country", "continent"]}}
+{"id": "if-039", "instruction": "Output only valid JSON with keys \"first\", \"last\", and \"email\". Use any plausible fictional person's details. No extra text.", "check": {"type": "json_keys", "value": ["first", "last", "email"]}}
+{"id": "if-040", "instruction": "Output only valid JSON with keys \"input\", \"output\", and \"type\" describing any simple programming function. No surrounding prose.", "check": {"type": "json_keys", "value": ["input", "output", "type"]}}
+{"id": "if-041", "instruction": "Output only valid JSON with keys \"width\", \"height\", and \"unit\" for any standard screen resolution. No extra text.", "check": {"type": "json_keys", "value": ["width", "height", "unit"]}}
+{"id": "if-042", "instruction": "Output only valid JSON with keys \"language\", \"version\", and \"license\" for any well-known open-source programming language. No prose.", "check": {"type": "json_keys", "value": ["language", "version", "license"]}}
+{"id": "if-043", "instruction": "Output only valid JSON with keys \"planet\", \"moons\", and \"distance_au\" for any planet in our solar system. No surrounding text.", "check": {"type": "json_keys", "value": ["planet", "moons", "distance_au"]}}
+{"id": "if-044", "instruction": "Output only valid JSON with keys \"subject\", \"body\", and \"to\" representing a short fictional email. No extra prose.", "check": {"type": "json_keys", "value": ["subject", "body", "to"]}}
+{"id": "if-045", "instruction": "Explain what DNA stands for in one sentence. Do not apologize, and do not use the word 'apology' or 'apologize'.", "check": {"type": "forbids", "value": "apolog"}}
+{"id": "if-046", "instruction": "State the boiling point of water at sea level in degrees Celsius. Be direct; do not use the word 'however' in your answer.", "check": {"type": "forbids", "value": "however"}}
+{"id": "if-047", "instruction": "Name the author of the play Hamlet. Answer directly and do not say 'I cannot'.", "check": {"type": "forbids", "value": "i cannot"}}
+{"id": "if-048", "instruction": "State which cardinal direction the sun rises from. Answer directly without hedging; do not use the word 'unfortunately'.", "check": {"type": "forbids", "value": "unfortunately"}}
+{"id": "if-049", "instruction": "State the number of sides on a hexagon. Be concise and direct; do not say 'I'm unable'.", "check": {"type": "forbids", "value": "i'm unable"}}
+{"id": "if-050", "instruction": "Give the chemical symbol for sodium. Be direct; do not add caveats and do not use the phrase 'please note'.", "check": {"type": "forbids", "value": "please note"}}
