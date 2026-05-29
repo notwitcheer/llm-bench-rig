@@ -69,6 +69,8 @@ Measured with `llama-bench`. All layers GPU-offloaded (`-ngl 99`).
 | 4096 | 10,029 | 25.0 |
 | 8192 | 9,508 | 20.6 |
 | 16384 | 8,580 | 9.8 |
+| 32768 | 6,968 | 12.5 |
+| 65536 | 4,967 | 7.0 |
 
 ### Generation (tokens/s)
 

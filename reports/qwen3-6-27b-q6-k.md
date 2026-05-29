@@ -69,6 +69,8 @@ Measured with `llama-bench`. All layers GPU-offloaded (`-ngl 99`).
 | 4096 | 3,079 | 3.6 |
 | 8192 | 2,956 | 2.0 |
 | 16384 | 2,725 | 0.8 |
+| 32768 | 2,333 | 9.1 |
+| 65536 | 1,772 | 0.6 |
 
 ### Generation (tokens/s)
 
@@ -94,4 +96,4 @@ Custom generative evaluators built for this rig. All benchmarks run through llam
 
 ---
 
-*Benchmarked by WITCHEER on the RTX 5090 Benchmark Rig. Source: [github.com/notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig). Dataset: [huggingface.co/datasets/witcheer/rtx-5090-benchmarks](https://huggingface.co/datasets/witcheer/rtx-5090-benchmarks).*
+*Benchmarked by WITCHEER on the RTX 5090 Benchmark Rig. Source: [github.com/notwitcheer/llm-bench-rig/blob/main/reports/qwen3-6-27b-q6-k.md](https://github.com/notwitcheer/llm-bench-rig/blob/main/reports/qwen3-6-27b-q6-k.md). Dataset: [huggingface.co/datasets/witcheer/rtx-5090-benchmarks/blob/main/reports/qwen3-6-27b-q6-k.md](https://huggingface.co/datasets/witcheer/rtx-5090-benchmarks/blob/main/reports/qwen3-6-27b-q6-k.md).*
