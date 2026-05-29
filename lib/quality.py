@@ -18,7 +18,16 @@ def start_llama_server(model_path: str, ctx_size: int | None = None) -> subproce
     if ctx_size:
         cmd += ["--ctx-size", str(ctx_size)]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=180)
+    try:
+        _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=180)
+    except TimeoutError:
+        # Failed/OOM launch (e.g. ctx too large for VRAM) — don't leak the process.
+        proc.kill()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
+        raise
     return proc
 
 
