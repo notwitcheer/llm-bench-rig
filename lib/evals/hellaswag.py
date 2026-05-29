@@ -5,6 +5,7 @@ Standard: 10-shot from train split.
 """
 
 import json
+import random
 import time
 from pathlib import Path
 
@@ -42,11 +43,13 @@ class HellaSwagEval:
         client: LLMClient,
         n_shot: int = 10,
         limit: int | None = None,
+        sample: float | None = None,
         results_dir: Path | None = None,
     ):
         self.client = client
         self.n_shot = n_shot
         self.limit = limit
+        self.sample = sample
         self.results_dir = Path(results_dir) if results_dir else None
         self._ckpt = self.results_dir / "hellaswag_checkpoint.json" if self.results_dir else None
 
@@ -58,6 +61,11 @@ class HellaSwagEval:
         test_items = list(ds["validation"])
         if self.limit:
             test_items = test_items[:self.limit]
+        if self.sample and self.sample < 1.0:
+            rng = random.Random(42)
+            k = max(1, int(len(test_items) * self.sample))
+            indices = sorted(rng.sample(range(len(test_items)), k))
+            test_items = [test_items[i] for i in indices]
 
         ckpt = load_checkpoint(self._ckpt)
         start = ckpt["idx"] if ckpt else 0
@@ -95,8 +103,9 @@ class HellaSwagEval:
         elapsed = time.time() - t0
         acc = correct / n if n else 0
 
-        print(f"\n[hellaswag] Final: {acc:.1%} ({correct}/{n})")
-        return {
+        sample_str = f" (sampled {self.sample:.0%})" if self.sample and self.sample < 1.0 else ""
+        print(f"\n[hellaswag] Final: {acc:.1%} ({correct}/{n}){sample_str}")
+        result = {
             "score": round(acc * 100, 2),
             "metric": "acc",
             "correct": correct,
@@ -104,6 +113,10 @@ class HellaSwagEval:
             "parse_failures": parse_failures,
             "elapsed_s": round(elapsed, 1),
         }
+        if self.sample and self.sample < 1.0:
+            result["sample"] = self.sample
+            result["sample_seed"] = 42
+        return result
 
 
 if __name__ == "__main__":

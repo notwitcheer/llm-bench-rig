@@ -254,6 +254,10 @@ def main():
         export_comparison()
     elif args.target == "leaderboard":
         export_leaderboard()
+    elif args.target.startswith("report:"):
+        from lib.report import generate_report
+        slug = args.target.split(":", 1)[1]
+        generate_report(slug)
     else:
         export_report(args.target)
 

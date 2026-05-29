@@ -44,15 +44,17 @@ def _wait_for_server(url: str, timeout: int):
     raise TimeoutError(f"Server at {url} did not start within {timeout}s")
 
 
-def _run_evals(api_base: str, model_name: str, tasks: list[str], results_dir: Path | None) -> dict:
+def _run_evals(api_base: str, model_name: str, tasks: list[str],
+               results_dir: Path | None, sample: float | None,
+               think: bool = True) -> dict:
     from lib.evals import (LLMClient, MMLUEval, ARCEval,
                            HellaSwagEval, GSM8KEval, HumanEvalEval)
 
     results = {}
-    with LLMClient(api_base, model_name) as client:
+    with LLMClient(api_base, model_name, think=think) as client:
         for task in tasks:
             print(f"\n[quality] === {task} ===")
-            ev = _make_evaluator(task, client, results_dir)
+            ev = _make_evaluator(task, client, results_dir, sample)
             task_results = ev.evaluate()
             results[task] = {
                 "score": task_results["score"],
@@ -64,16 +66,16 @@ def _run_evals(api_base: str, model_name: str, tasks: list[str], results_dir: Pa
     return results
 
 
-def _make_evaluator(task: str, client, results_dir):
+def _make_evaluator(task: str, client, results_dir, sample: float | None):
     from lib.evals import (MMLUEval, ARCEval, HellaSwagEval,
                            GSM8KEval, HumanEvalEval)
 
     if task == "mmlu":
-        return MMLUEval(client=client, results_dir=results_dir)
+        return MMLUEval(client=client, sample=sample, results_dir=results_dir)
     if task == "arc_challenge":
         return ARCEval(client=client, results_dir=results_dir)
     if task == "hellaswag":
-        return HellaSwagEval(client=client, results_dir=results_dir)
+        return HellaSwagEval(client=client, sample=sample, results_dir=results_dir)
     if task == "gsm8k":
         return GSM8KEval(client=client, results_dir=results_dir)
     if task == "humaneval":
@@ -83,7 +85,14 @@ def _make_evaluator(task: str, client, results_dir):
 
 def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = None) -> dict:
     tasks = get("quality.tasks", [])
+    sample = get("quality.sample", None)
+    think = get("quality.think", True)
     server_proc = None
+
+    if sample:
+        print(f"[quality] Sampling {sample:.0%} of MMLU/HellaSwag (seed=42)")
+    if not think:
+        print(f"[quality] Thinking disabled (/nothink injected)")
 
     if engine == "llama.cpp":
         server_proc = start_llama_server(model_path)
@@ -100,7 +109,7 @@ def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = N
         print(f"[quality] Skipping unknown tasks: {', '.join(unknown)}")
 
     try:
-        results = _run_evals(api_base, model_name, eval_tasks, results_dir)
+        results = _run_evals(api_base, model_name, eval_tasks, results_dir, sample, think)
     finally:
         if server_proc:
             stop_llama_server(server_proc)

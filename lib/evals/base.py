@@ -6,9 +6,11 @@ import httpx
 class LLMClient:
     """Sync HTTP client for llama-server chat completions."""
 
-    def __init__(self, api_base: str, model_name: str, timeout: float = 120):
+    def __init__(self, api_base: str, model_name: str, timeout: float = 120,
+                 think: bool = True):
         self.url = f"{api_base.rstrip('/')}/chat/completions"
         self.model = model_name
+        self.think = think
         self._client = httpx.Client(timeout=timeout)
 
     def chat(self, messages: list[dict], max_tokens: int = 2048,
@@ -19,6 +21,8 @@ class LLMClient:
             "max_tokens": max_tokens,
             "temperature": temperature,
         }
+        if not self.think:
+            payload["chat_template_kwargs"] = {"enable_thinking": False}
         if stop:
             payload["stop"] = stop
         for attempt in range(3):

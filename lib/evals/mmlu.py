@@ -9,6 +9,7 @@ Dataset: cais/mmlu on HuggingFace (auto-downloaded and cached on first run).
 """
 
 import json
+import random
 import sys
 import time
 from pathlib import Path
@@ -100,11 +101,13 @@ class MMLUEval:
         client: LLMClient,
         n_shot: int = 5,
         limit: int | None = None,
+        sample: float | None = None,
         results_dir: Path | None = None,
     ):
         self.client = client
         self.n_shot = n_shot
         self.limit = limit
+        self.sample = sample
         self.results_dir = Path(results_dir) if results_dir else None
         self._progress_path = self.results_dir / "mmlu_progress.json" if self.results_dir else None
 
@@ -130,6 +133,11 @@ class MMLUEval:
             test_items = list(ds["test"])
             if self.limit:
                 test_items = test_items[:self.limit]
+            if self.sample and self.sample < 1.0:
+                rng = random.Random(42)
+                k = max(1, int(len(test_items) * self.sample))
+                indices = sorted(rng.sample(range(len(test_items)), k))
+                test_items = [test_items[i] for i in indices]
 
             correct = 0
             parse_failures = 0
@@ -181,11 +189,12 @@ class MMLUEval:
                     "total": cat_total,
                 }
 
-        print(f"\n[mmlu] Overall: {overall_acc:.1%} ({total_correct}/{total_count})")
+        sample_str = f" (sampled {self.sample:.0%})" if self.sample and self.sample < 1.0 else ""
+        print(f"\n[mmlu] Overall: {overall_acc:.1%} ({total_correct}/{total_count}){sample_str}")
         for cat, sc in category_scores.items():
             print(f"[mmlu]   {cat}: {sc['score']:.1f}%")
 
-        return {
+        result = {
             "score": round(overall_acc * 100, 2),
             "metric": "acc",
             "correct": total_correct,
@@ -193,6 +202,10 @@ class MMLUEval:
             "categories": category_scores,
             "per_subject": completed,
         }
+        if self.sample and self.sample < 1.0:
+            result["sample"] = self.sample
+            result["sample_seed"] = 42
+        return result
 
     def _load_progress(self) -> dict:
         if self._progress_path and self._progress_path.exists():

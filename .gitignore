@@ -30,3 +30,9 @@ video/
 
 # OS
 .DS_Store
+.superpowers/
+reports/*-x-post.txt
+reports/*-telegram.txt
+reports/*-card.html
+reports/test-*
+docs/
