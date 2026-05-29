@@ -36,3 +36,7 @@ reports/*-telegram.txt
 reports/*-card.html
 reports/test-*
 docs/
+
+# Extracted Hermes fixtures (third-party, regenerable via scripts/extract_hermes_prompt.py)
+data/agentic/hermes_system_prompt.txt
+data/agentic/hermes_tools.json
