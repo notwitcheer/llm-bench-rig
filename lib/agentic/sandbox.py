@@ -1,6 +1,6 @@
 """Execute a model-written code action with mock tools injected, in an isolated
 subprocess. The code is expected to assign a variable named `result`."""
-import json, subprocess, tempfile
+import json, os, subprocess, tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -35,6 +35,7 @@ def run_code_action(code: str, timeout: int = 10) -> ActionOutput:
         proc = subprocess.run(
             ["python3", harness_path, code_path],
             capture_output=True, text=True, timeout=timeout, cwd=str(rig_root),
+            env={**os.environ, "PYTHONPATH": str(rig_root)},
         )
         line = (proc.stdout or "").strip().splitlines()[-1] if proc.stdout.strip() else ""
         if not line:
