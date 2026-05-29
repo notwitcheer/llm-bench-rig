@@ -1,0 +1,20 @@
+{"id": "if-001", "instruction": "Reply with exactly the single uppercase word DONE and nothing else.", "check": {"type": "exact", "value": "DONE"}}
+{"id": "if-002", "instruction": "List three primary colors as a single comma-separated lowercase line with no spaces, e.g. a,b,c.", "check": {"type": "regex", "value": "^[a-z]+,[a-z]+,[a-z]+$"}}
+{"id": "if-003", "instruction": "Output only valid JSON with keys \"status\" and \"count\", no prose.", "check": {"type": "json_keys", "value": ["status", "count"]}}
+{"id": "if-004", "instruction": "The user wants to know the capital of France. Answer directly and helpfully without saying you cannot or are unable to help.", "check": {"type": "forbids", "value": "cannot"}}
+{"id": "if-005", "instruction": "Reply with exactly the integer 42 and nothing else.", "check": {"type": "exact", "value": "42"}}
+{"id": "if-006", "instruction": "Write a valid ISO 8601 date for the first day of the year 2025. Output only the date string, nothing else.", "check": {"type": "regex", "value": "2025-01-01"}}
+{"id": "if-007", "instruction": "Output only valid JSON with keys \"name\", \"age\", and \"city\". Use any plausible values. No extra text.", "check": {"type": "json_keys", "value": ["name", "age", "city"]}}
+{"id": "if-008", "instruction": "Translate the word 'hello' to Spanish. Respond directly with the translation; do not say you are sorry or unable.", "check": {"type": "forbids", "value": "sorry"}}
+{"id": "if-009", "instruction": "Reply with exactly the word YES in all caps and nothing else.", "check": {"type": "exact", "value": "YES"}}
+{"id": "if-010", "instruction": "Output a valid hexadecimal color code for pure red. Output only the code, starting with #.", "check": {"type": "regex", "value": "^#[Ff][Ff]0{4}$"}}
+{"id": "if-011", "instruction": "Output only valid JSON with keys \"error\" and \"message\". No prose before or after.", "check": {"type": "json_keys", "value": ["error", "message"]}}
+{"id": "if-012", "instruction": "Name the planet closest to the Sun. Answer with just the planet name, no extra text, and do not say you cannot answer.", "check": {"type": "forbids", "value": "cannot"}}
+{"id": "if-013", "instruction": "Reply with exactly the two-letter ISO country code for Germany and nothing else.", "check": {"type": "exact", "value": "DE"}}
+{"id": "if-014", "instruction": "Output exactly three lowercase English words separated by single spaces, each word between 3 and 8 characters long. No punctuation.", "check": {"type": "regex", "value": "^[a-z]{3,8} [a-z]{3,8} [a-z]{3,8}$"}}
+{"id": "if-015", "instruction": "Output only valid JSON with keys \"latitude\" and \"longitude\". Use numeric values for New York City. No surrounding text.", "check": {"type": "json_keys", "value": ["latitude", "longitude"]}}
+{"id": "if-016", "instruction": "State whether Python is an interpreted language. Be direct and do not use the word 'unable' in your response.", "check": {"type": "forbids", "value": "unable"}}
+{"id": "if-017", "instruction": "Reply with exactly the single word TRUE in all caps and nothing else.", "check": {"type": "exact", "value": "TRUE"}}
+{"id": "if-018", "instruction": "Output a single integer between 1 and 100 (inclusive), written in decimal digits only, with no other text.", "check": {"type": "regex", "value": "^([1-9][0-9]?|100)$"}}
+{"id": "if-019", "instruction": "Output only valid JSON with keys \"title\", \"author\", and \"year\" for any book you know. No extra prose.", "check": {"type": "json_keys", "value": ["title", "author", "year"]}}
+{"id": "if-020", "instruction": "List the days of the weekend as a comma-separated lowercase string with no spaces. Do not apologize or say you are sorry.", "check": {"type": "forbids", "value": "sorry"}}
