@@ -68,7 +68,7 @@ def _fmt_speed(val: float) -> str:
     return f"{val:.1f}"
 
 
-def _build_context(data: dict) -> dict:
+def _build_context(data: dict, slug: str = "") -> dict:
     """Assemble the full template context dict from loaded result data."""
     meta = data.get("meta", {})
     speed = data.get("speed", {})
@@ -145,8 +145,8 @@ def _build_context(data: dict) -> dict:
         "think_enabled": think_enabled,
 
         # Links
-        "github_url": "https://github.com/notwitcheer/llm-bench-rig",
-        "hf_url": "https://huggingface.co/datasets/witcheer/rtx-5090-benchmarks",
+        "github_url": f"https://github.com/notwitcheer/llm-bench-rig/blob/main/reports/{slug}.md",
+        "hf_url": f"https://huggingface.co/datasets/witcheer/rtx-5090-benchmarks/blob/main/reports/{slug}.md",
     }
     return ctx
 
@@ -510,7 +510,7 @@ def generate_report(model_slug: str):
     if "meta" not in data:
         raise FileNotFoundError(f"meta.json not found in {model_dir}")
 
-    ctx = _build_context(data)
+    ctx = _build_context(data, slug=model_slug)
 
     # Ensure output directory exists
     reports_dir = Path("reports")
