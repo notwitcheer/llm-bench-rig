@@ -35,3 +35,17 @@ def load_system_prompt(path: str) -> str:
     if p.exists():
         return p.read_text()
     return _SYNTHETIC_FALLBACK
+
+
+# Light prompt for the CodeAct eval. The real Hermes prompt conditions models to
+# emit incremental tool calls in Hermes's own markup (<tool_parsing>...) and await
+# observations, which fights the one-shot self-contained-block format CodeAct scores.
+# CodeAct measures pure code-orchestration capability under this light prompt; the
+# real incremental-agent behavior is what Phase B (real Hermes harness) measures.
+CODEACT_SYSTEM_PROMPT = (
+    "You are a precise coding assistant operating in a CodeAct loop. For each task, "
+    "respond with a SINGLE ```python``` code block that calls the provided tools as "
+    "plain Python functions and assigns the final answer to a variable named `result`. "
+    "Output only that code block — no prose, and do NOT use any tool-call markup or XML "
+    "tags; just write the Python."
+)

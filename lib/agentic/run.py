@@ -5,7 +5,7 @@ from pathlib import Path
 from lib.config import get
 from lib.quality import start_llama_server, stop_llama_server
 from lib.evals.base import LLMClient
-from lib.agentic.base import load_system_prompt
+from lib.agentic.base import load_system_prompt, CODEACT_SYSTEM_PROMPT
 from lib.agentic.codeact import CodeActEval
 from lib.agentic.instruction import InstructionLoadEval
 from lib.agentic.longcontext import LongContextUseEval
@@ -28,7 +28,9 @@ def run_model(model: dict) -> dict:
     evals = {}
     try:
         with LLMClient(api_base, Path(path).stem, think=cfg["codeact"]["think"], timeout=300) as c:
-            evals["codeact"] = CodeActEval(c, sp, data_dir, limit=cfg["codeact"]["limit"],
+            # Option A: codeact uses a light prompt (self-contained block); the real
+            # Hermes prompt conditions models into incremental tool-call markup.
+            evals["codeact"] = CodeActEval(c, CODEACT_SYSTEM_PROMPT, data_dir, limit=cfg["codeact"]["limit"],
                 results_dir=results_dir, max_tokens=cfg["codeact"]["max_tokens"],
                 exec_timeout=cfg["codeact"]["exec_timeout"]).evaluate()
             evals["multistep"] = MultiStepEval(c, sp, data_dir, limit=cfg["multistep"]["limit"],

@@ -97,8 +97,8 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--results-dir", default=None)
     args = ap.parse_args()
-    sp = load_system_prompt(get("agentic.system_prompt"))
+    from lib.agentic.base import CODEACT_SYSTEM_PROMPT
     with LLMClient(args.api_base, args.model, think=True) as c:
-        ev = CodeActEval(c, sp, get("agentic.data_dir"), limit=args.limit,
+        ev = CodeActEval(c, CODEACT_SYSTEM_PROMPT, get("agentic.data_dir"), limit=args.limit,
                          results_dir=Path(args.results_dir) if args.results_dir else None)
         print(ev.evaluate())
