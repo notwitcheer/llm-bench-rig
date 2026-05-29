@@ -57,8 +57,15 @@ class LongContextUseEval:
                     if state["done"][key]:
                         per_depth[depth]["passed"] += 1
                     continue
-                hay = build_haystack(item["needle"], target_tokens=depth)
-                user = (f"{build_tool_doc()}\n\nContext (memory + tool logs):\n{hay}\n\n"
+                # "depth" = total context to fill. Reserve room for the system prompt,
+                # tool doc, question, and generation so the request fits the server's
+                # ctx_size (which must be >= max depth + max_tokens + margin).
+                tooldoc = build_tool_doc()
+                overhead = (approx_tokens(self.system_prompt) + approx_tokens(tooldoc)
+                            + approx_tokens(item["question"]) + self.max_tokens + 512)
+                hay_tokens = max(depth - overhead, 256)
+                hay = build_haystack(item["needle"], target_tokens=hay_tokens)
+                user = (f"{tooldoc}\n\nContext (memory + tool logs):\n{hay}\n\n"
                         f"Task: {item['question']}\nWrite a ```python``` block; assign `result`.")
                 try:
                     resp = self.client.chat(

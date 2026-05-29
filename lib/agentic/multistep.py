@@ -34,8 +34,10 @@ class MultiStepEval:
         for step in range(cap):
             user = (f"{build_tool_doc()}\n\nGoal: {item['task']}\n"
                     f"History:\n" + ("\n".join(history) or "(none)") +
-                    "\n\nEmit the NEXT single ```python``` action; assign `result`. "
-                    "When the goal is fully achieved, that final action is the completion.")
+                    "\n\nEmit the NEXT step as a ```python``` block containing EXACTLY ONE tool "
+                    "call, assigning its return value to `result`. Do NOT chain multiple tool "
+                    "calls in one step — take one action, observe, then continue next step. "
+                    "When the goal is fully achieved, that final single-tool action is the completion.")
             resp = self.client.chat(
                 [{"role": "system", "content": self.system_prompt},
                  {"role": "user", "content": user}], max_tokens=self.max_tokens)

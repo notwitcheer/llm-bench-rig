@@ -37,7 +37,7 @@ hardware:
 agentic:
   system_prompt: ./data/agentic/hermes_system_prompt.txt
   data_dir: ./data/agentic
-  ctx_size: 65536          # llama-server context for long-context eval (64K)
+  ctx_size: 73728          # 72K: fits the deepest 64K long-ctx depth + ~13.5K Hermes prompt + generation
   evals:
     codeact:     {limit: 100, think: true,  max_tokens: 1536, exec_timeout: 10}
     instruction: {limit: 50,  think: false, max_tokens: 512}
