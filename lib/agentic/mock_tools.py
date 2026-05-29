@@ -4,7 +4,7 @@ import hashlib, re
 
 _FILES = {
     "/data/config.txt": "vram=32GB\nmodel=local\n",
-    "/data/notes.md": "# Notes\nThe API key is sk-abc123.\n",
+    "/data/notes.md": "# Notes\nThe API key is FAKE-KEY-abc123.\n",
 }
 _SEARCH = {
     "rtx 5090 vram": "The RTX 5090 has 32GB of GDDR7 VRAM.",
@@ -23,7 +23,10 @@ def read_file(path: str) -> str:
 
 def extract(html: str, selector: str) -> str:
     sid = selector.lstrip("#.")
-    m = re.search(rf"id=['\"]{re.escape(sid)}['\"][^>]*>([^<]*)<", html)
+    m = re.search(
+        rf"(?:id|class)=['\"][^'\"]*\b{re.escape(sid)}\b[^'\"]*['\"][^>]*>([^<]*)<",
+        html,
+    )
     return m.group(1).strip() if m else ""
 
 def send_message(channel: str, text: str) -> str:
