@@ -9,16 +9,16 @@ from lib.config import get
 EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval"}
 
 
-def start_llama_server(model_path: str) -> subprocess.Popen:
+def start_llama_server(model_path: str, ctx_size: int | None = None) -> subprocess.Popen:
     server_bin = str(Path(get("llama_cpp.server_bin")).expanduser())
     port = get("llama_cpp.server_port", 8090)
     ngl = get("speed.n_gpu_layers", 99)
-    proc = subprocess.Popen(
-        [server_bin, "-m", model_path, "--port", str(port),
-         "--n-gpu-layers", str(ngl), "--host", "127.0.0.1"],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    )
-    _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=120)
+    cmd = [server_bin, "-m", model_path, "--port", str(port),
+           "--n-gpu-layers", str(ngl), "--host", "127.0.0.1"]
+    if ctx_size:
+        cmd += ["--ctx-size", str(ctx_size)]
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=180)
     return proc
 
 
