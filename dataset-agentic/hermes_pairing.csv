@@ -1,0 +1,5 @@
+model,params,size_gb,pairing_score,codeact,multistep,instruction,longcontext,lc_16k,lc_32k,lc_64k,instruction_delta,hf_repo
+Qwopus-GLM-18B,18B frankenmerge,13,92.65,94.0,75.0,94.0,100.0,100.0,100.0,100.0,-28.0,KyleHessling1/Qwopus-GLM-18B-Healed
+Qwen3.6-27B,27B dense,21,92.38,99.0,100.0,100.0,71.11,73.33,66.67,73.33,-2.0,unsloth/Qwen3.6-27B-GGUF
+Nemotron-Cascade-2-30B,30B-A3B MoE,18,90.50,99.0,50.0,92.0,100.0,100.0,100.0,100.0,6.0,bartowski/nvidia_Nemotron-Cascade-2-30B-A3B-GGUF
+Hermes-4.3-36B,36B dense,21,84.27,95.0,66.67,98.0,66.67,100.0,100.0,0.0,2.0,NousResearch/Hermes-4.3-36B-GGUF
