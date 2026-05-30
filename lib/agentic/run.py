@@ -88,7 +88,12 @@ def _run_longcontext(path, sp, data_dir, results_dir, cfg, api_base):
 def main():
     models = get("agentic.models")
     t0 = time.time()
-    summaries = [run_model(m) for m in models]
+    summaries = []
+    for m in models:
+        try:
+            summaries.append(run_model(m))
+        except Exception as e:
+            print(f"[run] model {m.get('slug')} FAILED: {type(e).__name__}: {e} — skipping", flush=True)
     summaries.sort(key=lambda s: s["pairing_score"], reverse=True)
     out = Path(get("results_dir", "./results")) / "hermes_pairing_leaderboard.json"
     out.write_text(json.dumps(summaries, indent=2))
