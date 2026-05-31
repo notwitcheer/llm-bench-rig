@@ -1,0 +1,4 @@
+model,phase,completion_rate,passed,total,avg_turns,avg_gen_tokens,avg_elapsed_s,phase_a_score,fails
+Qwen3.6-27B,B-real-harness,100.0,42,42,3.0,364,8.7,92.38,
+Qwopus-GLM-18B,B-real-harness,85.7,36,42,3.56,870,12.3,92.65,sum_column_header;second_largest;unique_words;json_nested;most_lines
+Nemotron-Cascade-2-30B,B-real-harness,85.7,36,42,4.36,1334,8.1,90.5,sum_even;sum_column_header;unique_words;filter_lines;transform_double;chain_hash

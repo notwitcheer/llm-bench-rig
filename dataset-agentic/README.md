@@ -16,8 +16,10 @@ pretty_name: Hermes Pairing — Agentic Benchmark for Local LLMs
 size_categories:
   - n<1K
 configs:
-  - config_name: default
+  - config_name: phase_a_synthetic
     data_files: hermes_pairing.csv
+  - config_name: phase_b_real_harness
+    data_files: hermes_pairing_phaseb.csv
 ---
 
 # Hermes Pairing — Agentic Benchmark for Local LLMs (Phase A)
@@ -59,6 +61,25 @@ Per-depth long-context and the instruction delta are in `hermes_pairing.csv`.
 - **The lab's own model finishes last** — Hermes-4.3-36B is the worst pairing for Hermes Agent (gap is real).
 - **No model wins all four axes** — best agent model depends on workload: Qwen 27B is the reasoning-loop/instruction king but weak at retrieval; Nemotron + Qwopus ace long-context; Nemotron is weakest at multi-step.
 - **The 64K VRAM wall** — a 36B Q4 can't hold 64K KV in 32GB; smaller models can. Size is a liability for long-context agents on a single card.
+
+## Phase B — real-harness validation (`phase_b_real_harness`)
+
+The synthetic Phase A was confirmed/broken by running the top 3 finishers through the **real Hermes
+Agent** (no-sudo `uv` install, one-shot mode, pointed at llama-server) on **14 multi-step tasks × 3
+repeats = 126 runs**. Each task succeeds only if the resulting filesystem state is correct. Efficiency
+(turns = model calls; gen tokens) parsed from the inference-server log.
+
+| Model | Completion | Avg turns | Avg gen tokens |
+|---|---|---|---|
+| **Qwen3.6-27B** | **100%** (42/42) | **3.0** | **364** |
+| Qwopus-GLM-18B | 85.7% (36/42) | 3.6 | 870 (2.4×) |
+| Nemotron-Cascade-2-30B | 85.7% (36/42) | 4.4 | 1334 (3.7×) |
+
+**The synthetic tie broke.** Qwen3.6-27B completed every task *and* was 2.4–3.7× more token-efficient —
+an efficiency gap a synthetic benchmark can't measure (visible only inside the real agent loop). The
+18B that tied #1 synthetically is neither the most reliable nor the most efficient in the real harness.
+Qwopus and Nemotron fail on *different* task types (parsing/logic vs. transforms/chains). **Overall
+verdict across both phases: Qwen3.6-27B.**
 
 ## Method
 
