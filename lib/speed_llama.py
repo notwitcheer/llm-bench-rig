@@ -14,7 +14,12 @@ def build_bench_command(model_path: str, n_cpu_moe: int | None = None,
     for cl in ctx_lengths:
         pp_args.extend(["-p", str(cl)])
 
-    cmd = [bench_bin, "-m", model_path, "-ngl", str(ngl), *pp_args, "-n", str(gen_length)]
+    cmd = [
+        bench_bin, "-m", model_path,
+        "-ngl", str(ngl),
+        *pp_args,
+        "-n", str(gen_length),
+    ]
     if n_cpu_moe is not None:
         cmd += ["--n-cpu-moe", str(n_cpu_moe)]
     return cmd
@@ -57,6 +62,7 @@ def parse_llama_bench_output(raw: str) -> dict:
     results["backend"] = backend
     return results
 
+# NOTE: bench.py wires per-model offload into run_llama_bench in Task 4 of the plan.
 def run_llama_bench(model_path: str, n_cpu_moe: int | None = None,
                     n_gpu_layers: int | None = None) -> dict:
     cmd = build_bench_command(model_path, n_cpu_moe=n_cpu_moe, n_gpu_layers=n_gpu_layers)

@@ -38,3 +38,8 @@ def test_build_bench_command_with_cpu_moe_offload():
 def test_build_bench_command_ngl_override():
     cmd = build_bench_command("/m/model.gguf", n_gpu_layers=20)
     assert cmd[cmd.index("-ngl") + 1] == "20"
+
+def test_build_bench_command_cpu_moe_zero_is_included():
+    cmd = build_bench_command("/m/model.gguf", n_cpu_moe=0)
+    assert "--n-cpu-moe" in cmd
+    assert cmd[cmd.index("--n-cpu-moe") + 1] == "0"
