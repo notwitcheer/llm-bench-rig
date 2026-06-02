@@ -16,3 +16,9 @@ def test_server_command_with_ctx_size():
 def test_server_command_with_cpu_moe():
     cmd = build_server_command("/m/model.gguf", port=8090, ngl=99, n_cpu_moe=28)
     assert cmd[cmd.index("--n-cpu-moe") + 1] == "28"
+
+
+def test_server_command_cpu_moe_zero_is_included():
+    cmd = build_server_command("/m/model.gguf", port=8090, ngl=99, n_cpu_moe=0)
+    assert "--n-cpu-moe" in cmd
+    assert cmd[cmd.index("--n-cpu-moe") + 1] == "0"
