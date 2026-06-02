@@ -62,6 +62,7 @@ def _run_speed(model_path, engine, meta, out_dir, progress, offload=None):
         progress.update("speed_llama_bench", 10)
         speed_results = run_llama_bench(model_path, **offload)
     else:
+        # offload is llama.cpp-specific; vLLM manages layers internally
         print("[speed] Running vLLM benchmarks...")
         progress.update("speed_vllm_bench", 10)
         speed_results = run_vllm_bench()
@@ -81,10 +82,11 @@ def _run_speed(model_path, engine, meta, out_dir, progress, offload=None):
     progress.update("speed_done", 40, partial=speed_results)
 
 def _run_quality(model_path, engine, meta, out_dir, progress, offload=None):
+    offload = offload or {}
     print("[quality] Starting eval harness...")
     progress.update("quality_init", 45)
 
-    quality_results = run_quality_bench(model_path, engine, results_dir=out_dir, offload=offload or {})
+    quality_results = run_quality_bench(model_path, engine, results_dir=out_dir, offload=offload)
 
     quality_file = out_dir / "quality.json"
     with open(quality_file, "w") as f:

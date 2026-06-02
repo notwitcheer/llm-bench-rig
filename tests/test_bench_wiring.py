@@ -1,7 +1,7 @@
 import bench
 
 
-def test_run_speed_forwards_offload(monkeypatch, tmp_path):
+def test_run_speed_passes_offload_kwargs_to_llama_bench(monkeypatch, tmp_path):
     captured = {}
 
     def fake_run_llama_bench(model_path, **kwargs):
