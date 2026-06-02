@@ -54,6 +54,33 @@ acceptance affects only *speed*, never *content*. (q8 KV cache is near-lossless;
 re-capture it — llama-server didn't emit spec stats to the log in a form the script could parse (a known
 gap; wiring up acceptance capture is a TODO).
 
+## Speedup by workload
+
+The 1.8–2.0× band is **workload-dependent**: MTP's gain scales with how predictable the output is.
+Base vs MTP generation tok/s at a small fixed context (one run each, `n_predict=256`, `temperature=0`):
+
+![MTP speedup by workload](mtp-workload-chart.png)
+
+| workload | base tok/s | MTP tok/s | speedup |
+|---|---|---|---|
+| free prose | 62.3 | 113.2 | 1.8× |
+| Q&A / explanation | 62.3 | 119.7 | 1.9× |
+| code | 62.3 | 123.1 | 2.0× |
+| JSON / structured | 62.3 | 136.8 | 2.2× |
+| repetitive | 62.2 | 136.7 | 2.2× |
+
+Base decode is flat (~62 t/s, content-independent); MTP rises with predictability — 1.8× on free prose
+up to 2.2× on structured/repeated output. MTP helps across the board here, more the more guessable the
+next tokens are. Reproduce: `scripts/bench_mtp_workload.sh`.
+
+**Two methodology gotchas (each cost a few bad runs):**
+- **`ignore_eos: true` suppresses speculative decoding in this build** — it pins MTP to baseline speed.
+  Don't force generation length that way; use prompts that naturally generate enough tokens.
+- **Don't race the port.** The live server holds the GPU + port; a naive `stop; sleep; relaunch` can let an
+  orphaned server keep the port, so you silently measure the *wrong* process (base and MTP then read
+  identical). Gate on the port being free AND VRAM drained before launching, and verify your own PID
+  bound — `bench_mtp_workload.sh` does this.
+
 ## Method (and why not `llama-bench`)
 
 The rig's standard speed path (`bench.py --speed-only` → `llama-bench`) **cannot** measure this. `llama-bench`
