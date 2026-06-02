@@ -10,7 +10,9 @@ def detect_engine(model_path: Path) -> str:
 
 def parse_model_name(filename: str) -> dict:
     name = filename.replace(".gguf", "")
-    quant_pattern = r"-((?:UD-)?[QqFf]\d[\w_]*(?:-[A-Z]+)*)$"
+    # Strip trailing shard suffix e.g. -00001-of-00003
+    name = re.sub(r"-\d{3,}-of-\d{3,}$", "", name)
+    quant_pattern = r"[-.]((?:UD-)?(?:[QqFf]\d[\w_]*(?:-[A-Z]+)*|[Mm][Xx][Ff][Pp]\d+))$"
     match = re.search(quant_pattern, name)
     if match:
         quant = match.group(1)
