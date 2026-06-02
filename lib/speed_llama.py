@@ -3,9 +3,10 @@ import re
 from pathlib import Path
 from lib.config import get
 
-def build_bench_command(model_path: str) -> list[str]:
+def build_bench_command(model_path: str, n_cpu_moe: int | None = None,
+                        n_gpu_layers: int | None = None) -> list[str]:
     bench_bin = str(Path(get("llama_cpp.bench_bin")).expanduser())
-    ngl = get("speed.n_gpu_layers", 99)
+    ngl = n_gpu_layers if n_gpu_layers is not None else get("speed.n_gpu_layers", 99)
     ctx_lengths = get("speed.context_lengths", [128, 512, 2048])
     gen_length = get("speed.generation_length", 128)
 
@@ -13,13 +14,10 @@ def build_bench_command(model_path: str) -> list[str]:
     for cl in ctx_lengths:
         pp_args.extend(["-p", str(cl)])
 
-    return [
-        bench_bin,
-        "-m", model_path,
-        "-ngl", str(ngl),
-        *pp_args,
-        "-n", str(gen_length),
-    ]
+    cmd = [bench_bin, "-m", model_path, "-ngl", str(ngl), *pp_args, "-n", str(gen_length)]
+    if n_cpu_moe is not None:
+        cmd += ["--n-cpu-moe", str(n_cpu_moe)]
+    return cmd
 
 def parse_llama_bench_output(raw: str) -> dict:
     results = {}
@@ -59,9 +57,10 @@ def parse_llama_bench_output(raw: str) -> dict:
     results["backend"] = backend
     return results
 
-def run_llama_bench(model_path: str) -> dict:
-    cmd = build_bench_command(model_path)
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+def run_llama_bench(model_path: str, n_cpu_moe: int | None = None,
+                    n_gpu_layers: int | None = None) -> dict:
+    cmd = build_bench_command(model_path, n_cpu_moe=n_cpu_moe, n_gpu_layers=n_gpu_layers)
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
     if result.returncode != 0:
         raise RuntimeError(f"llama-bench failed: {result.stderr}")
     return parse_llama_bench_output(result.stdout)

@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from lib.speed_llama import parse_llama_bench_output
+from lib.speed_llama import parse_llama_bench_output, build_bench_command
 
 FIXTURE = Path(__file__).parent / "fixtures" / "llama-bench-output.txt"
 
@@ -22,3 +22,19 @@ def test_parse_extracts_model_info():
     assert results["model_size_gib"] == pytest.approx(20.60, abs=0.01)
     assert results["params"] == "34.66 B"
     assert results["backend"] == "CUDA"
+
+def test_build_bench_command_default_full_vram():
+    cmd = build_bench_command("/m/model.gguf")
+    assert "-ngl" in cmd
+    ngl_val = cmd[cmd.index("-ngl") + 1]
+    assert ngl_val == "99"
+    assert "--n-cpu-moe" not in cmd
+
+def test_build_bench_command_with_cpu_moe_offload():
+    cmd = build_bench_command("/m/model.gguf", n_cpu_moe=28)
+    assert "--n-cpu-moe" in cmd
+    assert cmd[cmd.index("--n-cpu-moe") + 1] == "28"
+
+def test_build_bench_command_ngl_override():
+    cmd = build_bench_command("/m/model.gguf", n_gpu_layers=20)
+    assert cmd[cmd.index("-ngl") + 1] == "20"
