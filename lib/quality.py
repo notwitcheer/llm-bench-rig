@@ -9,17 +9,29 @@ from lib.config import get
 EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval"}
 
 
-def start_llama_server(model_path: str, ctx_size: int | None = None) -> subprocess.Popen:
-    server_bin = str(Path(get("llama_cpp.server_bin")).expanduser())
-    port = get("llama_cpp.server_port", 8090)
-    ngl = get("speed.n_gpu_layers", 99)
-    cmd = [server_bin, "-m", model_path, "--port", str(port),
+def build_server_command(model_path: str, port: int, ngl: int,
+                         ctx_size: int | None = None,
+                         n_cpu_moe: int | None = None) -> list[str]:
+    cmd = [str(Path(get("llama_cpp.server_bin")).expanduser()),
+           "-m", model_path, "--port", str(port),
            "--n-gpu-layers", str(ngl), "--host", "127.0.0.1"]
     if ctx_size:
         cmd += ["--ctx-size", str(ctx_size)]
+    if n_cpu_moe is not None:
+        cmd += ["--n-cpu-moe", str(n_cpu_moe)]
+    return cmd
+
+
+def start_llama_server(model_path: str, ctx_size: int | None = None,
+                       n_cpu_moe: int | None = None,
+                       n_gpu_layers: int | None = None) -> subprocess.Popen:
+    port = get("llama_cpp.server_port", 8090)
+    ngl = n_gpu_layers if n_gpu_layers is not None else get("speed.n_gpu_layers", 99)
+    cmd = build_server_command(model_path, port=port, ngl=ngl,
+                               ctx_size=ctx_size, n_cpu_moe=n_cpu_moe)
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=180)
+        _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=300)
     except TimeoutError:
         # Failed/OOM launch (e.g. ctx too large for VRAM) — don't leak the process.
         proc.kill()
