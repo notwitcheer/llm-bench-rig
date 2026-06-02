@@ -7,8 +7,20 @@ export PYTHONUNBUFFERED=1
 PORT=8090
 
 restore_hermes() {
+  echo "[guard] cleaning up any stray llama-server on port $PORT before restore ..."
+  # Kill orphaned bench-launched servers still holding the port (NOT the systemd unit, which is already stopped).
+  STRAY_PIDS=$(ss -ltnp "sport = :$PORT" 2>/dev/null | grep -oP 'pid=\K[0-9]+' | sort -u || true)
+  if [ -n "$STRAY_PIDS" ]; then
+    echo "[guard] killing stray PID(s): $STRAY_PIDS"
+    # shellcheck disable=SC2086
+    kill $STRAY_PIDS 2>/dev/null || true
+    sleep 3
+    kill -9 $STRAY_PIDS 2>/dev/null || true
+  fi
   echo "[guard] restoring llama-server.service ..."
-  sudo systemctl start llama-server.service || true
+  if ! sudo systemctl start llama-server.service; then
+    echo "[guard] ERROR: failed to restart llama-server.service — Hermes may be DOWN. Investigate manually." >&2
+  fi
 }
 trap restore_hermes EXIT
 
