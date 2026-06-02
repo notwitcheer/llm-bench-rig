@@ -11,3 +11,6 @@ def test_resolve_unknown_slug_returns_empty():
 
 def test_resolve_no_offload_section():
     assert resolve_offload("anything", {}) == {}
+
+def test_resolve_cfg_none_returns_empty():
+    assert resolve_offload("anything", None) == {}
