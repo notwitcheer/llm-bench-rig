@@ -31,8 +31,8 @@ def start_llama_server(model_path: str, ctx_size: int | None = None,
                                ctx_size=ctx_size, n_cpu_moe=n_cpu_moe)
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=300)
-    except TimeoutError:
+        _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=300, proc=proc)
+    except (TimeoutError, RuntimeError):
         # Failed/OOM launch (e.g. ctx too large for VRAM) — don't leak the process.
         proc.kill()
         try:
@@ -51,10 +51,14 @@ def stop_llama_server(proc: subprocess.Popen):
         proc.kill()
 
 
-def _wait_for_server(url: str, timeout: int):
+def _wait_for_server(url: str, timeout: int, proc=None):
     import httpx
     deadline = time.time() + timeout
     while time.time() < deadline:
+        if proc is not None and proc.poll() is not None:
+            raise RuntimeError(
+                f"llama-server exited early with code {proc.returncode} before becoming healthy"
+            )
         try:
             resp = httpx.get(url, timeout=2)
             if resp.status_code == 200:

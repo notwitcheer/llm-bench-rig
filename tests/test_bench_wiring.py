@@ -1,6 +1,22 @@
 import bench
 
 
+def test_run_quality_forwards_offload(monkeypatch, tmp_path):
+    captured = {}
+
+    def fake_run_quality_bench(model_path, engine, results_dir=None, offload=None):
+        captured["offload"] = offload
+        return {}
+
+    monkeypatch.setattr(bench, "run_quality_bench", fake_run_quality_bench)
+
+    class P:
+        def update(self, *a, **k): pass
+
+    bench._run_quality("/m/x.gguf", "llama.cpp", {"slug": "x"}, tmp_path, P(), {"n_cpu_moe": 28})
+    assert captured["offload"] == {"n_cpu_moe": 28}
+
+
 def test_run_speed_passes_offload_kwargs_to_llama_bench(monkeypatch, tmp_path):
     captured = {}
 
