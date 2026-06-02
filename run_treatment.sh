@@ -18,14 +18,14 @@ restore_hermes() {
     kill -9 $STRAY_PIDS 2>/dev/null || true
   fi
   echo "[guard] restoring llama-server.service ..."
-  if ! sudo systemctl start llama-server.service; then
+  if ! sudo -n systemctl start llama-server.service; then
     echo "[guard] ERROR: failed to restart llama-server.service — Hermes may be DOWN. Investigate manually." >&2
   fi
 }
 trap restore_hermes EXIT
 
 echo "[guard] stopping Hermes llama-server.service ..."
-sudo systemctl stop llama-server.service || true
+sudo -n systemctl stop llama-server.service || true
 
 echo "[guard] waiting for port $PORT free + VRAM drained (<4GB) ..."
 for i in $(seq 1 120); do
