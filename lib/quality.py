@@ -104,7 +104,8 @@ def _make_evaluator(task: str, client, results_dir, sample: float | None):
     raise ValueError(f"Unknown eval task: {task}")
 
 
-def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = None) -> dict:
+def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = None,
+                      offload: dict | None = None) -> dict:
     tasks = get("quality.tasks", [])
     sample = get("quality.sample", None)
     think = get("quality.think", True)
@@ -116,7 +117,7 @@ def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = N
         print(f"[quality] Thinking disabled (/nothink injected)")
 
     if engine == "llama.cpp":
-        server_proc = start_llama_server(model_path)
+        server_proc = start_llama_server(model_path, **(offload or {}))
         port = get("llama_cpp.server_port", 8090)
         api_base = f"http://127.0.0.1:{port}/v1"
         model_name = Path(model_path).stem

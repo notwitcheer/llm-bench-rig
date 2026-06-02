@@ -6,6 +6,7 @@ from pathlib import Path
 
 from lib.config import load_config, get
 from lib.meta import extract_metadata, save_metadata
+from lib.offload import resolve_offload
 from lib.gpu import get_vram_used_mib
 from lib.speed_llama import run_llama_bench
 from lib.speed_vllm import run_vllm_bench
@@ -28,14 +29,18 @@ def run_benchmark(model_path: str, speed_only: bool = False, quality_only: bool 
     print(f"  Output: {out_dir}")
     print(f"{'='*60}\n")
 
+    offload = resolve_offload(slug, load_config())
+    if offload:
+        print(f"  Offload override: {offload}")
+
     progress = Progress(out_dir / "progress.json", model=slug)
 
     try:
         if not quality_only:
-            _run_speed(model_path, engine, meta, out_dir, progress)
+            _run_speed(model_path, engine, meta, out_dir, progress, offload)
 
         if not speed_only:
-            _run_quality(model_path, engine, meta, out_dir, progress)
+            _run_quality(model_path, engine, meta, out_dir, progress, offload)
 
         progress.done()
         print(f"\nBenchmark complete: {slug}")
@@ -46,7 +51,8 @@ def run_benchmark(model_path: str, speed_only: bool = False, quality_only: bool 
         print(f"\nBenchmark FAILED: {e}", file=sys.stderr)
         raise
 
-def _run_speed(model_path, engine, meta, out_dir, progress):
+def _run_speed(model_path, engine, meta, out_dir, progress, offload=None):
+    offload = offload or {}
     print("[speed] Measuring VRAM before load...")
     vram_before = get_vram_used_mib()
     progress.update("speed_init", 5)
@@ -54,7 +60,7 @@ def _run_speed(model_path, engine, meta, out_dir, progress):
     if engine == "llama.cpp":
         print("[speed] Running llama-bench...")
         progress.update("speed_llama_bench", 10)
-        speed_results = run_llama_bench(model_path)
+        speed_results = run_llama_bench(model_path, **offload)
     else:
         print("[speed] Running vLLM benchmarks...")
         progress.update("speed_vllm_bench", 10)
@@ -74,11 +80,11 @@ def _run_speed(model_path, engine, meta, out_dir, progress):
     print(f"[speed] Results written to {speed_file}")
     progress.update("speed_done", 40, partial=speed_results)
 
-def _run_quality(model_path, engine, meta, out_dir, progress):
+def _run_quality(model_path, engine, meta, out_dir, progress, offload=None):
     print("[quality] Starting eval harness...")
     progress.update("quality_init", 45)
 
-    quality_results = run_quality_bench(model_path, engine, results_dir=out_dir)
+    quality_results = run_quality_bench(model_path, engine, results_dir=out_dir, offload=offload or {})
 
     quality_file = out_dir / "quality.json"
     with open(quality_file, "w") as f:
