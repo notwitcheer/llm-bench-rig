@@ -54,3 +54,7 @@ agentic:
     - {slug: nemotron-cascade-2-30b, path: ~/.cache/huggingface/hub/<nemotron.gguf>}
     - {slug: qwen3-6-35b-a3b,        path: ~/.cache/huggingface/hub/<qwen35b.gguf>}
     - {slug: gemma-4-31b,            path: ~/.cache/huggingface/hub/<gemma4-31b.gguf>}
+
+# 5090 Treatment #1 — per-model MoE offload overrides (absent slug -> full VRAM, -ngl 99).
+# The gpt-oss-120b slug + tuned n_cpu_moe are filled in at runtime after load-testing (plan Task 8).
+offload: {}
