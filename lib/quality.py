@@ -5,6 +5,8 @@ import time
 from pathlib import Path
 
 from lib.config import get
+from lib.evals import (LLMClient, MMLUEval, ARCEval,  # noqa: E402
+                       HellaSwagEval, GSM8KEval, HumanEvalEval)
 
 EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval"}
 
@@ -71,15 +73,14 @@ def _wait_for_server(url: str, timeout: int, proc=None):
 
 def _run_evals(api_base: str, model_name: str, tasks: list[str],
                results_dir: Path | None, sample: float | None,
-               think: bool = True) -> dict:
-    from lib.evals import (LLMClient, MMLUEval, ARCEval,
-                           HellaSwagEval, GSM8KEval, HumanEvalEval)
-
+               think: bool = True, limit: int | None = None,
+               mmlu_limit: int | None = None) -> dict:
     results = {}
     with LLMClient(api_base, model_name, think=think) as client:
         for task in tasks:
             print(f"\n[quality] === {task} ===")
-            ev = _make_evaluator(task, client, results_dir, sample)
+            ev = _make_evaluator(task, client, results_dir, sample,
+                                 limit=limit, mmlu_limit=mmlu_limit)
             task_results = ev.evaluate()
             results[task] = {
                 "score": task_results["score"],
@@ -91,20 +92,18 @@ def _run_evals(api_base: str, model_name: str, tasks: list[str],
     return results
 
 
-def _make_evaluator(task: str, client, results_dir, sample: float | None):
-    from lib.evals import (MMLUEval, ARCEval, HellaSwagEval,
-                           GSM8KEval, HumanEvalEval)
-
+def _make_evaluator(task: str, client, results_dir, sample: float | None,
+                    limit: int | None = None, mmlu_limit: int | None = None):
     if task == "mmlu":
-        return MMLUEval(client=client, sample=sample, results_dir=results_dir)
+        return MMLUEval(client=client, sample=sample, limit=mmlu_limit, results_dir=results_dir)
     if task == "arc_challenge":
-        return ARCEval(client=client, results_dir=results_dir)
+        return ARCEval(client=client, limit=limit, results_dir=results_dir)
     if task == "hellaswag":
-        return HellaSwagEval(client=client, sample=sample, results_dir=results_dir)
+        return HellaSwagEval(client=client, sample=sample, limit=limit, results_dir=results_dir)
     if task == "gsm8k":
-        return GSM8KEval(client=client, results_dir=results_dir)
+        return GSM8KEval(client=client, limit=limit, results_dir=results_dir)
     if task == "humaneval":
-        return HumanEvalEval(client=client, results_dir=results_dir)
+        return HumanEvalEval(client=client, limit=limit, results_dir=results_dir)
     raise ValueError(f"Unknown eval task: {task}")
 
 
@@ -113,6 +112,8 @@ def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = N
     tasks = get("quality.tasks", [])
     sample = get("quality.sample", None)
     think = get("quality.think", True)
+    limit = get("quality.limit", None)
+    mmlu_limit = get("quality.mmlu_limit", None)
     server_proc = None
 
     if sample:
@@ -135,7 +136,8 @@ def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = N
         print(f"[quality] Skipping unknown tasks: {', '.join(unknown)}")
 
     try:
-        results = _run_evals(api_base, model_name, eval_tasks, results_dir, sample, think)
+        results = _run_evals(api_base, model_name, eval_tasks, results_dir, sample, think,
+                             limit=limit, mmlu_limit=mmlu_limit)
     finally:
         if server_proc:
             stop_llama_server(server_proc)
