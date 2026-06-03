@@ -40,3 +40,6 @@ Also consult `~/.hermes/vault/cadence/failures.md` for past misses to avoid repe
 Calibration: each of the three gold posts should score ~0.85+. A generic, hollow, or hype-y draft
 should score below 0.7 on `ev_plus` or `meta`. Keep each reason to one terse line. Emit exactly one
 JSON object — nothing after it.
+
+Score directly against the rubric and output ONLY the JSON. Do NOT produce extended reasoning before
+it (run this with thinking disabled) — a long analysis wastes the token budget and the JSON never lands.
