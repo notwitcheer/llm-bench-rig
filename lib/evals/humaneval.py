@@ -292,10 +292,11 @@ class HumanEvalEval:
 
             messages = _build_messages(prompt)
             response = self.client.chat(
-                # 4096: reasoning models emit long inline reasoning before the code;
-                # 1024 truncated the code mid-string (unterminated-string errors).
+                # No stop sequences: reasoning models reason INLINE and mention
+                # "def "/"class " mid-reasoning, so "\ndef " stops fire before the
+                # code is emitted (empty/truncated content). build_executable_program
+                # already trims trailing extras. 4096 covers long reasoning + code.
                 messages, max_tokens=4096,
-                stop=["\ndef ", "\nclass ", "\nif __name__"],
                 preserve_indent=True,
             )
 
