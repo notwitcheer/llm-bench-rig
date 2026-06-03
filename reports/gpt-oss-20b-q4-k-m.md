@@ -149,7 +149,7 @@ Custom generative evaluators built for this rig. No dependency on `lm-evaluation
 ## Reproduction
 
 ```bash
-# On capsule (192.168.1.9)
+# On capsule
 cd ~/benchmark-rig && source venv/bin/activate
 
 # Full benchmark (speed + quality)
