@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import tempfile
+import textwrap
 import time
 from pathlib import Path
 
@@ -31,7 +32,11 @@ def _build_messages(prompt: str) -> list[dict]:
 
 
 def _extract_completion(response: str, entry_point: str) -> str:
-    """Extract function body from model response."""
+    """Extract function body from model response.
+
+    Returns the raw extracted text (may be a full function def or just a body).
+    Does NOT strip the def line or re-indent — callers must handle both cases.
+    """
     text = response.strip()
 
     # Strip thinking tags
@@ -43,21 +48,6 @@ def _extract_completion(response: str, entry_point: str) -> str:
     m = re.search(r'```(?:python)?\s*\n(.*?)```', text, re.DOTALL)
     if m:
         text = m.group(1)
-
-    # If model re-output the full function, strip everything up to and
-    # including the def line
-    lines = text.split("\n")
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped.startswith("def ") and entry_point in stripped and stripped.endswith(":"):
-            text = "\n".join(lines[i + 1:])
-            break
-
-    # Ensure body is indented (concat with prompt expects indented body)
-    lines = text.split("\n")
-    first_nonblank = next((l for l in lines if l.strip()), "")
-    if first_nonblank and not first_nonblank.startswith((" ", "\t")):
-        text = "\n".join(("    " + line if line.strip() else line) for line in lines)
 
     return text
 
@@ -71,6 +61,146 @@ def _truncate_at_stop(text: str) -> str:
         if idx >= 0:
             text = text[:idx]
     return text
+
+
+def _is_full_function(text: str, entry_point: str) -> bool:
+    """Return True if *text* contains a complete definition of *entry_point*.
+
+    A complete definition means: a ``def <entry_point>(...):`` line (at any
+    indentation level, though typically at column 0) followed by at least one
+    indented body line.
+    """
+    lines = text.split("\n")
+    found_def = False
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("def ") and entry_point in stripped and stripped.endswith(":"):
+            # Check that there is at least one following indented line
+            for body_line in lines[i + 1:]:
+                if body_line.strip():  # first non-blank line after def
+                    if body_line.startswith((" ", "\t")):
+                        return True
+                    # Non-indented non-blank line right after def → not a proper body
+                    break
+    return False
+
+
+def _strip_main_block(text: str) -> str:
+    """Strip a trailing ``if __name__ == '__main__':`` block from *text*."""
+    # Find the last occurrence of a top-level if __name__ block
+    lines = text.split("\n")
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("if __name__") and "__main__" in stripped:
+            # Only strip if it's at the top level (no leading indent)
+            if not line.startswith((" ", "\t")):
+                return "\n".join(lines[:i]).rstrip()
+    return text
+
+
+def _extract_full_function(text: str, entry_point: str) -> str:
+    """Extract the complete function definition starting at *entry_point* from *text*.
+
+    Finds the ``def <entry_point>`` line and returns from there to the end of
+    the indented block (i.e. until a non-indented, non-blank line that is NOT
+    part of the function, or end of file).
+    """
+    lines = text.split("\n")
+    start = None
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("def ") and entry_point in stripped and stripped.endswith(":"):
+            start = i
+            break
+    if start is None:
+        return text
+
+    # Collect lines belonging to this function: the def line plus all
+    # continuation lines (indented lines, blank lines, decorator lines).
+    result = [lines[start]]
+    for line in lines[start + 1:]:
+        # Stop at the next top-level definition or statement (non-blank,
+        # non-indented) — but not at blank lines.
+        if line and not line.startswith((" ", "\t")):
+            break
+        result.append(line)
+
+    return "\n".join(result).rstrip()
+
+
+def build_executable_program(
+    prompt: str, raw_response: str, test_code: str, entry_point: str
+) -> str:
+    """Assemble the full Python program to be executed for one HumanEval task.
+
+    Handles two cases:
+
+    *Full-function output* (reasoning / chat models like gpt-oss):
+        The model emitted a complete ``def <entry_point>(...):`` with a body.
+        We use that function as-is (avoiding duplicate def + indentation clash
+        that the legacy path would produce) and assemble::
+
+            <full_function>
+
+            <test_code>
+            check(<entry_point>)
+
+    *Body-only output* (legacy completion models):
+        The model emitted only the indented body.  We preserve the existing
+        contract::
+
+            <prompt><indented_body>
+
+            <test_code>
+            check(<entry_point>)
+
+    Parameters
+    ----------
+    prompt:
+        The HumanEval task prompt (function signature + docstring, ending with
+        the ``def foo(...):`` line — no closing newline needed).
+    raw_response:
+        The raw string returned by the model.
+    test_code:
+        The ``check()`` function definition from the HumanEval dataset.
+    entry_point:
+        The name of the function to be implemented (e.g. ``"has_close_elements"``).
+
+    Returns
+    -------
+    str
+        A self-contained Python program ready to be written to a file and run.
+    """
+    extracted = _extract_completion(raw_response, entry_point)
+
+    if _is_full_function(extracted, entry_point):
+        # Full-function path: extract just the target function, strip any
+        # trailing __main__ block, then assemble without the prompt stub.
+        func_code = _extract_full_function(extracted, entry_point)
+        func_code = _strip_main_block(func_code)
+        # Prepend any imports from the prompt so the function has access to them
+        import_lines = [
+            line for line in prompt.splitlines()
+            if line.startswith("import ") or line.startswith("from ")
+        ]
+        header = "\n".join(import_lines)
+        if header:
+            full_code = header + "\n\n" + func_code + "\n\n" + test_code + f"\ncheck({entry_point})\n"
+        else:
+            full_code = func_code + "\n\n" + test_code + f"\ncheck({entry_point})\n"
+    else:
+        # Body-only (legacy) path: normalise indentation to 4 spaces, truncate
+        # at stop sequences, then concatenate with the prompt stub.
+        body = extracted
+        # Dedent to strip any common leading whitespace, then re-indent to 4.
+        body = textwrap.dedent(body)
+        lines = body.split("\n")
+        # Re-indent every non-blank line with 4 spaces
+        body = "\n".join(("    " + line if line.strip() else line) for line in lines)
+        body = _truncate_at_stop(body)
+        full_code = prompt + body + "\n\n" + test_code + f"\ncheck({entry_point})\n"
+
+    return full_code
 
 
 def _execute(code: str, timeout: int = 10) -> tuple[bool, str]:
@@ -131,10 +261,7 @@ class HumanEvalEval:
                 stop=["\ndef ", "\nclass ", "\nif __name__"],
             )
 
-            completion = _extract_completion(response, entry_point)
-            completion = _truncate_at_stop(completion)
-
-            full_code = prompt + completion + "\n\n" + test_code + f"\ncheck({entry_point})\n"
+            full_code = build_executable_program(prompt, response, test_code, entry_point)
 
             ok, err = _execute(full_code, timeout=self.exec_timeout)
             if ok:
