@@ -292,7 +292,9 @@ class HumanEvalEval:
 
             messages = _build_messages(prompt)
             response = self.client.chat(
-                messages, max_tokens=1024,
+                # 4096: reasoning models emit long inline reasoning before the code;
+                # 1024 truncated the code mid-string (unterminated-string errors).
+                messages, max_tokens=4096,
                 stop=["\ndef ", "\nclass ", "\nif __name__"],
                 preserve_indent=True,
             )
