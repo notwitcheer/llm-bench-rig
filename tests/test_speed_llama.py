@@ -43,3 +43,16 @@ def test_build_bench_command_cpu_moe_zero_is_included():
     cmd = build_bench_command("/m/model.gguf", n_cpu_moe=0)
     assert "--n-cpu-moe" in cmd
     assert cmd[cmd.index("--n-cpu-moe") + 1] == "0"
+
+FIXTURE_CPUMOE = Path(__file__).parent / "fixtures" / "llama-bench-cpumoe.txt"
+
+def test_parse_llama_bench_cpumoe_8col():
+    raw = FIXTURE_CPUMOE.read_text()
+    results = parse_llama_bench_output(raw)
+    assert results["pp512"]["tokens_per_sec"] == pytest.approx(447.70)
+    assert results["pp512"]["stddev"] == pytest.approx(80.55)
+    assert results["tg64"]["tokens_per_sec"] == pytest.approx(45.89)
+    assert results["tg64"]["stddev"] == pytest.approx(0.45)
+    assert results["model_size_gib"] == pytest.approx(59.02)
+    assert results["params"] == "116.83 B"
+    assert results["backend"] == "CUDA"
