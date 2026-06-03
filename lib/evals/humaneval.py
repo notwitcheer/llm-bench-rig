@@ -294,6 +294,7 @@ class HumanEvalEval:
             response = self.client.chat(
                 messages, max_tokens=1024,
                 stop=["\ndef ", "\nclass ", "\nif __name__"],
+                preserve_indent=True,
             )
 
             full_code = build_executable_program(prompt, response, test_code, entry_point)

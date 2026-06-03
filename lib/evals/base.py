@@ -3,6 +3,21 @@ import time
 import httpx
 
 
+def _strip_blank_edges(s: str) -> str:
+    """Strip leading/trailing blank lines and trailing whitespace per line.
+
+    Unlike str.strip(), this does NOT remove leading spaces from content lines,
+    so per-line indentation is preserved.  Used by LLMClient.chat() when
+    preserve_indent=True (e.g. HumanEval code bodies).
+    """
+    lines = s.split("\n")
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    while lines and not lines[-1].strip():
+        lines.pop()
+    return "\n".join(l.rstrip() for l in lines)
+
+
 class LLMClient:
     """Sync HTTP client for llama-server chat completions."""
 
@@ -14,7 +29,8 @@ class LLMClient:
         self._client = httpx.Client(timeout=timeout)
 
     def chat(self, messages: list[dict], max_tokens: int = 2048,
-             temperature: float = 0, stop: list[str] | None = None) -> str:
+             temperature: float = 0, stop: list[str] | None = None,
+             preserve_indent: bool = False) -> str:
         payload = {
             "model": self.model,
             "messages": messages,
@@ -25,14 +41,15 @@ class LLMClient:
             payload["chat_template_kwargs"] = {"enable_thinking": False}
         if stop:
             payload["stop"] = stop
+        _clean = _strip_blank_edges if preserve_indent else str.strip
         for attempt in range(3):
             try:
                 resp = self._client.post(self.url, json=payload)
                 resp.raise_for_status()
                 msg = resp.json()["choices"][0]["message"]
-                text = (msg.get("content") or "").strip()
+                text = _clean(msg.get("content") or "")
                 if not text:
-                    text = (msg.get("reasoning_content") or "").strip()
+                    text = _clean(msg.get("reasoning_content") or "")
                 return text
             except (httpx.HTTPError, KeyError, IndexError):
                 if attempt == 2:
