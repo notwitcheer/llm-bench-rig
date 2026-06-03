@@ -20,8 +20,14 @@ Also consult `~/.hermes/vault/cadence/failures.md` for past misses to avoid repe
 
 ## Rubric (score each 0.0–1.0)
 1. **ev_plus** — adds data, insight, or a mechanism; never just restates a headline.
-2. **sourced** — every number is sourced/reproducible; limitations and caveats flagged honestly.
-3. **finding** — a genuine, specific finding; NOT a template, copy-paste, or number-swap of another post.
+2. **sourced** (grounding — be STRICT) — every number, result, spec, size, speed, and named tool/fork
+   MUST trace to OUR VERIFIED FINDINGS (provided below) or a source the operator gave. Score LOW if the
+   draft: contradicts our findings (e.g. a tok/s or GB figure different from what we measured), or states
+   any specific number/name NOT in our findings (community-reported speeds, bandwidth figures, a fork or
+   quant we didn't test). An external citation link is NOT grounding. A confident wrong-but-cited number
+   is the worst failure — score it near 0. Honest caveats/limitations still required.
+3. **finding** — a genuine, specific finding from OUR measurement; NOT a literature summary, template,
+   copy-paste, or number-swap of another post.
 4. **voice** — thesis-first; single mid-long post; gold-standard register (lowercase-leaning,
    casual-but-precise); "X to Y" for ranges, "x" not "×", no "→"; `~~~` section breaks;
    emoji optional (do NOT penalise their absence).

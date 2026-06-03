@@ -14,7 +14,13 @@ from threshold import parse_judge_output, decide  # noqa: E402
 
 SKILL = open(f"{HERE}/SKILL.md").read()
 GOLD = open("/home/witcheer/.hermes/vault/cadence/gold-standard-posts.md").read()
-SYSTEM = SKILL + "\n\n=== GOLD STANDARD (calibration) ===\n" + GOLD
+# Our verified numbers — the judge needs these in-context to catch ungrounded/contradicting claims.
+try:
+    FINDINGS = open("/home/witcheer/.hermes/vault/findings/5090-treatments.md").read()
+except OSError:
+    FINDINGS = "(no findings file found)"
+SYSTEM = (SKILL + "\n\n=== GOLD STANDARD (calibration) ===\n" + GOLD
+          + "\n\n=== OUR VERIFIED FINDINGS (every number in the draft MUST match these) ===\n" + FINDINGS)
 
 
 def judge(draft: str) -> dict:

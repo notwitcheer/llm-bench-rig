@@ -28,10 +28,15 @@ Format modes: `x-thread`, `x-article`, `x-quote`, `tg-grimoire` (see references/
    head-to-head on the 5090 — NOT the REAP paper's numbers.) If our data is not in those files, STOP and
    say "i don't have verified data for <X> — give me the source or the numbers." Do not draft from memory.
 
-3. **Source every claim.** Every number/result/date/citation must trace to a source you actually read:
-   for OUR findings that is our report/vault (cite the repo/dataset); only use `web_search` (ddgs) for a
-   genuinely external topic the operator asks you to explain, and cite ONLY what you fetched. NEVER fabricate
-   a citation, an arxiv ID, or a statistic. If you cannot source a claim, cut it - do not invent one.
+3. **Source every claim — and for OUR models, ONLY our numbers.** If the post is about a model/result WE
+   benchmarked, EVERY quantitative claim (speed, VRAM, size, scores, quant) MUST be the number from our
+   report/findings. Do NOT pull in web/community/spec numbers or tool/fork names from `web_search` or memory
+   to "enrich" it — not to supplement, and NEVER to contradict our measurement. (Real failure to avoid:
+   writing "community reports 6-12 tok/s" when our report says 47; naming a "RotorQuant fork" not in our data;
+   citing a Q4_K_M 78GB build when we ran MXFP4 59GB.) If a number or mechanism isn't in our data, either
+   leave it out or ASK — the post is about OUR measurement, not a literature review. `web_search` is only for
+   a genuinely external topic the operator explicitly asks you to explain; cite ONLY what you fetched; never
+   fabricate a citation, arxiv ID, or statistic.
 
 4. **Add insight, not number-swaps** - lead with genuine findings (what is surprising/useful). The card
    carries the numbers; the copy adds context, comparison, the mechanism, practical takeaways.
