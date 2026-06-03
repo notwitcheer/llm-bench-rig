@@ -31,23 +31,45 @@ def _build_messages(prompt: str) -> list[dict]:
     ]
 
 
+def _strip_blank_lines(text: str) -> str:
+    """Strip leading and trailing blank lines while preserving per-line indentation.
+
+    Unlike str.strip(), this does NOT remove leading spaces from content lines.
+    """
+    lines = text.split("\n")
+    # Drop leading blank lines
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    # Drop trailing blank lines
+    while lines and not lines[-1].strip():
+        lines.pop()
+    return "\n".join(lines)
+
+
 def _extract_completion(response: str, entry_point: str) -> str:
     """Extract function body from model response.
 
     Returns the raw extracted text (may be a full function def or just a body).
     Does NOT strip the def line or re-indent — callers must handle both cases.
-    """
-    text = response.strip()
 
-    # Strip thinking tags
+    Critically, we preserve per-line leading indentation.  Only blank lines at
+    the very start/end of the response are removed (not leading spaces on
+    content lines) so that an already-correctly-indented body is not mangled.
+    """
+    # Strip only leading/trailing blank lines — NOT per-line leading whitespace.
+    text = _strip_blank_lines(response)
+
+    # Strip thinking tags (content after the closing tag may itself be indented)
     tag = "</think>"
     if tag in text:
-        text = text[text.rfind(tag) + len(tag):].strip()
+        text = _strip_blank_lines(text[text.rfind(tag) + len(tag):])
 
     # Extract from code block if present
     m = re.search(r'```(?:python)?\s*\n(.*?)```', text, re.DOTALL)
     if m:
         text = m.group(1)
+        # Only strip blank boundary lines inside the fence, not content indentation
+        text = _strip_blank_lines(text)
 
     return text
 
@@ -189,15 +211,28 @@ def build_executable_program(
         else:
             full_code = func_code + "\n\n" + test_code + f"\ncheck({entry_point})\n"
     else:
-        # Body-only (legacy) path: normalise indentation to 4 spaces, truncate
-        # at stop sequences, then concatenate with the prompt stub.
+        # Body-only path: the model returned a function body (no def line).
+        #
+        # Two sub-cases:
+        #   (a) Already-indented body — first non-blank line starts with
+        #       whitespace (e.g. gpt-oss returns a clean, correctly-indented
+        #       body at 4 spaces).  Use VERBATIM — do NOT dedent/re-indent,
+        #       which would destroy the relative indentation structure.
+        #   (b) Flush-left body — first non-blank line is at column 0 (legacy
+        #       completion models).  Uniformly add 4 spaces to every non-blank
+        #       line so the body is valid inside the def block.
         body = extracted
-        # Dedent to strip any common leading whitespace, then re-indent to 4.
-        body = textwrap.dedent(body)
-        lines = body.split("\n")
-        # Re-indent every non-blank line with 4 spaces
-        body = "\n".join(("    " + line if line.strip() else line) for line in lines)
-        body = _truncate_at_stop(body)
+        first_content_line = next((l for l in body.split("\n") if l.strip()), "")
+        if first_content_line and first_content_line[0] in (" ", "\t"):
+            # (a) Already indented — use as-is, just truncate stop sequences.
+            body = _truncate_at_stop(body)
+        else:
+            # (b) Flush-left — dedent any common prefix (defensive), then
+            # re-indent uniformly to 4 spaces.
+            body = textwrap.dedent(body)
+            lines = body.split("\n")
+            body = "\n".join(("    " + line if line.strip() else line) for line in lines)
+            body = _truncate_at_stop(body)
         full_code = prompt + body + "\n\n" + test_code + f"\ncheck({entry_point})\n"
 
     return full_code

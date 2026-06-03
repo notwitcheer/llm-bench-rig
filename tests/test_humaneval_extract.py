@@ -364,3 +364,38 @@ def test_extract_completion_strips_think_tags():
     result = _extract_completion(raw, "foo")
     assert "return 42" in result
     assert "ignore this" not in result
+
+
+# ---------------------------------------------------------------------------
+# Case 8: Real gpt-oss clean indented body (the actual bug regression test)
+# ---------------------------------------------------------------------------
+
+def test_real_gptoss_indented_body_assembles_clean():
+    """Real gpt-oss output: already-indented body must NOT have its indentation destroyed.
+
+    gpt-oss returns a clean body (no def line, no fence) where every line is
+    already indented correctly: top-level body at 4 spaces, nested at 8.
+    The old code stripped the leading whitespace from the first line via
+    response.strip(), then dedent + re-indent produced broken indentation.
+    """
+    prompt = ('from typing import List\n\n\n'
+              'def has_close_elements(numbers: List[float], threshold: float) -> bool:\n'
+              '    """ Check if any two numbers are closer than threshold. """\n')
+    body = ('    if threshold <= 0 or len(numbers) < 2:\n'
+            '        return False\n'
+            '    sorted_nums = sorted(numbers)\n'
+            '    for i in range(len(sorted_nums) - 1):\n'
+            '        if abs(sorted_nums[i + 1] - sorted_nums[i]) < threshold:\n'
+            '            return True\n'
+            '    return False')
+    test_code = ('def check(candidate):\n'
+                 '    assert candidate([1.0, 2.0, 3.0], 0.5) == False\n'
+                 '    assert candidate([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3) == True\n')
+
+    prog = build_executable_program(prompt, body, test_code, "has_close_elements")
+
+    # Must compile without IndentationError
+    compile(prog, "<t>", "exec")
+
+    # Must run correctly (check() assertions pass)
+    exec(prog, {})  # noqa: S102
