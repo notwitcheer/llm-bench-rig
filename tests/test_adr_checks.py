@@ -43,3 +43,10 @@ def test_think_recorded_catches_missing_save():
         "    meta['think'] = True\n"
     )
     assert c2.find_violations(bad, "fake.py")
+
+
+from tools.adr import run_all
+
+
+def test_run_all_clean_tree_returns_zero():
+    assert run_all.main() == 0
