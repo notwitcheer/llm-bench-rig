@@ -150,93 +150,77 @@ def _extract_full_function(text: str, entry_point: str) -> str:
     return "\n".join(result).rstrip()
 
 
+def _compiles(code: str) -> bool:
+    """Return True if *code* compiles. Uses compile() rather than ast.parse so
+    a misplaced ``return`` at module scope (not just IndentationError) is also
+    rejected."""
+    try:
+        compile(code, "<candidate>", "exec")
+        return True
+    except SyntaxError:
+        return False
+
+
 def build_executable_program(
     prompt: str, raw_response: str, test_code: str, entry_point: str
 ) -> str:
-    """Assemble the full Python program to be executed for one HumanEval task.
+    """Assemble the full Python program to execute for one HumanEval task.
 
-    Handles two cases:
-
-    *Full-function output* (reasoning / chat models like gpt-oss):
-        The model emitted a complete ``def <entry_point>(...):`` with a body.
-        We use that function as-is (avoiding duplicate def + indentation clash
-        that the legacy path would produce) and assemble::
-
-            <full_function>
-
-            <test_code>
-            check(<entry_point>)
-
-    *Body-only output* (legacy completion models):
-        The model emitted only the indented body.  We preserve the existing
-        contract::
-
-            <prompt><indented_body>
-
-            <test_code>
-            check(<entry_point>)
-
-    Parameters
-    ----------
-    prompt:
-        The HumanEval task prompt (function signature + docstring, ending with
-        the ``def foo(...):`` line — no closing newline needed).
-    raw_response:
-        The raw string returned by the model.
-    test_code:
-        The ``check()`` function definition from the HumanEval dataset.
-    entry_point:
-        The name of the function to be implemented (e.g. ``"has_close_elements"``).
-
-    Returns
-    -------
-    str
-        A self-contained Python program ready to be written to a file and run.
+    Models emit the solution in several indentation conventions: a full
+    function, an already-indented body, a relative flush-left body, or an
+    absolute body whose first line lost its indent (e.g. Nemotron-3, which
+    drops the leading 4 spaces on only the first statement while the rest stay
+    at absolute indentation).  Rather than guess the convention, generate each
+    plausible assembly and return the first that COMPILES.
     """
     extracted = _extract_completion(raw_response, entry_point)
+    tail = "\n\n" + test_code + "\ncheck(" + entry_point + ")\n"
 
+    candidates: list[str] = []
+
+    # Full-function output (reasoning / chat models): use verbatim, prepend the
+    # prompt imports, never re-indent.
     if _is_full_function(extracted, entry_point):
-        # Full-function path: extract just the target function, strip any
-        # trailing __main__ block, then assemble without the prompt stub.
-        func_code = _extract_full_function(extracted, entry_point)
-        func_code = _strip_main_block(func_code)
-        # Prepend any imports from the prompt so the function has access to them
+        func_code = _strip_main_block(_extract_full_function(extracted, entry_point))
         import_lines = [
             line for line in prompt.splitlines()
             if line.startswith("import ") or line.startswith("from ")
         ]
         header = "\n".join(import_lines)
-        if header:
-            full_code = header + "\n\n" + func_code + "\n\n" + test_code + f"\ncheck({entry_point})\n"
-        else:
-            full_code = func_code + "\n\n" + test_code + f"\ncheck({entry_point})\n"
-    else:
-        # Body-only path: the model returned a function body (no def line).
-        #
-        # Two sub-cases:
-        #   (a) Already-indented body — first non-blank line starts with
-        #       whitespace (e.g. gpt-oss returns a clean, correctly-indented
-        #       body at 4 spaces).  Use VERBATIM — do NOT dedent/re-indent,
-        #       which would destroy the relative indentation structure.
-        #   (b) Flush-left body — first non-blank line is at column 0 (legacy
-        #       completion models).  Uniformly add 4 spaces to every non-blank
-        #       line so the body is valid inside the def block.
-        body = extracted
-        first_content_line = next((l for l in body.split("\n") if l.strip()), "")
-        if first_content_line and first_content_line[0] in (" ", "\t"):
-            # (a) Already indented — use as-is, just truncate stop sequences.
-            body = _truncate_at_stop(body)
-        else:
-            # (b) Flush-left — dedent any common prefix (defensive), then
-            # re-indent uniformly to 4 spaces.
-            body = textwrap.dedent(body)
-            lines = body.split("\n")
-            body = "\n".join(("    " + line if line.strip() else line) for line in lines)
-            body = _truncate_at_stop(body)
-        full_code = prompt + body + "\n\n" + test_code + f"\ncheck({entry_point})\n"
+        func_block = (header + "\n\n" + func_code) if header else func_code
+        candidates.append(func_block + tail)
 
-    return full_code
+    body = _truncate_at_stop(extracted)
 
+    # (a) Already at correct absolute indentation: verbatim.
+    candidates.append(prompt + body + tail)
+
+    # (b) Relative flush-left: every line relative to column 0 -> indent +4.
+    dedented = textwrap.dedent(body)
+    relative = "\n".join(
+        ("    " + line if line.strip() else line)
+        for line in dedented.split("\n")
+    )
+    candidates.append(prompt + relative + tail)
+
+    # (c) Absolute, first line dropped (Nemotron-3): later lines already at
+    #     absolute indentation; bump only lines below the 4-space body base up
+    #     to it, preserving deeper nesting.
+    absolute = "\n".join(
+        ("    " + line.lstrip()
+         if line.strip() and (len(line) - len(line.lstrip())) < 4
+         else line)
+        for line in body.split("\n")
+    )
+    candidates.append(prompt + absolute + tail)
+
+    for candidate in candidates:
+        if _compiles(candidate):
+            return candidate
+
+    # Nothing compiled — return the relative assembly so the executor surfaces a
+    # real error instead of this function raising.
+    return candidates[-1]
 
 def _execute(code: str, timeout: int = 10) -> tuple[bool, str]:
     """Run code in a subprocess. Returns (passed, error_message)."""

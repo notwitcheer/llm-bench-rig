@@ -399,3 +399,45 @@ def test_real_gptoss_indented_body_assembles_clean():
 
     # Must run correctly (check() assertions pass)
     exec(prog, {})  # noqa: S102
+
+
+# ---------------------------------------------------------------------------
+# Case 9: Absolute-indentation body with first line dropped (Nemotron-3 style)
+# ---------------------------------------------------------------------------
+
+def test_body_only_absolute_first_line_dropped_compiles():
+    """Nemotron-3-Nano style: the first body statement is at column 0, but every
+    subsequent line is already at its absolute 4-space-based indentation.
+
+    The model drops the leading indent on ONLY the first line. Uniform +4
+    re-indentation then over-indents lines 2+ (a 4-space line becomes 8) ->
+    IndentationError: unexpected indent. The assembler must align the first
+    line to the body base WITHOUT shifting the already-correct lines.
+    """
+    raw_response = (
+        "numbers.sort()\n"
+        "    for i in range(len(numbers) - 1):\n"
+        "        if numbers[i + 1] - numbers[i] < threshold:\n"
+        "            return True\n"
+        "    return False"
+    )
+
+    prog = build_executable_program(PROMPT_HCE, raw_response, TEST_HCE, ENTRY_HCE)
+
+    compile(prog, "<test>", "exec")
+    assert "def has_close_elements" in prog
+    assert "def check" in prog
+
+
+def test_body_only_absolute_first_line_dropped_executes():
+    """The Nemotron-style assembled program runs and passes check() (correct algo)."""
+    raw_response = (
+        "numbers.sort()\n"
+        "    for i in range(len(numbers) - 1):\n"
+        "        if numbers[i + 1] - numbers[i] < threshold:\n"
+        "            return True\n"
+        "    return False"
+    )
+
+    prog = build_executable_program(PROMPT_HCE, raw_response, TEST_HCE, ENTRY_HCE)
+    exec(compile(prog, "<test>", "exec"), {})
