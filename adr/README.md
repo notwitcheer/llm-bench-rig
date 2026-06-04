@@ -26,5 +26,5 @@ A decision is not "done" until it is documented and (where possible) guarded.
 
 ## Running the checks
 
-`python -m tools.adr.run_all` (also runs automatically on `git commit` via
-pre-commit). Setup: `pip install -r requirements-dev.txt && pre-commit install`.
+`python3 -m tools.adr.run_all` (also runs automatically on `git commit` via
+pre-commit). Setup: `python3 -m pip install -r requirements-dev.txt && pre-commit install`.
