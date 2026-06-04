@@ -1,4 +1,4 @@
-# Benchmark Report: gemma-4-31B-it (Q6_K)
+# Benchmark Report: gemma-4-12b-it (Q6_K)
 
 **Date:** 2026-06-04  
 **Author:** WITCHEER  
@@ -10,10 +10,10 @@
 
 | Field | Value |
 |-------|-------|
-| Model | gemma-4-31B-it |
-| Parameters | 30.70 B (dense) |
+| Model | gemma-4-12b-it |
+| Parameters | 11.91 B (dense) |
 | Quantization | Q6_K |
-| File size | 23.47 GiB |
+| File size | 9.11 GiB |
 | Engine | llama.cpp (CUDA 12.8 (patched)) |
 
 ## Hardware
@@ -36,20 +36,20 @@ All benchmarks use generative evaluation via llama-server chat completions. Mult
 
 | Benchmark | Score | Metric |
 |-----------|------:|--------|
-| **MMLU** | **87.82%** | accuracy |
-| **ARC-Challenge** | **97.61%** | accuracy |
-| **HellaSwag** | **91.95%** | accuracy |
-| **HumanEval** | **96.34%** | pass@1 |
-| **GSM8K** | **97.50%** | exact_match |
+| **MMLU** | **78.86%** | accuracy |
+| **ARC-Challenge** | **94.03%** | accuracy |
+| **HellaSwag** | **81.62%** | accuracy |
+| **HumanEval** | **87.20%** | pass@1 |
+| **GSM8K** | **96.36%** | exact_match |
 
 ### MMLU Breakdown by Category
 
 | Category | Score | Correct / Total |
 |----------|------:|----------------:|
-| Stem | 87.52% | 1,319 / 1,507 |
-| Humanities | 90.01% | 1,424 / 1,582 |
-| Social Sciences | 92.86% | 1,535 / 1,653 |
-| Other | 82.80% | 1,878 / 2,268 |
+| Stem | 77.84% | 1,173 / 1,507 |
+| Humanities | 77.81% | 1,231 / 1,582 |
+| Social Sciences | 88.57% | 1,464 / 1,653 |
+| Other | 73.19% | 1,660 / 2,268 |
 
 *Sampled at 50% (seed 42)*
 
@@ -63,18 +63,18 @@ Measured with `llama-bench`. All layers GPU-offloaded (`-ngl 99`).
 
 | Context Length | Speed | +/-sigma |
 |---------------:|------:|---------:|
-| 128 | 2,509 | 127.0 |
-| 512 | 2,939 | 25.6 |
-| 2048 | 2,752 | 1.5 |
-| 4096 | 2,660 | 1.9 |
-| 8192 | 2,525 | 1.3 |
-| 16384 | 2,325 | 1.6 |
+| 128 | 5,099 | 452.9 |
+| 512 | 7,160 | 149.1 |
+| 2048 | 6,788 | 10.4 |
+| 4096 | 6,605 | 1.8 |
+| 8192 | 6,359 | 5.5 |
+| 16384 | 5,846 | 5.2 |
 
 ### Generation (tokens/s)
 
 | Metric | Speed | +/-sigma |
 |--------|------:|---------:|
-| tg128 | 53.0 | 0.0 |
+| tg128 | 122.3 | 0.2 |
 
 ---
 
@@ -94,4 +94,4 @@ Custom generative evaluators built for this rig. All benchmarks run through llam
 
 ---
 
-*Benchmarked by WITCHEER on the RTX 5090 Benchmark Rig. Source: [github.com/notwitcheer/llm-bench-rig/blob/main/reports/gemma-4-31b-it-q6-k.md](https://github.com/notwitcheer/llm-bench-rig/blob/main/reports/gemma-4-31b-it-q6-k.md). Dataset: [huggingface.co/datasets/witcheer/rtx-5090-benchmarks/blob/main/reports/gemma-4-31b-it-q6-k.md](https://huggingface.co/datasets/witcheer/rtx-5090-benchmarks/blob/main/reports/gemma-4-31b-it-q6-k.md).*
+*Benchmarked by WITCHEER on the RTX 5090 Benchmark Rig. Source: [github.com/notwitcheer/llm-bench-rig/blob/main/reports/gemma-4-12b-it-q6-k.md](https://github.com/notwitcheer/llm-bench-rig/blob/main/reports/gemma-4-12b-it-q6-k.md). Dataset: [huggingface.co/datasets/witcheer/rtx-5090-benchmarks/blob/main/reports/gemma-4-12b-it-q6-k.md](https://huggingface.co/datasets/witcheer/rtx-5090-benchmarks/blob/main/reports/gemma-4-12b-it-q6-k.md).*

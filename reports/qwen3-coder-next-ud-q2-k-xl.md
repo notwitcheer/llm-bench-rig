@@ -1,6 +1,6 @@
 # Benchmark Report: Qwen3-Coder-Next (UD-Q2_K_XL)
 
-**Date:** 2026-05-29  
+**Date:** 2026-06-04  
 **Author:** WITCHEER  
 **Platform:** NVIDIA GeForce RTX 5090 Benchmark Rig (capsule)  
 
@@ -39,7 +39,7 @@ All benchmarks use generative evaluation via llama-server chat completions. Mult
 | **MMLU** | **83.69%** | accuracy |
 | **ARC-Challenge** | **95.99%** | accuracy |
 | **HellaSwag** | **89.32%** | accuracy |
-| **HumanEval** | **10.37%** | pass@1 |
+| **HumanEval** | **93.29%** | pass@1 |
 | **GSM8K** | **95.98%** | exact_match |
 
 ### MMLU Breakdown by Category
@@ -63,20 +63,18 @@ Measured with `llama-bench`. All layers GPU-offloaded (`-ngl 99`).
 
 | Context Length | Speed | +/-sigma |
 |---------------:|------:|---------:|
-| 128 | 2,378 | 29.9 |
-| 512 | 4,433 | 39.1 |
-| 2048 | 4,417 | 17.8 |
-| 4096 | 4,372 | 6.7 |
-| 8192 | 4,254 | 18.4 |
-| 16384 | 4,022 | 7.2 |
-| 32768 | 3,562 | 2.1 |
-| 65536 | 2,909 | 2.5 |
+| 128 | 2,387 | 29.0 |
+| 512 | 4,439 | 37.6 |
+| 2048 | 4,432 | 21.0 |
+| 4096 | 4,369 | 10.4 |
+| 8192 | 4,275 | 21.3 |
+| 16384 | 4,024 | 9.7 |
 
 ### Generation (tokens/s)
 
 | Metric | Speed | +/-sigma |
 |--------|------:|---------:|
-| tg128 | 224.6 | 1.7 |
+| tg128 | 224.7 | 1.5 |
 
 ---
 

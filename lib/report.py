@@ -97,6 +97,11 @@ def _build_context(data: dict, slug: str = "") -> dict:
     pp512 = speed.get("pp512", {}).get("tokens_per_sec", 0)
     tg128 = speed.get("tg128", {}).get("tokens_per_sec", 0)
 
+    # Peak VRAM (weights + KV) sampled mid-run. Guard against the pre-_VramSampler
+    # blank reading (~2 MiB) so the card shows "?" rather than 0.0 for stale data.
+    vram_peak_mib = speed.get("vram_peak_mib", 0)
+    vram_gib = round(vram_peak_mib / 1024, 1) if vram_peak_mib > 100 else "?"
+
     # Quality sampling info
     sample_ratio = config.get("quality", {}).get("sample")
     think_enabled = config.get("quality", {}).get("think", False)
@@ -109,6 +114,7 @@ def _build_context(data: dict, slug: str = "") -> dict:
         "params": params,
         "quant": quant,
         "size_gib": size_gib,
+        "vram_gib": vram_gib,
         "engine": engine,
         "backend": speed.get("backend", "CUDA"),
         "date": date.today().isoformat(),
