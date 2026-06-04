@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: adr-checks
+        name: ADR enforced decisions
+        entry: python3 -m tools.adr.run_all
+        language: system
+        pass_filenames: false
+        always_run: true
