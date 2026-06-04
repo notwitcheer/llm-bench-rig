@@ -228,7 +228,53 @@ def export_leaderboard():
     _render_card_png(card_html, results_dir / "card-leaderboard.png")
 
 
-def _render_card_png(html_path: Path, png_path: Path):
+def export_quality_leaderboard():
+    """Quality leaderboard split by think mode (reasoning ON vs OFF — comparing
+    across the two is invalid). Prints a ranked text table per group and renders a
+    gold-crimson card. Unknown-think results are surfaced, never silently dropped."""
+    from lib.board import build_quality_board, QUALITY_TASKS
+
+    load_config()
+    results_dir = Path(get("results_dir", "./results"))
+    hardware = get("hardware", {})
+    board = build_quality_board(results_dir)
+
+    short = {"mmlu": "MMLU", "arc_challenge": "ARC", "hellaswag": "Hella",
+             "humaneval": "HEval", "gsm8k": "GSM8K"}
+
+    def _fmt(x):
+        return f"{x:.1f}" if isinstance(x, (int, float)) else "  -  "
+
+    for title, key in (("THINKING OFF (non-reasoning)", "off"),
+                       ("THINKING ON (reasoning)", "on")):
+        rows = board[key]
+        print(f"\n=== {title} — {len(rows)} models ===")
+        header = f"{'#':>2}  {'model':<40} {'q_avg':>6}  " + "  ".join(f"{short[t]:>6}" for t in QUALITY_TASKS)
+        print(header)
+        for i, e in enumerate(rows, 1):
+            cells = "  ".join(f"{_fmt(e['scores'][t]):>6}" for t in QUALITY_TASKS)
+            print(f"{i:>2}  {e['slug']:<40} {e['q_avg']:>6.2f}  {cells}")
+    if board["unknown"]:
+        print(f"\n!! UNKNOWN think mode (excluded from board): "
+              + ", ".join(e["slug"] for e in board["unknown"]))
+
+    env = Environment(loader=FileSystemLoader("templates"))
+    ctx = {
+        "off": board["off"],
+        "on": board["on"],
+        "tasks": list(QUALITY_TASKS),
+        "task_labels": short,
+        "hardware": hardware,
+        "date": date.today().isoformat(),
+    }
+    tmpl = env.get_template("card-quality-leaderboard.html")
+    card_html = results_dir / "card-quality-leaderboard.html"
+    card_html.write_text(tmpl.render(**ctx))
+    print(f"\nQuality leaderboard card: {card_html}")
+    _render_card_png(card_html, results_dir / "card-quality-leaderboard.png", full_page=True)
+
+
+def _render_card_png(html_path: Path, png_path: Path, full_page: bool = False):
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -240,20 +286,22 @@ def _render_card_png(html_path: Path, png_path: Path):
         page = browser.new_page(viewport={"width": 1200, "height": 675})
         page.goto(f"file://{html_path.resolve()}")
         page.wait_for_timeout(1000)
-        page.screenshot(path=str(png_path))
+        page.screenshot(path=str(png_path), full_page=full_page)
         print(f"Card PNG: {png_path}")
         page.close()
         browser.close()
 
 def main():
     parser = argparse.ArgumentParser(description="Export benchmark results")
-    parser.add_argument("target", help="Model slug, 'compare', or 'leaderboard'")
+    parser.add_argument("target", help="Model slug, 'compare', 'leaderboard', or 'quality-leaderboard'")
     args = parser.parse_args()
 
     if args.target == "compare":
         export_comparison()
     elif args.target == "leaderboard":
         export_leaderboard()
+    elif args.target in ("quality-leaderboard", "quality-board"):
+        export_quality_leaderboard()
     elif args.target.startswith("report:"):
         from lib.report import generate_report
         slug = args.target.split(":", 1)[1]

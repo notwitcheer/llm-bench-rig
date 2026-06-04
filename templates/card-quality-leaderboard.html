@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #0d0906; --gold: #e8c44a; --text: #f5e6d0;
+    --crimson: #e06060; --grid: #3a2f25; --mute: #8a7a64;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px; background: var(--bg); color: var(--text);
+    font-family: "Inter", -apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card { padding: 56px 64px 40px; }
+  .topbar { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
+  .tick { width: 54px; height: 6px; background: var(--crimson); border-radius: 3px; }
+  h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
+  .sub { font-size: 16px; color: var(--gold); margin: 10px 0 2px; font-weight: 600; }
+  .machine { font-size: 13.5px; color: var(--mute); margin-bottom: 30px; }
+
+  .group { margin-bottom: 34px; }
+  .group-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px;
+    border-bottom: 1px solid var(--grid); padding-bottom: 10px; }
+  .group-title { font-size: 21px; font-weight: 700; color: var(--text); }
+  .group-tag { font-size: 13px; color: var(--mute); }
+  .group-count { margin-left: auto; font-size: 13px; color: var(--mute); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 12px; font-weight: 600; color: var(--mute); text-align: right;
+    padding: 4px 8px 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  th.l { text-align: left; }
+  td { font-size: 15px; padding: 9px 8px; border-bottom: 1px solid rgba(58,47,37,0.5); }
+  td.rank { color: var(--mute); font-variant-numeric: tabular-nums; width: 34px; }
+  td.name { font-weight: 600; color: var(--text); }
+  .quant { color: var(--mute); font-weight: 400; font-size: 13px; }
+  td.q { text-align: right; color: var(--gold); font-weight: 800; font-size: 18px;
+    font-variant-numeric: tabular-nums; width: 86px; }
+  td.s { text-align: right; color: var(--text); font-variant-numeric: tabular-nums;
+    width: 78px; opacity: 0.82; }
+  th.heval, td.heval { color: var(--crimson); }
+  td.heval { opacity: 1; font-weight: 600; }
+  tr.top td.name { color: var(--gold); }
+  tr.top td.rank { color: var(--crimson); font-weight: 700; }
+
+  .footer { display: flex; justify-content: space-between; align-items: center;
+    margin-top: 26px; font-size: 13px; color: var(--mute); }
+  .brand { color: var(--gold); font-weight: 700; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="topbar"><div class="tick"></div><h1>QUALITY LEADERBOARD</h1></div>
+  <div class="sub">Split by reasoning mode — comparing think-ON to think-OFF is apples-to-oranges</div>
+  <div class="machine">{{ hardware.gpu }} · {{ hardware.vram }} · q_avg = mean(MMLU, ARC, HellaSwag, HumanEval, GSM8K) · {{ date }}</div>
+
+  {% macro group(rows, title, tag) %}
+  <div class="group">
+    <div class="group-head">
+      <span class="group-title">{{ title }}</span>
+      <span class="group-tag">{{ tag }}</span>
+      <span class="group-count">{{ rows|length }} models</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="l" style="width:34px"></th>
+          <th class="l">Model</th>
+          <th>q_avg</th>
+          {% for t in tasks %}<th class="{{ 'heval' if t == 'humaneval' else '' }}">{{ task_labels[t] }}</th>{% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in rows %}
+        <tr class="{{ 'top' if loop.first }}">
+          <td class="rank">{{ loop.index }}</td>
+          <td class="name">{{ e.name }}{% if e.quant and e.quant != "unknown" %}<span class="quant"> · {{ e.quant }}</span>{% endif %}</td>
+          <td class="q">{{ "%.1f"|format(e.q_avg) }}</td>
+          {% for t in tasks %}
+          <td class="s {{ 'heval' if t == 'humaneval' else '' }}">{{ ("%.1f"|format(e.scores[t])) if e.scores[t] is not none else "—" }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endmacro %}
+
+  {{ group(off, "Thinking OFF", "non-reasoning · direct answer") }}
+  {{ group(on, "Thinking ON", "reasoning · extended chain-of-thought") }}
+
+  <div class="footer">
+    <span>HumanEval corrected on the fixed harness · {{ (off|length) + (on|length) }} models</span>
+    <span class="brand">WITCHEER</span>
+    <span>RTX 5090 · llama.cpp</span>
+  </div>
+</div>
+</body>
+</html>

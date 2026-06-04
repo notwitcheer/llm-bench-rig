@@ -2,6 +2,7 @@
 import argparse
 import json
 import sys
+import threading
 from pathlib import Path
 
 from lib.config import load_config, get
@@ -13,12 +14,43 @@ from lib.speed_vllm import run_vllm_bench
 from lib.quality import run_quality_bench
 from lib.progress import Progress
 
+
+class _VramSampler(threading.Thread):
+    """Background poller that records peak VRAM while a benchmark runs.
+
+    llama-bench loads and UNLOADS the model around each sub-test, so a single
+    before/after reading catches an empty GPU (~2 MiB). We must sample *during*
+    the run to see real usage and capture the true peak (weights + KV at the
+    longest context tested)."""
+
+    def __init__(self, interval: float = 0.5):
+        super().__init__(daemon=True)
+        self.interval = interval
+        self._stop = threading.Event()
+        self.peak_mib = 0
+
+    def run(self):
+        while not self._stop.is_set():
+            try:
+                self.peak_mib = max(self.peak_mib, get_vram_used_mib())
+            except Exception:
+                pass
+            self._stop.wait(self.interval)
+
+    def stop(self) -> int:
+        self._stop.set()
+        self.join(timeout=3)
+        return self.peak_mib
+
 def run_benchmark(model_path: str, speed_only: bool = False, quality_only: bool = False):
     load_config()
     results_dir = Path(get("results_dir", "./results"))
     model_path = str(Path(model_path).expanduser())
 
     meta = extract_metadata(Path(model_path))
+    # Record the quality think mode so the result is self-describing (the quality
+    # leaderboard splits ON vs OFF — comparing reasoning to non-reasoning is invalid).
+    meta["think"] = bool(get("quality.think", True))
     out_dir = save_metadata(meta, results_dir)
     slug = meta["slug"]
     engine = meta["engine"]
@@ -60,19 +92,28 @@ def _run_speed(model_path, engine, meta, out_dir, progress, offload=None):
     if engine == "llama.cpp":
         print("[speed] Running llama-bench...")
         progress.update("speed_llama_bench", 10)
-        speed_results = run_llama_bench(model_path, **offload)
+        sampler = _VramSampler()
+        sampler.start()
+        try:
+            speed_results = run_llama_bench(model_path, **offload)
+        finally:
+            vram_peak = sampler.stop()  # peak captured DURING the run
     else:
         # offload is llama.cpp-specific; vLLM manages layers internally
         print("[speed] Running vLLM benchmarks...")
         progress.update("speed_vllm_bench", 10)
         speed_results = run_vllm_bench()
+        vram_peak = get_vram_used_mib()  # vLLM server is still resident here
 
     print("[speed] Measuring VRAM after inference...")
     vram_after = get_vram_used_mib()
 
+    # vram_before = empty baseline; vram_peak = real peak sampled mid-run.
+    # llama-bench's load/unload cycling prevents a clean steady-state "idle"
+    # read, so report peak as the headline VRAM figure.
     speed_results["vram_before_mib"] = vram_before
-    speed_results["vram_idle_mib"] = vram_after
-    speed_results["vram_peak_mib"] = vram_after
+    speed_results["vram_peak_mib"] = max(vram_peak, vram_after)
+    speed_results["vram_idle_mib"] = speed_results["vram_peak_mib"]
     speed_results["engine"] = engine
 
     speed_file = out_dir / "speed.json"
