@@ -48,11 +48,11 @@ def main():
         pred = extract_gsm8k_answer(gen)
         ok = bool(pred is not None and pred == gold)
         correct += ok
-        rows.append({"gold": gold, "pred": pred, "ok": ok})
+        rows.append({"gold": gold, "pred": pred, "ok": ok, "gen": gen[:700]})
 
     acc = round(100 * correct / len(ds), 2)
     json.dump({"base": a.base, "adapter": a.adapter, "n": len(ds), "accuracy": acc,
-               "rows": rows[:20]}, open(a.out, "w"), indent=2)
+               "rows": rows}, open(a.out, "w"), indent=2)
     print(f"GSM8K acc = {acc}%  ({correct}/{len(ds)})  adapter={a.adapter}")
 
 
