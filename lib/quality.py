@@ -127,8 +127,10 @@ def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = N
         api_base = f"http://127.0.0.1:{port}/v1"
         model_name = Path(model_path).stem
     else:
+        from lib.speed_vllm import get_vllm_models
         api_base = get("vllm.api_base")
-        model_name = Path(model_path).name
+        served = get_vllm_models(api_base)
+        model_name = served[0] if served else Path(model_path).name
 
     eval_tasks = [t for t in tasks if t in EVAL_REGISTRY]
     unknown = [t for t in tasks if t not in EVAL_REGISTRY]
