@@ -1,56 +1,77 @@
+import json as _json
 import time
+
 import httpx
+
 from lib.config import get
 
-def _generate_prompt_tokens(n_tokens: int) -> str:
-    word = "hello "
-    return (word * n_tokens)[:n_tokens * 6]
 
-def measure_completion(base_url: str, model: str, prompt: str, max_tokens: int) -> dict:
-    start = time.perf_counter()
-    first_token_time = None
-
-    with httpx.Client(timeout=300) as client:
-        response = client.post(
-            f"{base_url}/completions",
-            json={
-                "model": model,
-                "prompt": prompt,
-                "max_tokens": max_tokens,
-                "temperature": 0,
-                "stream": True,
-            },
-        )
-        response.raise_for_status()
-
-        total_tokens = 0
-        for line in response.iter_lines():
-            if not line.startswith("data: "):
-                continue
-            if line.strip() == "data: [DONE]":
-                break
-            if first_token_time is None:
-                first_token_time = time.perf_counter()
-            total_tokens += 1
-
-    end = time.perf_counter()
-    elapsed = end - start
-    ttft = (first_token_time - start) * 1000 if first_token_time else None
-
+def prefill_decode_tps(prompt_tokens, ttft_s, output_tokens, total_s):
+    """Prefill tok/s = prompt tokens over time-to-first-token; decode tok/s = output tokens over the rest.
+    Matches llama-bench's pp{N}/tg{N} semantics so vLLM and llama.cpp are comparable."""
+    decode_s = max(total_s - ttft_s, 1e-6)
     return {
-        "tokens_generated": total_tokens,
-        "elapsed_sec": round(elapsed, 3),
-        "tokens_per_sec": round(total_tokens / elapsed, 2) if elapsed > 0 else 0,
-        "ttft_ms": round(ttft, 1) if ttft else None,
+        "prefill_tps": round(prompt_tokens / ttft_s, 2) if ttft_s else None,
+        "decode_tps": round(output_tokens / decode_s, 2),
     }
 
-def get_vllm_models(base_url: str) -> list[str]:
+
+def _root(base_url):
+    return base_url.rstrip("/").removesuffix("/v1")
+
+
+def exact_token_prompt(base_url, model, n_tokens):
+    """Build a prompt of exactly n_tokens via vLLM /tokenize+/detokenize (parity with llama-bench pp{N})."""
+    seed = "the quick brown fox jumps over the lazy dog " * (n_tokens // 6 + 2)
+    root = _root(base_url)
+    with httpx.Client(timeout=30) as c:
+        toks = c.post(f"{root}/tokenize", json={"model": model, "prompt": seed}).json()["tokens"]
+        ids = toks[:n_tokens]
+        return c.post(f"{root}/detokenize", json={"model": model, "tokens": ids}).json()["prompt"]
+
+
+def measure_completion(base_url, model, prompt, max_tokens):
+    """Streaming completion; returns prompt_tokens, output_tokens, ttft_s, total_s (usage-accurate)."""
+    t0 = time.perf_counter()
+    first = None
+    prompt_tokens = output_tokens = 0
+    with httpx.Client(timeout=300) as client:
+        with client.stream("POST", f"{base_url.rstrip('/')}/completions", json={
+            "model": model, "prompt": prompt, "max_tokens": max_tokens, "temperature": 0,
+            "stream": True, "stream_options": {"include_usage": True},
+        }) as response:
+            response.raise_for_status()
+            for line in response.iter_lines():
+                if not line.startswith("data: "):
+                    continue
+                payload = line[6:].strip()
+                if payload == "[DONE]":
+                    break
+                d = _json.loads(payload)
+                if d.get("choices") and d["choices"][0].get("text"):
+                    if first is None:
+                        first = time.perf_counter()
+                    output_tokens += 1
+                if d.get("usage"):
+                    prompt_tokens = d["usage"].get("prompt_tokens", prompt_tokens)
+                    output_tokens = d["usage"].get("completion_tokens", output_tokens)
+    end = time.perf_counter()
+    return {
+        "prompt_tokens": prompt_tokens,
+        "output_tokens": output_tokens,
+        "ttft_s": (first - t0) if first else (end - t0),
+        "total_s": end - t0,
+    }
+
+
+def get_vllm_models(base_url):
     with httpx.Client(timeout=10) as client:
-        resp = client.get(f"{base_url}/models")
+        resp = client.get(f"{base_url.rstrip('/')}/models")
         resp.raise_for_status()
         return [m["id"] for m in resp.json()["data"]]
 
-def run_vllm_bench(model: str = None) -> dict:
+
+def run_vllm_bench(model=None):
     base_url = get("vllm.api_base")
     if model is None:
         models = get_vllm_models(base_url)
@@ -62,21 +83,23 @@ def run_vllm_bench(model: str = None) -> dict:
     gen_length = get("speed.generation_length", 128)
     results = {}
 
+    # prefill: exact-token prompt, 1 output token -> prefill_tps = prompt_tokens / ttft
     for cl in ctx_lengths:
-        prompt = _generate_prompt_tokens(cl)
-        measurement = measure_completion(base_url, model, prompt, max_tokens=1)
+        prompt = exact_token_prompt(base_url, model, cl)
+        m = measure_completion(base_url, model, prompt, max_tokens=1)
+        tps = prefill_decode_tps(m["prompt_tokens"], m["ttft_s"], m["output_tokens"], m["total_s"])
         results[f"pp{cl}"] = {
-            "tokens_per_sec": measurement["tokens_per_sec"],
-            "ttft_ms": measurement["ttft_ms"],
+            "tokens_per_sec": tps["prefill_tps"],
+            "prompt_tokens": m["prompt_tokens"],
+            "ttft_ms": round(m["ttft_s"] * 1000, 1),
         }
 
-    prompt = _generate_prompt_tokens(128)
-    measurement = measure_completion(base_url, model, prompt, max_tokens=gen_length)
-    results[f"tg{gen_length}"] = {
-        "tokens_per_sec": measurement["tokens_per_sec"],
-    }
-    results["ttft_ms"] = results["pp128"].get("ttft_ms")
+    # decode: generate gen_length tokens -> decode_tps = output / (total - ttft)
+    prompt = exact_token_prompt(base_url, model, 128)
+    m = measure_completion(base_url, model, prompt, max_tokens=gen_length)
+    tps = prefill_decode_tps(m["prompt_tokens"], m["ttft_s"], m["output_tokens"], m["total_s"])
+    results[f"tg{gen_length}"] = {"tokens_per_sec": tps["decode_tps"], "output_tokens": m["output_tokens"]}
+
     results["model"] = model
     results["backend"] = "vLLM"
-
     return results
