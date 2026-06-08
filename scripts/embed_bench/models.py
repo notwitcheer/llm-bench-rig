@@ -24,8 +24,9 @@ MODELS = {
         "native_dim": 1024,
     },
     "qwen3-vl": {
-        # ST-ready variant; swap to "Qwen/Qwen3-VL-Embedding-2B" if it loads cleanly at smoke time
-        "hf_id": "tomaarsen/Qwen3-VL-Embedding-2B-vdr",
+        # official repo (the tomaarsen vdr variant ships no recognized image_processor_type);
+        # needs pillow + torchvision in the venv, NOT a CUDA toolkit (unlike t036's vLLM wall).
+        "hf_id": "Qwen/Qwen3-VL-Embedding-2B",
         "query_prefix": QWEN_QUERY_INSTRUCT,
         "doc_prefix": "",
         "native_dim": 2048,
