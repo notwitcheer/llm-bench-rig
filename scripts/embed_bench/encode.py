@@ -5,6 +5,8 @@ import torch
 from sentence_transformers import SentenceTransformer
 from scripts.embed_bench.models import MODELS
 
+MAX_SEQ_LEN = 512
+
 
 def load(arm):
     cfg = MODELS[arm]
@@ -13,6 +15,10 @@ def load(arm):
     # default prompt (the official Qwen3-VL-Embedding repo sets one) so we don't double-prompt
     # and so documents never silently receive a query-style instruction.
     model.default_prompt_name = None
+    # Cap sequence length at 512 for ALL arms: e5-small-v2 natively caps at 512, so this makes
+    # the comparison apples-to-apples on SciFact's short abstracts (where 512 rarely truncates)
+    # AND bounds per-batch activation memory so the encode fits alongside Donald.
+    model.max_seq_length = MAX_SEQ_LEN
     return model, cfg
 
 

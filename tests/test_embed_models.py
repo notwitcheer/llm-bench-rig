@@ -12,6 +12,7 @@ def test_every_arm_has_required_fields():
         assert "query_prefix" in cfg          # may be "" but must be present
         assert "doc_prefix" in cfg
         assert isinstance(cfg["native_dim"], int) and cfg["native_dim"] > 0
+        assert isinstance(cfg["batch_size"], int) and cfg["batch_size"] > 0
 
 
 def test_e5_uses_e5_prefixes():

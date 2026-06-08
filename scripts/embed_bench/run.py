@@ -13,11 +13,12 @@ def run(arm, dataset, out_dir):
     doc_ids = list(corpus)
     model, cfg = encode.load(arm)
 
+    bs = cfg["batch_size"]
     doc_vecs, doc_dps, doc_peak = encode.encode_texts(
-        model, [corpus[d] for d in doc_ids], cfg["doc_prefix"])
+        model, [corpus[d] for d in doc_ids], cfg["doc_prefix"], batch_size=bs)
     q_ids = [q for q in queries if q in qrels]
     q_vecs, q_dps, _ = encode.encode_texts(
-        model, [queries[q] for q in q_ids], cfg["query_prefix"])
+        model, [queries[q] for q in q_ids], cfg["query_prefix"], batch_size=bs)
 
     agg = {f"recall@{k}": [] for k in KS}
     agg["mrr@10"], agg["ndcg@10"] = [], []

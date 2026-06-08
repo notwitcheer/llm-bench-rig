@@ -4,6 +4,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."   # repo root
 
+# Reduce CUDA fragmentation so the encodes fit in the ~12GB left free by Donald.
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
 DATASETS=("${@:-scifact}")
 ARMS=(e5-small qwen3-text qwen3-vl)
 

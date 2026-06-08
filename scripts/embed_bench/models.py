@@ -11,17 +11,21 @@ QWEN_QUERY_INSTRUCT = (
 )
 
 MODELS = {
+    # batch_size is tuned to co-reside with Donald (~18.9GB VRAM held by llama-server),
+    # leaving ~12GB for the encode. Bigger models -> smaller batch.
     "e5-small": {
         "hf_id": "intfloat/e5-small-v2",
         "query_prefix": "query: ",
         "doc_prefix": "passage: ",
         "native_dim": 384,
+        "batch_size": 64,
     },
     "qwen3-text": {
         "hf_id": "Qwen/Qwen3-Embedding-0.6B",
         "query_prefix": QWEN_QUERY_INSTRUCT,
         "doc_prefix": "",
         "native_dim": 1024,
+        "batch_size": 16,
     },
     "qwen3-vl": {
         # official repo (the tomaarsen vdr variant ships no recognized image_processor_type);
@@ -30,6 +34,7 @@ MODELS = {
         "query_prefix": QWEN_QUERY_INSTRUCT,
         "doc_prefix": "",
         "native_dim": 2048,
+        "batch_size": 8,
     },
 }
 
