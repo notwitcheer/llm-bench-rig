@@ -35,9 +35,10 @@ def run_one(slug: str, instance: dict, client, max_steps: int = 40) -> dict:
     """Start the instance's container, solve, extract patch, tear down. `instance` is a
     SWE-bench row (needs instance_id + problem_statement); image key resolved via swebench."""
     from lib.agentic.native.tools_repo import DockerRepoBackend
-    from swebench.harness.test_spec import make_test_spec
+    from swebench.harness.test_spec.test_spec import make_test_spec
     iid = instance["instance_id"]
-    image = make_test_spec(instance).instance_image_key
+    # namespace="swebench" -> the prebuilt Docker Hub image (no local build needed)
+    image = make_test_spec(instance, namespace="swebench").instance_image_key
     cid = _docker(["run", "-d", image, "sleep", "infinity"]).stdout.strip()
     try:
         backend = DockerRepoBackend(cid, root="/testbed")
