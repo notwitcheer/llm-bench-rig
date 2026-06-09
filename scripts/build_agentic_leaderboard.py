@@ -39,6 +39,17 @@ for slug, meta in META.items():
         "coding": f"{ok['coding']}/{ax['coding']}", "gate": "pass", "hf_repo": meta["repo"],
         "date": DATE, "note": meta["note"],
     })
+    # long-context (separate sub-score; missing file -> "-", VRAM wall -> "OOM")
+    def _lc(tier):
+        f = Path(f"results/{slug}/agentic_longctx_{tier}.json")
+        if not f.exists():
+            return "-"
+        d2 = json.loads(f.read_text())
+        return "OOM" if d2.get("reach") == "wall" else f"{d2['success_pct']:.0f}%"
+    rows[-1]["lc32k"] = _lc("32k")
+    rows[-1]["lc128k"] = _lc("128k")
+    rows[-1]["reach"] = ("128k" if rows[-1]["lc128k"] not in ("-", "OOM")
+                         else "32k" if rows[-1]["lc32k"] not in ("-", "OOM") else "-")
 rows.sort(key=lambda r: r["agentic_score"], reverse=True)
 
 out = Path("leaderboard"); out.mkdir(exist_ok=True)
@@ -47,14 +58,16 @@ with (out / "leaderboard.csv").open("w", newline="") as f:
     w = csv.DictWriter(f, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
 
 def md_table(rows):
-    head = "| # | model | params | Agentic Score | success | tool-eff | tokens/task | chain | multistep | coding |"
-    sep = "|" + "---|" * 10
+    head = ("| # | model | params | Agentic Score | success | tool-eff | tokens/task | "
+            "chain | multistep | coding | lc@32k | lc@128k |")
+    sep = "|" + "---|" * 12
     body = []
     for i, r in enumerate(rows, 1):
         star = " 🏆" if i == 1 else ""
         body.append(f"| {i} | **{r['model']}**{star} | {r['params']} | **{r['agentic_score']}** | "
                     f"{r['task_success_pct']:.0f}% | {r['tool_eff']:.2f} | {r['tokens_per_task']:.0f} | "
-                    f"{r['chain']} | {r['multistep']} | {r['coding']} |")
+                    f"{r['chain']} | {r['multistep']} | {r['coding']} | "
+                    f"{r.get('lc32k', '-')} | {r.get('lc128k', '-')} |")
     return "\n".join([head, sep] + body)
 
 readme = f"""---
