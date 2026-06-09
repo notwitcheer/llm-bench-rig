@@ -23,3 +23,11 @@ def agentic_score(runs: list, tokens_per_task: float, token_eff: float = 1.0) ->
     return {"score": round(score, 2), "task_success_pct": round(100 * succ, 1),
             "tool_eff": round(eff, 3), "stable_pct": round(100 * stable, 1),
             "tokens_per_task": round(tokens_per_task, 1)}
+
+
+def longctx_summary(runs: list) -> dict:
+    """Long-context is scored separately from the main Agentic Score: just task success
+    at this tier (input size is a property of the tier, not the model)."""
+    n = len(runs)
+    succ = sum(1 for r in runs if r.get("success")) / n if n else 0.0
+    return {"n": n, "success_pct": round(100 * succ, 1)}

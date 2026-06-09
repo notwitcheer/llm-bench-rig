@@ -18,3 +18,12 @@ def test_agentic_score_weights_sum_100():
     # all-perfect success/eff/stability -> 0.50+0.20+0.15 of 100 = 85 before token axis
     assert 84.9 <= out["score"] <= 100.0
     assert out["task_success_pct"] == 100.0
+
+
+from lib.agentic.native.metrics import longctx_summary
+
+
+def test_longctx_summary_reports_success_pct():
+    runs = [{"success": True}, {"success": True}, {"success": False}, {"success": True}]
+    out = longctx_summary(runs)
+    assert out["n"] == 4 and out["success_pct"] == 75.0

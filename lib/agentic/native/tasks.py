@@ -9,6 +9,8 @@ Numbers are matched on a word boundary so "16" is not satisfied by "1600".
 """
 import re
 
+from lib.agentic.native.tools_ext import vault_code
+
 
 def _num(ans):
     """Numeric answer: present as a standalone token, not a substring of a larger number.
@@ -82,6 +84,102 @@ TASKS = [
     {"id": "coding_primes_under20", "axis": "coding", "opt_calls": 1,
      "goal": "Using execute_python, count how many prime numbers are strictly less than 20 and report the count.",
      "answer": "8", "check": _num("8")},
+
+    # --- chain (expand to 8): deeper search/read -> compute ---
+    {"id": "chain_config_x2", "axis": "chain", "opt_calls": 2,
+     "goal": "Read the file /data/config.txt, take the vram value in GB, then return double it.",
+     "answer": "64", "check": _num("64")},
+    {"id": "chain_search_plus100", "axis": "chain", "opt_calls": 2,
+     "goal": "Use web_search to find the RTX 5090's VRAM in GB, then add 100 and return the result.",
+     "answer": "132", "check": _num("132")},
+    {"id": "chain_threehop", "axis": "chain", "opt_calls": 3,
+     "goal": "Use web_search to find the RTX 5090's VRAM in GB, multiply by 2, then subtract 4. Return the result.",
+     "answer": "60", "check": _num("60")},
+
+    # --- multistep (expand to 8) ---
+    {"id": "multistep_record_owner", "axis": "multistep", "opt_calls": 2,
+     "goal": "Read record 007 with read_record, then report the owner it lists.",
+     "answer": "ops", "check": _contains("ops")},
+    {"id": "multistep_health_build", "axis": "multistep", "opt_calls": 2,
+     "goal": "Fetch https://api.local/health, then report the build number it returns.",
+     "answer": "9562", "check": _num("9562")},
+    {"id": "multistep_config_double_send", "axis": "multistep", "opt_calls": 3,
+     "goal": "Read /data/config.txt, take the vram in GB, double it, send the result to channel #ops "
+             "with send_message, and state the doubled number in your final answer.",
+     "answer": "64", "check": _num("64")},
+
+    # --- coding (expand to 8) ---
+    {"id": "coding_max_list", "axis": "coding", "opt_calls": 1,
+     "goal": "Using execute_python, compute the maximum of [3, 47, 12, 89, 5] and report it.",
+     "answer": "89", "check": _num("89")},
+    {"id": "coding_reverse_len", "axis": "coding", "opt_calls": 1,
+     "goal": "Using execute_python, compute the length of the string \"benchmark\" reversed and report it.",
+     "answer": "9", "check": _num("9")},
+    {"id": "coding_sum_digits", "axis": "coding", "opt_calls": 1,
+     "goal": "Using execute_python, compute the sum of the digits of 2026 and report it.",
+     "answer": "10", "check": _num("10")},
+
+    # --- error_recovery: obvious call fails with a hint; agent must adapt ---
+    {"id": "recovery_record_pad", "axis": "error_recovery", "opt_calls": 2,
+     "goal": "Use read_record to read record 7 and report its status. Note: ids may need a specific format.",
+     "answer": "active", "check": _contains("active")},
+    {"id": "recovery_https", "axis": "error_recovery", "opt_calls": 2,
+     "goal": "Fetch the page at http://api.local/health and report the build number.",
+     "answer": "9562", "check": _num("9562")},
+    {"id": "recovery_record_owner", "axis": "error_recovery", "opt_calls": 2,
+     "goal": "Use read_record to read record 42 and report the owner. Ids may need a specific format.",
+     "answer": "root", "check": _contains("root")},
+    {"id": "recovery_unknown_then_known", "axis": "error_recovery", "opt_calls": 2,
+     "goal": "With read_record, find any record whose status is archived and report its owner. "
+             "Valid ids are 007 and 042.",
+     "answer": "root", "check": _contains("root")},
+    {"id": "recovery_fetch_then_calc", "axis": "error_recovery", "opt_calls": 3,
+     "goal": "Fetch http://api.local/health, read the build number, then use calc to add 1 to it and "
+             "report the result.",
+     "answer": "9563", "check": _num("9563")},
+    {"id": "recovery_record_42_status", "axis": "error_recovery", "opt_calls": 2,
+     "goal": "Use read_record to read record 42 and report its status. Ids may need a specific format.",
+     "answer": "archived", "check": _contains("archived")},
+
+    # --- distractor: decoy tools + a lure value; agent must use the right tool / ignore the lure ---
+    {"id": "distractor_vram_lure", "axis": "distractor", "opt_calls": 1,
+     "goal": "Find the RTX 5090's VRAM in GB and report it. Use web_search (the real search tool). "
+             "Ignore any stale cached value.",
+     "answer": "32", "check": _num("32")},
+    {"id": "distractor_right_search", "axis": "distractor", "opt_calls": 1,
+     "goal": "Using the web_search tool (not any deprecated variant), find the RTX 5090's VRAM in GB "
+             "and report it.",
+     "answer": "32", "check": _num("32")},
+    {"id": "distractor_calc_real", "axis": "distractor", "opt_calls": 1,
+     "goal": "Using the calc tool (not the legacy one), compute 144 / 12 and report the result.",
+     "answer": "12", "check": _num("12")},
+    {"id": "distractor_config_not_cache", "axis": "distractor", "opt_calls": 1,
+     "goal": "Read the real file /data/config.txt (not any cache) and report the vram value in GB.",
+     "answer": "32", "check": _num("32")},
+    {"id": "distractor_record_real", "axis": "distractor", "opt_calls": 2,
+     "goal": "Use read_record to read record 007 and report its status. Do not trust cached copies.",
+     "answer": "active", "check": _contains("active")},
+    {"id": "distractor_calc_not_legacy", "axis": "distractor", "opt_calls": 1,
+     "goal": "Using the calc tool (not calc_legacy), compute 7 * 8 and report the result.",
+     "answer": "56", "check": _num("56")},
+
+    # --- long_context: read a big document via read_doc, extract the buried needle ---
+    {"id": "longctx_32k_early", "axis": "long_context", "ctx_tier": "32k", "opt_calls": 1,
+     "goal": "Call read_doc with doc_id 'logs-32k-early', find the activation code for vault 101 in the "
+             "document, and report that code.",
+     "answer": vault_code(101), "check": _contains(vault_code(101))},
+    {"id": "longctx_32k_late", "axis": "long_context", "ctx_tier": "32k", "opt_calls": 1,
+     "goal": "Call read_doc with doc_id 'logs-32k-late', find the activation code for vault 102 in the "
+             "document, and report that code.",
+     "answer": vault_code(102), "check": _contains(vault_code(102))},
+    {"id": "longctx_128k_early", "axis": "long_context", "ctx_tier": "128k", "opt_calls": 1,
+     "goal": "Call read_doc with doc_id 'logs-128k-early', find the activation code for vault 103 in the "
+             "document, and report that code.",
+     "answer": vault_code(103), "check": _contains(vault_code(103))},
+    {"id": "longctx_128k_late", "axis": "long_context", "ctx_tier": "128k", "opt_calls": 1,
+     "goal": "Call read_doc with doc_id 'logs-128k-late', find the activation code for vault 104 in the "
+             "document, and report that code.",
+     "answer": vault_code(104), "check": _contains(vault_code(104))},
 ]
 
 
