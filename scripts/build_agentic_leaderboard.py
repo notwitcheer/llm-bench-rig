@@ -103,10 +103,14 @@ leaner). A sub-5% score gap is a tie.*
 
 ![agentic score](agentic-leaderboard-score.png)
 
+![long-context reach](agentic-leaderboard-longctx.png)
+
 ## The Agentic Score (0–100)
 
-Aggregate over 15 deterministic tasks across three axes (tool-use chains, multi-step dependencies,
-sandboxed coding), weighted:
+Aggregate over 36 deterministic short-context tasks across five axes (tool-use chains, multi-step
+dependencies, sandboxed coding, **error-recovery**, **distractor-robustness**), weighted as below.
+A separate **long-context** axis (needle-in-a-document at 32K / 128K) is reported in the `lc@` columns,
+not blended into the score (so a 128K VRAM wall doesn't corrupt it):
 
 | axis | weight | measures |
 |---|---|---|

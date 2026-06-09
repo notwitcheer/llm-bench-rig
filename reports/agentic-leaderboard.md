@@ -1,58 +1,63 @@
-# Agentic Score leaderboard: Granite-4.1-30b owns the efficiency frontier
+# Agentic Score leaderboard (hardened): efficiency and robustness pull apart
 
 **Rig:** one RTX 5090 32GB · llama.cpp b9562 · native OpenAI tool-calling (`--jinja`) · temp 0
-**Harness:** the rig's Agentic Score — a model-agnostic native tool-calling loop over 15 deterministic,
-programmatically-checked tasks (tool-use chains, multi-step dependencies, sandboxed coding).
-Calibration-grade; a sub-5% gap is a tie.
+**Harness (hardened):** 40 deterministic tasks — 36 across **five short-context axes** (chain, multistep,
+coding, **error-recovery**, **distractor**) scored into the Agentic Score, plus a **separate long-context
+axis** (a `read_doc` tool returns a seeded document with a buried activation code, at 32K and 128K).
+Programmatic verification; a sub-5% score gap is a tie.
 
 ## The board
 
-| model | params | Agentic Score | task success | tool-eff | tokens/task | gate |
-|---|---|---|---|---|---|---|
-| Qwen3.5-35B-A3B (base) | 35B-A3B | **98.0** | **100%** (15/15) | 0.90 | 264 | ✓ |
-| **Granite-4.1-30b** | 30B | 96.0 | 93% (14/15) | **0.97** | **75** | ✓ |
-| Nex-N2-mini | 35B-A3B | 92.0 | 87% (13/15) | 0.93 | 93 | ✓ |
-| Kimi-Linear-48B-A3B | 48B-A3B | 89.9 | 93% (14/15) | 0.66 | 252 | ✓ |
+| # | model | params | Agentic Score | success | tool-eff | tok/task | error-rec | lc@32K | lc@128K |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Qwen3.5-35B-A3B (base) | 35B-A3B | **97.5** | 100% | 0.88 | 241 | 6/6 | 100% | 50%* |
+| 2 | **Kimi-Linear-48B-A3B** | 48B-A3B | 92.9 | 94% | 0.78 | 185 | 6/6 | 100% | **100%** |
+| 3 | Granite-4.1-30b | 30B | 92.0 | 86% | **0.95** | **79** | **2/6** | 50% | **OOM** |
+| 4 | Nex-N2-mini | 35B-A3B | 90.4 | 83% | 0.94 | 82 | 4/6 | 100% | **100%** |
 
-All four pass the native tool-calling gate, and all four nail the multi-step axis (5/5) — the spread is
-in chains, coding, and efficiency.
+## What hardening revealed (the thin 15-task board hid all of this)
 
-## The find: success and token-efficiency are *separable* axes
+**1. The board reshuffled.** Granite-4.1-30b — the previous "efficiency king" at 96 on the easy suite —
+dropped to 92.0 and 3rd. Kimi-Linear rose. A 15-task board that everyone nearly aced wasn't measuring
+the things that separate agentic models.
 
-The Agentic Score rewards completion, but the **efficiency frontier** (success vs tokens/task) is where
-the models separate:
+**2. Error-recovery is the discriminating axis.** When a tool returns an error **with a hint**
+(`record '7' not found; ids are zero-padded`, or `use https://`), the model has to adapt. Base Qwen and
+Kimi recover cleanly (6/6) — which proves the tasks are solvable — but **Granite recovers only 2/6**. It
+is lean and tight on the happy path and then doesn't adjust when a tool pushes back. This is exactly the
+failure mode single-call function-calling benchmarks (BFCL etc.) never test, and it's most of why Granite
+fell. Nex is middling (4/6).
 
-- **Granite-4.1-30b is the quiet winner.** A 30B that nobody calls an "agent model" does near-base work
-  (93% vs 100%) at **a third of the tokens** (75 vs 264) with the tightest tool use on the board (0.97 —
-  almost no wasted calls). On one 5090 it's the cheapest competent agent here, by a wide margin.
-- **Base Qwen3.5-35B still tops raw completion** (100%) but pays for it in tokens (264).
-- **Nex-N2-mini** is the lean post-train (93 tok) but lowest completion (87%) — its Adaptive Thinking
-  trades success for brevity (see the Nex report).
-- **Kimi-Linear-48B-A3B** matches Granite's success (93%) but spends **3.3x the tokens** (252) and
-  over-calls tools (0.66 tool-eff — it routinely double-calls where one call suffices).
+**3. Long-context reach splits on architecture.** The A3B models — Kimi-Linear (linear attention) and
+Nex-N2-mini (standard A3B MoE) — both hold **100% needle-finding at 128K** on one 5090; their modest KV
+fits alongside the weights. The **dense Granite-4.1-30b walls at 128K** (OOM) and only finds the needle
+50% of the time even at 32K — the compact model is the weakest at long context. Kimi-Linear is the
+cleanest of all: 100% at both tiers, and it's the largest model on the board (48B).
 
-## Two notes worth their own line
+\* **Qwen base at 128K = 50%** with an asterisk: one of its two 128K requests returned a server-side
+**500** at the very edge of the context window (an llama.cpp hiccup, not a clean model miss); the other
+succeeded. Recorded honestly as 1/2. (The harness now guards per-task exceptions so one bad request can't
+void a tier — a fix this run forced.)
 
-**Kimi-Linear runs natively on one 5090 — a feasibility win.** Its `kimi_linear` arch (Kimi Delta
-linear-attention, 256-expert A3B MoE) is compiled into llama.cpp b9562 and loaded at full `-ngl 999`
-offload without OOM — the linear-attention KV cache is small enough that the 28GB Q4 fit the 32GB card
-with room to spare. But its architectural edge is **long context**, which this short-task bench does not
-exercise; the verbosity and over-calling are real agentic-economy observations, not a verdict on the
-model's reason for existing. A long-context agentic test is the fair follow-up.
+## No single winner
 
-**Granite's only miss was a Fibonacci off-by-one** (`coding_fib10`) — the classic indexing slip, not a
-tool-use failure. Kimi's only miss was over-thinking a trivial halving (483 tokens to fail
-`chain_config_half`) — a brevity problem, not a capability gap.
+- **Base Qwen3.5-35B** tops the Agentic Score (100% short-task success) — but it's the token glutton (241)
+  and shaky at 128K.
+- **Kimi-Linear-48B** is the best all-rounder: 2nd on score, **and the long-context champion** (100% at
+  128K). If your agent loops over big contexts, this is the pick.
+- **Granite-4.1-30b** is the cheapest competent agent on the happy path (79 tok/task, 0.95 tool-eff) but
+  **brittle**: it can't recover from tool errors and can't hold long context. Great when nothing goes
+  wrong; risky when something does.
+- **Nex-N2-mini** is lean and reaches 128K, but lowest short-task success.
 
 ## Worth it?
 
-- **Granite-4.1-30b** if you want a cheap-to-serve agent: near-base completion at a third of the tokens
-  and the tightest tool loop here. The standout of this round.
-- **Base Qwen3.5-35B** if maximum completion beats token budget.
-- **Kimi-Linear** if your workload is genuinely long-context (its real strength, untested here) — not for
-  short, token-sensitive agentic loops.
+Cheap and robust are different axes, and this suite finally measures both. Reach for **Kimi-Linear** for
+long-context agentic work, **base Qwen** when you need maximum completion and can pay the tokens, and
+**Granite** only for short, well-behaved tool loops where its efficiency shines and nothing will push back.
 
 ---
 
-*Harness: `lib/agentic/native/` in notwitcheer/llm-bench-rig (17 unit tests). Charts:
-`reports/agentic-leaderboard-frontier.png`, `reports/agentic-leaderboard-score.png`.*
+*Harness: `lib/agentic/native/` in notwitcheer/llm-bench-rig (34 unit tests). Charts:
+`agentic-leaderboard-frontier.png`, `-score.png`, `-longctx.png`. Live board:
+witcheer/agentic-score-leaderboard.*

@@ -22,12 +22,12 @@ Updated **2026-06-09** · llama.cpp b9562 · `--jinja` native tool-calling · te
 
 ## Leaderboard
 
-| # | model | params | Agentic Score | success | tool-eff | tokens/task | chain | multistep | coding |
-|---|---|---|---|---|---|---|---|---|---|
-| 1 | **Qwen3.5-35B-A3B (base)** 🏆 | 35B-A3B | **98.0** | 100% | 0.90 | 264 | 5/5 | 5/5 | 5/5 |
-| 2 | **Granite-4.1-30b** | 30B | **96.0** | 93% | 0.97 | 75 | 5/5 | 5/5 | 4/5 |
-| 3 | **Nex-N2-mini** | 35B-A3B | **92.0** | 87% | 0.93 | 93 | 4/5 | 5/5 | 4/5 |
-| 4 | **Kimi-Linear-48B-A3B** | 48B-A3B | **89.89** | 93% | 0.66 | 252 | 4/5 | 5/5 | 5/5 |
+| # | model | params | Agentic Score | success | tool-eff | tokens/task | chain | multistep | coding | lc@32k | lc@128k |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | **Qwen3.5-35B-A3B (base)** 🏆 | 35B-A3B | **97.5** | 100% | 0.88 | 241 | 8/8 | 8/8 | 8/8 | 100% | 50% |
+| 2 | **Kimi-Linear-48B-A3B** | 48B-A3B | **92.91** | 94% | 0.78 | 185 | 7/8 | 7/8 | 8/8 | 100% | 100% |
+| 3 | **Granite-4.1-30b** | 30B | **92.04** | 86% | 0.95 | 79 | 8/8 | 8/8 | 7/8 | 50% | OOM |
+| 4 | **Nex-N2-mini** | 35B-A3B | **90.42** | 83% | 0.94 | 82 | 7/8 | 7/8 | 7/8 | 100% | 100% |
 
 *tool-eff = tool calls vs optimal (1.0 = no wasted calls). tokens/task = avg completion tokens (lower =
 leaner). A sub-5% score gap is a tie.*
@@ -36,10 +36,14 @@ leaner). A sub-5% score gap is a tie.*
 
 ![agentic score](agentic-leaderboard-score.png)
 
+![long-context reach](agentic-leaderboard-longctx.png)
+
 ## The Agentic Score (0–100)
 
-Aggregate over 15 deterministic tasks across three axes (tool-use chains, multi-step dependencies,
-sandboxed coding), weighted:
+Aggregate over 36 deterministic short-context tasks across five axes (tool-use chains, multi-step
+dependencies, sandboxed coding, **error-recovery**, **distractor-robustness**), weighted as below.
+A separate **long-context** axis (needle-in-a-document at 32K / 128K) is reported in the `lc@` columns,
+not blended into the score (so a 128K VRAM wall doesn't corrupt it):
 
 | axis | weight | measures |
 |---|---|---|
@@ -55,9 +59,9 @@ work. Harness + 17 unit tests: **[notwitcheer/llm-bench-rig](https://github.com/
 ## Notes per model
 
 - **Qwen3.5-35B-A3B (base)** (bartowski/Qwen_Qwen3.5-35B-A3B-GGUF): generalist base, no agentic post-train
+- **Kimi-Linear-48B-A3B** (bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF): linear-attention; runs natively on one 5090; long-context untested here
 - **Granite-4.1-30b** (unsloth/granite-4.1-30b-GGUF): leanest competent agent on the board
 - **Nex-N2-mini** (eramax/Nex-N2-mini-gguf): agentic post-train of Qwen3.5; Adaptive Thinking
-- **Kimi-Linear-48B-A3B** (bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF): linear-attention; runs natively on one 5090; long-context untested here
 
 ## How it grows
 

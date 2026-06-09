@@ -1,5 +1,5 @@
-model,params,quant,agentic_score,task_success_pct,tool_eff,stable_pct,tokens_per_task,chain,multistep,coding,gate,hf_repo,date,note
-Qwen3.5-35B-A3B (base),35B-A3B,Q4_K_M,98.0,100.0,0.9,100.0,264.3,5/5,5/5,5/5,pass,bartowski/Qwen_Qwen3.5-35B-A3B-GGUF,2026-06-09,"generalist base, no agentic post-train"
-Granite-4.1-30b,30B,UD-Q4_K_XL,96.0,93.3,0.967,100.0,75.4,5/5,5/5,4/5,pass,unsloth/granite-4.1-30b-GGUF,2026-06-09,leanest competent agent on the board
-Nex-N2-mini,35B-A3B,Q4_K_M,92.0,86.7,0.933,100.0,93.3,4/5,5/5,4/5,pass,eramax/Nex-N2-mini-gguf,2026-06-09,agentic post-train of Qwen3.5; Adaptive Thinking
-Kimi-Linear-48B-A3B,48B-A3B,Q4_K_M,89.89,93.3,0.661,100.0,252.3,4/5,5/5,5/5,pass,bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF,2026-06-09,linear-attention; runs natively on one 5090; long-context untested here
+model,params,quant,agentic_score,task_success_pct,tool_eff,stable_pct,tokens_per_task,chain,multistep,coding,gate,hf_repo,date,note,lc32k,lc128k,reach
+Qwen3.5-35B-A3B (base),35B-A3B,Q4_K_M,97.5,100.0,0.875,100.0,241.4,8/8,8/8,8/8,pass,bartowski/Qwen_Qwen3.5-35B-A3B-GGUF,2026-06-09,"generalist base, no agentic post-train",100%,50%,128k
+Kimi-Linear-48B-A3B,48B-A3B,Q4_K_M,92.91,94.4,0.784,100.0,185.2,7/8,7/8,8/8,pass,bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF,2026-06-09,linear-attention; runs natively on one 5090; long-context untested here,100%,100%,128k
+Granite-4.1-30b,30B,UD-Q4_K_XL,92.04,86.1,0.949,100.0,79.1,8/8,8/8,7/8,pass,unsloth/granite-4.1-30b-GGUF,2026-06-09,leanest competent agent on the board,50%,OOM,32k
+Nex-N2-mini,35B-A3B,Q4_K_M,90.42,83.3,0.938,100.0,82.5,7/8,7/8,7/8,pass,eramax/Nex-N2-mini-gguf,2026-06-09,agentic post-train of Qwen3.5; Adaptive Thinking,100%,100%,128k
