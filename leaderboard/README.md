@@ -24,10 +24,13 @@ Updated **2026-06-09** · llama.cpp b9562 · `--jinja` native tool-calling · te
 
 | # | model | params | Agentic Score | success | tool-eff | tokens/task | chain | multistep | coding | lc@32k | lc@128k |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | **Qwen3.5-35B-A3B (base)** 🏆 | 35B-A3B | **97.5** | 100% | 0.88 | 241 | 8/8 | 8/8 | 8/8 | 100% | 50% |
-| 2 | **Kimi-Linear-48B-A3B** | 48B-A3B | **92.91** | 94% | 0.78 | 185 | 7/8 | 7/8 | 8/8 | 100% | 100% |
-| 3 | **Granite-4.1-30b** | 30B | **92.04** | 86% | 0.95 | 79 | 8/8 | 8/8 | 7/8 | 50% | OOM |
-| 4 | **Nex-N2-mini** | 35B-A3B | **90.42** | 83% | 0.94 | 82 | 7/8 | 7/8 | 7/8 | 100% | 100% |
+| 1 | **Qwen3.6-27B** 🏆 | 27B | **98.61** | 97% | 1.00 | 285 | 8/8 | 8/8 | 8/8 | 100% | 100% |
+| 2 | **Qwen3.5-35B-A3B (base)** | 35B-A3B | **97.5** | 100% | 0.88 | 241 | 8/8 | 8/8 | 8/8 | 100% | 50% |
+| 3 | **Qwopus-GLM-18B** | 18B | **97.08** | 97% | 0.92 | 232 | 8/8 | 8/8 | 8/8 | 100% | 100% |
+| 4 | **Nemotron-Cascade-2-30B** | 30B-A3B | **96.94** | 100% | 0.85 | 320 | 8/8 | 8/8 | 8/8 | 50% | 0% |
+| 5 | **Kimi-Linear-48B-A3B** | 48B-A3B | **92.91** | 94% | 0.78 | 185 | 7/8 | 7/8 | 8/8 | 100% | 100% |
+| 6 | **Granite-4.1-30b** | 30B | **92.04** | 86% | 0.95 | 79 | 8/8 | 8/8 | 7/8 | 50% | OOM |
+| 7 | **Nex-N2-mini** | 35B-A3B | **90.42** | 83% | 0.94 | 82 | 7/8 | 7/8 | 7/8 | 100% | 100% |
 
 *tool-eff = tool calls vs optimal (1.0 = no wasted calls). tokens/task = avg completion tokens (lower =
 leaner). A sub-5% score gap is a tie.*
@@ -58,7 +61,10 @@ work. Harness + 17 unit tests: **[notwitcheer/llm-bench-rig](https://github.com/
 
 ## Notes per model
 
+- **Qwen3.6-27B** (unsloth/Qwen3.6-27B-GGUF): dense 27B; the model Donald itself runs
 - **Qwen3.5-35B-A3B (base)** (bartowski/Qwen_Qwen3.5-35B-A3B-GGUF): generalist base, no agentic post-train
+- **Qwopus-GLM-18B** (KyleHessling1/Qwopus-GLM-18B-Merged-GGUF): GLM-based community merge
+- **Nemotron-Cascade-2-30B** (bartowski/nvidia_Nemotron-Cascade-2-30B-A3B-GGUF): Nvidia; the rig's prior speed-king
 - **Kimi-Linear-48B-A3B** (bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF): linear-attention; runs natively on one 5090; long-context untested here
 - **Granite-4.1-30b** (unsloth/granite-4.1-30b-GGUF): leanest competent agent on the board
 - **Nex-N2-mini** (eramax/Nex-N2-mini-gguf): agentic post-train of Qwen3.5; Adaptive Thinking

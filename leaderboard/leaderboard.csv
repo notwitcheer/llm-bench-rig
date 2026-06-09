@@ -1,5 +1,8 @@
 model,params,quant,agentic_score,task_success_pct,tool_eff,stable_pct,tokens_per_task,chain,multistep,coding,gate,hf_repo,date,note,lc32k,lc128k,reach
+Qwen3.6-27B,27B,Q6_K,98.61,97.2,1.0,100.0,285.2,8/8,8/8,8/8,pass,unsloth/Qwen3.6-27B-GGUF,2026-06-09,dense 27B; the model Donald itself runs,100%,100%,128k
 Qwen3.5-35B-A3B (base),35B-A3B,Q4_K_M,97.5,100.0,0.875,100.0,241.4,8/8,8/8,8/8,pass,bartowski/Qwen_Qwen3.5-35B-A3B-GGUF,2026-06-09,"generalist base, no agentic post-train",100%,50%,128k
+Qwopus-GLM-18B,18B,Q6_K,97.08,97.2,0.924,100.0,231.8,8/8,8/8,8/8,pass,KyleHessling1/Qwopus-GLM-18B-Merged-GGUF,2026-06-09,GLM-based community merge,100%,100%,128k
+Nemotron-Cascade-2-30B,30B-A3B,Q4_K_M,96.94,100.0,0.847,100.0,320.1,8/8,8/8,8/8,pass,bartowski/nvidia_Nemotron-Cascade-2-30B-A3B-GGUF,2026-06-09,Nvidia; the rig's prior speed-king,50%,0%,128k
 Kimi-Linear-48B-A3B,48B-A3B,Q4_K_M,92.91,94.4,0.784,100.0,185.2,7/8,7/8,8/8,pass,bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF,2026-06-09,linear-attention; runs natively on one 5090; long-context untested here,100%,100%,128k
 Granite-4.1-30b,30B,UD-Q4_K_XL,92.04,86.1,0.949,100.0,79.1,8/8,8/8,7/8,pass,unsloth/granite-4.1-30b-GGUF,2026-06-09,leanest competent agent on the board,50%,OOM,32k
 Nex-N2-mini,35B-A3B,Q4_K_M,90.42,83.3,0.938,100.0,82.5,7/8,7/8,7/8,pass,eramax/Nex-N2-mini-gguf,2026-06-09,agentic post-train of Qwen3.5; Adaptive Thinking,100%,100%,128k

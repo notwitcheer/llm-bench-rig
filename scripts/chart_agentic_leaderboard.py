@@ -9,12 +9,15 @@ import numpy as np
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
 AMBER = "#d8902f"
 
-# Kimi highlighted crimson = the hardened-suite find (best all-rounder + holds 128K)
+# 7-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
 MODELS = [
-    ("kimi-linear-48b-a3b", "Kimi-Linear-48B-A3B",  CRIMSON),
+    ("qwen3-6-27b",         "Qwen3.6-27B",            CRIMSON),
     ("qwen3-5-35b-base",    "Qwen3.5-35B-A3B (base)", GOLD),
-    ("granite-4-1-30b",     "Granite-4.1-30b",      AMBER),
-    ("nex-n2-mini",         "Nex-N2-mini",          MUTE),
+    ("qwopus-glm-18b",      "Qwopus-GLM-18B",         "#e0a030"),
+    ("nemotron-cascade-2-30b", "Nemotron-Cascade-2-30B", "#b85c3c"),
+    ("kimi-linear-48b-a3b", "Kimi-Linear-48B-A3B",    "#d87070"),
+    ("granite-4-1-30b",     "Granite-4.1-30b",        "#c9a86a"),
+    ("nex-n2-mini",         "Nex-N2-mini",            MUTE),
 ]
 D = {s: json.loads(Path(f"results/{s}/agentic_native.json").read_text()) for s, _, _ in MODELS}
 
@@ -28,17 +31,24 @@ def lc(slug, tier):
 
 
 # --- Chart 1: efficiency frontier ---
-fig, ax = plt.subplots(figsize=(10, 6.5), facecolor=BG); ax.set_facecolor(BG)
-for slug, name, color in MODELS:
+SHORT = {"qwen3-6-27b": "Qwen3.6-27B", "qwen3-5-35b-base": "Qwen3.5 base",
+         "qwopus-glm-18b": "Qwopus-18B", "nemotron-cascade-2-30b": "Nemotron-C2",
+         "kimi-linear-48b-a3b": "Kimi-Linear", "granite-4-1-30b": "Granite-30B",
+         "nex-n2-mini": "Nex-N2-mini"}
+fig, ax = plt.subplots(figsize=(11, 6.5), facecolor=BG); ax.set_facecolor(BG)
+# sort by x (tokens) and alternate label up/down so x-adjacent points never collide
+by_x = sorted(MODELS, key=lambda m: D[m[0]]["tokens_per_task"])
+for rank, (slug, name, color) in enumerate(by_x):
     d = D[slug]
     x, y = d["tokens_per_task"], d["task_success_pct"]
-    ax.scatter([x], [y], s=320, color=color, edgecolor=TEXT, zorder=4, linewidth=1.2)
-    ax.annotate(f"{name}\nscore {d['score']}  ·  {d['tool_eff']:.2f} tool-eff",
-                (x, y), color=TEXT, fontsize=10, ha="center", va="bottom",
-                xytext=(0, 14), textcoords="offset points")
+    ax.scatter([x], [y], s=260, color=color, edgecolor=TEXT, zorder=4, linewidth=1.2)
+    above = (rank % 2 == 0)
+    ax.annotate(f"{SHORT[slug]}  ({d['score']})", (x, y), color=TEXT, fontsize=9, ha="center",
+                va=("bottom" if above else "top"), xytext=(0, 12 if above else -12),
+                textcoords="offset points")
 ax.set_xlabel("tokens / task  (lower = leaner)", color=TEXT)
 ax.set_ylabel("task success %  (36-task hardened suite)", color=TEXT)
-ax.set_xlim(40, 290); ax.set_ylim(78, 106)
+ax.set_xlim(20, 370); ax.set_ylim(76, 106)
 ax.set_title("Hardened agentic suite: efficiency and robustness pull apart", color=GOLD, pad=16, fontsize=12.5)
 for s in ax.spines.values(): s.set_color(GRID)
 ax.tick_params(colors=MUTE); ax.grid(True, color=GRID, linewidth=0.6, zorder=0)

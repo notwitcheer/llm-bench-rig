@@ -20,6 +20,13 @@ META = {
     "kimi-linear-48b-a3b": {"name": "Kimi-Linear-48B-A3B", "params": "48B-A3B", "quant": "Q4_K_M",
                             "repo": "bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF",
                             "note": "linear-attention; runs natively on one 5090; long-context untested here"},
+    "qwen3-6-27b":         {"name": "Qwen3.6-27B", "params": "27B", "quant": "Q6_K",
+                            "repo": "unsloth/Qwen3.6-27B-GGUF", "note": "dense 27B; the model Donald itself runs"},
+    "nemotron-cascade-2-30b": {"name": "Nemotron-Cascade-2-30B", "params": "30B-A3B", "quant": "Q4_K_M",
+                            "repo": "bartowski/nvidia_Nemotron-Cascade-2-30B-A3B-GGUF",
+                            "note": "Nvidia; the rig's prior speed-king"},
+    "qwopus-glm-18b":      {"name": "Qwopus-GLM-18B", "params": "18B", "quant": "Q6_K",
+                            "repo": "KyleHessling1/Qwopus-GLM-18B-Merged-GGUF", "note": "GLM-based community merge"},
 }
 
 rows = []
