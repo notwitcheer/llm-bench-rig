@@ -45,3 +45,19 @@ def test_malformed_arguments_counted_as_bad_call():
     ]
     r = run_agent(ScriptedClient(turns), goal="g", tools=[], max_steps=5)
     assert r.bad_calls >= 1
+
+
+def test_run_agent_uses_injected_dispatch():
+    seen = []
+    def my_dispatch(name, args):
+        seen.append((name, args))
+        return {"ok": True, "result": "tool-result", "error": ""}
+    turns = [
+        {"role": "assistant", "content": None,
+         "tool_calls": [{"id": "c1", "type": "function",
+                         "function": {"name": "do_thing", "arguments": '{"x": 1}'}}]},
+        {"role": "assistant", "content": "done", "tool_calls": None},
+    ]
+    r = run_agent(ScriptedClient(turns), goal="g", tools=[], max_steps=5, dispatch=my_dispatch)
+    assert seen == [("do_thing", {"x": 1})]
+    assert r.final_text == "done"

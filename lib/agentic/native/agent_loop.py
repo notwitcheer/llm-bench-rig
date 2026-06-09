@@ -18,7 +18,9 @@ class RunResult:
     messages: list = field(default_factory=list)
 
 
-def run_agent(client, goal: str, tools: list, max_steps: int = 8) -> RunResult:
+def run_agent(client, goal: str, tools: list, max_steps: int = 8, dispatch=None) -> RunResult:
+    if dispatch is None:
+        dispatch = dispatch_tool
     msgs = [{"role": "user", "content": goal}]
     r = RunResult()
     for _ in range(max_steps):
@@ -39,7 +41,7 @@ def run_agent(client, goal: str, tools: list, max_steps: int = 8) -> RunResult:
             except json.JSONDecodeError:
                 args = {}
                 r.bad_calls += 1
-            out = dispatch_tool(fn.get("name", ""), args)
+            out = dispatch(fn.get("name", ""), args)
             if not out["ok"]:
                 r.bad_calls += 1
             msgs.append({"role": "tool", "tool_call_id": c.get("id", ""),
