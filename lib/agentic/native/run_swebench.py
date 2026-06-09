@@ -19,12 +19,19 @@ GOAL = ("You are fixing a bug in a Python repository checked out at the repo roo
 
 def solve_instance(client, problem_statement: str, backend, max_steps: int = 40) -> dict:
     schemas, ns = make_repo_tools(backend)
-    res = run_agent(client, GOAL.format(problem=problem_statement), schemas,
-                    max_steps=max_steps, dispatch=make_dispatch(ns))
+    err = ""
+    try:
+        res = run_agent(client, GOAL.format(problem=problem_statement), schemas,
+                        max_steps=max_steps, dispatch=make_dispatch(ns))
+        tel = {"final_text": res.final_text, "n_steps": res.n_steps,
+               "n_tool_calls": res.n_tool_calls, "n_tokens": res.n_tokens, "stalled": res.stalled}
+    except Exception as e:
+        # a serving error mid-loop (e.g. llama-server 500 on malformed tool-call JSON) must not
+        # void the whole model — record it, keep any partial diff already made in the container.
+        err = f"{type(e).__name__}: {e}"
+        tel = {"final_text": "", "n_steps": -1, "n_tool_calls": -1, "n_tokens": 0, "stalled": True}
     patch, _ = backend.run("git add -A >/dev/null 2>&1; git diff --cached")
-    return {"final_text": res.final_text, "patch": patch, "n_steps": res.n_steps,
-            "n_tool_calls": res.n_tool_calls, "n_tokens": res.n_tokens,
-            "stalled": res.stalled, "patch_empty": not patch.strip()}
+    return {**tel, "patch": patch, "patch_empty": not patch.strip(), "error": err}
 
 
 def _docker(args, **kw):

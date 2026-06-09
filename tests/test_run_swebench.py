@@ -24,3 +24,17 @@ def test_solve_instance_extracts_patch(tmp_path):
     assert "return a + b" in out["patch"] and out["patch"].startswith("diff --git")
     assert out["n_tool_calls"] == 1 and out["stalled"] is False
     assert out["patch_empty"] is False
+
+
+def test_solve_instance_guards_client_error(tmp_path):
+    (tmp_path / "x.py").write_text("a = 1\n")
+    for cmd in ["git init -q", "git add -A", "git -c user.email=t@t -c user.name=t commit -qm i"]:
+        subprocess.run(cmd, shell=True, cwd=tmp_path, check=True)
+
+    class Boom:
+        def chat(self, messages, tools):
+            raise RuntimeError("500 Internal Server Error")
+
+    out = solve_instance(Boom(), "some issue", TmpRepoBackend(str(tmp_path)), max_steps=5)
+    assert out["error"].startswith("RuntimeError")
+    assert out["patch_empty"] is True and out["stalled"] is True
