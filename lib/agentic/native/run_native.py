@@ -36,14 +36,21 @@ def run(slug: str, mode: str = "short"):
         tools, client = _long_tools(), LlamaClient(timeout=600)
     runs, total_tokens, details = [], 0, []
     for t in tasks:
-        res = run_agent(client, t["goal"], tools, max_steps=8)
-        ok = check(t, res.final_text)
-        runs.append(score_run(ok, res.n_tool_calls, t["opt_calls"], res.bad_calls, res.stalled))
-        total_tokens += res.n_tokens
-        details.append({"id": t["id"], "axis": t["axis"], "success": ok,
-                        "tool_calls": res.n_tool_calls, "bad_calls": res.bad_calls,
-                        "tokens": res.n_tokens, "stalled": res.stalled})
-        print(f"[{mode}] {t['id']:24} {'OK' if ok else 'XX'} calls={res.n_tool_calls} tok={res.n_tokens}")
+        try:
+            res = run_agent(client, t["goal"], tools, max_steps=8)
+            ok = check(t, res.final_text)
+            runs.append(score_run(ok, res.n_tool_calls, t["opt_calls"], res.bad_calls, res.stalled))
+            total_tokens += res.n_tokens
+            details.append({"id": t["id"], "axis": t["axis"], "success": ok,
+                            "tool_calls": res.n_tool_calls, "bad_calls": res.bad_calls,
+                            "tokens": res.n_tokens, "stalled": res.stalled})
+            print(f"[{mode}] {t['id']:24} {'OK' if ok else 'XX'} calls={res.n_tool_calls} tok={res.n_tokens}")
+        except Exception as e:
+            # one task erroring (e.g. a server-side context overflow) must not void the run
+            runs.append(score_run(False, 0, t["opt_calls"], 0, True))
+            details.append({"id": t["id"], "axis": t["axis"], "success": False, "tool_calls": 0,
+                            "bad_calls": 0, "tokens": 0, "stalled": True, "error": f"{type(e).__name__}: {e}"})
+            print(f"[{mode}] {t['id']:24} ERR {type(e).__name__}: {e}")
     p = Path(f"results/{slug}"); p.mkdir(parents=True, exist_ok=True)
     if mode == "short":
         summ = agentic_score(runs, tokens_per_task=total_tokens / max(1, len(tasks)))
