@@ -15,6 +15,11 @@ def web_search(query: str) -> str:
     key = query.strip().lower()
     if key in _SEARCH:
         return _SEARCH[key]
+    # Tolerate phrasing like a real search engine: if all the significant words of a
+    # known topic appear in the query, return that result (paraphrases still hit).
+    for topic, snippet in _SEARCH.items():
+        if all(w in key for w in topic.split()):
+            return snippet
     h = hashlib.sha256(key.encode()).hexdigest()[:8]
     return f"No exact match for '{query}'. ref={h}"
 

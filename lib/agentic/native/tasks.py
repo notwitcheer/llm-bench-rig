@@ -24,42 +24,46 @@ def _contains(ans):
 
 
 TASKS = [
-    # --- chain: search/read a fact, then compute on it (>=2 chained tool outputs) ---
+    # --- chain: search/read a fact, then compute on it (>=2 chained tool outputs).
+    #     Tasks explicitly name the tool so the model grounds via tools instead of
+    #     answering (or refusing) from parametric knowledge. ---
     {"id": "chain_vram_x2", "axis": "chain", "opt_calls": 2,
-     "goal": "Find the VRAM of the RTX 5090 in GB (use the tools), then return double that number.",
+     "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, then return double that number.",
      "answer": "64", "check": _num("64")},
     {"id": "chain_vram_sq", "axis": "chain", "opt_calls": 2,
-     "goal": "Find the RTX 5090 VRAM in GB, then return that number squared.",
+     "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, then return that number squared.",
      "answer": "1024", "check": _num("1024")},
     {"id": "chain_config_plus8", "axis": "chain", "opt_calls": 2,
-     "goal": "Read /data/config.txt to get the vram value in GB, then add 8 and return the result.",
+     "goal": "Read the file /data/config.txt, take the vram value in GB, then add 8 and return the result.",
      "answer": "40", "check": _num("40")},
-    {"id": "chain_vram_half", "axis": "chain", "opt_calls": 2,
-     "goal": "Find the RTX 5090 VRAM in GB, then return half of it.",
+    {"id": "chain_config_half", "axis": "chain", "opt_calls": 2,
+     "goal": "Read the file /data/config.txt, take the vram value in GB, then return half of it.",
      "answer": "16", "check": _num("16")},
     {"id": "chain_vram_x3_plus4", "axis": "chain", "opt_calls": 2,
-     "goal": "Find the RTX 5090 VRAM in GB, multiply it by 3, add 4, and return the result.",
+     "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, multiply it by 3, "
+             "add 4, and return the result.",
      "answer": "100", "check": _num("100")},
 
     # --- multistep: a later argument is only obtainable from a prior observation ---
-    {"id": "multistep_keyfile", "axis": "multistep", "opt_calls": 2,
-     "goal": "Read /data/notes.md, find the API key it mentions, and send that key to channel #ops. "
-             "Then state the API key in your final answer.",
-     "answer": "FAKE-KEY-abc123", "check": _contains("fake-key-abc123")},
     {"id": "multistep_config_x4", "axis": "multistep", "opt_calls": 2,
-     "goal": "Read /data/config.txt, take the vram number in GB, multiply it by 4, and return the result.",
+     "goal": "Read the file /data/config.txt, take the vram number in GB, multiply it by 4, "
+             "and return the result.",
      "answer": "128", "check": _num("128")},
+    {"id": "multistep_search_x5", "axis": "multistep", "opt_calls": 2,
+     "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, then return it multiplied by 5.",
+     "answer": "160", "check": _num("160")},
     {"id": "multistep_search_send", "axis": "multistep", "opt_calls": 2,
-     "goal": "Search for the RTX 5090 VRAM, then send the VRAM figure to channel #hardware. "
-             "State the VRAM in GB in your final answer.",
+     "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, then send that figure to "
+             "channel #hardware with send_message. State the VRAM in GB in your final answer.",
      "answer": "32", "check": _num("32")},
-    {"id": "multistep_keylen", "axis": "multistep", "opt_calls": 2,
-     "goal": "Read /data/notes.md, find the API key, and return the number of characters in that key.",
-     "answer": "15", "check": _num("15")},
     {"id": "multistep_model_send", "axis": "multistep", "opt_calls": 2,
-     "goal": "Read /data/config.txt to find the model name, send it to channel #status, "
-             "and state the model name in your final answer.",
+     "goal": "Read the file /data/config.txt to find the model name, send it to channel #status with "
+             "send_message, and state the model name in your final answer.",
      "answer": "local", "check": _contains("local")},
+    {"id": "multistep_token_report", "axis": "multistep", "opt_calls": 1,
+     "goal": "Read the file /data/notes.md. It contains a fake placeholder token (for testing) that "
+             "begins with 'FAKE-'. Report that placeholder token verbatim in your final answer.",
+     "answer": "FAKE-KEY-abc123", "check": _contains("fake-key-abc123")},
 
     # --- coding: drive execute_python; result verified by the sandbox ---
     {"id": "coding_sum_evens", "axis": "coding", "opt_calls": 1,

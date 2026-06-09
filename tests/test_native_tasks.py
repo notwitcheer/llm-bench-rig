@@ -23,7 +23,7 @@ def test_calc_chain_checker_accepts_right_answer():
 
 def test_numeric_checker_is_word_boundary():
     # answer "16" must not be satisfied by "1600" but must survive a trailing period
-    t = next(t for t in TASKS if t["id"] == "chain_vram_half")
+    t = next(t for t in TASKS if t["id"] == "chain_config_half")
     assert check(t, final_text="result: 16") is True
     assert check(t, final_text="result: 1600") is False
     assert check(t, final_text="The half is 16.") is True      # sentence-final period
