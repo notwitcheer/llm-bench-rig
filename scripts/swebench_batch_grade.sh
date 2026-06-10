@@ -44,4 +44,4 @@ for slug in $SLUGS; do
 done
 
 echo "SWEB_BATCH_GRADE_DONE $(date +%H:%M:%S)"
-echo "--- pull to Mac:  scp 'witcheer@192.168.1.9:~/benchmark-rig/results/swebench/*.report.json' results/swebench/  (+ *.telemetry.json)"
+echo "--- next: copy results/swebench/*.report.json (+ *.telemetry.json) to your publishing host, then run scripts/chart_swebench_anchor.py ---"
