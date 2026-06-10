@@ -59,3 +59,34 @@ def test_check_commit_fails_on_wrong_value():
 def test_check_commit_tolerates_whitespace_and_int():
     task = {"target": "x", "expect": 64}
     assert check_commit(task, {"x": " 64 "}) is True
+
+
+from lib.agentic.native.agent_loop import run_agent
+
+
+def test_committer_passes_describer_fails_end_to_end():
+    """The keystone: committing vs describing, through the real run_agent loop."""
+    task = {"id": "commit_demo", "axis": "commit", "opt_calls": 1, "target": "vram_budget", "expect": "16"}
+
+    # committer: reads, then CALLS apply_fix with the right value, then answers
+    committer_turns = [
+        {"role": "assistant", "content": None, "tool_calls": [{"id": "c1", "type": "function",
+            "function": {"name": "read_file", "arguments": '{"path": "/data/config.txt"}'}}]},
+        {"role": "assistant", "content": None, "tool_calls": [{"id": "c2", "type": "function",
+            "function": {"name": "apply_fix", "arguments": '{"target": "vram_budget", "value": "16"}'}}]},
+        {"role": "assistant", "content": "done, budget set to 16", "tool_calls": None},
+    ]
+    dispatch, world_state = make_commit_dispatch()
+    run_agent(ScriptedClient(committer_turns), "g", tools=[], max_steps=8, dispatch=dispatch)
+    assert check_commit(task, world_state) is True
+
+    # describer: reads, then only DESCRIBES the fix in prose (never calls apply_fix)
+    describer_turns = [
+        {"role": "assistant", "content": None, "tool_calls": [{"id": "c1", "type": "function",
+            "function": {"name": "read_file", "arguments": '{"path": "/data/config.txt"}'}}]},
+        {"role": "assistant", "content": "the vram budget should be 16", "tool_calls": None},
+    ]
+    dispatch2, world_state2 = make_commit_dispatch()
+    run_agent(ScriptedClient(describer_turns), "g", tools=[], max_steps=8, dispatch=dispatch2)
+    assert check_commit(task, world_state2) is False
+    assert world_state2 == {}
