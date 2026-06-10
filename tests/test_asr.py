@@ -19,3 +19,30 @@ def test_normalize_collapses_whitespace_and_handles_empty():
 
 def test_normalize_unicode_apostrophe():
     assert normalize("don’t") == "dont"
+
+
+from lib.asr.wer import wer, _edit_distance
+
+
+def test_edit_distance_basic():
+    assert _edit_distance(["a", "b", "c"], ["a", "b", "c"]) == 0
+    assert _edit_distance(["a", "b", "c"], ["a", "x", "c"]) == 1   # substitution
+    assert _edit_distance(["a", "b"], ["a", "b", "c"]) == 1        # insertion
+    assert _edit_distance(["a", "b", "c"], ["a", "c"]) == 1        # deletion
+
+
+def test_wer_identical_is_zero():
+    assert wer("the cat sat", "the cat sat") == 0.0
+
+
+def test_wer_one_sub_in_four_words():
+    assert wer("the quick brown fox", "the quick red fox") == 0.25
+
+
+def test_wer_normalizes_before_scoring():
+    assert wer("Hello, World!", "hello world") == 0.0
+
+
+def test_wer_empty_reference():
+    assert wer("", "") == 0.0
+    assert wer("", "spurious words") == 1.0
