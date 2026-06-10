@@ -126,9 +126,11 @@ not blended into the score (so a 128K VRAM wall doesn't corrupt it):
 | Token efficiency | 0.15 | avg tokens/task (efficiency at equal success) |
 | Loop stability | 0.15 | completes without stalling / exceeding the step cap |
 
-Calibration-grade (synthetic, deterministic, re-runnable) — a reality anchor (SWE-bench-style) is future
-work. Harness + 17 unit tests: **[notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig)**
-(`lib/agentic/native/`).
+Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 7 models on
+30 real SWE-bench Verified bugs, the synthetic score predicts real-bug *rank* (Spearman ρ=0.68, 5/7 exact)
+and moderately predicts resolve rate (Pearson r=0.50); it over-ranks models that drive tools fluently but
+don't commit fixes (see `reality-anchor/`). Harness + unit tests:
+**[notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig)** (`lib/agentic/native/`).
 
 ## Notes per model
 

@@ -9,12 +9,15 @@ import numpy as np
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
 
 SYNTH = {r["model"]: float(r["agentic_score"]) for r in csv.DictReader(open("leaderboard/leaderboard.csv"))}
-# slug -> (display, leaderboard model name)
+# slug -> (display, leaderboard model name, color)
 ROWS = [
     ("qwen3-6-27b", "Qwen3.6-27B", "Qwen3.6-27B", CRIMSON),
+    ("qwen3-5-35b-base", "Qwen3.5-35B (base)", "Qwen3.5-35B-A3B (base)", GOLD),
     ("qwopus-glm-18b", "Qwopus-GLM-18B", "Qwopus-GLM-18B", "#e0a030"),
+    ("nemotron-cascade-2-30b", "Nemotron-Cascade-2", "Nemotron-Cascade-2-30B", "#b08a4a"),
     ("kimi-linear-48b-a3b", "Kimi-Linear-48B", "Kimi-Linear-48B-A3B", "#d87070"),
     ("granite-4-1-30b", "Granite-4.1-30b", "Granite-4.1-30b", "#c9a86a"),
+    ("nex-n2-mini", "Nex-N2-mini", "Nex-N2-mini", MUTE),
 ]
 
 xs, ys = [], []
@@ -29,6 +32,10 @@ for slug, disp, synth_name, color in ROWS:
                 va="bottom", xytext=(0, 13), textcoords="offset points")
 
 r = float(np.corrcoef(xs, ys)[0, 1])
+# spearman = pearson on ranks (more robust to the single high-leverage outlier)
+_rx = np.argsort(np.argsort(-np.array(xs))).astype(float)
+_ry = np.argsort(np.argsort(-np.array(ys))).astype(float)
+rho = float(np.corrcoef(_rx, _ry)[0, 1])
 # trend line
 m, b = np.polyfit(xs, ys, 1)
 xl = np.array([min(xs) - 1, max(xs) + 1])
@@ -36,9 +43,13 @@ ax.plot(xl, m * xl + b, color=MUTE, linewidth=1.1, linestyle="--", zorder=2)
 
 ax.set_xlabel("synthetic Agentic Score (40-task harness)", color=TEXT)
 ax.set_ylabel("real SWE-bench Verified resolve %", color=TEXT)
-ax.set_xlim(90.5, 100); ax.set_ylim(15, 80)
-ax.set_title(f"Reality anchor: the synthetic Agentic Score predicts real coding (Pearson r = {r:.2f})",
-             color=GOLD, pad=16, fontsize=12.5)
+# data-driven limits with padding (7 models span a wider synthetic range; harder
+# instances push resolve % lower) — never clip a point
+ax.set_xlim(min(xs) - 1.5, max(xs) + 1.5)
+ax.set_ylim(max(0, min(ys) - 12), min(100, max(ys) + 14))
+ax.set_title(f"Reality anchor (7 models): synthetic Agentic Score vs real SWE-bench Verified\n"
+             f"Pearson r = {r:.2f}   ·   Spearman ρ = {rho:.2f}   ·   5/7 models rank exactly as predicted",
+             color=GOLD, pad=14, fontsize=12)
 for s in ax.spines.values(): s.set_color(GRID)
 ax.tick_params(colors=MUTE); ax.grid(True, color=GRID, linewidth=0.6, zorder=0)
 fig.tight_layout(); fig.savefig("reports/swebench-anchor.png", dpi=150, facecolor=BG)
