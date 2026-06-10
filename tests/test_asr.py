@@ -46,3 +46,23 @@ def test_wer_normalizes_before_scoring():
 def test_wer_empty_reference():
     assert wer("", "") == 0.0
     assert wer("", "spurious words") == 1.0
+
+
+from lib.asr.score import score_split, rtfx
+
+
+def test_score_split_micro_averages_wer():
+    pairs = [("the quick brown fox", "the quick red fox"), ("good day", "good day")]
+    out = score_split(pairs)
+    assert out["n"] == 2
+    assert out["words"] == 6
+    assert out["wer"] == round(1 / 6, 4)
+
+
+def test_score_split_empty():
+    assert score_split([]) == {"wer": 0.0, "n": 0, "words": 0}
+
+
+def test_rtfx():
+    assert rtfx(600.0, 30.0) == 20.0
+    assert rtfx(100.0, 0.0) == 0.0
