@@ -180,6 +180,29 @@ TASKS = [
      "goal": "Call read_doc with doc_id 'logs-128k-late', find the activation code for vault 104 in the "
              "document, and report that code.",
      "answer": vault_code(104), "check": _contains(vault_code(104))},
+
+    # --- commit: must actually COMMIT the fix via apply_fix (state-verified, NOT final text).
+    #     Describe-only -> world_state stays empty -> fail. Mirrors SWE-bench empty patches.
+    #     Verified by check_commit(task, world_state) in run_native, not by `check` above. ---
+    {"id": "commit_config_half", "axis": "commit", "opt_calls": 2, "target": "vram_budget", "expect": "16",
+     "goal": "Read the file /data/config.txt, take the vram value in GB, halve it, then commit it by "
+             "calling apply_fix with target 'vram_budget' and the result as the value."},
+    {"id": "commit_search_double", "axis": "commit", "opt_calls": 2, "target": "vram_x2", "expect": "64",
+     "goal": "Use web_search to find the RTX 5090's VRAM in GB, double it, then commit it by calling "
+             "apply_fix with target 'vram_x2' and the result as the value."},
+    {"id": "commit_record_owner", "axis": "commit", "opt_calls": 2, "target": "owner_007", "expect": "ops",
+     "goal": "Use read_record to read record 007, find its owner, then commit it by calling apply_fix "
+             "with target 'owner_007' and the owner as the value."},
+    {"id": "commit_build_number", "axis": "commit", "opt_calls": 2, "target": "build", "expect": "9562",
+     "goal": "Fetch https://api.local/health, read the build number, then commit it by calling apply_fix "
+             "with target 'build' and the build number as the value."},
+    {"id": "commit_recovery_status", "axis": "commit", "opt_calls": 2, "target": "status_42", "expect": "archived",
+     "goal": "Use read_record to read record 42 (ids may need a specific format), find its status, then "
+             "commit it by calling apply_fix with target 'status_42' and the status as the value."},
+    {"id": "commit_https_build", "axis": "commit", "opt_calls": 3, "target": "build_plus1", "expect": "9563",
+     "goal": "Fetch http://api.local/health (insecure transport will fail — adapt to https), read the "
+             "build number, add 1 with calc, then commit it by calling apply_fix with target 'build_plus1' "
+             "and the result as the value."},
 ]
 
 

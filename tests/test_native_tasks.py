@@ -3,10 +3,14 @@ from lib.agentic.native.tasks import TASKS, check
 
 def test_tasks_present_and_shaped():
     assert len(TASKS) >= 40
-    AXES = {"chain", "multistep", "coding", "error_recovery", "distractor", "long_context"}
+    AXES = {"chain", "multistep", "coding", "error_recovery", "distractor", "long_context", "commit"}
     for t in TASKS:
         assert t["id"] and t["goal"] and t["axis"] in AXES
-        assert callable(t["check"]) or t.get("answer") is not None
+        if t["axis"] == "commit":
+            # commit tasks are state-verified (check_commit on target/expect), not check/answer
+            assert t.get("target") and t.get("expect") is not None
+        else:
+            assert callable(t["check"]) or t.get("answer") is not None
         assert isinstance(t["opt_calls"], int) and t["opt_calls"] >= 1
 
 

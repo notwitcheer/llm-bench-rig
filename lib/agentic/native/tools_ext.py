@@ -86,3 +86,11 @@ EXT_LONG_TOOLS = [
 ]
 EXT_NS = {"read_record": read_record, "fetch": fetch, "web_search_v2": web_search_v2,
           "calc_legacy": calc_legacy, "read_cache": read_cache, "read_doc": read_doc}
+
+# commit axis: apply_fix is executed by a per-run dispatch (lib/agentic/native/commit.py),
+# not via EXT_NS — its side effect (world_state) is per-run, not a static function.
+COMMIT_TOOLS = [
+    {"name": "apply_fix", "signature": "apply_fix(target: str, value: str) -> str",
+     "description": "Commit a change: set <target> to <value>. This is the ONLY way to actually "
+                    "apply a fix — describing the change in your answer is not enough."},
+]

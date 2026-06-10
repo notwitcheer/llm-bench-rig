@@ -90,3 +90,23 @@ def test_committer_passes_describer_fails_end_to_end():
     run_agent(ScriptedClient(describer_turns), "g", tools=[], max_steps=8, dispatch=dispatch2)
     assert check_commit(task, world_state2) is False
     assert world_state2 == {}
+
+
+from lib.agentic.native.tools_ext import COMMIT_TOOLS
+from lib.agentic.native.schemas import to_openai_tools
+from lib.agentic.native.tasks import TASKS
+
+
+def test_commit_tools_schema_parses():
+    schemas = to_openai_tools(COMMIT_TOOLS)
+    fn = schemas[0]["function"]
+    assert fn["name"] == "apply_fix"
+    assert set(fn["parameters"]["properties"]) == {"target", "value"}
+
+
+def test_commit_tasks_well_formed():
+    commit = [t for t in TASKS if t["axis"] == "commit"]
+    assert len(commit) >= 6
+    for t in commit:
+        assert t["target"] and t["expect"] and t["goal"] and "opt_calls" in t
+        assert "apply_fix" in t["goal"]  # the task names the commit tool
