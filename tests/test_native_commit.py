@@ -124,3 +124,16 @@ def test_short_axes_still_excludes_commit():
 def test_commit_tools_exposed_to_commit_runs():
     names = {s["function"]["name"] for s in rn._commit_tools()}
     assert "apply_fix" in names
+
+
+from scripts.correlate_commit_axis import pearson, spearman
+
+
+def test_pearson_perfect_positive():
+    assert round(pearson([1, 2, 3], [2, 4, 6]), 3) == 1.0
+
+
+def test_spearman_rank_based():
+    # monotonic but non-linear -> spearman 1.0, pearson < 1.0
+    assert round(spearman([1, 2, 3], [1, 4, 9]), 3) == 1.0
+    assert pearson([1, 2, 3], [1, 4, 9]) < 1.0
