@@ -66,3 +66,24 @@ def test_score_split_empty():
 def test_rtfx():
     assert rtfx(600.0, 30.0) == 20.0
     assert rtfx(100.0, 0.0) == 0.0
+
+
+import json
+from scripts.asr_report import summarize_model
+
+
+def test_summarize_model_computes_per_split_wer_and_rtfx(tmp_path):
+    d = tmp_path / "parakeet"; d.mkdir()
+    rows = [
+        {"id": "1", "split": "test-clean", "reference": "the quick brown fox", "hypothesis": "the quick red fox"},
+        {"id": "2", "split": "test-clean", "reference": "good day", "hypothesis": "good day"},
+        {"id": "3", "split": "test-other", "reference": "hello there world", "hypothesis": "hello there world"},
+    ]
+    (d / "transcripts.jsonl").write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    (d / "timing.json").write_text(json.dumps({"audio_seconds": 600.0, "proc_seconds": 30.0, "peak_vram_mib": 4200}))
+
+    s = summarize_model(str(d))
+    assert s["wer_clean"] == round(1 / 6, 4)
+    assert s["wer_other"] == 0.0
+    assert s["rtfx"] == 20.0
+    assert s["peak_vram_mib"] == 4200
