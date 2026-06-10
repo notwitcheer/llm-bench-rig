@@ -87,3 +87,11 @@ def test_summarize_model_computes_per_split_wer_and_rtfx(tmp_path):
     assert s["wer_other"] == 0.0
     assert s["rtfx"] == 20.0
     assert s["peak_vram_mib"] == 4200
+
+
+from scripts.chart_asr import label_for
+
+
+def test_label_for_formats_model_line():
+    s = {"model": "parakeet-tdt-0.6b-v2", "wer_clean": 0.062, "wer_other": 0.094, "rtfx": 350.0}
+    assert label_for(s) == "parakeet-tdt-0.6b-v2\nWER 6.2/9.4%  ·  350x"
