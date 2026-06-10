@@ -8,8 +8,9 @@ from lib.agentic.native.client import LlamaClient
 from lib.agentic.native.agent_loop import run_agent
 from lib.agentic.native.tasks import TASKS, check
 from lib.agentic.native.metrics import score_run, agentic_score, longctx_summary
+from lib.agentic.native.commit import make_commit_dispatch, check_commit
 from lib.agentic.mock_tools import TOOLS
-from lib.agentic.native.tools_ext import EXT_SHORT_TOOLS, EXT_LONG_TOOLS
+from lib.agentic.native.tools_ext import EXT_SHORT_TOOLS, EXT_LONG_TOOLS, COMMIT_TOOLS
 
 EXEC_PY = {"type": "function", "function": {"name": "execute_python",
            "description": "Run Python; assign `result`. mock tools (web_search, read_file, calc, ...) are in scope.",
@@ -26,16 +27,25 @@ def _long_tools():
     return to_openai_tools(TOOLS) + [EXEC_PY] + to_openai_tools(EXT_LONG_TOOLS)
 
 
+def _commit_tools():
+    return _short_tools() + to_openai_tools(COMMIT_TOOLS)
+
+
 def run(slug: str, mode: str = "short"):
     if mode == "short":
-        tasks = [t for t in TASKS if t["axis"] in SHORT_AXES]
+        core_tasks = [t for t in TASKS if t["axis"] in SHORT_AXES]
+        commit_tasks = [t for t in TASKS if t["axis"] == "commit"]
         tools, client = _short_tools(), LlamaClient()
+        ctools = _commit_tools()
     else:
         tier = "32k" if mode == "long32k" else "128k"
-        tasks = [t for t in TASKS if t["axis"] == "long_context" and t["ctx_tier"] == tier]
+        core_tasks = [t for t in TASKS if t["axis"] == "long_context" and t["ctx_tier"] == tier]
+        commit_tasks = []
         tools, client = _long_tools(), LlamaClient(timeout=600)
+        ctools = []
+
     runs, total_tokens, details = [], 0, []
-    for t in tasks:
+    for t in core_tasks:
         try:
             res = run_agent(client, t["goal"], tools, max_steps=8)
             ok = check(t, res.final_text)
@@ -51,10 +61,36 @@ def run(slug: str, mode: str = "short"):
             details.append({"id": t["id"], "axis": t["axis"], "success": False, "tool_calls": 0,
                             "bad_calls": 0, "tokens": 0, "stalled": True, "error": f"{type(e).__name__}: {e}"})
             print(f"[{mode}] {t['id']:24} ERR {type(e).__name__}: {e}")
+
+    # commit axis: per-task mutating dispatch + state-based verification (not final-text)
+    commit_runs, commit_details = [], []
+    for t in commit_tasks:
+        try:
+            dispatch, world_state = make_commit_dispatch()
+            res = run_agent(client, t["goal"], ctools, max_steps=8, dispatch=dispatch)
+            ok = check_commit(t, world_state)
+            commit_runs.append(score_run(ok, res.n_tool_calls, t["opt_calls"], res.bad_calls, res.stalled))
+            commit_details.append({"id": t["id"], "axis": "commit", "success": ok,
+                                   "committed": bool(world_state), "tool_calls": res.n_tool_calls,
+                                   "bad_calls": res.bad_calls, "tokens": res.n_tokens, "stalled": res.stalled})
+            print(f"[{mode}] {t['id']:24} {'OK' if ok else 'XX'} committed={bool(world_state)}")
+        except Exception as e:
+            commit_runs.append(score_run(False, 0, t["opt_calls"], 0, True))
+            commit_details.append({"id": t["id"], "axis": "commit", "success": False, "committed": False,
+                                   "tool_calls": 0, "bad_calls": 0, "tokens": 0, "stalled": True,
+                                   "error": f"{type(e).__name__}: {e}"})
+            print(f"[{mode}] {t['id']:24} ERR {type(e).__name__}: {e}")
+
     p = Path(f"results/{slug}"); p.mkdir(parents=True, exist_ok=True)
     if mode == "short":
-        summ = agentic_score(runs, tokens_per_task=total_tokens / max(1, len(tasks)))
-        out = {"model": slug, **summ, "details": details}
+        # headline `score` stays defined over the 5 core axes only (comparable to prior runs)
+        summ = agentic_score(runs, tokens_per_task=total_tokens / max(1, len(core_tasks)))
+        out = {"model": slug, **summ, "details": details + commit_details}
+        if commit_runs:
+            out["commit_rate"] = round(100 * sum(r["success"] for r in commit_runs) / len(commit_runs), 1)
+            folded = agentic_score(runs + commit_runs,
+                                   tokens_per_task=total_tokens / max(1, len(core_tasks)))
+            out["score_with_commit"] = folded["score"]
         (p / "agentic_native.json").write_text(json.dumps(out, indent=2))
     else:
         tier = "32k" if mode == "long32k" else "128k"

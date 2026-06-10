@@ -110,3 +110,17 @@ def test_commit_tasks_well_formed():
     for t in commit:
         assert t["target"] and t["expect"] and t["goal"] and "opt_calls" in t
         assert "apply_fix" in t["goal"]  # the task names the commit tool
+
+
+import lib.agentic.native.run_native as rn
+
+
+def test_short_axes_still_excludes_commit():
+    # the published headline score must stay defined over the original 5 core axes only
+    assert "commit" not in rn.SHORT_AXES
+    assert rn.SHORT_AXES == {"chain", "multistep", "coding", "error_recovery", "distractor"}
+
+
+def test_commit_tools_exposed_to_commit_runs():
+    names = {s["function"]["name"] for s in rn._commit_tools()}
+    assert "apply_fix" in names
