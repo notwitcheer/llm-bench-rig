@@ -17,3 +17,8 @@ def make_commit_dispatch(base=dispatch_tool):
         return base(name, args)
 
     return dispatch, world_state
+
+
+def check_commit(task: dict, world_state: dict) -> bool:
+    """Success iff the model committed the expected value via apply_fix (state-verified)."""
+    return str(world_state.get(task["target"], "")).strip() == str(task["expect"]).strip()
