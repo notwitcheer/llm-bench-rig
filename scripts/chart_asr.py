@@ -8,7 +8,9 @@ BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0
 
 
 def label_for(s: dict) -> str:
-    return f"{s['model']}\nWER {s['wer_clean']*100:.1f}/{s['wer_other']*100:.1f}%  ·  {s['rtfx']:.0f}x"
+    vram = (s.get("peak_vram_mib") or 0) / 1024
+    return (f"{s['model']}\nWER {s['wer_clean']*100:.1f}/{s['wer_other']*100:.1f}%  ·  "
+            f"{s['rtfx']:.0f}x  ·  {vram:.1f}GB")
 
 
 def main(summary_path="results/asr/summary.json"):
@@ -24,6 +26,12 @@ def main(summary_path="results/asr/summary.json"):
     ax.set_ylabel("RTFx — audio-sec / proc-sec (higher better)", color=TEXT)
     ax.set_title("Sovereign ASR on one RTX 5090: 2026 TDT transducer vs 2022 attention",
                  color=GOLD, pad=16, fontsize=12.5)
+    xs = [s["wer_other"] * 100 for s in rows]
+    ys = [s["rtfx"] for s in rows]
+    ax.set_xlim(min(xs) - 0.6, max(xs) + 0.7)
+    ax.set_ylim(0, max(ys) * 1.18)
+    ax.text(0.02, 0.97, "top-left = faster + more accurate", transform=ax.transAxes,
+            color=MUTE, fontsize=9, ha="left", va="top", style="italic")
     for sp in ax.spines.values(): sp.set_color(GRID)
     ax.tick_params(colors=MUTE); ax.grid(True, color=GRID, linewidth=0.6, zorder=0)
     fig.tight_layout(); fig.savefig("reports/asr-head-to-head.png", dpi=150, facecolor=BG)
