@@ -7,7 +7,7 @@ import json, csv
 from collections import Counter
 from pathlib import Path
 
-DATE = "2026-06-09"  # stamp; bench rig has no live clock in workflow contexts
+DATE = "2026-06-12"  # stamp; bench rig has no live clock in workflow contexts
 
 # slug -> display metadata (the result JSON carries the metrics; this carries identity)
 META = {
@@ -27,6 +27,9 @@ META = {
                             "note": "Nvidia; the rig's prior speed-king"},
     "qwopus-glm-18b":      {"name": "Qwopus-GLM-18B", "params": "18B", "quant": "Q6_K",
                             "repo": "KyleHessling1/Qwopus-GLM-18B-Merged-GGUF", "note": "GLM-based community merge"},
+    "qwopus3-6-27b-coder": {"name": "Qwopus3.6-27B-Coder", "params": "27B", "quant": "Q5_K_M",
+                            "repo": "Jackrong/Qwopus3.6-27B-Coder-MTP-GGUF",
+                            "note": "coder SFT of Qwopus3.6-v2; trained on Hermes agent traces — partially in-distribution for this bench (see reality anchor)"},
 }
 
 rows = []
@@ -126,11 +129,15 @@ not blended into the score (so a 128K VRAM wall doesn't corrupt it):
 | Token efficiency | 0.15 | avg tokens/task (efficiency at equal success) |
 | Loop stability | 0.15 | completes without stalling / exceeding the step cap |
 
-Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 7 models on
-30 real SWE-bench Verified bugs, the synthetic score predicts real-bug *rank* (Spearman ρ=0.68, 5/7 exact)
-and moderately predicts resolve rate (Pearson r=0.50); it over-ranks models that drive tools fluently but
-don't commit fixes (see `reality-anchor/`). Harness + unit tests:
-**[notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig)** (`lib/agentic/native/`).
+Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 8 models on
+30 real SWE-bench Verified bugs, the synthetic score predicts real-bug *rank* (Spearman ρ=0.76) and
+moderately predicts resolve rate (Pearson r=0.59). Two known failure modes, both caught by the anchor:
+it over-ranks models that drive tools fluently but don't commit fixes (Nemotron-Cascade-2: synthetic #5,
+real last), and it over-ranks models whose training data overlaps the bench's flavor (Qwopus3.6-27B-Coder:
+trained on Hermes agent traces, posts a perfect 100 synthetic — then resolves fewer real bugs than its own
+base model, 57% vs 63%). Read the top of the board with the anchor open (see `reality-anchor/`).
+Harness + unit tests: **[notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig)**
+(`lib/agentic/native/`).
 
 ## Notes per model
 
