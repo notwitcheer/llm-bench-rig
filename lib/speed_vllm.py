@@ -64,6 +64,46 @@ def measure_completion(base_url, model, prompt, max_tokens):
     }
 
 
+def measure_chat_completion(base_url, model, prompt, max_tokens, chat_template_kwargs=None):
+    """Streaming CHAT completion; same return shape as measure_completion. Instruction-tuned
+    models (gemma-4-it) need the chat template to produce real output — raw /completions
+    degenerates into repetition, which would make spec-decode acceptance meaningless."""
+    t0 = time.perf_counter()
+    first = None
+    prompt_tokens = output_tokens = 0
+    body = {
+        "model": model, "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": max_tokens, "temperature": 0,
+        "stream": True, "stream_options": {"include_usage": True},
+    }
+    if chat_template_kwargs:
+        body["chat_template_kwargs"] = chat_template_kwargs
+    with httpx.Client(timeout=300) as client:
+        with client.stream("POST", f"{base_url.rstrip('/')}/chat/completions", json=body) as response:
+            response.raise_for_status()
+            for line in response.iter_lines():
+                if not line.startswith("data: "):
+                    continue
+                payload = line[6:].strip()
+                if payload == "[DONE]":
+                    break
+                d = _json.loads(payload)
+                if d.get("choices") and d["choices"][0].get("delta", {}).get("content"):
+                    if first is None:
+                        first = time.perf_counter()
+                    output_tokens += 1
+                if d.get("usage"):
+                    prompt_tokens = d["usage"].get("prompt_tokens", prompt_tokens)
+                    output_tokens = d["usage"].get("completion_tokens", output_tokens)
+    end = time.perf_counter()
+    return {
+        "prompt_tokens": prompt_tokens,
+        "output_tokens": output_tokens,
+        "ttft_s": (first - t0) if first else (end - t0),
+        "total_s": end - t0,
+    }
+
+
 def get_vllm_models(base_url):
     with httpx.Client(timeout=10) as client:
         resp = client.get(f"{base_url.rstrip('/')}/models")
