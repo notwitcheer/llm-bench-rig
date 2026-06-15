@@ -30,6 +30,9 @@ META = {
     "qwopus3-6-27b-coder": {"name": "Qwopus3.6-27B-Coder", "params": "27B", "quant": "Q5_K_M",
                             "repo": "Jackrong/Qwopus3.6-27B-Coder-MTP-GGUF",
                             "note": "coder SFT of Qwopus3.6-v2; trained on Hermes agent traces — partially in-distribution for this bench (see reality anchor)"},
+    "north-mini-code":     {"name": "North-Mini-Code-1.0", "params": "30B-A3B", "quant": "Q6_K",
+                            "repo": "unsloth/North-Mini-Code-1.0-GGUF",
+                            "note": "Cohere agentic-coding MoE (cohere2moe), reasoning ON (its default); lands last despite the agentic-coding tuning — read vs its self-published SWE-bench Verified (reality anchor)"},
 }
 
 rows = []

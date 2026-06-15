@@ -18,19 +18,21 @@ How well do local models actually **drive a tool-using agent loop**? Not single-
 benchmarks — a real loop: native OpenAI tool-calling through `llama-server`, multi-step deterministic
 tasks, programmatic verification. Everything runs on a **single RTX 5090 32GB**.
 
-Updated **2026-06-09** · llama.cpp b9562 · `--jinja` native tool-calling · temp 0.
+Updated **2026-06-12** · llama.cpp b9562 · `--jinja` native tool-calling · temp 0.
 
 ## Leaderboard
 
 | # | model | params | Agentic Score | success | tool-eff | tokens/task | chain | multistep | coding | lc@32k | lc@128k |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | **Qwen3.6-27B** 🏆 | 27B | **98.61** | 97% | 1.00 | 285 | 8/8 | 8/8 | 8/8 | 100% | 100% |
-| 2 | **Qwen3.5-35B-A3B (base)** | 35B-A3B | **97.5** | 100% | 0.88 | 241 | 8/8 | 8/8 | 8/8 | 100% | 50% |
-| 3 | **Qwopus-GLM-18B** | 18B | **97.08** | 97% | 0.92 | 232 | 8/8 | 8/8 | 8/8 | 100% | 100% |
-| 4 | **Nemotron-Cascade-2-30B** | 30B-A3B | **96.94** | 100% | 0.85 | 320 | 8/8 | 8/8 | 8/8 | 50% | 0% |
-| 5 | **Kimi-Linear-48B-A3B** | 48B-A3B | **92.91** | 94% | 0.78 | 185 | 7/8 | 7/8 | 8/8 | 100% | 100% |
-| 6 | **Granite-4.1-30b** | 30B | **92.04** | 86% | 0.95 | 79 | 8/8 | 8/8 | 7/8 | 50% | OOM |
-| 7 | **Nex-N2-mini** | 35B-A3B | **90.42** | 83% | 0.94 | 82 | 7/8 | 7/8 | 7/8 | 100% | 100% |
+| 1 | **Qwopus3.6-27B-Coder** 🏆 | 27B | **100.0** | 100% | 1.00 | 195 | 8/8 | 8/8 | 8/8 | - | - |
+| 2 | **Qwen3.6-27B** | 27B | **98.61** | 97% | 1.00 | 285 | 8/8 | 8/8 | 8/8 | 100% | 100% |
+| 3 | **Qwen3.5-35B-A3B (base)** | 35B-A3B | **97.5** | 100% | 0.88 | 241 | 8/8 | 8/8 | 8/8 | 100% | 50% |
+| 4 | **Qwopus-GLM-18B** | 18B | **97.08** | 97% | 0.92 | 232 | 8/8 | 8/8 | 8/8 | 100% | 100% |
+| 5 | **Nemotron-Cascade-2-30B** | 30B-A3B | **96.94** | 100% | 0.85 | 320 | 8/8 | 8/8 | 8/8 | 50% | 0% |
+| 6 | **Kimi-Linear-48B-A3B** | 48B-A3B | **92.91** | 94% | 0.78 | 185 | 7/8 | 7/8 | 8/8 | 100% | 100% |
+| 7 | **Granite-4.1-30b** | 30B | **92.04** | 86% | 0.95 | 79 | 8/8 | 8/8 | 7/8 | 50% | OOM |
+| 8 | **Nex-N2-mini** | 35B-A3B | **90.42** | 83% | 0.94 | 82 | 7/8 | 7/8 | 7/8 | 100% | 100% |
+| 9 | **North-Mini-Code-1.0** | 30B-A3B | **90.42** | 83% | 0.94 | 286 | 6/8 | 6/8 | 8/8 | - | - |
 
 *tool-eff = tool calls vs optimal (1.0 = no wasted calls). tokens/task = avg completion tokens (lower =
 leaner). A sub-5% score gap is a tie.*
@@ -55,14 +57,19 @@ not blended into the score (so a 128K VRAM wall doesn't corrupt it):
 | Token efficiency | 0.15 | avg tokens/task (efficiency at equal success) |
 | Loop stability | 0.15 | completes without stalling / exceeding the step cap |
 
-Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 7 models on
-30 real SWE-bench Verified bugs, the synthetic score predicts real-bug *rank* (Spearman ρ=0.68, 5/7 exact)
-and moderately predicts resolve rate (Pearson r=0.50); it over-ranks models that drive tools fluently but
-don't commit fixes (see `reality-anchor/`). Harness + unit tests:
-**[notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig)** (`lib/agentic/native/`).
+Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 8 models on
+30 real SWE-bench Verified bugs, the synthetic score predicts real-bug *rank* (Spearman ρ=0.76) and
+moderately predicts resolve rate (Pearson r=0.59). Two known failure modes, both caught by the anchor:
+it over-ranks models that drive tools fluently but don't commit fixes (Nemotron-Cascade-2: synthetic #5,
+real last), and it over-ranks models whose training data overlaps the bench's flavor (Qwopus3.6-27B-Coder:
+trained on Hermes agent traces, posts a perfect 100 synthetic — then resolves fewer real bugs than its own
+base model, 57% vs 63%). Read the top of the board with the anchor open (see `reality-anchor/`).
+Harness + unit tests: **[notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig)**
+(`lib/agentic/native/`).
 
 ## Notes per model
 
+- **Qwopus3.6-27B-Coder** (Jackrong/Qwopus3.6-27B-Coder-MTP-GGUF): coder SFT of Qwopus3.6-v2; trained on Hermes agent traces — partially in-distribution for this bench (see reality anchor)
 - **Qwen3.6-27B** (unsloth/Qwen3.6-27B-GGUF): dense 27B; the model Donald itself runs
 - **Qwen3.5-35B-A3B (base)** (bartowski/Qwen_Qwen3.5-35B-A3B-GGUF): generalist base, no agentic post-train
 - **Qwopus-GLM-18B** (KyleHessling1/Qwopus-GLM-18B-Merged-GGUF): GLM-based community merge
@@ -70,6 +77,7 @@ don't commit fixes (see `reality-anchor/`). Harness + unit tests:
 - **Kimi-Linear-48B-A3B** (bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF): linear-attention; runs natively on one 5090; long-context untested here
 - **Granite-4.1-30b** (unsloth/granite-4.1-30b-GGUF): leanest competent agent on the board
 - **Nex-N2-mini** (eramax/Nex-N2-mini-gguf): agentic post-train of Qwen3.5; Adaptive Thinking
+- **North-Mini-Code-1.0** (unsloth/North-Mini-Code-1.0-GGUF): Cohere agentic-coding MoE (cohere2moe), reasoning ON (its default); lands last despite the agentic-coding tuning — read vs its self-published SWE-bench Verified (reality anchor)
 
 ## How it grows
 
