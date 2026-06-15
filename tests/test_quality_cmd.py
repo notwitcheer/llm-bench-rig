@@ -22,3 +22,12 @@ def test_server_command_cpu_moe_zero_is_included():
     cmd = build_server_command("/m/model.gguf", port=8090, ngl=99, n_cpu_moe=0)
     assert "--n-cpu-moe" in cmd
     assert cmd[cmd.index("--n-cpu-moe") + 1] == "0"
+
+
+def test_server_command_includes_jinja():
+    """--jinja is required so llama-server applies the GGUF's Jinja chat template and
+    honors chat_template_kwargs (e.g. reasoning:False for cohere2/North reasoning models)
+    AND routes thinking spans into reasoning_content instead of leaking into content.
+    Without it, reasoning models (North-Mini-Code) think on every question -> slow + unparsed."""
+    cmd = build_server_command("/m/model.gguf", port=8090, ngl=99)
+    assert "--jinja" in cmd

@@ -38,7 +38,15 @@ class LLMClient:
             "temperature": temperature,
         }
         if not self.think:
-            payload["chat_template_kwargs"] = {"enable_thinking": False}
+            # Suppress reasoning across template families in one payload: Gemma/Qwen read
+            # `enable_thinking`, Cohere/North (cohere2moe) read `reasoning`/`reasoning_effort`.
+            # Each template uses the key it knows and ignores the rest. Requires the server
+            # to run with --jinja (build_server_command) or these kwargs are dropped.
+            payload["chat_template_kwargs"] = {
+                "enable_thinking": False,
+                "reasoning": False,
+                "reasoning_effort": "none",
+            }
         if stop:
             payload["stop"] = stop
         _clean = _strip_blank_edges if preserve_indent else str.strip

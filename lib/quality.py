@@ -16,7 +16,12 @@ def build_server_command(model_path: str, port: int, ngl: int,
                          n_cpu_moe: int | None = None) -> list[str]:
     cmd = [str(Path(get("llama_cpp.server_bin")).expanduser()),
            "-m", model_path, "--port", str(port),
-           "--n-gpu-layers", str(ngl), "--host", "127.0.0.1"]
+           "--n-gpu-layers", str(ngl), "--host", "127.0.0.1",
+           # --jinja applies the GGUF's own Jinja chat template (so chat_template_kwargs
+           # like reasoning:False are honored) and routes reasoning spans into
+           # reasoning_content instead of leaking <think> tokens into content. Without it,
+           # reasoning models (cohere2moe/North-Mini) think on every question -> slow + unparsed.
+           "--jinja"]
     if ctx_size:
         cmd += ["--ctx-size", str(ctx_size)]
     if n_cpu_moe is not None:
@@ -119,7 +124,7 @@ def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = N
     if sample:
         print(f"[quality] Sampling {sample:.0%} of MMLU/HellaSwag (seed=42)")
     if not think:
-        print(f"[quality] Thinking disabled (/nothink injected)")
+        print(f"[quality] Thinking disabled (chat_template_kwargs: enable_thinking/reasoning off, --jinja)")
 
     if engine == "llama.cpp":
         server_proc = start_llama_server(model_path, **(offload or {}))
