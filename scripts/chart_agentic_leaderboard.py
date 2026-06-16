@@ -9,15 +9,20 @@ import numpy as np
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
 AMBER = "#d8902f"
 
-# 7-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
+# 12-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
 MODELS = [
-    ("qwen3-6-27b",         "Qwen3.6-27B",            CRIMSON),
+    ("qwopus3-6-27b-coder", "Qwopus3.6-27B-Coder",    "#f0b840"),
+    ("qwen3-6-35b-base",    "Qwen3.6-35B-A3B (base)", CRIMSON),
+    ("qwen3-6-27b",         "Qwen3.6-27B",            "#e07840"),
+    ("qwen3-6-35b-opus-distill", "Qwen3.6-35B Opus-distill", "#c08850"),
     ("qwen3-5-35b-base",    "Qwen3.5-35B-A3B (base)", GOLD),
     ("qwopus-glm-18b",      "Qwopus-GLM-18B",         "#e0a030"),
     ("nemotron-cascade-2-30b", "Nemotron-Cascade-2-30B", "#b85c3c"),
+    ("qwable-v1",           "Qwable-v1",              "#d05050"),
     ("kimi-linear-48b-a3b", "Kimi-Linear-48B-A3B",    "#d87070"),
     ("granite-4-1-30b",     "Granite-4.1-30b",        "#c9a86a"),
     ("nex-n2-mini",         "Nex-N2-mini",            MUTE),
+    ("north-mini-code",     "North-Mini-Code-1.0",    "#9c6b4a"),
 ]
 D = {s: json.loads(Path(f"results/{s}/agentic_native.json").read_text()) for s, _, _ in MODELS}
 
@@ -34,7 +39,9 @@ def lc(slug, tier):
 SHORT = {"qwen3-6-27b": "Qwen3.6-27B", "qwen3-5-35b-base": "Qwen3.5 base",
          "qwopus-glm-18b": "Qwopus-18B", "nemotron-cascade-2-30b": "Nemotron-C2",
          "kimi-linear-48b-a3b": "Kimi-Linear", "granite-4-1-30b": "Granite-30B",
-         "nex-n2-mini": "Nex-N2-mini"}
+         "nex-n2-mini": "Nex-N2-mini", "qwopus3-6-27b-coder": "Qwopus-Coder",
+         "north-mini-code": "North-Mini", "qwen3-6-35b-base": "Qwen3.6 base",
+         "qwen3-6-35b-opus-distill": "Opus-distill", "qwable-v1": "Qwable-v1"}
 fig, ax = plt.subplots(figsize=(11, 6.5), facecolor=BG); ax.set_facecolor(BG)
 # sort by x (tokens) and alternate label up/down so x-adjacent points never collide
 by_x = sorted(MODELS, key=lambda m: D[m[0]]["tokens_per_task"])
