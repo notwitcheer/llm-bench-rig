@@ -33,6 +33,15 @@ META = {
     "north-mini-code":     {"name": "North-Mini-Code-1.0", "params": "30B-A3B", "quant": "Q6_K",
                             "repo": "unsloth/North-Mini-Code-1.0-GGUF",
                             "note": "Cohere agentic-coding MoE (cohere2moe), reasoning ON (its default); lands last despite the agentic-coding tuning — read vs its self-published SWE-bench Verified (reality anchor)"},
+    "qwen3-6-35b-base":    {"name": "Qwen3.6-35B-A3B (base)", "params": "35B-A3B", "quant": "Q5_K_M",
+                            "repo": "unsloth/Qwen3.6-35B-A3B-GGUF",
+                            "note": "vanilla generalist base — Qwable's untuned starting point; tops the board and ties best real SWE-bench resolve (19/30)"},
+    "qwen3-6-35b-opus-distill": {"name": "Qwen3.6-35B-A3B Opus-distill", "params": "35B-A3B", "quant": "Q5_K_M",
+                            "repo": "mradermacher/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-GGUF",
+                            "note": "base + Claude Opus-4.7 reasoning distill — the intermediate step before Qwable's Fable-5 agentic SFT"},
+    "qwable-v1":           {"name": "Qwable-v1", "params": "35B-A3B", "quant": "Q5_K_M",
+                            "repo": "lordx64/Qwable-v1-GGUF",
+                            "note": "base + Opus-4.7 reasoning distill + Fable-5 agentic SFT. Each step LOWERS the agentic score (99.58→97.92→96.25) and real resolve drops 19→11/30 vs the vanilla base — the distillation regressed agentic-coding capability (not a mirage: synthetic fairly predicts real here)"},
 }
 
 rows = []
