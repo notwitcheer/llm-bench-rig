@@ -85,3 +85,58 @@ def random_endpoints(size, rng):
     while b == a:
         b = (rng.randrange(size), rng.randrange(size))
     return a, b
+
+
+@dataclass
+class MazeEnv:
+    maze: Maze
+    pos: tuple
+    goal: tuple
+
+
+def env_reset(maze, start, goal):
+    return MazeEnv(maze=maze, pos=start, goal=goal)
+
+
+def wall_bits(maze, cell):
+    """4-bit mask over N,E,S,W; bit set => WALL in that direction. Range 0..15."""
+    bits = 0
+    for i, d in enumerate(DIR_ORDER):
+        if d not in maze.passages[cell]:
+            bits |= (1 << i)
+    return bits
+
+
+def bearing(cell, goal):
+    """Coarse 8-way octant from cell toward goal (0..7). Goal-at-cell -> 0."""
+    dr, dc = goal[0] - cell[0], goal[1] - cell[1]
+    if dr == 0 and dc == 0:
+        return 0
+    return round(math.atan2(-dr, dc) / (math.pi / 4)) % 8   # -dr: row+ is downward
+
+
+def env_observe(env):
+    return wall_bits(env.maze, env.pos), bearing(env.pos, env.goal)
+
+
+def env_step(env, action):
+    """Move one cell if the passage is open. Returns True if moved, False if blocked."""
+    if action not in env.maze.passages[env.pos]:
+        return False
+    dr, dc = DIRS[action]
+    env.pos = (env.pos[0] + dr, env.pos[1] + dc)
+    return True
+
+
+def at_goal(env):
+    return env.pos == env.goal
+
+
+def rollout_episode(env, policy_fn, max_steps):
+    """policy_fn(env) -> direction str. True if goal reached within max_steps. Blocked moves
+    waste a step (so dead-ends cost budget). Pure — no torch — for unit testing."""
+    for _ in range(max_steps):
+        if at_goal(env):
+            return True
+        env_step(env, policy_fn(env))
+    return at_goal(env)

@@ -31,3 +31,41 @@ def test_bfs_returns_valid_shortest_path():
 def test_path_to_actions_matches_moves():
     acts = path_to_actions([(0, 0), (0, 1), (1, 1)])
     assert acts == ["E", "S"]
+
+
+from lib.echo_maze.maze import (
+    MazeEnv, env_reset, env_observe, env_step, at_goal, wall_bits, bearing, rollout_episode,
+)
+
+
+def _corridor():
+    # 1-row "maze": cells (0,0)-(0,1)-(0,2) all open E/W along the row
+    passages = {(0, 0): {"E"}, (0, 1): {"E", "W"}, (0, 2): {"W"}}
+    return Maze(size=3, passages=passages)
+
+
+def test_wall_bits_and_step_respect_walls():
+    m = _corridor()
+    env = env_reset(m, (0, 0), (0, 2))
+    # at (0,0): open E only -> walls N,S,W set, E clear. bits: N=1,E=2,S=4,W=8 -> 1+4+8=13
+    assert wall_bits(m, (0, 0)) == 13
+    assert env_step(env, "N") is False and env.pos == (0, 0)   # blocked
+    assert env_step(env, "E") is True and env.pos == (0, 1)    # moved
+
+
+def test_bearing_distinguishes_cardinals_and_zero_at_goal():
+    vals = {d: bearing((1, 1), tgt) for d, tgt in
+            {"N": (0, 1), "E": (1, 2), "S": (2, 1), "W": (1, 0)}.items()}
+    assert len(set(vals.values())) == 4          # four distinct octants
+    assert bearing((1, 1), (1, 1)) == 0          # goal-at-cell
+
+
+def test_rollout_episode_oracle_solves_random_policy_does_not():
+    m = _corridor()
+    goal = (0, 2)
+    def oracle(env):
+        return path_to_actions(bfs_path(m, env.pos, goal))[0]
+    assert rollout_episode(env_reset(m, (0, 0), goal), oracle, max_steps=10) is True
+    def stuck(env):
+        return "N"   # always into a wall in the corridor
+    assert rollout_episode(env_reset(m, (0, 0), goal), stuck, max_steps=10) is False
