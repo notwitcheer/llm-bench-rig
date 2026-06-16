@@ -31,3 +31,19 @@ def test_overfit_one_batch():
             first = float(loss)
         last = float(loss)
     assert last < first * 0.5   # memorizes a fixed batch
+
+
+from lib.echo_maze.train import train, build_dataset
+
+
+def test_build_dataset_shapes_and_padding():
+    data = build_dataset(sizes=[5], n_per_size=8, seed=0, block_size=128)
+    assert len(data) == 8
+    tokens, roles = data[0]
+    assert len(tokens) == len(roles) and roles[0] == "bos" and roles[-1] == "eos"
+
+
+def test_train_smoke_loss_drops():
+    _, log = train(lam=1.0, seed=0, sizes=[5], n_train_per_size=64, steps=80,
+                    batch_size=16, device="cpu", block_size=128)
+    assert log[-1]["loss"] < log[0]["loss"]
