@@ -69,3 +69,35 @@ def test_rollout_episode_oracle_solves_random_policy_does_not():
     def stuck(env):
         return "N"   # always into a wall in the corridor
     assert rollout_episode(env_reset(m, (0, 0), goal), stuck, max_steps=10) is False
+
+
+from lib.echo_maze.encode import (
+    encode_trajectory, decode_action, act_token, VOCAB_SIZE, ACT_TOKEN_IDS,
+)
+
+
+def test_action_token_roundtrip():
+    for d in ["N", "E", "S", "W"]:
+        assert decode_action(act_token(d)) == d
+    assert ACT_TOKEN_IDS == [act_token(d) for d in ["N", "E", "S", "W"]]
+    assert VOCAB_SIZE == 31
+
+
+def test_encode_trajectory_structure():
+    rng = random.Random(2)
+    m = gen_maze(6, rng)
+    path = bfs_path(m, (0, 0), (5, 5))
+    tokens, roles = encode_trajectory(m, (0, 0), (5, 5))
+    assert len(tokens) == len(roles) == 1 + 3 * len(path)   # BOS + (wall,bear,act/eos) per cell
+    assert roles[0] == "bos" and roles[-1] == "eos"
+    assert roles.count("act") == len(path) - 1 and roles.count("eos") == 1
+
+
+from lib.echo_maze.encode import build_loss_mask
+
+
+def test_loss_mask_action_only_vs_echo():
+    roles = ["bos", "wall", "bear", "act", "wall", "bear", "eos"]
+    assert build_loss_mask(roles, 0.0) == [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0]  # action-only
+    assert build_loss_mask(roles, 1.0) == [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]  # +env tokens
+    assert build_loss_mask(roles, 0.5)[1] == 0.5                                # obs scaled by lam
