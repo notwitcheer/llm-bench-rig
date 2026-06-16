@@ -12,7 +12,7 @@ from lib.echo_maze.encode import encode_trajectory, build_loss_mask, PAD, VOCAB_
 from lib.echo_maze.model import TinyGPT, GPTConfig
 
 
-def build_dataset(sizes, n_per_size, seed, block_size):
+def build_dataset(sizes, n_per_size, seed, block_size, include_bearing=True):
     """List of (tokens, roles). Mazes/endpoints drawn from one seeded RNG; over-length dropped."""
     rng = random.Random(seed)
     data = []
@@ -21,7 +21,7 @@ def build_dataset(sizes, n_per_size, seed, block_size):
         while made < n_per_size:
             maze = gen_maze(size, rng)
             start, goal = random_endpoints(size, rng)
-            tokens, roles = encode_trajectory(maze, start, goal)
+            tokens, roles = encode_trajectory(maze, start, goal, include_bearing=include_bearing)
             if len(tokens) > block_size:
                 continue
             data.append((tokens, roles))
@@ -34,10 +34,10 @@ def _pad(seq, n, val):
 
 
 def train(lam, seed, sizes, n_train_per_size=4000, steps=3000, batch_size=64,
-          lr=3e-4, device="cuda", block_size=512):
+          lr=3e-4, device="cuda", block_size=512, include_bearing=True):
     torch.manual_seed(seed)
     random.seed(seed)
-    data = build_dataset(sizes, n_train_per_size, seed, block_size)
+    data = build_dataset(sizes, n_train_per_size, seed, block_size, include_bearing=include_bearing)
     idx_all = torch.tensor([_pad(t, block_size, PAD) for t, _ in data], dtype=torch.long)
     w_all = torch.tensor([_pad(build_loss_mask(r, lam), block_size, 0.0) for _, r in data],
                          dtype=torch.float)

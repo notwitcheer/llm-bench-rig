@@ -32,9 +32,11 @@ def decode_action(tok):
 ACT_TOKEN_IDS = [ACT_BASE + i for i in range(4)]
 
 
-def encode_trajectory(maze, start, goal):
-    """Walk the BFS-optimal path: BOS, then (wall,bear,act) per step, (wall,bear,EOS) at goal.
-    Returns (tokens, roles) of equal length; roles in {bos,wall,bear,act,eos}."""
+def encode_trajectory(maze, start, goal, include_bearing=True):
+    """Walk the BFS-optimal path: BOS, then (wall[,bear],act) per step, (wall[,bear],EOS) at goal.
+    Returns (tokens, roles) of equal length; roles in {bos,wall,bear,act,eos}. With
+    include_bearing=False the goal bearing is dropped (walls-only ablation: the agent must build
+    an internal map instead of following the handed-over goal direction)."""
     path = bfs_path(maze, start, goal)
     acts = path_to_actions(path)
     env = env_reset(maze, start, goal)
@@ -42,8 +44,11 @@ def encode_trajectory(maze, start, goal):
     for i, cell in enumerate(path):
         env.pos = cell
         wb, br = env_observe(env)
-        tokens += [wall_tok(wb), bear_tok(br)]
-        roles += ["wall", "bear"]
+        tokens.append(wall_tok(wb))
+        roles.append("wall")
+        if include_bearing:
+            tokens.append(bear_tok(br))
+            roles.append("bear")
         if i < len(acts):
             tokens.append(act_token(acts[i]))
             roles.append("act")

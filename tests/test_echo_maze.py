@@ -93,6 +93,16 @@ def test_encode_trajectory_structure():
     assert roles.count("act") == len(path) - 1 and roles.count("eos") == 1
 
 
+def test_encode_trajectory_walls_only_drops_bearing():
+    rng = random.Random(2)
+    m = gen_maze(6, rng)
+    path = bfs_path(m, (0, 0), (5, 5))
+    tokens, roles = encode_trajectory(m, (0, 0), (5, 5), include_bearing=False)
+    assert "bear" not in roles
+    assert len(tokens) == len(roles) == 1 + 2 * len(path)   # BOS + (wall, act/eos) per cell
+    assert roles[0] == "bos" and roles[-1] == "eos"
+
+
 from lib.echo_maze.encode import build_loss_mask
 
 

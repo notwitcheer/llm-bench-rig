@@ -11,15 +11,17 @@ from lib.echo_maze.maze import (
 from lib.echo_maze.encode import BOS, wall_tok, bear_tok, act_token, decode_action, ACT_TOKEN_IDS
 
 
-def make_model_policy(model, device, block_size):
+def make_model_policy(model, device, block_size, include_bearing=True):
     """Fresh closure per episode: maintains the running token sequence and returns argmax over
-    ACTION tokens only at the current step."""
+    ACTION tokens only at the current step. Must mirror the training encoding (include_bearing)."""
     seq = [BOS]
     act_ids = torch.tensor(ACT_TOKEN_IDS, device=device)
 
     def policy_fn(env):
         wb, br = env_observe(env)
-        seq.extend([wall_tok(wb), bear_tok(br)])
+        seq.append(wall_tok(wb))
+        if include_bearing:
+            seq.append(bear_tok(br))
         idx = torch.tensor([seq[-block_size:]], dtype=torch.long, device=device)
         with torch.no_grad():
             logits = model(idx)[0, -1]            # last position predicts the action
@@ -32,7 +34,7 @@ def make_model_policy(model, device, block_size):
 
 
 def solve_rate(model, size, n_eval, eval_seed, device="cuda", block_size=512,
-               budget_factor=4, hard_cap=400):
+               budget_factor=4, hard_cap=400, include_bearing=True):
     rng = random.Random(eval_seed)
     model.eval()
     solved = 0
@@ -42,7 +44,7 @@ def solve_rate(model, size, n_eval, eval_seed, device="cuda", block_size=512,
         opt = max(len(bfs_path(maze, start, goal)) - 1, 1)
         budget = min(budget_factor * opt, hard_cap)
         env = env_reset(maze, start, goal)
-        policy = make_model_policy(model, device, block_size)
+        policy = make_model_policy(model, device, block_size, include_bearing=include_bearing)
         if rollout_episode(env, policy, budget):
             solved += 1
     return solved / n_eval
