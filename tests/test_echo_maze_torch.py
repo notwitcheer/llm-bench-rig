@@ -47,3 +47,14 @@ def test_train_smoke_loss_drops():
     _, log = train(lam=1.0, seed=0, sizes=[5], n_train_per_size=64, steps=80,
                     batch_size=16, device="cpu", block_size=128)
     assert log[-1]["loss"] < log[0]["loss"]
+
+
+from lib.echo_maze.rollout import solve_rate
+
+
+def test_solve_rate_in_unit_interval_and_deterministic():
+    # an untrained model still yields a valid, reproducible fraction on the SAME eval mazes
+    m = TinyGPT(GPTConfig(block_size=256))
+    a = solve_rate(m, size=6, n_eval=20, eval_seed=999, device="cpu", block_size=256)
+    b = solve_rate(m, size=6, n_eval=20, eval_seed=999, device="cpu", block_size=256)
+    assert 0.0 <= a <= 1.0 and a == b   # same eval_seed => identical maze set => identical result
