@@ -60,6 +60,26 @@
     "reach": "128k"
   },
   {
+    "model": "Qwen3.6-27B pi-tune",
+    "params": "27B",
+    "quant": "Q6_K",
+    "agentic_score": 98.01,
+    "task_success_pct": 97.2,
+    "tool_eff": 0.97,
+    "stable_pct": 100.0,
+    "tokens_per_task": 251.8,
+    "chain": "8/8",
+    "multistep": "8/8",
+    "coding": "8/8",
+    "gate": "pass",
+    "hf_repo": "bytkim/Qwen3.6-27B-MTP-pi-tune-GGUF",
+    "date": "2026-06-17",
+    "note": "dense Qwen3.6-27B QLoRA SFT on REAL non-thinking agent traces (terminal/tool/repo). Matched-Q6 vs its base: quality and agentic flat (98.01 vs 98.61), but real SWE-bench resolve IMPROVES 19 to 20/30 with FEWER give-ups (8 to 6), and its MTP drafter held (2.0-2.4x vs base 1.8-2.2x) where Qwopus-Coder's degraded. First of three Qwen3.6-27B coding tunes to improve real bug-fixing: provenance (real traces) beats synthetic distill, and only the anchor separates them (synthetic agentic a 2.4pt band, real SWE spans 11-20)",
+    "lc32k": "-",
+    "lc128k": "-",
+    "reach": "-"
+  },
+  {
     "model": "Qwen3.6-35B-A3B Opus-distill",
     "params": "35B-A3B",
     "quant": "Q5_K_M",

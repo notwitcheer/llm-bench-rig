@@ -45,6 +45,9 @@ META = {
     "qwable-27b-q4-k-m":   {"name": "Qwable-3.6-27b", "params": "27B", "quant": "Q4_K_M",
                             "repo": "Mia-AiLab/Qwable-3.6-27b",
                             "note": "dense Qwen3.6-27B + Fable-5-style reasoning/instruction SFT. Matched-Q4 vs its base: quality AND agentic stay flat (97.64 vs 98.19), but real SWE-bench resolve drops 18→11/30 and give-ups rise 7→13 — a genuine bug-fixing regression the synthetic score MISSED (unlike the MoE Qwable-v1, whose agentic score declined). The anchor caught it; quant ruled out (base Q6→Q4 = −1 bug)"},
+    "pi-tune-q6-k":        {"name": "Qwen3.6-27B pi-tune", "params": "27B", "quant": "Q6_K",
+                            "repo": "bytkim/Qwen3.6-27B-MTP-pi-tune-GGUF",
+                            "note": "dense Qwen3.6-27B QLoRA SFT on REAL non-thinking agent traces (terminal/tool/repo). Matched-Q6 vs its base: quality and agentic flat (98.01 vs 98.61), but real SWE-bench resolve IMPROVES 19 to 20/30 with FEWER give-ups (8 to 6), and its MTP drafter held (2.0-2.4x vs base 1.8-2.2x) where Qwopus-Coder's degraded. First of three Qwen3.6-27B coding tunes to improve real bug-fixing: provenance (real traces) beats synthetic distill, and only the anchor separates them (synthetic agentic a 2.4pt band, real SWE spans 11-20)"},
 }
 
 rows = []
