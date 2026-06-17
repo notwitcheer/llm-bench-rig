@@ -9,12 +9,13 @@ import numpy as np
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
 AMBER = "#d8902f"
 
-# 12-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
+# 13-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
 MODELS = [
     ("qwopus3-6-27b-coder", "Qwopus3.6-27B-Coder",    "#f0b840"),
     ("qwen3-6-35b-base",    "Qwen3.6-35B-A3B (base)", CRIMSON),
     ("qwen3-6-27b",         "Qwen3.6-27B",            "#e07840"),
     ("qwen3-6-35b-opus-distill", "Qwen3.6-35B Opus-distill", "#c08850"),
+    ("qwable-27b-q4-k-m",   "Qwable-3.6-27b",         "#bf4a3c"),
     ("qwen3-5-35b-base",    "Qwen3.5-35B-A3B (base)", GOLD),
     ("qwopus-glm-18b",      "Qwopus-GLM-18B",         "#e0a030"),
     ("nemotron-cascade-2-30b", "Nemotron-Cascade-2-30B", "#b85c3c"),
@@ -41,7 +42,8 @@ SHORT = {"qwen3-6-27b": "Qwen3.6-27B", "qwen3-5-35b-base": "Qwen3.5 base",
          "kimi-linear-48b-a3b": "Kimi-Linear", "granite-4-1-30b": "Granite-30B",
          "nex-n2-mini": "Nex-N2-mini", "qwopus3-6-27b-coder": "Qwopus-Coder",
          "north-mini-code": "North-Mini", "qwen3-6-35b-base": "Qwen3.6 base",
-         "qwen3-6-35b-opus-distill": "Opus-distill", "qwable-v1": "Qwable-v1"}
+         "qwen3-6-35b-opus-distill": "Opus-distill", "qwable-v1": "Qwable-v1",
+         "qwable-27b-q4-k-m": "Qwable-27b"}
 fig, ax = plt.subplots(figsize=(13.5, 8), facecolor=BG); ax.set_facecolor(BG)
 # sort by x (tokens) and alternate label up/down so x-adjacent points never collide
 by_x = sorted(MODELS, key=lambda m: D[m[0]]["tokens_per_task"])

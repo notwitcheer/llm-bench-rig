@@ -7,7 +7,7 @@ import json, csv
 from collections import Counter
 from pathlib import Path
 
-DATE = "2026-06-12"  # stamp; bench rig has no live clock in workflow contexts
+DATE = "2026-06-17"  # stamp; bench rig has no live clock in workflow contexts
 
 # slug -> display metadata (the result JSON carries the metrics; this carries identity)
 META = {
@@ -42,6 +42,9 @@ META = {
     "qwable-v1":           {"name": "Qwable-v1", "params": "35B-A3B", "quant": "Q5_K_M",
                             "repo": "lordx64/Qwable-v1-GGUF",
                             "note": "base + Opus-4.7 reasoning distill + Fable-5 agentic SFT. Each step LOWERS the agentic score (99.58→97.92→96.25) and real resolve drops 19→11/30 vs the vanilla base — the distillation regressed agentic-coding capability (not a mirage: synthetic fairly predicts real here)"},
+    "qwable-27b-q4-k-m":   {"name": "Qwable-3.6-27b", "params": "27B", "quant": "Q4_K_M",
+                            "repo": "Mia-AiLab/Qwable-3.6-27b",
+                            "note": "dense Qwen3.6-27B + Fable-5-style reasoning/instruction SFT. Matched-Q4 vs its base: quality AND agentic stay flat (97.64 vs 98.19), but real SWE-bench resolve drops 18→11/30 and give-ups rise 7→13 — a genuine bug-fixing regression the synthetic score MISSED (unlike the MoE Qwable-v1, whose agentic score declined). The anchor caught it; quant ruled out (base Q6→Q4 = −1 bug)"},
 }
 
 rows = []
@@ -143,11 +146,13 @@ not blended into the score (so a 128K VRAM wall doesn't corrupt it):
 
 Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 8 models on
 30 real SWE-bench Verified bugs, the synthetic score predicts real-bug *rank* (Spearman ρ=0.76) and
-moderately predicts resolve rate (Pearson r=0.59). Two known failure modes, both caught by the anchor:
+moderately predicts resolve rate (Pearson r=0.59). Three known failure modes, all caught by the anchor:
 it over-ranks models that drive tools fluently but don't commit fixes (Nemotron-Cascade-2: synthetic #5,
-real last), and it over-ranks models whose training data overlaps the bench's flavor (Qwopus3.6-27B-Coder:
+real last); it over-ranks models whose training data overlaps the bench's flavor (Qwopus3.6-27B-Coder:
 trained on Hermes agent traces, posts a perfect 100 synthetic — then resolves fewer real bugs than its own
-base model, 57% vs 63%). Read the top of the board with the anchor open (see `reality-anchor/`).
+base model, 57% vs 63%); and it can **miss a regression entirely** when a distill stays in-distribution on
+the synthetic tasks yet gives up on real bugs (Qwable-3.6-27b: agentic flat vs its base, yet real SWE-bench
+resolve 11/30 vs 18/30 at matched Q4). Read the top of the board with the anchor open (see `reality-anchor/`).
 Harness + unit tests: **[notwitcheer/llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig)**
 (`lib/agentic/native/`).
 
