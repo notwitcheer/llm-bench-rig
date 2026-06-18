@@ -52,3 +52,14 @@ def test_aggregate_means_and_handles_missing_sim():
     assert abs(a["rtfx_mean"] - 3.0) < 1e-9
     assert abs(a["sim_mean"] - 0.8) < 1e-9   # None ignored
     assert a["n"] == 2
+
+
+def test_sim_cosine_identity_and_orthogonal():
+    # torch-gated -> skips on the Mac (no torch), runs on capsule
+    import pytest
+    torch = pytest.importorskip("torch")
+    from lib.tts.sim import cosine
+    a = torch.tensor([1.0, 0.0, 0.0])
+    b = torch.tensor([0.0, 1.0, 0.0])
+    assert abs(cosine(a, a) - 1.0) < 1e-6
+    assert abs(cosine(a, b) - 0.0) < 1e-6
