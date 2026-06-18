@@ -8,7 +8,7 @@ Writes results/tts/<slug>.json."""
 import json, os, sys
 import soundfile as sf
 import soxr
-from lib.tts.roundtrip import transcribe
+from lib.tts.roundtrip import transcribe_batch
 from lib.tts.sim import sim_o
 from lib.tts.score import aggregate
 from lib.asr.wer import wer
@@ -30,17 +30,22 @@ def _to16k(wav):
 def main():
     slug, synth_dir, ckpt = sys.argv[1], sys.argv[2], sys.argv[3]
     recs = json.load(open(os.path.join(synth_dir, "synth.json")))
+    # phase 1: resample everything to 16k mono (CPU, soxr)
+    for r in recs:
+        r["_w16"] = _to16k(r["wav"])
+        r["_ref16"] = _to16k(r["ref_audio"])
+    # phase 2: round-trip transcription in ONE batched whisper call (model loads once -> fast, and
+    # no per-clip GPU reload contending with a co-resident server)
+    hyps = transcribe_batch([r["_w16"] for r in recs])
+    # phase 3: per-utt metrics (SIM-o loads WavLM once)
     per_utt = []
     for r in recs:
-        w16 = _to16k(r["wav"])
-        hyp = transcribe(w16)
-        ref16 = _to16k(r["ref_audio"])
         per_utt.append({
             "name": r["name"],
-            "wer": wer(r["target_text"], hyp),
+            "wer": wer(r["target_text"], hyps[r["_w16"]]),
             "rtfx": rtfx(r["audio_seconds"], r["synth_seconds"]),
             "first_audio_s": r["first_audio_seconds"],
-            "sim": sim_o(w16, ref16, ckpt),
+            "sim": sim_o(r["_w16"], r["_ref16"], ckpt),
         })
         print(f"{r['name']} wer={per_utt[-1]['wer']:.3f} rtfx={per_utt[-1]['rtfx']:.2f} "
               f"sim={per_utt[-1]['sim']:.3f}", flush=True)

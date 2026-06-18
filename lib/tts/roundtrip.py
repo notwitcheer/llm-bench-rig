@@ -21,3 +21,19 @@ def transcribe(wav_path, model=WHISPER_MODEL):
                    check=True, capture_output=True)
     with open(wav_path + ".json") as f:
         return parse_whisper_json(json.load(f))
+
+
+def transcribe_batch(wav_paths, model=WHISPER_MODEL):
+    """Transcribe many wavs with ONE whisper-cli invocation: the model loads once (not per clip),
+    which is far faster AND avoids the per-clip GPU reload that contends with a co-resident server
+    (e.g. Donald) -> intermittent CUDA failures. Writes <wav>.json next to each; returns
+    {wav_path: text}. Matches the ASR bench's load-once multi-file usage."""
+    if not wav_paths:
+        return {}
+    subprocess.run([WHISPER, "-m", model, "-oj", "-nt", "-l", "en", *wav_paths],
+                   check=True, capture_output=True)
+    out = {}
+    for w in wav_paths:
+        with open(w + ".json") as f:
+            out[w] = parse_whisper_json(json.load(f))
+    return out
