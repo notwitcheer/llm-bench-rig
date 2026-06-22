@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
 
 # (slug, label, color)
-MODELS = [("qwen3-tts", "Qwen3-TTS-1.7B", GOLD), ("fish-s2-pro", "Fish-S2-Pro (4B)", CRIMSON)]
+MODELS = [("qwen3-tts", "Qwen3-TTS-1.7B", GOLD), ("fish-s2-pro", "Fish-S2-Pro (4B)", CRIMSON),
+          ("fish-s2-pro-compiled", "Fish-S2-Pro compiled", "#e0a030")]
 # (agg key, axis label, higher_is_better, value format)
 AXES = [
     ("rtfx_mean", "RTFx  (higher = faster than realtime)", True, "{:.2f}×"),
@@ -30,10 +31,15 @@ for ax, (key, label, hib, fmt) in zip(axs, AXES):
     lo, hi = min(v for v, _, _ in vals), max(v for v, _, _ in vals)
     # the connecting bar
     ax.plot([lo, hi], [0, 0], color=GRID, lw=3, zorder=1, solid_capstyle="round")
-    for v, lbl, col in vals:
+    span = (hi * 1.20) or 1.0
+    last_x = -1e9
+    for v, lbl, col in sorted(vals, key=lambda t: t[0]):
         ax.scatter([v], [0], s=240, color=col, edgecolor=TEXT, lw=1.2, zorder=3)
-        ax.annotate(fmt.format(v), (v, 0), xytext=(0, 13), textcoords="offset points",
-                    color=TEXT, ha="center", va="bottom", fontsize=10, fontweight="bold", zorder=4)
+        close = (v - last_x) < 0.10 * span      # too near the previous label -> drop this one below
+        ax.annotate(fmt.format(v), (v, 0), xytext=(0, -24 if close else 13),
+                    textcoords="offset points", color=TEXT, ha="center",
+                    va="top" if close else "bottom", fontsize=10, fontweight="bold", zorder=4)
+        last_x = v
     # verdict: a near-equal gap is a tie, not a "winner" (avoids exaggerating noise)
     rel = abs(hi - lo) / (hi or 1.0)
     if rel < 0.03:
@@ -44,7 +50,7 @@ for ax, (key, label, hib, fmt) in zip(axs, AXES):
     ax.set_title(f"{label}   — {verdict}", color=GOLD, fontsize=11, loc="left", pad=10)
     # baseline at 0 so tiny absolute gaps (e.g. a WER tie) aren't exaggerated by auto-scale
     ax.set_xlim(0, hi * 1.20)
-    ax.set_ylim(-1.2, 1.4)
+    ax.set_ylim(-1.8, 1.6)
     ax.get_yaxis().set_visible(False)
     ax.tick_params(colors=MUTE, labelsize=8)
     for sp in ax.spines.values():
@@ -57,7 +63,7 @@ fig.legend(handles=handles, loc="upper right", frameon=False, labelcolor=TEXT, f
            bbox_to_anchor=(0.99, 0.99))
 fig.suptitle("Sovereign TTS head-to-head on one RTX 5090 — Seed-TTS-eval EN",
              color=GOLD, fontsize=15, x=0.06, ha="left", y=0.99)
-fig.text(0.06, 0.005, "Neither model compiled (bf16). Vendor RTF/speed claims were H100/H200-class.",
+fig.text(0.06, 0.005, "Fish shown bf16 out-of-box and with torch.compile (4.1x faster, still behind the 1.7B). Vendor RTF claims were H100/H200-class.",
          color=MUTE, fontsize=8, ha="left")
 fig.tight_layout(rect=[0, 0.02, 1, 0.94])
 fig.savefig("reports/tts-head-to-head.png", dpi=150, facecolor=BG)
