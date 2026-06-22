@@ -48,6 +48,9 @@ META = {
     "pi-tune-q6-k":        {"name": "Qwen3.6-27B pi-tune", "params": "27B", "quant": "Q6_K",
                             "repo": "bytkim/Qwen3.6-27B-MTP-pi-tune-GGUF",
                             "note": "dense Qwen3.6-27B QLoRA SFT on REAL non-thinking agent traces (terminal/tool/repo). Matched-Q6 vs its base: quality and agentic flat (98.01 vs 98.61), but real SWE-bench resolve IMPROVES 19 to 20/30 with FEWER give-ups (8 to 6), and its MTP drafter held (2.0-2.4x vs base 1.8-2.2x) where Qwopus-Coder's degraded. First of three Qwen3.6-27B coding tunes to improve real bug-fixing: provenance (real traces) beats synthetic distill, and only the anchor separates them (synthetic agentic a 2.4pt band, real SWE spans 11-20)"},
+    "qwable-5-27b-coder":  {"name": "Qwable-5-27B-Coder", "params": "27B", "quant": "Q6_K",
+                            "repo": "DJLougen/Qwable-5-27B-Coder",
+                            "note": "real-trace SFT of Qwen3.6-27B (Claude Fable-5 then Kimi-2.7-Coder agent traces). Agentic score 98.61 — identical to the base to the decimal — yet real SWE-bench Verified resolve is 17/30 vs base 19 (give-ups 8→10): the synthetic axis is blind again. Real traces necessary not sufficient (pi-tune's terminal/repo/DevOps traces remain the only data that improved real resolve). MTP drafter survived the SFT (1.9-2.4×). See reality anchor."},
 }
 
 rows = []
