@@ -150,9 +150,13 @@ not blended into the score (so a 128K VRAM wall doesn't corrupt it):
 | Token efficiency | 0.15 | avg tokens/task (efficiency at equal success) |
 | Loop stability | 0.15 | completes without stalling / exceeding the step cap |
 
-Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 8 models on
+Calibration-grade (synthetic, deterministic, re-runnable) — and **reality-anchored**: across all 13 models on
 30 real SWE-bench Verified bugs, the synthetic score predicts real-bug *rank* (Spearman ρ=0.76) and
-moderately predicts resolve rate (Pearson r=0.59). Three known failure modes, all caught by the anchor:
+moderately predicts resolve rate (Pearson r=0.65). But it predicts *across* the model zoo, not *within* a
+base family: the five dense Qwen3.6-27B coding tunes sit in a 2.4pt agentic band (97.6–100) while real
+SWE-bench resolve spans 11–20/30 (within-cohort Spearman ρ=0.10) — among siblings of one base, the synthetic
+axis can't rank them at all, which is exactly the regime a coding-tune buyer is in. Three known failure modes,
+all caught by the anchor:
 it over-ranks models that drive tools fluently but don't commit fixes (Nemotron-Cascade-2: synthetic #5,
 real last); it over-ranks models whose training data overlaps the bench's flavor (Qwopus3.6-27B-Coder:
 trained on Hermes agent traces, posts a perfect 100 synthetic — then resolves fewer real bugs than its own

@@ -1,5 +1,7 @@
 # Reality anchor, tightened: the synthetic Agentic Score predicts real SWE-bench *rank* — with one instructive blind spot (Pearson r = 0.50, Spearman ρ = 0.68)
 
+> **Update (2026-06-22), n = 13:** with six more SWE-anchored models added since (the coding-tune cohort + Qwen3.6 bases), the cross-model anchor firms up to **Pearson r = 0.65, Spearman ρ = 0.76** — the synthetic score predicts real-bug rank across the zoo. The sharper finding: it predicts *across* models, not *within* a base family. The five dense Qwen3.6-27B coding tunes sit in a 2.4pt agentic band (97.6–100) while real SWE-bench resolve spans 11–20/30 → **within-cohort Spearman ρ = 0.10**. Among siblings of one base the synthetic axis can't rank them — exactly the regime a coding-tune buyer is in. Full write-up: the 4-tune provenance round-up.
+
 **Rig:** one RTX 5090 32GB · llama.cpp b9562 · native OpenAI tool-calling (`--jinja`) · temp 0
 **Update:** this supersedes the first anchor (r = 0.96, n = 12, 4 models). That result was *directional* —
 12 smallest-patch instances, only 4 models. Tightening it to **all 7 leaderboard models x 30 harder
