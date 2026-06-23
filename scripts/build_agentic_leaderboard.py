@@ -51,6 +51,9 @@ META = {
     "qwable-5-27b-coder":  {"name": "Qwable-5-27B-Coder", "params": "27B", "quant": "Q6_K",
                             "repo": "DJLougen/Qwable-5-27B-Coder",
                             "note": "real-trace SFT of Qwen3.6-27B (Claude Fable-5 then Kimi-2.7-Coder agent traces). Agentic score 98.61 — identical to the base to the decimal — yet real SWE-bench Verified resolve is 17/30 vs base 19 (give-ups 8→10): the synthetic axis is blind again. Real traces necessary not sufficient (pi-tune's terminal/repo/DevOps traces remain the only data that improved real resolve). MTP drafter survived the SFT (1.9-2.4×). See reality anchor."},
+    "qwopus-coder-compat": {"name": "Qwopus3.6-27B-Coder-Compat", "params": "27B", "quant": "Q6_K",
+                            "repo": "Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF",
+                            "note": "compatibility re-release of Qwopus-Coder, measured controlled vs base + the prior Coder at matched Q6_K. Agentic score 100.0 ties the prior (the synthetic axis can't separate two siblings of one base). It heals the prior tune's two regressions vs base: the MTP draft head recovered 1.4-1.6x to 1.9-2.3x (back on the base curve), and real SWE-bench resolve returned to base parity — 8/12 on the n=12 subset, the same bugs base solves, +1 over the prior tune (recovers pytest-6202) with one fewer give-up. A compat fix at no capability cost."},
 }
 
 rows = []

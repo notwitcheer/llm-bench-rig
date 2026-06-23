@@ -9,9 +9,11 @@ import numpy as np
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
 AMBER = "#d8902f"
 
-# 14-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
+# 16-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
 MODELS = [
     ("qwopus3-6-27b-coder", "Qwopus3.6-27B-Coder",    "#f0b840"),
+    ("qwopus-coder-compat", "Qwopus-Coder-Compat",    "#e89060"),
+    ("qwable-5-27b-coder",  "Qwable-5-27B-Coder",     "#caa05a"),
     ("qwen3-6-35b-base",    "Qwen3.6-35B-A3B (base)", CRIMSON),
     ("qwen3-6-27b",         "Qwen3.6-27B",            "#e07840"),
     ("pi-tune-q6-k",        "Qwen3.6-27B pi-tune",    "#f0c040"),
@@ -44,7 +46,8 @@ SHORT = {"qwen3-6-27b": "Qwen3.6-27B", "qwen3-5-35b-base": "Qwen3.5 base",
          "nex-n2-mini": "Nex-N2-mini", "qwopus3-6-27b-coder": "Qwopus-Coder",
          "north-mini-code": "North-Mini", "qwen3-6-35b-base": "Qwen3.6 base",
          "qwen3-6-35b-opus-distill": "Opus-distill", "qwable-v1": "Qwable-v1",
-         "qwable-27b-q4-k-m": "Qwable-27b", "pi-tune-q6-k": "pi-tune"}
+         "qwable-27b-q4-k-m": "Qwable-27b", "pi-tune-q6-k": "pi-tune",
+         "qwable-5-27b-coder": "Qwable-5", "qwopus-coder-compat": "Compat"}
 fig, ax = plt.subplots(figsize=(13.5, 8), facecolor=BG); ax.set_facecolor(BG)
 # sort by x (tokens) and alternate label up/down so x-adjacent points never collide
 by_x = sorted(MODELS, key=lambda m: D[m[0]]["tokens_per_task"])
