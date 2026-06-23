@@ -11,12 +11,30 @@ Run on capsule:  ~/benchmark-rig/.venv/bin/python -m lib.agentic.phaseb
 """
 import argparse
 import json
+import math
 import re
 import subprocess
 import time
 from pathlib import Path
 
 from lib.agentic.phaseb_tasks import TASKS
+
+
+def wilson_ci(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """95% Wilson score interval for a binomial proportion (k passes of n runs),
+    returned as percentages. Closed-form, no deps. Unlike the normal approximation
+    it stays sane at the extremes — at k==n it gives an upper-bounded interval, not
+    a zero-width 100%–100%. This is the interval that decides whether two models'
+    completion rates actually differ or are a statistical tie."""
+    if n == 0:
+        return (0.0, 0.0)
+    p = k / n
+    denom = 1 + z * z / n
+    center = (p + z * z / (2 * n)) / denom
+    half = (z / denom) * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    lo = max(0.0, round(100 * (center - half), 1))
+    hi = min(100.0, round(100 * (center + half), 1))
+    return (lo, hi)
 
 HOME = Path.home()
 HERMES = HOME / "hermes-src" / ".venv" / "bin" / "hermes"
@@ -153,9 +171,11 @@ def run_model(model: dict, tasks: list, repeats: int = 3) -> dict:
         by_task.setdefault(r["id"], {"pass": 0, "n": 0})
         by_task[r["id"]]["n"] += 1
         by_task[r["id"]]["pass"] += int(r["passed"])
+    ci_lo, ci_hi = wilson_ci(len(passed), n)
     summary = {
         "model": model["slug"],
         "completion_rate": round(100 * len(passed) / n, 1) if n else 0,
+        "completion_ci95": [ci_lo, ci_hi],
         "passed": len(passed), "total": n,
         "avg_turns_passed": round(sum(r["turns"] for r in passed) / len(passed), 2) if passed else None,
         "avg_gen_tokens_passed": round(sum(r["gen_tokens"] for r in passed) / len(passed)) if passed else None,
@@ -166,7 +186,8 @@ def run_model(model: dict, tasks: list, repeats: int = 3) -> dict:
     RESULTS.mkdir(parents=True, exist_ok=True)
     (RESULTS / f"{model['slug']}.json").write_text(json.dumps(summary, indent=2))
     print(f"[{model['slug']}] completion {summary['completion_rate']}% "
-          f"({len(passed)}/{n})  avg {summary['avg_turns_passed']} turns / "
+          f"(95% CI {ci_lo}–{ci_hi}, {len(passed)}/{n})  avg "
+          f"{summary['avg_turns_passed']} turns / "
           f"{summary['avg_gen_tokens_passed']} tok on passes", flush=True)
     return summary
 
@@ -191,8 +212,15 @@ def main():
     (RESULTS / "leaderboard.json").write_text(json.dumps(summaries, indent=2))
     print(f"\n===== PHASE B LEADERBOARD ({(time.time()-t0)/60:.0f} min) =====")
     for rank, s in enumerate(summaries, 1):
+        lo, hi = s["completion_ci95"]
+        tie = ""
+        if rank > 1:
+            plo, phi = summaries[rank - 2]["completion_ci95"]
+            if lo <= phi and plo <= hi:  # intervals overlap → not a real difference
+                tie = "  ← CI overlaps #%d (statistical tie)" % (rank - 1)
         print(f"{rank}. {s['model']:24s} {s['completion_rate']:5.1f}%  "
-              f"({s['passed']}/{s['total']})  {s['avg_turns_passed']} turns avg")
+              f"[95% CI {lo:.0f}–{hi:.0f}]  ({s['passed']}/{s['total']})  "
+              f"{s['avg_turns_passed']} turns avg{tie}")
 
 
 if __name__ == "__main__":
