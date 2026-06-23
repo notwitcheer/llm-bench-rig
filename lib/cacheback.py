@@ -102,3 +102,14 @@ class NGramLRU:
         if leader not in self._d:
             return []
         return list(self._d[leader])  # most-recent first
+
+
+# --- workload loading ---
+import json
+
+
+def load_workload(path: str) -> list[dict]:
+    """Load a workload jsonl (schema: {id, workload, prompt}); validate non-empty + keys."""
+    rows = [json.loads(l) for l in open(path) if l.strip()]
+    assert rows and all({"id", "workload", "prompt"} <= r.keys() for r in rows)
+    return rows
