@@ -70,3 +70,29 @@ def test_ngram_lru_eviction_and_recency():
     assert t.lookup((3,)) == [(30,)]
     t.update((2,), (21,))                       # most-recent first
     assert t.lookup((2,))[0] == (21,)
+
+
+# --- Task 4: spec-decode loop (torch-free) ---
+from lib.cacheback import spec_decode_loop
+
+
+def _cyclic_forward_argmax(seq, draft):
+    """Stub target model whose 'true' sequence is period-3: token at position p == p % 3.
+    Returns greedy argmax for the len(draft)+1 positions after seq (independent of draft
+    values, so the verified output is deterministically period-3 whatever the drafter does)."""
+    base = len(seq) - 1
+    return [(base + i + 1) % 3 for i in range(len(draft) + 1)]
+
+
+def test_loop_pld_is_lossless_and_faster_than_ar():
+    seed = [0, 1, 2]
+    ar, adv_ar = spec_decode_loop(
+        _cyclic_forward_argmax, seed, propose=lambda s: [], max_new=30)
+    pld, adv_pld = spec_decode_loop(
+        _cyclic_forward_argmax, seed, propose=lambda s: pld_propose(s, 1, 3), max_new=30)
+    m = min(len(ar), len(pld))
+    assert m >= 30
+    assert ar[:m] == pld[:m]               # lossless: identical output whatever the drafter
+    assert all(a == 1 for a in adv_ar)     # AR advances exactly 1 per forward pass
+    assert max(adv_pld) > 1                 # PLD accepts multiple tokens in some steps
+    assert len(adv_pld) < len(adv_ar)      # => fewer forward passes (real acceleration)

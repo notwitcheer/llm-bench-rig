@@ -113,3 +113,29 @@ def load_workload(path: str) -> list[dict]:
     rows = [json.loads(l) for l in open(path) if l.strip()]
     assert rows and all({"id", "workload", "prompt"} <= r.keys() for r in rows)
     return rows
+
+
+# --- greedy spec-decode loop (torch-free; the driver supplies forward_argmax) ---
+def spec_decode_loop(forward_argmax, input_ids, propose, max_new, eos_id=None):
+    """Run one greedy spec-decode generation. Pure orchestration — no torch — so it is
+    unit-testable with a stub predictor.
+
+    forward_argmax(seq, draft) -> list[int]: the target model's greedy argmax at the
+        len(draft)+1 positions that consume draft[:0], draft[:1], ... draft[:k] (i.e.
+        pred[i] = argmax at the position right after seq + draft[:i]).
+    propose(seq) -> list[int]: the drafter's proposed continuation ([] => plain AR).
+    Returns (generated_tokens, advances) where advances[i] = tokens advanced at step i
+    (>=1; mean of these is MAT). Lossless: the output equals plain greedy decode because
+    every emitted token is the model's own argmax (see greedy_accept)."""
+    seq = list(input_ids)
+    start = len(seq)
+    advances: list[int] = []
+    while len(seq) - start < max_new:
+        draft = propose(seq)
+        preds = forward_argmax(seq, draft)
+        accepted, n = greedy_accept(draft, preds)
+        seq.extend(accepted)
+        advances.append(n)
+        if eos_id is not None and eos_id in accepted:
+            break
+    return seq[start:], advances
