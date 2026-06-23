@@ -42,3 +42,31 @@ def test_speedup_sanity():
     assert_speedup_sane(2.45, 2.42)         # ok, within eps
     with pytest.raises(SpeedupSanityError):
         assert_speedup_sane(3.0, 2.42)      # impossible: faster than tokens/forward
+
+
+# --- Task 2: n-gram drafters ---
+from lib.cacheback import pld_propose, NGramLRU
+
+
+def test_pld_proposes_recent_continuation():
+    # "1 2 3" appeared after the last "1"; propose its continuation
+    seq = [1, 2, 3, 9, 1]
+    assert pld_propose(seq, n=1, max_draft=2) == [2, 3]
+
+
+def test_pld_no_match_returns_empty():
+    assert pld_propose([1, 2, 3], n=1, max_draft=3) == []  # last token "3" never seen earlier
+
+
+def test_pld_prefers_most_recent_occurrence():
+    seq = [7, 5, 7, 8, 7]   # last "7"; most recent earlier "7" is at idx2 -> followed by 8
+    assert pld_propose(seq, n=1, max_draft=1) == [8]
+
+
+def test_ngram_lru_eviction_and_recency():
+    t = NGramLRU(capacity=2)
+    t.update((1,), (10,)); t.update((2,), (20,)); t.update((3,), (30,))  # evicts (1,)
+    assert t.lookup((1,)) == []
+    assert t.lookup((3,)) == [(30,)]
+    t.update((2,), (21,))                       # most-recent first
+    assert t.lookup((2,))[0] == (21,)
