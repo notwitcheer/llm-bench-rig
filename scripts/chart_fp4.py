@@ -1,16 +1,16 @@
 """FP4 on a consumer 5090: does it actually go fast? (Gold & Crimson v2)
-Left: vLLM batch-1 decode tok/s per quant on Qwen3-14B, with the ACTUAL kernel under each bar —
-NVFP4 is crimson to flag that it silently runs the Marlin dequant (no FP4 win vs AWQ/FP8).
-Right (if QuTLASS ran): MXFP4-vs-bf16 speedup across the batch sweep — the one path with real FP4."""
+vLLM batch-1 decode tok/s on Qwen3-14B per quant. AWQ int4 (gold) wins; NVFP4 (crimson) runs the
+NATIVE cutlass FP4 kernel on sm_120 (JIT-compiled, after a toolchain fight) and is STILL slower than
+AWQ; FP8 is slowest (biggest weights). bf16 doesn't fit 32GB. The FP4 headline is a B200 story."""
 import glob
 import json
-import os
 
 import matplotlib.pyplot as plt
 
-from lib.fp4 import parse_quant_kernel, speedup
+from lib.fp4 import speedup
 
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
+KERNEL = {"awq_marlin": "awq-marlin (int4)", "fp8": "fp8-marlin", "modelopt_fp4": "nvfp4 cutlass (JIT)"}
 
 vllm = {}
 for f in glob.glob("results/fp4/vllm__*.json"):
@@ -22,70 +22,36 @@ def tps_at(d, batch):
     return next((r["tps"] for r in d["batches"] if r["batch"] == batch), None)
 
 
-q = {}
-for f in glob.glob("results/fp4/qutlass__*.json"):
-    d = json.load(open(f))
-    q[d["arm"]] = d
-has_q = "bf16" in q and "mxfp4" in q
+order = [l for l in ["awq", "fp8", "nvfp4"] if l in vllm]
+awq1 = tps_at(vllm["awq"], 1) if "awq" in vllm else None
 
-fig, axes = plt.subplots(1, 2 if has_q else 1, figsize=(12.5 if has_q else 7.2, 6.2),
-                         facecolor=BG, squeeze=False)
-fig.suptitle("FP4 on a consumer RTX 5090: does it actually go fast?",
-             color=GOLD, fontsize=14.5, fontweight="bold", y=0.97)
-
-# --- left: vLLM batch-1 tok/s per quant + kernel labels ---
-ax = axes[0][0]
+fig, ax = plt.subplots(figsize=(8.6, 6.3), facecolor=BG)
 ax.set_facecolor(BG)
-order = [l for l in ["bf16", "awq", "fp8", "nvfp4"] if l in vllm]
+fig.suptitle("FP4 on a consumer RTX 5090: the Blackwell headline loses to plain int4",
+             color=GOLD, fontsize=14, fontweight="bold", y=0.97)
+
 xs = range(len(order))
-vals, kernels, colors = [], [], []
-for lab in order:
-    vals.append(tps_at(vllm[lab], 1) or 0)
-    lp = f"results/fp4/{lab}.initlog"
-    kernels.append(parse_quant_kernel(open(lp).read()) if os.path.exists(lp) else "?")
-    colors.append(CRIMSON if lab == "nvfp4" else (GOLD if lab in ("awq", "fp8") else MUTE))
-ax.bar(xs, vals, 0.62, color=colors, edgecolor=TEXT, zorder=3)
-for i, lab in enumerate(order):
+vals = [tps_at(vllm[l], 1) or 0 for l in order]
+colors = [GOLD if l == "awq" else (CRIMSON if l == "nvfp4" else MUTE) for l in order]
+ax.bar(xs, vals, 0.6, color=colors, edgecolor=TEXT, zorder=3)
+for i, l in enumerate(order):
     ax.annotate(f"{vals[i]:.0f}", (i, vals[i]), color=TEXT, ha="center", va="bottom",
-                fontsize=11, fontweight="bold", xytext=(0, 4), textcoords="offset points")
-    ax.annotate(kernels[i], (i, vals[i] * 0.5), color=BG, ha="center", va="center",
-                fontsize=9, fontweight="bold", rotation=90)
+                fontsize=12, fontweight="bold", xytext=(0, 4), textcoords="offset points")
+    if l != "awq" and awq1:
+        ax.annotate(f"{speedup(vals[i], awq1):.2f}x", (i, vals[i] * 0.5), color=BG, ha="center",
+                    va="center", fontsize=11, fontweight="bold")
 ax.set_xticks(list(xs))
-ax.set_xticklabels(order, color=TEXT, fontsize=11)
-ax.set_ylabel("batch-1 decode tok/s (vLLM, Qwen3-14B)", color=TEXT, fontsize=10.5)
-ax.set_title("NVFP4 'loads' but routes to Marlin dequant — no FP4 win", color=MUTE, fontsize=9.5, pad=8)
+ax.set_xticklabels([f"{l}\n{KERNEL.get(str(vllm[l]['declared_quant']), '')}" for l in order],
+                   color=TEXT, fontsize=10.5)
+ax.set_ylabel("batch-1 decode tok/s  (vLLM, Qwen3-14B)", color=TEXT, fontsize=11)
+ax.set_ylim(0, max(vals) * 1.18)
+ax.set_title("AWQ runs out of the box; NVFP4 needs nvcc+ninja+CUDA_HOME to JIT its kernels, then "
+             "still loses (bf16 OOMs on 32GB)", color=MUTE, fontsize=9, pad=8)
+for s in ax.spines.values():
+    s.set_color(GRID)
+ax.tick_params(colors=MUTE)
+ax.grid(True, axis="y", color=GRID, linewidth=0.6, zorder=0)
 
-# --- right: QuTLASS MXFP4 speedup vs batch ---
-if has_q:
-    ax2 = axes[0][1]
-    ax2.set_facecolor(BG)
-    qb = {r["batch"]: r["tps"] for r in q["bf16"]["batches"]}
-    pts = [(r["batch"], speedup(r["tps"], qb[r["batch"]]))
-           for r in q["mxfp4"]["batches"] if r.get("tps") and qb.get(r["batch"])]
-    if pts:
-        bxs, sys_ = zip(*pts)
-        ax2.plot(range(len(bxs)), sys_, "-o", color=CRIMSON, linewidth=2.6, markersize=9,
-                 markeredgecolor=TEXT, zorder=3)
-        for i, (b, s) in enumerate(pts):
-            ax2.annotate(f"{s:.2f}x", (i, s), color=CRIMSON, ha="center", va="bottom",
-                         fontsize=10.5, fontweight="bold", xytext=(0, 6), textcoords="offset points")
-        ax2.axhline(1.0, color=GRID, linewidth=1.0, linestyle="--", zorder=1)
-        ax2.set_xticks(range(len(bxs)))
-        ax2.set_xticklabels([f"batch {b}" for b in bxs], color=TEXT, fontsize=10.5)
-        ax2.set_ylabel("MXFP4 speedup vs bf16 (Transformers)", color=TEXT, fontsize=10.5)
-        ax2.set_title("QuTLASS MXFP4: real FP4 kernels (claim: 4x at large batch)",
-                      color=MUTE, fontsize=9.5, pad=8)
-        for s in ax2.spines.values():
-            s.set_color(GRID)
-        ax2.tick_params(colors=MUTE)
-        ax2.grid(True, axis="y", color=GRID, linewidth=0.6, zorder=0)
-
-for ax_ in [axes[0][0]] + ([axes[0][1]] if has_q else []):
-    for s in ax_.spines.values():
-        s.set_color(GRID)
-    ax_.tick_params(colors=MUTE)
-    ax_.grid(True, axis="y", color=GRID, linewidth=0.6, zorder=0)
-
-fig.tight_layout(rect=[0, 0, 1, 0.93])
+fig.tight_layout(rect=[0, 0, 1, 0.94])
 fig.savefig("reports/fp4-consumer-blackwell.png", dpi=150, facecolor=BG)
 print("wrote reports/fp4-consumer-blackwell.png")
