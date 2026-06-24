@@ -24,7 +24,7 @@ def dump(wl, prompts):
 
 
 # --- code: first 30 HumanEval prompts (signature + docstring -> complete it) ---
-he = load_dataset("openai_humaneval", split="test")
+he = load_dataset("openai/openai_humaneval", split="test")
 dump("code", [he[i]["prompt"] for i in range(30)])
 
 # --- chat: 30 fixed, diverse, single-turn prompts with NO long copyable context ---
@@ -63,7 +63,7 @@ chat = [
 dump("chat", chat)
 
 # --- copyctx: 30 CNN/DailyMail articles, truncated, with a summarize instruction ---
-cd = load_dataset("cnn_dailymail", "3.0.0", split="test")
+cd = load_dataset("abisee/cnn_dailymail", "3.0.0", split="test")
 copyctx = [
     f"Summarize the following article in three sentences.\n\nARTICLE:\n{cd[i]['article'][:3000]}\n\nSUMMARY:"
     for i in range(30)
