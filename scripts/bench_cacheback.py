@@ -15,7 +15,8 @@ import time
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from lib.cacheback import spec_decode_loop, mean_accepted_tokens, load_workload, pld_propose
+from lib.cacheback import (spec_decode_loop, mean_accepted_tokens, load_workload,
+                           pld_propose, CachebackDrafter)
 
 
 def make_forward_argmax(model):
@@ -28,17 +29,25 @@ def make_forward_argmax(model):
     return forward_argmax
 
 
-def make_propose(arm, max_draft):
+def make_proposer(arm, max_draft):
+    """Return a factory producing a FRESH per-prompt propose(seq)->list callable. AR/PLD are
+    stateless; cacheback gets a fresh dynamic LRU table per prompt (state must not leak across
+    prompts). The factory is called once per prompt in run()."""
     if arm == "ar":
-        return lambda seq: []
+        return lambda: (lambda seq: [])
     if arm == "pld":
-        return lambda seq: pld_propose(seq, 1, max_draft)    # LL=1; FL via max_draft
-    raise ValueError(f"arm '{arm}' not supported in Tier 1 (cacheback added in T7)")
+        return lambda: (lambda seq: pld_propose(seq, 1, max_draft))   # LL=1; FL via max_draft
+    if arm == "cacheback":
+        def factory():
+            d = CachebackDrafter()
+            return lambda seq: d.propose(seq, max_draft)
+        return factory
+    raise ValueError(f"unknown arm '{arm}'")
 
 
 def run(model, tok, rows, arm, max_new, max_draft):
     forward_argmax = make_forward_argmax(model)
-    propose = make_propose(arm, max_draft)
+    proposer_factory = make_proposer(arm, max_draft)
     eos = tok.eos_token_id
     outs, advs, t0 = [], [], None
     for i, r in enumerate(rows):
@@ -47,6 +56,7 @@ def run(model, tok, rows, arm, max_new, max_draft):
             torch.cuda.synchronize()
             torch.cuda.reset_peak_memory_stats()
             t0 = time.perf_counter()
+        propose = proposer_factory()                         # fresh per-prompt drafter state
         gen, a = spec_decode_loop(forward_argmax, ids, propose, max_new, eos)
         outs.append(gen)
         if i >= 1:

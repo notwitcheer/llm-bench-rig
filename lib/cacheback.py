@@ -138,4 +138,37 @@ def spec_decode_loop(forward_argmax, input_ids, propose, max_new, eos_id=None):
         advances.append(n)
         if eos_id is not None and eos_id in accepted:
             break
-    return seq[start:], advances
+    gen = seq[start:]
+    # Chunked acceptance can overshoot the cap or run past EOS within the final chunk;
+    # emit exactly what plain greedy decode would (so losslessness is byte-exact AND the
+    # token count — hence tok/s — is identical across arms, never crediting overshoot).
+    if eos_id is not None and eos_id in gen:
+        gen = gen[:gen.index(eos_id) + 1]
+    if len(gen) > max_new:
+        gen = gen[:max_new]
+    return gen, advances
+
+
+# --- Cacheback dynamic-table drafter (LRU n-gram, linear best-path) ---
+class CachebackDrafter:
+    """Dynamic LRU n-gram drafter (LL=1, FL=3). Linear best-path proposal: follow the
+    most-recent follower chain from the LRU table built over the sequence-so-far. This is
+    the faithful 'dynamic-only' Cacheback arm; the paper's full form adds a breadth-first
+    tree + tree-attention (parked rung). One drafter instance per prompt (fresh table)."""
+    def __init__(self, ll: int = 1, fl: int = 3, capacity: int = 100000):
+        self.ll, self.fl = ll, fl
+        self.table = NGramLRU(capacity, followers_per_leader=8)
+        self._seen = 0
+
+    def update(self, seq: list[int]) -> None:
+        for i in range(self._seen, len(seq) - self.ll - self.fl + 1):
+            leader = tuple(seq[i:i + self.ll])
+            follow = tuple(seq[i + self.ll:i + self.ll + self.fl])
+            self.table.update(leader, follow)
+        self._seen = max(self._seen, len(seq) - self.ll - self.fl + 1)
+
+    def propose(self, seq: list[int], max_draft: int) -> list[int]:
+        self.update(seq)
+        leader = tuple(seq[-self.ll:])
+        cands = self.table.lookup(leader)
+        return list(cands[0])[:max_draft] if cands else []

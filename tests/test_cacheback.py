@@ -96,3 +96,40 @@ def test_loop_pld_is_lossless_and_faster_than_ar():
     assert all(a == 1 for a in adv_ar)     # AR advances exactly 1 per forward pass
     assert max(adv_pld) > 1                 # PLD accepts multiple tokens in some steps
     assert len(adv_pld) < len(adv_ar)      # => fewer forward passes (real acceleration)
+
+
+def test_cacheback_dynamic_proposes_from_lru():
+    from lib.cacheback import CachebackDrafter
+    d = CachebackDrafter(ll=1, fl=3, capacity=10000)
+    d.update([5, 6, 7, 8])                  # learns 5->(6,7,8), 6->(7,8), ...
+    assert d.propose([1, 2, 5], max_draft=3) == [6, 7, 8]
+
+
+def test_cacheback_loop_is_lossless_vs_ar():
+    from lib.cacheback import CachebackDrafter
+    seed = [0, 1, 2]
+    ar, _ = spec_decode_loop(
+        _cyclic_forward_argmax, seed, propose=lambda s: [], max_new=30)
+    drafter = CachebackDrafter()
+    cb, _ = spec_decode_loop(
+        _cyclic_forward_argmax, seed, propose=lambda s: drafter.propose(s, 3), max_new=30)
+    m = min(len(ar), len(cb))
+    assert m >= 30
+    assert ar[:m] == cb[:m]                 # lossless: identical output whatever the drafter
+
+
+def test_loop_caps_emitted_length_exactly_at_max_new():
+    # chunked acceptance must not overshoot the cap: both arms emit exactly max_new tokens
+    seed = [0, 1, 2]
+    ar, _ = spec_decode_loop(_cyclic_forward_argmax, seed, propose=lambda s: [], max_new=30)
+    pld, _ = spec_decode_loop(
+        _cyclic_forward_argmax, seed, propose=lambda s: pld_propose(s, 1, 3), max_new=30)
+    assert len(ar) == 30 and len(pld) == 30      # neither overshoots
+    assert ar == pld                             # byte-exact losslessness AND equal length
+
+
+def test_loop_truncates_at_first_eos_within_chunk():
+    # eos landing inside an accepted chunk must end the output at eos, no post-eos tokens
+    fwd = lambda seq, draft: [7] * (len(draft) + 1)
+    out, _ = spec_decode_loop(fwd, [1, 2], propose=lambda s: [7, 7, 7], max_new=10, eos_id=7)
+    assert out == [7]
