@@ -36,9 +36,10 @@ def main():
     ap.add_argument("--label", required=True)              # bf16 | awq | fp8 | nvfp4
     ap.add_argument("--batches", default="1,8,32")
     ap.add_argument("--max-new", type=int, default=128)
+    ap.add_argument("--gpu-mem-util", type=float, default=0.88)   # bf16-14B needs ~0.95 to fit 32GB
     a = ap.parse_args()
 
-    llm = LLM(model=a.model, dtype="bfloat16", gpu_memory_utilization=0.88,
+    llm = LLM(model=a.model, dtype="bfloat16", gpu_memory_utilization=a.gpu_mem_util,
               max_model_len=4096, enforce_eager=False)
     declared = str(getattr(llm.llm_engine.model_config, "quantization", None))
 
