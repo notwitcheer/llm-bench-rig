@@ -52,3 +52,30 @@ def entropy_loss(logits, gen_mask, temp: float = 0.5):
     h = -(p * logp).sum(dim=-1)                       # [T] per-position entropy
     mask = gen_mask.to(h.dtype)
     return (h * mask).sum() / mask.sum().clamp(min=1)
+
+
+# --- prompt protocols (the eval variants differ by how the base is prompted) ---
+QWEN_MATH_COT = (
+    "Please reason step by step, and put your final answer within \\boxed{{}}.\n\n{problem}"
+)
+
+FEWSHOT_EXEMPLARS = [
+    ("What is 7 times 6?",
+     "We multiply: 7 times 6 equals 42. The final answer is \\boxed{42}."),
+    ("If x + 5 = 12, what is x?",
+     "Subtract 5 from both sides: x = 12 - 5 = 7. The final answer is \\boxed{7}."),
+]
+
+
+def build_prompt(problem: str, variant: str) -> str:
+    """paper/fair share the qwen25-math-cot prompt (they differ only in generation max-tokens,
+    set by the driver); format prepends a fixed few-shot scaffold that elicits the boxed CoT
+    format without any weight update."""
+    if variant in ("paper", "fair"):
+        return QWEN_MATH_COT.format(problem=problem)
+    if variant == "format":
+        shots = "\n\n".join(
+            QWEN_MATH_COT.format(problem=q) + "\n" + a for q, a in FEWSHOT_EXEMPLARS
+        )
+        return shots + "\n\n" + QWEN_MATH_COT.format(problem=problem)
+    raise ValueError(f"unknown variant {variant!r}")

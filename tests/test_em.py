@@ -33,3 +33,29 @@ def test_repetition_rate():
 
 def test_mean_len():
     assert mean_len([[1, 2, 3], [1]]) == pytest.approx(2.0)
+
+
+from lib.em import build_prompt, FEWSHOT_EXEMPLARS
+
+
+def test_paper_and_fair_share_prompt():
+    p = "What is 2+2?"
+    assert build_prompt(p, "paper") == build_prompt(p, "fair")     # differ only in max-tokens
+    assert p in build_prompt(p, "paper")
+
+
+def test_paper_prompt_requests_boxed_cot():
+    out = build_prompt("Solve x+1=3.", "paper").lower()
+    assert "boxed" in out and "step by step" in out
+
+
+def test_format_variant_prepends_exemplars():
+    out = build_prompt("Solve x+1=3.", "format")
+    assert len(FEWSHOT_EXEMPLARS) >= 2
+    assert FEWSHOT_EXEMPLARS[0][0] in out          # exemplar problem present
+    assert r"\boxed" in out                         # exemplars show the boxed format
+
+
+def test_unknown_variant_raises():
+    with pytest.raises(ValueError):
+        build_prompt("x", "nope")
