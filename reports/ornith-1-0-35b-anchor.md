@@ -1,5 +1,7 @@
 # Ornith-1.0-35B's self-written scaffold doesn't survive a different harness: 5/12 on real bugs, below its own base's 7/12
 
+> **Follow-up — Leg B (`ornith-1-0-35b-harness-inversion.md`):** this 5/12 is a *strict-harness* result. The full model x harness 2x2 shows the deficit to the base vanishes under a lenient harness (omp): Ornith recovers exactly the two tool-call-format losses below and lands level with its base on the same 7-bug core. Read this as the strict-loop chapter of that finding, not the whole story.
+
 **Rig:** one RTX 5090 32GB · llama.cpp b9653 · Qwen3.5-35B-A3B-arch (`qwen35moe`) · Q4_K_M · native OpenAI tool-calling loop (40-step, `docker exec` repo tools) · think-off · temp 0 · official SWE-bench harness
 **Subject:** Ornith-1.0-35B (DeepReinforce, MIT) — the RL coder whose headline mechanism is that it *co-optimizes the solution rollouts and a task-specific agent scaffold jointly*, baking the scaffold into the weights. The 35B claims **75.6 SWE-bench Verified** (the family's 82.4 belongs to the unrunnable 397B flagship). DeepReinforce evaluated it in the **OpenHands** harness at temp 1.0, 256K context.
 
