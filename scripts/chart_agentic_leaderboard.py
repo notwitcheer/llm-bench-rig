@@ -9,13 +9,14 @@ import numpy as np
 BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0", "#3a2f25", "#8a7a64")
 AMBER = "#d8902f"
 
-# 16-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
+# 17-model board (ordered by Agentic Score). Warm brand palette, varied for legibility.
 MODELS = [
     ("qwopus3-6-27b-coder", "Qwopus3.6-27B-Coder",    "#f0b840"),
     ("qwopus-coder-compat", "Qwopus-Coder-Compat",    "#e89060"),
     ("qwable-5-27b-coder",  "Qwable-5-27B-Coder",     "#caa05a"),
     ("qwen3-6-35b-base",    "Qwen3.6-35B-A3B (base)", CRIMSON),
     ("qwen3-6-27b",         "Qwen3.6-27B",            "#e07840"),
+    ("ornith-35b",          "Ornith-1.0-35B",         AMBER),
     ("pi-tune-q6-k",        "Qwen3.6-27B pi-tune",    "#f0c040"),
     ("qwen3-6-35b-opus-distill", "Qwen3.6-35B Opus-distill", "#c08850"),
     ("qwable-27b-q4-k-m",   "Qwable-3.6-27b",         "#bf4a3c"),
@@ -41,6 +42,7 @@ def lc(slug, tier):
 
 # --- Chart 1: efficiency frontier ---
 SHORT = {"qwen3-6-27b": "Qwen3.6-27B", "qwen3-5-35b-base": "Qwen3.5 base",
+         "ornith-35b": "Ornith-35B",
          "qwopus-glm-18b": "Qwopus-18B", "nemotron-cascade-2-30b": "Nemotron-C2",
          "kimi-linear-48b-a3b": "Kimi-Linear", "granite-4-1-30b": "Granite-30B",
          "nex-n2-mini": "Nex-N2-mini", "qwopus3-6-27b-coder": "Qwopus-Coder",
