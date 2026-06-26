@@ -27,6 +27,21 @@ def run_agent(client, goal: str, tools: list, max_steps: int = 8, dispatch=None)
         r.n_steps += 1
         msg = client.chat(msgs, tools)
         r.n_tokens += int(msg.get("_tokens", 0))
+        if msg.get("_error"):
+            # server rejected the turn (unparseable tool-call JSON or context overflow).
+            r.bad_calls += 1
+            err = str(msg["_error"])
+            if "context size" in err or "exceeds" in err:
+                # context is full; adding more can't help — end and let the diff be extracted.
+                r.stalled = True
+                r.messages = msgs
+                return r
+            msgs.append({"role": "user", "content":
+                         "Your previous response could not be processed (server error: " + err
+                         + "). If it was a tool call, re-send it as a SINGLE valid JSON tool "
+                         "call with all newlines and quotes properly escaped (or run a simpler "
+                         "command). Then continue working toward the fix."})
+            continue
         msgs.append({k: v for k, v in msg.items() if not k.startswith("_")})
         calls = msg.get("tool_calls")
         if not calls:

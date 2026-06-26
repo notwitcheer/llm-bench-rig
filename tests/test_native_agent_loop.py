@@ -47,6 +47,37 @@ def test_malformed_arguments_counted_as_bad_call():
     assert r.bad_calls >= 1
 
 
+def test_loop_recovers_from_server_parse_error():
+    # llama-server 500s on unparseable tool-call JSON; the client surfaces it as _error.
+    # the loop should feed it back as a corrective user turn and continue, not crash.
+    turns = [
+        {"role": "assistant", "content": "",
+         "_error": "Failed to parse tool call arguments as JSON", "_tokens": 0},
+        {"role": "assistant", "content": "fixed it", "tool_calls": None},
+    ]
+    r = run_agent(ScriptedClient(turns), goal="g", tools=[], max_steps=5)
+    assert r.final_text == "fixed it"
+    assert r.stalled is False
+    assert r.bad_calls >= 1
+    assert any(m.get("role") == "user" and "could not be processed" in m.get("content", "")
+               for m in r.messages)
+
+
+def test_loop_ends_gracefully_on_context_overflow():
+    # a context-overflow 500 can't be recovered by adding more tokens; the loop should
+    # stop immediately (so the container diff is still extracted downstream), not retry.
+    turns = [
+        {"role": "assistant", "content": "",
+         "_error": "request (33303 tokens) exceeds the available context size (32768 tokens)",
+         "_tokens": 0},
+        {"role": "assistant", "content": "should not be reached", "tool_calls": None},
+    ]
+    r = run_agent(ScriptedClient(turns), goal="g", tools=[], max_steps=5)
+    assert r.stalled is True
+    assert r.n_steps == 1
+    assert r.final_text == ""
+
+
 def test_run_agent_uses_injected_dispatch():
     seen = []
     def my_dispatch(name, args):

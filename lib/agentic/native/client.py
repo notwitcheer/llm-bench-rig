@@ -15,7 +15,17 @@ class LlamaClient:
             payload["tools"] = tools
             payload["tool_choice"] = "auto"
         r = httpx.post(self.url, json=payload, timeout=self.timeout)
-        r.raise_for_status()
+        if r.status_code != 200:
+            # llama-server returns 500 when it can't parse a model's tool-call JSON
+            # (e.g. unescaped newlines in a multi-line bash arg) or when the request
+            # exceeds the context window. Surface it as a recoverable message instead of
+            # raising and crashing the whole trajectory — the loop feeds the error back so
+            # the model can retry (parse error) or ends cleanly (context overflow).
+            try:
+                err = r.json().get("error", {}).get("message", r.text)
+            except Exception:
+                err = r.text
+            return {"role": "assistant", "content": "", "_error": str(err)[:600], "_tokens": 0}
         data = r.json()
         msg = data["choices"][0]["message"]
         msg["_tokens"] = data.get("usage", {}).get("completion_tokens", 0)
