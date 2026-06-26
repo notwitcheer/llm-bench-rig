@@ -54,6 +54,9 @@ META = {
     "qwopus-coder-compat": {"name": "Qwopus3.6-27B-Coder-Compat", "params": "27B", "quant": "Q6_K",
                             "repo": "Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF",
                             "note": "compatibility re-release of Qwopus-Coder, measured controlled vs base + the prior Coder at matched Q6_K. Agentic score 100.0 ties the prior (the synthetic axis can't separate two siblings of one base). It heals the prior tune's two regressions vs base: the MTP draft head recovered 1.4-1.6x to 1.9-2.3x (back on the base curve), and real SWE-bench resolve returned to base parity — 8/12 on the n=12 subset, the same bugs base solves, +1 over the prior tune (recovers pytest-6202) with one fewer give-up. A compat fix at no capability cost."},
+    "ornith-35b":          {"name": "Ornith-1.0-35B", "params": "35B-A3B", "quant": "Q4_K_M",
+                            "repo": "deepreinforce-ai/Ornith-1.0-35B-GGUF",
+                            "note": "DeepReinforce's self-scaffold RL coder — co-trains a task-specific agent scaffold INTO the weights; the 35B claims 75.6 SWE-bench Verified, measured in OpenHands (the 82.4 headline is the 397B flagship). Run think-OFF, matched to its base Qwen3.5-35B-A3B. Synthetic agentic score 98.06 — ABOVE the base's 97.5 (higher tool-efficiency nets it the rank) — yet real SWE-bench Verified resolve is 5/12 vs the base's 7/12 on the n=12 subset, a strict subset: the synthetic axis is blind to the regression and here even ranks the weaker model higher. The 2 losses (astropy-12907, xarray-3677) are bugs the base solved, lost to tool-call JSON fragility (unescaped newlines in multi-line bash) not reasoning; even after the loop was hardened to retry the 500s, Ornith burned its budget. The self-scaffold did not transfer to a strict neutral harness. See reality anchor / Field Report."},
 }
 
 rows = []
