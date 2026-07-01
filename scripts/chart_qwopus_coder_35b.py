@@ -23,7 +23,7 @@ grid = d["grid"]
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16.0, 8.4), facecolor=BG,
                                gridspec_kw={"width_ratios": [1.0, 1.32]})
-fig.suptitle("Hermes narrows Qwopus-Coder's deficit to its base, but doesn't close it (unlike Ornith under omp)",
+fig.suptitle("Hermes narrows Qwopus-Coder's deficit to its base, but doesn't close it",
              color=GOLD, fontsize=13.2, fontweight="bold", y=0.975)
 fig.text(0.5, 0.93, "Qwopus-3.6-35B-A3B-Coder-MTP vs base Qwen3.6-35B-A3B · same 12 SWE-bench Verified bugs · Q4/Q5_K_M · llama.cpp b9653 · think-off · native-strict vs Hermes-as-harness",
          color=MUTE, fontsize=8.8, ha="center")
