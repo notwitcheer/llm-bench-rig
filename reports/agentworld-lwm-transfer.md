@@ -3,6 +3,8 @@
 **Rig:** one RTX 5090 32GB (sm_120) · Qwen-AgentWorld-35B-A3B (UD-Q4_K_M) vs its base Qwen3.5-35B-A3B (Q4_K_M) · llama.cpp, think-OFF, temp 0, native tool-calling · agentic board + SWE-bench Verified anchor (30 bugs, official harness)
 **Question:** Qwen-AgentWorld (arXiv 2606.24597) trains a language world model to predict environment state transitions, and claims that this "LWM warm-up" **transfers to agentic tasks with zero agent fine-tuning, +3.4–12.8%**. Does the released LWM-warmed checkpoint actually act as a stronger agent than the base it was built from?
 
+> **Follow-up (`agentworld-think-on-null.md`):** this result is think-OFF, and AgentWorld is built to reason, so a think-ON A/B was the open falsification leg. It's closed: on a bounded 12-bug subset, AgentWorld is bug-for-bug identical whether reasoning is on or off. Thinking mode isn't hiding the transfer either.
+
 ## The numbers
 
 | | synthetic agentic board | SWE-bench Verified (real) | empty patches (give-ups) |
