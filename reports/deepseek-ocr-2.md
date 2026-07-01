@@ -23,7 +23,7 @@ The paper's curve: <10x compression → 97% precision, 20x → ~60%. My sample, 
 
 ## Finding 3 — a distinct failure mode: degenerate repetition on repeated running headers
 
-One page (The Economist, Feb 2024) triggered visible output repetition: the model's transcription opens with `"The world this week\n\nThe world this week\n\nThe Economist February 24th 2024\n\nThe Economist February 24th 2024\n\nThe Economist February 24th 202\n\n..."` — looping on the page's running masthead/header text before eventually recovering into real article content. This isn't a ground-truth mismatch; it's a genuine generation degeneracy, likely triggered by the repeated header appearing at the top of each column in the source layout. `no_repeat_ngram_size` (set to 35 in the model's own inference code) evidently doesn't catch phrase-level repetition at this granularity.
+One page (The Economist, Feb 2024) triggered visible output repetition: the model's transcription opens with `"The world this week\n\nThe world this week\n\nThe Economist February 24th 2024\n\nThe Economist February 24th 2024\n\nThe Economist February 24th 202\n\n..."` — looping on the page's running masthead/header text before eventually recovering into real article content. This isn't a ground-truth mismatch; it's a genuine generation degeneracy, likely triggered by the repeated header appearing at the top of each column in the source layout. `no_repeat_ngram_size` (set to 20 in the model's own inference code, for this non-`eval_mode` generation path) evidently doesn't catch phrase-level repetition at this granularity.
 
 ## What this closes
 
