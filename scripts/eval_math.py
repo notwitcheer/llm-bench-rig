@@ -21,10 +21,11 @@ def main():
     ap.add_argument("--benchmark", required=True)             # math500 | amc23
     ap.add_argument("--max-tokens", type=int, default=3072)   # fair -> 4096 (set by runner)
     ap.add_argument("--label", required=True)                 # base | em-step10 | em-step15
+    ap.add_argument("--assistant-prefix", default="")         # t074: seed generation (e.g. "To")
     a = ap.parse_args()
 
     rows = [json.loads(l) for l in open(f"dataset/em/{a.benchmark}.jsonl") if l.strip()]
-    prompts = [build_prompt(r["problem"], a.variant) for r in rows]
+    prompts = [build_prompt(r["problem"], a.variant) + a.assistant_prefix for r in rows]
     llm = LLM(model=a.model, dtype="bfloat16", gpu_memory_utilization=0.85)
     sp = SamplingParams(temperature=0.0, max_tokens=a.max_tokens)   # greedy pass@1
     outs = llm.generate(prompts, sp)
