@@ -34,6 +34,9 @@ def main():
         d = json.load(open(p))
         if d.get("variant") != "paper":
             continue
+        if not (d["label"] in ("base", "base-toprefix")
+                or d["label"].startswith(("steer", "lora"))):
+            continue   # skip t073's em-* results sharing this directory
         rows.append({"label": d["label"], "benchmark": d["benchmark"], "acc": d["acc"],
                      "rep_rate": d["rep_rate"], "mean_len": d["mean_len"]})
     table = build_table(rows)

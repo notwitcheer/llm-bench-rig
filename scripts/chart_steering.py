@@ -75,6 +75,14 @@ for y, (kind, bench, base, steer, lora, rand) in enumerate(rows):
             ax.scatter([rand], [y], color=TEXT, marker="x", s=90, lw=2.4, zorder=5,
                        label="random-reward steering (ours)" if y == 0 else None)
 
+ours = [y for y, r in enumerate(rows) if r[0] == "ours"]
+if ours:
+    y0 = ours[0]
+    base0, steer0 = rows[y0][2], rows[y0][3]
+    ax.annotate("20 matched steps: steering = LoRA = random-reward = base",
+                xy=(max(base0, steer0), y0), xytext=(max(base0, steer0) + 1.5, y0 + 0.45),
+                color=TEXT, fontsize=9, arrowprops=dict(arrowstyle="-", color=GRID))
+
 ax.set_yticks(range(len(rows)))
 ax.set_yticklabels(ynames, color=TEXT, fontsize=9.5)
 ax.invert_yaxis()
@@ -98,8 +106,9 @@ if t:
     ax2.set_yticks([])
     ax2.set_xlabel("share of RLOO training wall-clock per step (%) — one RTX 5090",
                    color=TEXT, fontsize=9.5)
-    ax2.set_title('the "34s vs 52m" headline counts only the gold slice; rollouts '
-                  "dominate and cost the same for 245K or 7.6B trained params",
+    ax2.set_title('the "34s" headline counts only the optimizer sliver inside the gold '
+                  "slice (which is mostly backward); neither it nor the rollouts shrink "
+                  "when 245K params train instead of 7.6B",
                   color=TEXT, fontsize=9.5, pad=8)
 
 fig.tight_layout(rect=[0, 0, 1, 0.96])
