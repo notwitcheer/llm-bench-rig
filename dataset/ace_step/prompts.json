@@ -1,0 +1,8 @@
+[
+  {"name": "pop",        "caption": "catchy upbeat pop song, bright synths, punchy drums, female vocal hooks, radio-ready", "lyrics": "", "duration_s": 30},
+  {"name": "lofi",       "caption": "chill lofi hip-hop beat, warm vinyl crackle, mellow piano, relaxed tempo, study vibes", "lyrics": "", "duration_s": 30},
+  {"name": "orchestral", "caption": "sweeping cinematic orchestral score, soaring strings and brass, epic and emotional", "lyrics": "", "duration_s": 30},
+  {"name": "edm",        "caption": "high-energy EDM festival banger, heavy bass drop, four-on-the-floor kick, euphoric supersaws", "lyrics": "", "duration_s": 30},
+  {"name": "acoustic",   "caption": "intimate acoustic folk song, fingerpicked steel-string guitar, soft male vocals, warm and organic", "lyrics": "", "duration_s": 30},
+  {"name": "hiphop",     "caption": "boom-bap hip-hop instrumental, gritty sampled soul chops, hard-hitting drums, vinyl texture", "lyrics": "", "duration_s": 30}
+]
