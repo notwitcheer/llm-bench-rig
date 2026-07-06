@@ -1,0 +1,10 @@
+[
+  {"name": "portrait",     "category": "photoreal",     "prompt": "a close-up studio portrait of an elderly fisherman, weathered face, sharp catchlights in the eyes, 85mm lens, soft rim light"},
+  {"name": "two-object",   "category": "composition",   "prompt": "a red ceramic teapot next to a blue coffee mug on a wooden table, soft morning daylight"},
+  {"name": "counting",     "category": "counting",      "prompt": "exactly three yellow rubber ducks in a row on the white edge of a bathtub"},
+  {"name": "text",         "category": "text-render",   "prompt": "a vintage enamel shop sign that reads \"WITCHEER\" in bold serif capitals, cream lettering on deep crimson"},
+  {"name": "spatial",      "category": "spatial",       "prompt": "a small black cat sitting on top of a stack of old books, a green potted plant to the left"},
+  {"name": "landscape",    "category": "scenery",       "prompt": "a misty alpine valley at golden hour, a winding river below, dramatic clouds, ultra-wide cinematic"},
+  {"name": "complex",      "category": "complex-scene", "prompt": "a bustling neon-lit night market in the rain, reflections on wet pavement, dozens of stalls, steam rising, shallow bokeh"},
+  {"name": "illustration", "category": "style",         "prompt": "a flat vector illustration of a fox reading a book under a mushroom, warm autumn palette, clean lines"}
+]
