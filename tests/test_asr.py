@@ -95,3 +95,9 @@ from scripts.chart_asr import label_for
 def test_label_for_formats_model_line():
     s = {"model": "parakeet-tdt-0.6b-v2", "wer_clean": 0.062, "wer_other": 0.094, "rtfx": 350.0}
     assert label_for(s) == "parakeet-tdt-0.6b-v2\nWER 6.2/9.4%  ·  350x"
+
+
+def test_label_for_appends_vram_when_present():
+    s = {"model": "parakeet-tdt-0.6b-v2", "wer_clean": 0.062, "wer_other": 0.094,
+         "rtfx": 350.0, "peak_vram_mib": 2048}
+    assert label_for(s) == "parakeet-tdt-0.6b-v2\nWER 6.2/9.4%  ·  350x  ·  2.0GB"

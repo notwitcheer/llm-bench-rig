@@ -8,9 +8,12 @@ BG, GOLD, CRIMSON, TEXT, GRID, MUTE = ("#0d0906", "#e8c44a", "#e06060", "#f5e6d0
 
 
 def label_for(s: dict) -> str:
-    vram = (s.get("peak_vram_mib") or 0) / 1024
-    return (f"{s['model']}\nWER {s['wer_clean']*100:.1f}/{s['wer_other']*100:.1f}%  ·  "
-            f"{s['rtfx']:.0f}x  ·  {vram:.1f}GB")
+    base = (f"{s['model']}\nWER {s['wer_clean']*100:.1f}/{s['wer_other']*100:.1f}%  ·  "
+            f"{s['rtfx']:.0f}x")
+    vram_mib = s.get("peak_vram_mib")
+    if not vram_mib:
+        return base
+    return f"{base}  ·  {vram_mib / 1024:.1f}GB"
 
 
 def main(summary_path="results/asr/summary.json"):
