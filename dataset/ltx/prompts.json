@@ -1,0 +1,27 @@
+[
+  {
+    "name": "puppy-garden",
+    "category": "motion-tracking",
+    "prompt": "A golden retriever puppy runs across a sunlit garden, tongue out and ears bouncing, chasing a red ball, shallow depth of field, warm late-afternoon light, smooth tracking camera following the puppy"
+  },
+  {
+    "name": "drummer-solo",
+    "category": "audio-sync",
+    "prompt": "A drummer plays an energetic solo on a small club stage, close-up on hands and sticks striking the snare and cymbals, stage lights pulsing with each hit, camera slowly orbiting the kit"
+  },
+  {
+    "name": "ocean-storm",
+    "category": "ambient-physics",
+    "prompt": "Huge waves crash against a rocky lighthouse in a storm, spray flying over the rocks, dark rolling clouds, thunder rumbling in the distance, handheld camera from the shoreline"
+  },
+  {
+    "name": "street-market",
+    "category": "crowd-ambience",
+    "prompt": "A busy street market at golden hour, vendors calling out, people chatting and walking past stalls of fruit and spices, steam rising from a food cart, slow dolly shot down the aisle"
+  },
+  {
+    "name": "campfire-night",
+    "category": "quiet-detail",
+    "prompt": "A campfire crackling at night in a forest clearing, sparks drifting upward, an acoustic guitar leaning against a log, crickets chirping in the dark, gentle push-in on the flames"
+  }
+]
