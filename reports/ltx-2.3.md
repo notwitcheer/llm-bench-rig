@@ -9,7 +9,7 @@
 | | |
 |---|---|
 | model | Lightricks LTX-2.3 22B distilled 1.1 (~19B = 14B video + 5B audio dual-stream DiT; "22B" is marketing) + spatial upscaler x2 |
-| pipeline | vendor `DistilledPipeline` (8+4 step two-stage: stage 1 at half resolution, stage 2 upsamples 2× and refines) |
+| pipeline | vendor `DistilledPipeline` (two-stage: 8 steps at half resolution, then a 2× upsample + 3 refine steps as measured; vendor materials describe it as 8+4) |
 | config | `fp8-cast` (bf16 checkpoint downcast on the fly — the consumer path; fp8-scaled-mm is Hopper-only) · offload none · default tiled VAE · SDPA (no flash-attn) |
 | text encoder | Gemma-3-12B-it QAT q4_0 unquantized (gated) |
 | hardware | RTX 5090 32GB (sm_120), torch 2.10+cu128, native github.com/Lightricks/LTX-2 repo, `uv sync --frozen` |
