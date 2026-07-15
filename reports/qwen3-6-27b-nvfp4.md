@@ -50,7 +50,7 @@ Unsloth also ships a `-Fast` variant of the MoE sibling (`Qwen3.6-35B-A3B-NVFP4-
 
 No MMLU, no HumanEval, no leaderboard row. Our protocol re-banks every baseline under the current pinned harness before any quant comparison runs; we have published one correction already for skipping that step, and we will not ship "2.5x faster" or "same quality" numbers against an unstated baseline. The quant-tax ladder (Q8 to Q2 GGUF, AWQ, and this NVFP4 rung, same subject, same pin) is where those questions get answered.
 
-**Update 2026-07-15:** the re-bank ran. Quality numbers are in the addendum below.
+**Update 2026-07-15:** the re-bank ran. Quality numbers are in the addendum below. One correction to this section as written: "no leaderboard row" was wrong. The card already carried a June NVFP4 row measuring a different artifact (the NVFP4-GGUF file on llama.cpp), which this report failed to cross-reference. The addendum disambiguates the two.
 
 ## Addendum (2026-07-15): the quality numbers, with the baseline re-banked
 
@@ -74,6 +74,10 @@ There is no quality cliff in this checkpoint: the whole tax is 0.12 points of q_
 One detail the aggregate hides: the two HumanEval scores are identical (153/164) but the failure sets are not. Only 6 of 11 failing problems overlap. The quant fixed five problems the baseline fails and broke five the baseline passes. "Same score" at 4 bits means the errors moved, not that nothing changed; per-task neutrality is a stronger claim than aggregate neutrality, and this checkpoint only earns the aggregate one.
 
 This also sharpens the t070 verdict. On consumer Blackwell, AWQ-int4 beats NVFP4 end-to-end on single-stream speed. Quality is now measured, and it is not the reason: the cost of this rung is the decode profile in the tables above, not the answers.
+
+### Two NVFP4s, 0.9 q_avg apart
+
+The leaderboard already carried a Qwen3.6-27B NVFP4 row before today: q_avg 93.2, from the June [NVFP4 vs Q6_K report](nvfp4-vs-q6-qwen3-6-27b.md). That row measures a different artifact: the s-batman NVFP4-GGUF file, a 14.6GB flat quant served on llama.cpp's `BLACKWELL_NATIVE_FP4` path. Today's checkpoint is unsloth's compressed-tensors build, 23.4GB, with 303 modules kept in high precision. Same format name, different recipe, and the recipe is worth 0.85 q_avg: the flat GGUF pays −2.5 HumanEval against Q6_K, the mixed-precision build pays 0.0. "Does NVFP4 lose quality" is the wrong question. Which modules the recipe leaves in high precision decides the answer, and the 9GB between the two files is where the code quality lives. Both rows stay on the card, disambiguated.
 
 ## Reproduce
 
