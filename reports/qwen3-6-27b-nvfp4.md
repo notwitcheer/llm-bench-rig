@@ -50,6 +50,31 @@ Unsloth also ships a `-Fast` variant of the MoE sibling (`Qwen3.6-35B-A3B-NVFP4-
 
 No MMLU, no HumanEval, no leaderboard row. Our protocol re-banks every baseline under the current pinned harness before any quant comparison runs; we have published one correction already for skipping that step, and we will not ship "2.5x faster" or "same quality" numbers against an unstated baseline. The quant-tax ladder (Q8 to Q2 GGUF, AWQ, and this NVFP4 rung, same subject, same pin) is where those questions get answered.
 
+**Update 2026-07-15:** the re-bank ran. Quality numbers are in the addendum below.
+
+## Addendum (2026-07-15): the quality numbers, with the baseline re-banked
+
+The section above promised no quality numbers until the baseline was re-banked under the pinned harness. That step ran today. Both halves ran under rig commit ec00ff0 with identical seeds (42), identical samples (50% on MMLU and HellaSwag), thinking off, verified behaviorally on both runs: per-item token budgets, pass@1 level, and failure-transcript reads.
+
+The re-bank itself first. The Q6_K baseline (llama-server b9653, the GGUF stack's pin) reproduced its June bank almost exactly: four suites moved by 0.05 points or less, and HumanEval moved 0.6 points, which is one additional passing problem. q_avg went 94.0 to 94.17. The zero point stands, and this time nothing is inherited.
+
+Then the rung: the lm_head-dequanted NVFP4 checkpoint, served on the pinned vLLM stack from the serving section (0.21.0, torch 2.11.0+cu130, flashinfer 0.6.8.post1, native cutlass FP4 path), measured by the same evaluators over the same API.
+
+| suite | Q6_K (llama-server b9653) | NVFP4 (vLLM 0.21.0) | delta |
+|---|---:|---:|---:|
+| MMLU (50%) | 87.92 | 87.62 | -0.30 |
+| ARC-C | 96.93 | 96.42 | -0.51 |
+| HellaSwag (50%) | 95.44 | 95.40 | -0.04 |
+| HumanEval | 93.29 | 93.29 | 0.00 |
+| GSM8K | 97.27 | 97.50 | +0.23 |
+| **q_avg** | **94.17** | **94.05** | **-0.12** |
+
+There is no quality cliff in this checkpoint: the whole tax is 0.12 points of q_avg, and the largest single move is 6 answers out of 1172 on ARC-C. The engines differ by design. Each format serves on the stack that runs it natively, both stacks are pinned, and both builds are recorded in the result rows.
+
+One detail the aggregate hides: the two HumanEval scores are identical (153/164) but the failure sets are not. Only 6 of 11 failing problems overlap. The quant fixed five problems the baseline fails and broke five the baseline passes. "Same score" at 4 bits means the errors moved, not that nothing changed; per-task neutrality is a stronger claim than aggregate neutrality, and this checkpoint only earns the aggregate one.
+
+This also sharpens the t070 verdict. On consumer Blackwell, AWQ-int4 beats NVFP4 end-to-end on single-stream speed. Quality is now measured, and it is not the reason: the cost of this rung is the decode profile in the tables above, not the answers.
+
 ## Reproduce
 
 ```bash

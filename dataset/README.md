@@ -40,12 +40,15 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Model | Params | Quant | MMLU | ARC-C | HellaSwag | GSM8K | HumanEval | q_avg |
 |-------|-------:|-------|-----:|------:|----------:|------:|----------:|------:|
 | Gemma 4 31B-it | 30.70B | Q6_K | 87.8 | 97.6 | 92.0 | 97.5 | 96.3 | **94.2** |
-| Qwen3.6-27B | 26.90B | Q6_K | 87.9 | 96.9 | 95.4 | 97.3 | 92.7 | **94.0** |
+| Qwen3.6-27B² | 26.90B | Q6_K | 87.9 | 96.9 | 95.4 | 97.3 | 93.3 | **94.2** |
+| Qwen3.6-27B² | 26.90B | NVFP4³ | 87.6 | 96.4 | 95.4 | 97.5 | 93.3 | **94.1** |
 | Qwen3.6-35B-A3B | 34.66B | UD-Q4_K_M | 85.0 | 95.7 | 93.3 | 96.7 | 95.7 | **93.3** |
 | Qwen3-Coder-Next | 79.67B | UD-Q2_K_XL | 83.7 | 96.0 | 89.3 | 96.0 | 93.3 | **91.7** |
 | Gemma 4 12B-it | 11.91B | Q6_K | 78.9 | 94.0 | 81.6 | 96.4 | 87.2 | **87.6** |
 | gpt-oss-20b | 20.91B | Q4_K_M | 78.6 | 94.6 | 74.5 | 94.8 | 94.5 | **87.4** |
 | Nemotron-Cascade-2 | 31.58B | Q4_K_M | 74.4 | 91.5 | 75.7 | 87.1 | 79.3 | **81.6** |
+
+> ² Re-banked 2026-07-15 under the pinned harness (rig ec00ff0, llama-server b9653); the re-bank moved HumanEval by one passing problem (92.7 → 93.3) and nothing else beyond 0.05. ³ Served via vLLM 0.21.0 (native cutlass sm_120 FP4 path, lm_head dequanted); GGUF rows serve via llama-server. Full protocol and the per-suite delta table: [`reports/qwen3-6-27b-nvfp4.md`](../reports/qwen3-6-27b-nvfp4.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
