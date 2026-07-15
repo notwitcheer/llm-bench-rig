@@ -44,3 +44,6 @@ cadence/
 data/agentic/hermes_system_prompt.txt
 data/agentic/hermes_tools.json
 predictions/
+
+# Published media artifacts (wav/mp4/montages) — live on the HF dataset, not in the code repo
+reports/assets/
