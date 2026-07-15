@@ -75,6 +75,12 @@ One detail the aggregate hides: the two HumanEval scores are identical (153/164)
 
 This also sharpens the t070 verdict. On consumer Blackwell, AWQ-int4 beats NVFP4 end-to-end on single-stream speed. Quality is now measured, and it is not the reason: the cost of this rung is the decode profile in the tables above, not the answers.
 
+### Update, same day: wall 1 is version-bound — fixed by vLLM 0.25.1
+
+A reader suggested trying a newer vLLM, and the suggestion survives testing where the issue thread's own claimed fix did not. We rebuilt the as-shipped checkpoint (quantised lm_head restored from backups, no dequant) and served it from a fresh vLLM 0.25.1 env (torch 2.11.0 held constant, flashinfer 0.6.13): it loads and serves, `FlashInferCutlassNvFp4LinearKernel` selected, coherent output, ~60 tok/s single-stream decode (scout-grade single measurement, vs ~53-54 under the 0.21 pin — torch is identical, so the ~+12% belongs to vLLM/flashinfer). Broken at 0.21.0 and 0.22.0, still broken at 0.22.1 per the issue thread, fixed by 0.25.1: the offline dequant in the Reproduce section is only needed on affected versions. The study's pinned numbers stay on 0.21.0 by design; an engine-axis re-test is a separate leg, not a re-pin.
+
+Two operational notes from the 0.25.1 env, both consumer-box-specific. First, flashinfer's initial JIT of `fp4_gemm_cutlass_sm120` at default ninja parallelism OOM-killed on 64GB RAM (twelve concurrent nvcc jobs, exit 137); `MAX_JOBS=4` fixes it. Second, vLLM 0.25.1's dependency tree does not resolve under pip on this host (conflicting `cuda-tile`/`cuda-toolkit` pins, ResolutionImpossible); uv resolves and installs it cleanly.
+
 ### Two NVFP4s, 0.9 q_avg apart
 
 The leaderboard already carried a Qwen3.6-27B NVFP4 row before today: q_avg 93.2, from the June [NVFP4 vs Q6_K report](nvfp4-vs-q6-qwen3-6-27b.md). That row measures a different artifact: the s-batman NVFP4-GGUF file, a 14.6GB flat quant served on llama.cpp's `BLACKWELL_NATIVE_FP4` path. Today's checkpoint is unsloth's compressed-tensors build, 23.4GB, with 303 modules kept in high precision. Same format name, different recipe, and the recipe is worth 0.85 q_avg: the flat GGUF pays −2.5 HumanEval against Q6_K, the mixed-precision build pays 0.0. "Does NVFP4 lose quality" is the wrong question. Which modules the recipe leaves in high precision decides the answer, and the 9GB between the two files is where the code quality lives. Both rows stay on the card, disambiguated.
