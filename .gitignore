@@ -24,6 +24,8 @@ venv/
 # ALIVE system files
 context.manifest.yaml
 raw/
+# dataset/raw is published HF data (tracked source lives here), not an ALIVE dir
+!dataset/raw/
 
 # Video project (Remotion, local content tool)
 video/
