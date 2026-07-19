@@ -9,7 +9,8 @@ import random
 import time
 from pathlib import Path
 
-from .base import LLMClient, parse_choice, save_checkpoint, load_checkpoint
+from .base import (CompletionLengthGate, LLMClient, parse_choice,
+                   save_checkpoint, load_checkpoint)
 
 LETTERS = "ABCD"
 
@@ -45,11 +46,13 @@ class HellaSwagEval:
         limit: int | None = None,
         sample: float | None = None,
         results_dir: Path | None = None,
+        gate: CompletionLengthGate | None = None,
     ):
         self.client = client
         self.n_shot = n_shot
         self.limit = limit
         self.sample = sample
+        self.gate = gate
         self.results_dir = Path(results_dir) if results_dir else None
         self._ckpt = self.results_dir / "hellaswag_checkpoint.json" if self.results_dir else None
 
@@ -79,6 +82,8 @@ class HellaSwagEval:
             item = test_items[i]
             messages = _build_messages(item, few_shot)
             response = self.client.chat(messages)
+            if self.gate is not None:
+                self.gate.observe(self.client.last_completion_tokens)
             predicted = parse_choice(response)
             expected = LETTERS[int(item["label"])]
 
@@ -111,6 +116,10 @@ class HellaSwagEval:
             "correct": correct,
             "total": n,
             "parse_failures": parse_failures,
+            "completion_tokens_mean": (
+                round(self.gate.mean, 1)
+                if self.gate is not None and self.gate.mean is not None else None
+            ),
             "elapsed_s": round(elapsed, 1),
         }
         if self.sample and self.sample < 1.0:

@@ -105,3 +105,60 @@ def test_estimate_includes_reasoning_content():
     with _client_with_response(payload) as client:
         client.chat([{"role": "user", "content": "q"}])
         assert client.last_completion_tokens == 51
+
+
+# --- MC eval wiring ---
+
+class _StubClient:
+    """Degenerate server stub: rambling text that still parses to a letter."""
+    def __init__(self, tokens_per_answer=850):
+        self.tokens = tokens_per_answer
+        self.last_completion_tokens = None
+
+    def chat(self, messages, **kw):
+        self.last_completion_tokens = self.tokens
+        return "well considering the question the answer is A"
+
+
+def _patch_datasets(monkeypatch):
+    """Inject a fake `datasets` module (not installed Mac-side; capsule-only dep).
+
+    The evals do `from datasets import load_dataset` inside evaluate(), so a
+    sys.modules entry is all the import machinery needs.
+    """
+    import sys
+    import types
+
+    def _fake_load_dataset(*args, **kwargs):
+        item = {"question": "q?", "choices": ["a", "b", "c", "d"], "answer": 0}
+        return {"dev": [item] * 5, "test": [item] * 20}
+
+    fake = types.ModuleType("datasets")
+    fake.load_dataset = _fake_load_dataset
+    monkeypatch.setitem(sys.modules, "datasets", fake)
+
+
+def test_mmlu_aborts_on_degenerate_pace(monkeypatch, tmp_path):
+    from lib.evals.mmlu import MMLUEval
+    _patch_datasets(monkeypatch)
+    gate = CompletionLengthGate(threshold=50, armed=True)
+    ev = MMLUEval(client=_StubClient(), results_dir=tmp_path, gate=gate)
+    with pytest.raises(InstrumentGateError):
+        ev.evaluate(subjects=["anatomy"])
+
+
+def test_mmlu_logs_gate_mean_when_disarmed(monkeypatch, tmp_path):
+    from lib.evals.mmlu import MMLUEval
+    _patch_datasets(monkeypatch)
+    gate = CompletionLengthGate(threshold=50, armed=False)
+    ev = MMLUEval(client=_StubClient(), results_dir=tmp_path, gate=gate)
+    result = ev.evaluate(subjects=["anatomy"])
+    assert result["completion_tokens_mean"] == 850.0
+
+
+def test_mmlu_no_gate_records_none(monkeypatch, tmp_path):
+    from lib.evals.mmlu import MMLUEval
+    _patch_datasets(monkeypatch)
+    ev = MMLUEval(client=_StubClient(), results_dir=tmp_path)
+    result = ev.evaluate(subjects=["anatomy"])
+    assert result["completion_tokens_mean"] is None

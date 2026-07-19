@@ -14,7 +14,7 @@ import sys
 import time
 from pathlib import Path
 
-from .base import LLMClient, parse_choice
+from .base import CompletionLengthGate, LLMClient, parse_choice
 
 SUBJECTS = [
     "abstract_algebra", "anatomy", "astronomy", "business_ethics",
@@ -103,11 +103,13 @@ class MMLUEval:
         limit: int | None = None,
         sample: float | None = None,
         results_dir: Path | None = None,
+        gate: CompletionLengthGate | None = None,
     ):
         self.client = client
         self.n_shot = n_shot
         self.limit = limit
         self.sample = sample
+        self.gate = gate
         self.results_dir = Path(results_dir) if results_dir else None
         self._progress_path = self.results_dir / "mmlu_progress.json" if self.results_dir else None
 
@@ -146,6 +148,8 @@ class MMLUEval:
             for item in test_items:
                 messages = _build_messages(subject, item, few_shot)
                 response = self.client.chat(messages)
+                if self.gate is not None:
+                    self.gate.observe(self.client.last_completion_tokens)
                 predicted = parse_choice(response)
                 expected = LETTERS[item["answer"]]
                 if predicted == expected:
@@ -199,6 +203,10 @@ class MMLUEval:
             "metric": "acc",
             "correct": total_correct,
             "total": total_count,
+            "completion_tokens_mean": (
+                round(self.gate.mean, 1)
+                if self.gate is not None and self.gate.mean is not None else None
+            ),
             "categories": category_scores,
             "per_subject": completed,
         }

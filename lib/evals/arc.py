@@ -8,7 +8,8 @@ import json
 import time
 from pathlib import Path
 
-from .base import LLMClient, parse_choice, save_checkpoint, load_checkpoint
+from .base import (CompletionLengthGate, LLMClient, parse_choice,
+                   save_checkpoint, load_checkpoint)
 
 LABEL_MAP = {"1": "A", "2": "B", "3": "C", "4": "D", "5": "E"}
 
@@ -53,10 +54,12 @@ class ARCEval:
         n_shot: int = 25,
         limit: int | None = None,
         results_dir: Path | None = None,
+        gate: CompletionLengthGate | None = None,
     ):
         self.client = client
         self.n_shot = n_shot
         self.limit = limit
+        self.gate = gate
         self.results_dir = Path(results_dir) if results_dir else None
         self._ckpt = self.results_dir / "arc_checkpoint.json" if self.results_dir else None
 
@@ -81,6 +84,8 @@ class ARCEval:
             item = test_items[i]
             messages = _build_messages(item, few_shot)
             response = self.client.chat(messages)
+            if self.gate is not None:
+                self.gate.observe(self.client.last_completion_tokens)
             predicted = parse_choice(response, valid=_valid_letters(item))
             expected = _normalize_label(item["answerKey"])
 
@@ -112,6 +117,10 @@ class ARCEval:
             "correct": correct,
             "total": n,
             "parse_failures": parse_failures,
+            "completion_tokens_mean": (
+                round(self.gate.mean, 1)
+                if self.gate is not None and self.gate.mean is not None else None
+            ),
             "elapsed_s": round(elapsed, 1),
         }
 
