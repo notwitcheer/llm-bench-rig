@@ -9,6 +9,7 @@ are checked by pre-commit — violating code cannot be committed.
 | [ADR-0001](ADR-0001-no-stop-sequences-code-eval.md) | No stop sequences in the code-eval harness | accepted | `tools/adr/check_no_stop_sequences.py` |
 | [ADR-0002](ADR-0002-results-record-think-mode.md) | Every benchmark result records think mode | accepted | `tools/adr/check_think_recorded.py` |
 | [ADR-0003](ADR-0003-invariants-in-tested-code.md) | Invariants live in tested deterministic helpers | accepted | convention |
+| [ADR-0004](ADR-0004-mc-evals-gate-completion-length.md) | MC evals gate on completion length | accepted | `tools/adr/check_mc_gate_wired.py` |
 
 ## Adding a decision
 

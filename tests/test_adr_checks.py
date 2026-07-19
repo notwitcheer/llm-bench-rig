@@ -50,3 +50,21 @@ from tools.adr import run_all
 
 def test_run_all_clean_tree_returns_zero():
     assert run_all.main() == 0
+
+
+from tools.adr import check_mc_gate_wired as c3
+
+
+def test_mc_gate_wired_clean_on_real_files():
+    for target in c3.TARGETS:
+        assert c3.find_violations(target.read_text(), str(target)) == []
+
+
+def test_mc_gate_wired_catches_unwired_eval():
+    bad = (
+        "class FakeEval:\n"
+        "    def evaluate(self):\n"
+        "        response = self.client.chat(messages)\n"
+        "        predicted = parse_choice(response)\n"
+    )
+    assert c3.find_violations(bad, "fake.py")

@@ -4,9 +4,9 @@ Invoked by pre-commit (`python -m tools.adr.run_all`) and importable by tests.
 """
 import sys
 
-from . import check_no_stop_sequences, check_think_recorded
+from . import check_mc_gate_wired, check_no_stop_sequences, check_think_recorded
 
-CHECKS = [check_no_stop_sequences, check_think_recorded]
+CHECKS = [check_no_stop_sequences, check_think_recorded, check_mc_gate_wired]
 
 
 def main() -> int:
