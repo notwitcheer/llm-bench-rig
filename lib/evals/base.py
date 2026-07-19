@@ -1,5 +1,7 @@
 import re
 import time
+from collections import deque
+
 import httpx
 
 
@@ -153,6 +155,55 @@ def _clean_num(s: str) -> str:
         return str(int(val)) if val == int(val) else str(val)
     except ValueError:
         return s
+
+
+# --- MC completion-length instrument gate (t103, ADR-0004) ---
+
+class InstrumentGateError(RuntimeError):
+    """The eval instrument (serving stack) is degenerate — scores are meaningless.
+
+    Raised by CompletionLengthGate; distinct from any subject/model failure so a
+    poisoned run can never be banked as a score (2026-07-16 incident).
+    """
+
+    def __init__(self, mean: float, threshold: float, n_samples: int):
+        self.mean = mean
+        self.threshold = threshold
+        self.n_samples = n_samples
+        super().__init__(
+            f"mean MC completion length {mean:.0f} tok over last {n_samples} "
+            f"answers exceeds gate threshold {threshold:.0f} — degenerate serving, "
+            f"aborting suite (think-off MC answers run 1-7 tok)"
+        )
+
+
+class CompletionLengthGate:
+    """Rolling-window pace watchdog for multiple-choice evals.
+
+    Degenerate server output can still parse to letters; pace is the mechanical
+    tell (~850 tok/answer poisoned vs 1-7 healthy). Armed only for think-off
+    runs — think-on completions are legitimately long, so those only log.
+    """
+
+    def __init__(self, threshold: float | None, armed: bool,
+                 window: int = 25, min_samples: int = 10):
+        self.threshold = threshold
+        self.armed = armed
+        self.min_samples = min_samples
+        self._window = deque(maxlen=window)
+
+    @property
+    def mean(self) -> float | None:
+        if not self._window:
+            return None
+        return sum(self._window) / len(self._window)
+
+    def observe(self, n_tokens: int) -> None:
+        self._window.append(n_tokens)
+        if not self.armed or self.threshold is None:
+            return
+        if len(self._window) >= self.min_samples and self.mean > self.threshold:
+            raise InstrumentGateError(self.mean, self.threshold, len(self._window))
 
 
 # --- Checkpoint helpers ---
