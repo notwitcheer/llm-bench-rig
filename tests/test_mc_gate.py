@@ -162,3 +162,17 @@ def test_mmlu_no_gate_records_none(monkeypatch, tmp_path):
     ev = MMLUEval(client=_StubClient(), results_dir=tmp_path)
     result = ev.evaluate(subjects=["anatomy"])
     assert result["completion_tokens_mean"] is None
+
+
+# --- quality.py construction ---
+
+from lib.quality import _build_mc_gate
+
+
+def test_build_gate_armed_only_think_off():
+    assert _build_mc_gate(think=False, threshold=50).armed is True
+    assert _build_mc_gate(think=True, threshold=50).armed is False
+
+
+def test_build_gate_none_threshold_disables_entirely():
+    assert _build_mc_gate(think=False, threshold=None) is None
