@@ -63,3 +63,45 @@ def test_none_threshold_disables():
 
 def test_mean_none_before_first_observe():
     assert CompletionLengthGate(threshold=50, armed=True).mean is None
+
+
+# --- LLMClient usage capture ---
+
+import httpx
+
+from lib.evals.base import LLMClient
+
+
+def _client_with_response(payload: dict) -> LLMClient:
+    client = LLMClient("http://fake/v1", "m", think=False)
+    client._client.close()
+    client._client = httpx.Client(
+        transport=httpx.MockTransport(lambda req: httpx.Response(200, json=payload))
+    )
+    return client
+
+
+def test_chat_captures_usage_completion_tokens():
+    payload = {
+        "choices": [{"message": {"content": "A"}}],
+        "usage": {"prompt_tokens": 100, "completion_tokens": 7},
+    }
+    with _client_with_response(payload) as client:
+        assert client.last_completion_tokens is None
+        assert client.chat([{"role": "user", "content": "q"}]) == "A"
+        assert client.last_completion_tokens == 7
+
+
+def test_chat_estimates_when_usage_missing():
+    text = "x" * 400  # no usage block -> chars//4 + 1 estimate
+    payload = {"choices": [{"message": {"content": text}}]}
+    with _client_with_response(payload) as client:
+        client.chat([{"role": "user", "content": "q"}])
+        assert client.last_completion_tokens == 101
+
+
+def test_estimate_includes_reasoning_content():
+    payload = {"choices": [{"message": {"content": "", "reasoning_content": "y" * 200}}]}
+    with _client_with_response(payload) as client:
+        client.chat([{"role": "user", "content": "q"}])
+        assert client.last_completion_tokens == 51

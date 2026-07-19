@@ -28,6 +28,7 @@ class LLMClient:
         self.url = f"{api_base.rstrip('/')}/chat/completions"
         self.model = model_name
         self.think = think
+        self.last_completion_tokens: int | None = None
         self._client = httpx.Client(timeout=timeout)
 
     def chat(self, messages: list[dict], max_tokens: int = 2048,
@@ -56,10 +57,19 @@ class LLMClient:
             try:
                 resp = self._client.post(self.url, json=payload)
                 resp.raise_for_status()
-                msg = resp.json()["choices"][0]["message"]
-                text = _clean(msg.get("content") or "")
+                body = resp.json()
+                msg = body["choices"][0]["message"]
+                content = msg.get("content") or ""
+                reasoning = msg.get("reasoning_content") or ""
+                usage = (body.get("usage") or {}).get("completion_tokens")
+                if usage is None:
+                    # Server omitted usage: chars≈4/tok estimate over the raw
+                    # completion, so the pace gate (t103) can never silently disarm.
+                    usage = len(content + reasoning) // 4 + 1
+                self.last_completion_tokens = usage
+                text = _clean(content)
                 if not text:
-                    text = _clean(msg.get("reasoning_content") or "")
+                    text = _clean(reasoning)
                 return text
             except (httpx.HTTPError, KeyError, IndexError):
                 if attempt == 2:
