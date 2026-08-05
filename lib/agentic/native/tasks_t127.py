@@ -25,6 +25,7 @@ data/agentic/t127_suite.json + data/agentic/t127_suite.sha (see dump_suite()).
 """
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from lib.agentic.instruction import check_compliance
@@ -38,6 +39,27 @@ def _reuse(task_id: str, tier: str) -> dict:
     t = dict(_BY_ID[task_id])
     t["tier"] = tier
     return t
+
+
+def _num_or_float(ans):
+    r"""t127-local measurement-bias fix for the two reused calc tasks
+    (distractor_calc_real, distractor_calc_not_legacy): their tool is
+    mock_tools.calc, which always returns a Python float, so the actually-correct
+    tool output is "12.0"/"56.0", not the bare integer. tasks.py's `_num` guards
+    against a trailing real decimal (`(?!\.\d)`) so `_num("12")` rejects "12.0" --
+    a model that echoes the tool's own float output is scored WRONG despite being
+    correct. This wrapper accepts EITHER form (integer or trailing "."+zeros)
+    while still rejecting an unrelated number, e.g. "120". It is intentionally
+    NOT a change to `_num` itself: that guard must stay strict everywhere else
+    (e.g. "16" must not match "16.5" on chain_config_half)."""
+    int_ok = _num(ans)
+    float_pat = re.compile(rf"(?<![\d.]){re.escape(str(ans))}\.0+(?!\d)")
+
+    def fn(task, final_text):
+        text = final_text or ""
+        return bool(int_ok(task, text)) or bool(float_pat.search(text))
+
+    return fn
 
 
 def _json_check(keys: list, values: dict, forbids: list | None = None):
@@ -99,6 +121,16 @@ _MULTI_STEP_IDS = [
 
 SINGLE_TOOL_TASKS = [_reuse(i, "single_tool") for i in _SINGLE_TOOL_IDS]
 MULTI_STEP_TASKS = [_reuse(i, "multi_step") for i in _MULTI_STEP_IDS]
+
+# Measurement-bias fix (t127-local only, see _num_or_float above): patch just these
+# two tasks' `check` on the *copies* made by _reuse -- tasks.py's own TASKS/_num are
+# untouched, and `id`/`goal`/`tier` (what SUITE_SHA/compute_sha hash) don't change,
+# so the frozen suite identity is unaffected.
+for _t in SINGLE_TOOL_TASKS:
+    if _t["id"] == "distractor_calc_real":
+        _t["check"] = _num_or_float("12")
+    elif _t["id"] == "distractor_calc_not_legacy":
+        _t["check"] = _num_or_float("56")
 
 # --- tier 3: multi_turn_if (10) — new, built only from the existing mock tools -------
 MULTI_TURN_IF_TASKS = [

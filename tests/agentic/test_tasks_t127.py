@@ -91,3 +91,21 @@ def test_frozen_json_and_sha_files_exist_and_match():
     assert len(on_disk) == 30
     assert {t["id"] for t in on_disk} == {t["id"] for t in T127_TASKS}
     assert SUITE_SHA_PATH.read_text().strip() == SUITE_SHA
+
+
+# --- measurement-bias fix: the two reused calc tasks whose tool (mock_tools.calc)
+#     returns a Python float must accept BOTH the integer and the ".0" float form,
+#     since the tool's own correct output is "12.0"/"56.0", not "12"/"56". -------------
+
+def test_distractor_calc_real_accepts_int_and_float_forms():
+    t = next(x for x in T127_TASKS if x["id"] == "distractor_calc_real")
+    assert check(t, "the result is 12") is True
+    assert check(t, "the result is 12.0") is True
+    assert check(t, "the result is 13") is False
+
+
+def test_distractor_calc_not_legacy_accepts_int_and_float_forms():
+    t = next(x for x in T127_TASKS if x["id"] == "distractor_calc_not_legacy")
+    assert check(t, "the result is 56") is True
+    assert check(t, "the result is 56.0") is True
+    assert check(t, "the result is 57") is False
