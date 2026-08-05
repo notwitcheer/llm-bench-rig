@@ -4,16 +4,30 @@ import httpx
 
 
 class LlamaClient:
-    def __init__(self, base="http://127.0.0.1:8090/v1", model="local", timeout=120):
+    def __init__(self, base="http://127.0.0.1:8090/v1", model="local", timeout=120,
+                 think: bool = True):
         self.url = f"{base}/chat/completions"
         self.model = model
         self.timeout = timeout
+        self.think = think
+        self.last_reasoning_tokens = 0
+        self.last_reasoning_content = ""
 
     def chat(self, messages, tools):
         payload = {"model": self.model, "messages": messages, "temperature": 0}
         if tools:
             payload["tools"] = tools
             payload["tool_choice"] = "auto"
+        if not self.think:
+            # Suppress reasoning across template families in one payload (mirrors
+            # lib/evals/base.py's LLMClient): Gemma/Qwen read `enable_thinking`,
+            # Cohere/North (cohere2moe) read `reasoning`/`reasoning_effort`. Each
+            # template uses the key it knows and ignores the rest.
+            payload["chat_template_kwargs"] = {
+                "enable_thinking": False,
+                "reasoning": False,
+                "reasoning_effort": "none",
+            }
         r = httpx.post(self.url, json=payload, timeout=self.timeout)
         if r.status_code != 200:
             # llama-server returns 500 when it can't parse a model's tool-call JSON
@@ -25,8 +39,17 @@ class LlamaClient:
                 err = r.json().get("error", {}).get("message", r.text)
             except Exception:
                 err = r.text
+            self.last_reasoning_tokens = 0
+            self.last_reasoning_content = ""
             return {"role": "assistant", "content": "", "_error": str(err)[:600], "_tokens": 0}
         data = r.json()
         msg = data["choices"][0]["message"]
-        msg["_tokens"] = data.get("usage", {}).get("completion_tokens", 0)
+        usage = data.get("usage") or {}
+        msg["_tokens"] = usage.get("completion_tokens", 0)
+        # reasoning_content is present (think=True) when the server exposes model
+        # "thinking" separately from the final answer; stash it for callers that want
+        # it, and record the reasoning token count from usage.reasoning_tokens when
+        # the server reports it, else 0.
+        self.last_reasoning_content = msg.get("reasoning_content") or ""
+        self.last_reasoning_tokens = usage.get("reasoning_tokens", 0)
         return msg

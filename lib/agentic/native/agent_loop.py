@@ -13,6 +13,7 @@ class RunResult:
     n_tool_calls: int = 0
     n_steps: int = 0
     n_tokens: int = 0
+    n_reasoning_tokens: int = 0
     stalled: bool = False
     bad_calls: int = 0
     messages: list = field(default_factory=list)
@@ -27,6 +28,9 @@ def run_agent(client, goal: str, tools: list, max_steps: int = 8, dispatch=None)
         r.n_steps += 1
         msg = client.chat(msgs, tools)
         r.n_tokens += int(msg.get("_tokens", 0))
+        # not all clients (e.g. test doubles) track reasoning tokens; default to 0
+        # so existing callers stay backward-compatible.
+        r.n_reasoning_tokens += int(getattr(client, "last_reasoning_tokens", 0) or 0)
         if msg.get("_error"):
             # server rejected the turn (unparseable tool-call JSON or context overflow).
             r.bad_calls += 1
