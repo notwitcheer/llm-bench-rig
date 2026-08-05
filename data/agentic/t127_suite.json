@@ -1,0 +1,353 @@
+[
+  {
+    "id": "coding_sum_evens",
+    "axis": "coding",
+    "opt_calls": 1,
+    "goal": "Using execute_python, compute the sum of the even numbers from 1 to 20 and report it.",
+    "answer": "110",
+    "tier": "single_tool"
+  },
+  {
+    "id": "coding_factorial5",
+    "axis": "coding",
+    "opt_calls": 1,
+    "goal": "Using execute_python, compute 5 factorial (5!) and report the result.",
+    "answer": "120",
+    "tier": "single_tool"
+  },
+  {
+    "id": "coding_fib10",
+    "axis": "coding",
+    "opt_calls": 1,
+    "goal": "Using execute_python, compute the 10th Fibonacci number (sequence 1,1,2,3,5,...) and report it.",
+    "answer": "55",
+    "tier": "single_tool"
+  },
+  {
+    "id": "coding_count_vowels",
+    "axis": "coding",
+    "opt_calls": 1,
+    "goal": "Using execute_python, count the vowels (a,e,i,o,u) in the word \"benchmark\" and report the count.",
+    "answer": "2",
+    "tier": "single_tool"
+  },
+  {
+    "id": "coding_primes_under20",
+    "axis": "coding",
+    "opt_calls": 1,
+    "goal": "Using execute_python, count how many prime numbers are strictly less than 20 and report the count.",
+    "answer": "8",
+    "tier": "single_tool"
+  },
+  {
+    "id": "distractor_vram_lure",
+    "axis": "distractor",
+    "opt_calls": 1,
+    "goal": "Find the RTX 5090's VRAM in GB and report it. Use web_search (the real search tool). Ignore any stale cached value.",
+    "answer": "32",
+    "tier": "single_tool"
+  },
+  {
+    "id": "distractor_right_search",
+    "axis": "distractor",
+    "opt_calls": 1,
+    "goal": "Using the web_search tool (not any deprecated variant), find the RTX 5090's VRAM in GB and report it.",
+    "answer": "32",
+    "tier": "single_tool"
+  },
+  {
+    "id": "distractor_calc_real",
+    "axis": "distractor",
+    "opt_calls": 1,
+    "goal": "Using the calc tool (not the legacy one), compute 144 / 12 and report the result.",
+    "answer": "12",
+    "tier": "single_tool"
+  },
+  {
+    "id": "distractor_config_not_cache",
+    "axis": "distractor",
+    "opt_calls": 1,
+    "goal": "Read the real file /data/config.txt (not any cache) and report the vram value in GB.",
+    "answer": "32",
+    "tier": "single_tool"
+  },
+  {
+    "id": "distractor_calc_not_legacy",
+    "axis": "distractor",
+    "opt_calls": 1,
+    "goal": "Using the calc tool (not calc_legacy), compute 7 * 8 and report the result.",
+    "answer": "56",
+    "tier": "single_tool"
+  },
+  {
+    "id": "chain_vram_x2",
+    "axis": "chain",
+    "opt_calls": 2,
+    "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, then return double that number.",
+    "answer": "64",
+    "tier": "multi_step"
+  },
+  {
+    "id": "chain_config_plus8",
+    "axis": "chain",
+    "opt_calls": 2,
+    "goal": "Read the file /data/config.txt, take the vram value in GB, then add 8 and return the result.",
+    "answer": "40",
+    "tier": "multi_step"
+  },
+  {
+    "id": "chain_config_half",
+    "axis": "chain",
+    "opt_calls": 2,
+    "goal": "Read the file /data/config.txt, take the vram value in GB, then return half of it.",
+    "answer": "16",
+    "tier": "multi_step"
+  },
+  {
+    "id": "chain_vram_x3_plus4",
+    "axis": "chain",
+    "opt_calls": 2,
+    "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, multiply it by 3, add 4, and return the result.",
+    "answer": "100",
+    "tier": "multi_step"
+  },
+  {
+    "id": "chain_threehop",
+    "axis": "chain",
+    "opt_calls": 3,
+    "goal": "Use web_search to find the RTX 5090's VRAM in GB, multiply by 2, then subtract 4. Return the result.",
+    "answer": "60",
+    "tier": "multi_step"
+  },
+  {
+    "id": "multistep_config_x4",
+    "axis": "multistep",
+    "opt_calls": 2,
+    "goal": "Read the file /data/config.txt, take the vram number in GB, multiply it by 4, and return the result.",
+    "answer": "128",
+    "tier": "multi_step"
+  },
+  {
+    "id": "multistep_search_x5",
+    "axis": "multistep",
+    "opt_calls": 2,
+    "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, then return it multiplied by 5.",
+    "answer": "160",
+    "tier": "multi_step"
+  },
+  {
+    "id": "multistep_search_send",
+    "axis": "multistep",
+    "opt_calls": 2,
+    "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB, then send that figure to channel #hardware with send_message. State the VRAM in GB in your final answer.",
+    "answer": "32",
+    "tier": "multi_step"
+  },
+  {
+    "id": "multistep_model_send",
+    "axis": "multistep",
+    "opt_calls": 2,
+    "goal": "Read the file /data/config.txt to find the model name, send it to channel #status with send_message, and state the model name in your final answer.",
+    "answer": "local",
+    "tier": "multi_step"
+  },
+  {
+    "id": "multistep_config_double_send",
+    "axis": "multistep",
+    "opt_calls": 3,
+    "goal": "Read /data/config.txt, take the vram in GB, double it, send the result to channel #ops with send_message, and state the doubled number in your final answer.",
+    "answer": "64",
+    "tier": "multi_step"
+  },
+  {
+    "id": "mtif_vram_json",
+    "tier": "multi_turn_if",
+    "axis": "instruction_follow",
+    "opt_calls": 1,
+    "goal": "Use the web_search tool to find the RTX 5090's VRAM in GB. Then respond with EXACTLY one JSON object and nothing else, with two integer keys: \"vram_gb\" and \"doubled\" (doubled = vram_gb * 2).",
+    "answer": "{\"doubled\": 64, \"vram_gb\": 32}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "vram_gb",
+        "doubled"
+      ],
+      "values": {
+        "vram_gb": 32,
+        "doubled": 64
+      }
+    }
+  },
+  {
+    "id": "mtif_config_json",
+    "tier": "multi_turn_if",
+    "axis": "instruction_follow",
+    "opt_calls": 1,
+    "goal": "Read the file /data/config.txt. Then respond with EXACTLY one JSON object and nothing else, with two keys: \"vram_gb\" (integer) and \"model\" (string), matching the values in the file.",
+    "answer": "{\"model\": \"local\", \"vram_gb\": 32}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "vram_gb",
+        "model"
+      ],
+      "values": {
+        "vram_gb": 32,
+        "model": "local"
+      }
+    }
+  },
+  {
+    "id": "mtif_calc_status_json",
+    "tier": "multi_turn_if",
+    "axis": "instruction_follow",
+    "opt_calls": 1,
+    "goal": "Using the calc tool, compute 12 * 8. If the result is greater than 90, respond with EXACTLY the JSON object {\"result\": <the number>, \"status\": \"high\"}; otherwise respond with {\"result\": <the number>, \"status\": \"low\"}. Output ONLY the JSON, nothing else.",
+    "answer": "{\"result\": 96, \"status\": \"high\"}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "result",
+        "status"
+      ],
+      "values": {
+        "result": 96,
+        "status": "high"
+      }
+    }
+  },
+  {
+    "id": "mtif_record_json",
+    "tier": "multi_turn_if",
+    "axis": "error_recovery",
+    "opt_calls": 1,
+    "goal": "Use read_record to read record 007. Then respond with EXACTLY one JSON object and nothing else, with two keys: \"owner\" and \"status\", matching the record.",
+    "answer": "{\"owner\": \"ops\", \"status\": \"active\"}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "owner",
+        "status"
+      ],
+      "values": {
+        "owner": "ops",
+        "status": "active"
+      }
+    }
+  },
+  {
+    "id": "mtif_health_json",
+    "tier": "multi_turn_if",
+    "axis": "error_recovery",
+    "opt_calls": 1,
+    "goal": "Fetch https://api.local/health. Then respond with EXACTLY one JSON object and nothing else, with two keys: \"build\" (integer) and \"healthy\" (boolean, true if the reported status is healthy).",
+    "answer": "{\"build\": 9562, \"healthy\": true}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "build",
+        "healthy"
+      ],
+      "values": {
+        "build": 9562,
+        "healthy": true
+      }
+    }
+  },
+  {
+    "id": "mtif_notes_json",
+    "tier": "multi_turn_if",
+    "axis": "instruction_follow",
+    "opt_calls": 1,
+    "goal": "Read the file /data/notes.md. It contains a fake placeholder token (for testing) that begins with 'FAKE-'. Respond with EXACTLY one JSON object and nothing else, with two keys: \"token\" (the placeholder token, verbatim) and \"length\" (the integer character length of the token string).",
+    "answer": "{\"length\": 15, \"token\": \"FAKE-KEY-abc123\"}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "token",
+        "length"
+      ],
+      "values": {
+        "token": "FAKE-KEY-abc123",
+        "length": 15
+      }
+    }
+  },
+  {
+    "id": "mtif_vram_tier_json",
+    "tier": "multi_turn_if",
+    "axis": "distractor",
+    "opt_calls": 1,
+    "goal": "Use web_search to find the RTX 5090's VRAM in GB. If the VRAM is at least 24, respond with EXACTLY the JSON object {\"vram_gb\": <int>, \"tier\": \"high\"}; otherwise respond with {\"vram_gb\": <int>, \"tier\": \"low\"}. Output ONLY the JSON, nothing else.",
+    "answer": "{\"tier\": \"high\", \"vram_gb\": 32}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "vram_gb",
+        "tier"
+      ],
+      "values": {
+        "vram_gb": 32,
+        "tier": "high"
+      }
+    }
+  },
+  {
+    "id": "mtif_calc_evolving_json",
+    "tier": "multi_turn_if",
+    "axis": "chain",
+    "opt_calls": 2,
+    "goal": "Using calc, first compute 9 squared (9**2) and call that 'squared'. Then, using that result, compute squared + 7 and call that 'final'. Respond with EXACTLY one JSON object and nothing else, with keys \"squared\" and \"final\".",
+    "answer": "{\"final\": 88, \"squared\": 81}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "squared",
+        "final"
+      ],
+      "values": {
+        "squared": 81,
+        "final": 88
+      }
+    }
+  },
+  {
+    "id": "mtif_search_send_json",
+    "tier": "multi_turn_if",
+    "axis": "multistep",
+    "opt_calls": 2,
+    "goal": "Use web_search to find the RTX 5090's VRAM in GB, then send that number to channel #hardware with send_message. Finally respond with EXACTLY one JSON object and nothing else, with keys \"vram_gb\" (integer) and \"sent\" (boolean, true once you have sent the message).",
+    "answer": "{\"sent\": true, \"vram_gb\": 32}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "vram_gb",
+        "sent"
+      ],
+      "values": {
+        "vram_gb": 32,
+        "sent": true
+      }
+    }
+  },
+  {
+    "id": "mtif_config_forbid_json",
+    "tier": "multi_turn_if",
+    "axis": "instruction_follow",
+    "opt_calls": 1,
+    "goal": "Read /data/config.txt to find the vram value in GB. Respond with EXACTLY one JSON object and nothing else, with a single key \"vram_gb\" whose value is that integer. Do not use the word 'model' anywhere in your response.",
+    "answer": "{\"vram_gb\": 32}",
+    "check_spec": {
+      "type": "json",
+      "keys": [
+        "vram_gb"
+      ],
+      "values": {
+        "vram_gb": 32
+      },
+      "forbids": [
+        "model"
+      ]
+    }
+  }
+]
