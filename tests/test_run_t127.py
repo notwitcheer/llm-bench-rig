@@ -2,7 +2,7 @@
 GPU serving (main(), --probe's real run) is NOT exercised here — see run_t127.py's
 module docstring. Uses the ScriptedClient pattern from tests/test_native_agent_loop.py
 (copied, not cross-imported, per that test file's own convention)."""
-from scripts.run_t127 import expected_runs, plan_legs, project_hours, run_leg
+from scripts.run_t127 import expected_runs, plan_legs, project_hours, reasoning_tokens_ok, run_leg
 from lib.agentic.native.tasks_t127 import T127_TASKS
 
 
@@ -105,3 +105,21 @@ def test_run_leg_produces_the_right_row_count_and_keys():
     assert [r["rep"] for r in rows] == [0, 1, 0, 1]
     assert [r["ok"] for r in rows] == [True, True, True, False]
     assert calls["n"] == 4  # make_client called exactly once per (task, rep)
+
+
+def _row(regime: str, reasoning_tokens: int) -> dict:
+    return {"slug": "x", "regime": regime, "think": True, "task_id": "t", "rep": 0,
+            "ok": True, "tool_calls": 1, "bad_calls": 0, "gen_tokens": 10,
+            "reasoning_tokens": reasoning_tokens, "stalled": False}
+
+
+def test_reasoning_tokens_ok_true_when_a_reasoning_on_row_has_tokens():
+    rows = [_row("reasoning_off", 0), _row("reasoning_on", 0), _row("reasoning_on", 42),
+            _row("default", 0)]
+    assert reasoning_tokens_ok(rows) is True
+
+
+def test_reasoning_tokens_ok_false_when_all_reasoning_on_rows_are_zero():
+    rows = [_row("reasoning_off", 5), _row("reasoning_on", 0), _row("reasoning_on", 0),
+            _row("default", 7)]
+    assert reasoning_tokens_ok(rows) is False

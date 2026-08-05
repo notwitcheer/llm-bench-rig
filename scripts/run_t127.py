@@ -91,6 +91,16 @@ def project_hours(sec_per_task: float, n_tasks: int, reps: int, n_legs: int = 5)
     return sec_per_task * expected_runs(n_tasks, reps, n_legs) / 3600
 
 
+def reasoning_tokens_ok(rows: list) -> bool:
+    """Operational-safety check for the LFM2.5 reasoning A/B: True iff at least one
+    reasoning_on row actually has reasoning_tokens > 0. If every reasoning_on row
+    comes back at 0, llama-server most likely isn't splitting `reasoning_content`
+    out of the response (needs `--reasoning-format` or a reasoning-splitting chat
+    template), which makes the reasoning-cost axis meaningless -- see the loud
+    warning in --probe below."""
+    return any(r["reasoning_tokens"] > 0 for r in rows if r["regime"] == "reasoning_on")
+
+
 def _group_legs_by_gguf(legs: list) -> dict:
     """Legs that share a gguf (LFM2.5's reasoning-on/off pair) share one served
     model — only the per-request `think` flag differs — so they group under one
@@ -179,6 +189,13 @@ def main():
         hours = project_hours(sec_per_task, n_tasks, reps)
         print(f"[t127 probe] {len(rows)} runs in {elapsed:.1f}s -> {sec_per_task:.2f}s/task "
               f"-> projected full sweep ({expected_runs(n_tasks, reps)} runs): {hours:.2f}h")
+        if not reasoning_tokens_ok(rows):
+            print("[t127 probe] !!! WARNING !!! every reasoning_on row has "
+                  "reasoning_tokens == 0 -- llama-server likely isn't splitting "
+                  "reasoning_content out of the response (needs --reasoning-format "
+                  "or a reasoning-splitting chat template). The LFM2.5 reasoning "
+                  "A/B's cost axis would be MEANINGLESS as configured -- fix this "
+                  "before running the full sweep.")
         return
 
     for gguf, group in _group_legs_by_gguf(legs).items():
