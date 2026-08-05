@@ -48,8 +48,16 @@ class LlamaClient:
         msg["_tokens"] = usage.get("completion_tokens", 0)
         # reasoning_content is present (think=True) when the server exposes model
         # "thinking" separately from the final answer; stash it for callers that want
-        # it, and record the reasoning token count from usage.reasoning_tokens when
-        # the server reports it, else 0.
+        # it. llama-server's usage object has no reasoning_tokens field (only
+        # prompt/completion/total/cached), so an explicit presence check (not
+        # truthiness — a legitimately-present 0 must not trigger the estimate) falls
+        # back to a chars/4 estimate over reasoning_content, mirroring the
+        # usage-missing fallback in lib/evals/base.py:66-68.
         self.last_reasoning_content = msg.get("reasoning_content") or ""
-        self.last_reasoning_tokens = usage.get("reasoning_tokens", 0)
+        if "reasoning_tokens" in usage:
+            self.last_reasoning_tokens = usage["reasoning_tokens"]
+        elif self.last_reasoning_content:
+            self.last_reasoning_tokens = len(self.last_reasoning_content) // 4 + 1
+        else:
+            self.last_reasoning_tokens = 0
         return msg

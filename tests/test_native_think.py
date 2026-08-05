@@ -73,11 +73,34 @@ def test_reasoning_tokens_captured_from_usage(monkeypatch):
     assert c.last_reasoning_tokens == 18
 
 
-def test_reasoning_tokens_default_zero_when_usage_lacks_field(monkeypatch):
+def test_reasoning_tokens_estimated_from_text_when_usage_lacks_field(monkeypatch):
+    # llama-server's usage object has no reasoning_tokens field at all (only
+    # prompt/completion/total/cached) -- must fall back to a chars/4 estimate over
+    # reasoning_content instead of silently reading 0, or the think-on vs think-off
+    # token-efficiency metric is always zeroed on real runs.
+    reasoning_text = "thinking..."  # 11 chars -> 11 // 4 + 1 == 3
+
+    def fake_post(url, json, timeout):
+        return _FakeResponse(_server_reply(
+            reasoning_content=reasoning_text,
+            usage={"completion_tokens": 30},
+        ))
+
+    monkeypatch.setattr(client_mod.httpx, "post", fake_post)
+    c = LlamaClient(think=True)
+    c.chat(messages=[{"role": "user", "content": "hi"}], tools=None)
+
+    assert c.last_reasoning_tokens == len(reasoning_text) // 4 + 1
+    assert c.last_reasoning_tokens != 0
+
+
+def test_reasoning_tokens_zero_from_usage_is_not_overridden_by_estimate(monkeypatch):
+    # explicit presence check, not truthiness: a legitimately-present usage.reasoning_tokens
+    # of 0 must be trusted as-is, not treated as "missing" and replaced by the text estimate.
     def fake_post(url, json, timeout):
         return _FakeResponse(_server_reply(
             reasoning_content="thinking...",
-            usage={"completion_tokens": 30},
+            usage={"completion_tokens": 30, "reasoning_tokens": 0},
         ))
 
     monkeypatch.setattr(client_mod.httpx, "post", fake_post)
