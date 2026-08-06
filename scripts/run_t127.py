@@ -101,6 +101,22 @@ def reasoning_tokens_ok(rows: list) -> bool:
     return any(r["reasoning_tokens"] > 0 for r in rows if r["regime"] == "reasoning_on")
 
 
+def reasoning_off_is_off(rows: list, tol: int = 50) -> bool:
+    """Symmetric safety check to reasoning_tokens_ok: True iff the reasoning_off leg
+    actually suppressed reasoning (every reasoning_off row has reasoning_tokens <=
+    tol). If an off row still carries hundreds of reasoning tokens, the served chat
+    template is IGNORING the disable flag (enable_thinking/reasoning/reasoning_effort)
+    and BOTH legs reasoned -- the on/off A/B is confounded and its comparison is
+    meaningless. This is exactly the LFM2.5 confound (2026-08-06): the shipped GGUF
+    template hard-forced `<think>` every turn and read none of the kwargs, so the first
+    sweep compared reasoning-on to reasoning-on (p=1.0); a patched template that
+    pre-closes the block (--chat-template-file) fixed it and the true result was a
+    significant 26.7pt drop. reasoning_tokens_ok did NOT catch this -- it only checks
+    that ON reasons, never that OFF stops. See the loud warning in --probe below."""
+    off = [r for r in rows if r["regime"] == "reasoning_off"]
+    return all(r["reasoning_tokens"] <= tol for r in off) if off else True
+
+
 def _group_legs_by_gguf(legs: list) -> dict:
     """Legs that share a gguf (LFM2.5's reasoning-on/off pair) share one served
     model — only the per-request `think` flag differs — so they group under one
@@ -196,6 +212,14 @@ def main():
                   "or a reasoning-splitting chat template). The LFM2.5 reasoning "
                   "A/B's cost axis would be MEANINGLESS as configured -- fix this "
                   "before running the full sweep.")
+        if not reasoning_off_is_off(rows):
+            print("[t127 probe] !!! WARNING !!! reasoning_off rows still carry "
+                  "reasoning tokens -- the served chat template is IGNORING the "
+                  "disable flag, so BOTH legs reasoned and the on/off A/B is "
+                  "CONFOUNDED (the LFM2.5 template-forces-<think> confound). Serve a "
+                  "patched template that pre-closes the think block "
+                  "(--chat-template-file) and re-run until reasoning_off shows ~0 "
+                  "reasoning tokens BEFORE trusting the on/off comparison.")
         return
 
     for gguf, group in _group_legs_by_gguf(legs).items():

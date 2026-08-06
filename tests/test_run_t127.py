@@ -2,7 +2,8 @@
 GPU serving (main(), --probe's real run) is NOT exercised here — see run_t127.py's
 module docstring. Uses the ScriptedClient pattern from tests/test_native_agent_loop.py
 (copied, not cross-imported, per that test file's own convention)."""
-from scripts.run_t127 import expected_runs, plan_legs, project_hours, reasoning_tokens_ok, run_leg
+from scripts.run_t127 import (expected_runs, plan_legs, project_hours,
+                              reasoning_off_is_off, reasoning_tokens_ok, run_leg)
 from lib.agentic.native.tasks_t127 import T127_TASKS
 
 
@@ -123,3 +124,21 @@ def test_reasoning_tokens_ok_false_when_all_reasoning_on_rows_are_zero():
     rows = [_row("reasoning_off", 5), _row("reasoning_on", 0), _row("reasoning_on", 0),
             _row("default", 7)]
     assert reasoning_tokens_ok(rows) is False
+
+
+def test_reasoning_off_is_off_true_when_off_rows_are_near_zero():
+    rows = [_row("reasoning_off", 0), _row("reasoning_off", 3), _row("reasoning_on", 500)]
+    assert reasoning_off_is_off(rows) is True
+
+
+def test_reasoning_off_is_off_false_when_an_off_row_still_reasons():
+    # the LFM2.5 confound: the template ignored the disable flag, so "off" still
+    # carried hundreds of reasoning tokens and both legs reasoned.
+    rows = [_row("reasoning_off", 0), _row("reasoning_off", 699), _row("reasoning_on", 788)]
+    assert reasoning_off_is_off(rows) is False
+
+
+def test_reasoning_off_is_off_true_when_no_off_rows_present():
+    # a sweep without an off leg (e.g. an anchor-only probe) must not false-alarm.
+    rows = [_row("reasoning_on", 500), _row("default", 0)]
+    assert reasoning_off_is_off(rows) is True
