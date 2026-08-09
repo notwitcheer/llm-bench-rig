@@ -23,7 +23,7 @@ def _strip_blank_edges(s: str) -> str:
 class LLMClient:
     """Sync HTTP client for llama-server chat completions."""
 
-    def __init__(self, api_base: str, model_name: str, timeout: float = 120,
+    def __init__(self, api_base: str, model_name: str, timeout: float = 300,
                  think: bool = True):
         self.url = f"{api_base.rstrip('/')}/chat/completions"
         self.model = model_name

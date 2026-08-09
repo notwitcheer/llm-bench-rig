@@ -45,7 +45,11 @@ def start_llama_server(model_path: str, ctx_size: int | None = None,
     ngl = n_gpu_layers if n_gpu_layers is not None else get("speed.n_gpu_layers", 99)
     cmd = build_server_command(model_path, port=port, ngl=ngl,
                                ctx_size=ctx_size, n_cpu_moe=n_cpu_moe)
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # 2026-08-08 ling-3 run: PIPE with no drain deadlocks chatty servers (PR26608 build
+    # logs per-request; ~64KB pipe fills mid-MMLU -> server blocks on write -> client
+    # ReadTimeout). Log to a file instead; also keeps the log inspectable.
+    server_log = open(Path.home() / "bench-server.log", "w")
+    proc = subprocess.Popen(cmd, stdout=server_log, stderr=subprocess.STDOUT)
     try:
         _wait_for_server(f"http://127.0.0.1:{port}/health", timeout=300, proc=proc)
     except (TimeoutError, RuntimeError):
