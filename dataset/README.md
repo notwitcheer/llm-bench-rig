@@ -48,6 +48,7 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Qwen3.6-35B-A3B | 34.66B | UD-Q4_K_M | 85.0 | 95.7 | 93.3 | 96.7 | 95.7 | **93.3** |
 | Qwen3.6-27B | 26.90B | NVFP4-GGUF⁴ | 87.0 | 96.7 | 94.9 | 97.1 | 90.2 | **93.2** |
 | Qwen3.6-27B² | 26.90B | AWQ-int4⁵ | 87.5 | 96.4 | 95.2 | 97.3 | 89.0 | **93.1** |
+| Ling-3.0-flash⁶ | 127.49B | Q3_K_M | 84.0 | 96.3 | 93.2 | 93.5 | 92.1 | **91.8** |
 | Qwen3-Coder-Next | 79.67B | UD-Q2_K_XL | 83.7 | 96.0 | 89.3 | 96.0 | 93.3 | **91.7** |
 | Gemma 4 12B-it | 11.91B | Q6_K | 78.9 | 94.0 | 81.6 | 96.4 | 87.2 | **87.6** |
 | gpt-oss-20b | 20.91B | Q4_K_M | 78.6 | 94.6 | 74.5 | 94.8 | 94.5 | **87.4** |
@@ -61,6 +62,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ³ unsloth compressed-tensors NVFP4 (23.4GB, 303 modules kept high-precision, lm_head dequanted), served via vLLM 0.21.0 on the native cutlass sm_120 FP4 path, measured 2026-07-15 under the same pin. Protocol and per-suite deltas: [report addendum](reports/qwen3-6-27b-nvfp4.md).
 ⁴ NVFP4-GGUF (s-batman MTP GGUF, 14.6GB, flat quant), llama.cpp b9365 `BLACKWELL_NATIVE_FP4`, June numbers, pre-pin: [NVFP4 vs Q6_K](reports/nvfp4-vs-q6-qwen3-6-27b.md). Rows ³ and ⁴ share a format name and nothing else; the 0.9 q_avg spread between them is recipe coverage (which modules stay high-precision), not the FP4 format.
 ⁵ QuantTrio true AWQ (4-bit g128 gemm, 8 modules ignored — flat recipe, 21.9GB), served via vLLM 0.21.0 awq_marlin, measured 2026-07-16 under the same pin. sglang 0.5.14 cannot serve this artifact (hybrid-GDN dtype wall: degenerate output at bf16, crash at fp16) — [report](reports/qwen3-6-27b-awq.md). The recipe-coverage rule now holds cross-format: flat recipes cluster (⁴ 93.2, ⁵ 93.1) while the protected recipe (³) holds the baseline.
+
+⁶ 127.5B-total / 5.1B-active hybrid MoE (bailingmoe3), run 2026-08-08 on the open llama.cpp PR [#26608](https://github.com/ggml-org/llama.cpp/pull/26608) branch (head 0266ebca6) — upstream support had not merged at run time. All 512 routed experts in system RAM (`--n-cpu-moe 99`): 46.0 tok/s tg128, VRAM peak 3.8GB. [Report](reports/ling-3-0-flash-q3-k-m.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
