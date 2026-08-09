@@ -50,6 +50,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Qwen3.6-27B² | 26.90B | AWQ-int4⁵ | 87.5 | 96.4 | 95.2 | 97.3 | 89.0 | **93.1** |
 | Ling-3.0-flash⁶ | 127.49B | Q3_K_M | 84.0 | 96.3 | 93.2 | 93.5 | 92.1 | **91.8** |
 | Qwen3-Coder-Next | 79.67B | UD-Q2_K_XL | 83.7 | 96.0 | 89.3 | 96.0 | 93.3 | **91.7** |
+| Ling-3.0-flash⁶ | 127.49B | IQ3_XXS | 83.3 | 96.1 | 92.2 | 93.0 | 93.3 | **91.6** |
+| Ling-3.0-flash⁶ | 127.49B | IQ2_M | 82.3 | 95.6 | 91.9 | 92.3 | 89.0 | **90.2** |
 | Gemma 4 12B-it | 11.91B | Q6_K | 78.9 | 94.0 | 81.6 | 96.4 | 87.2 | **87.6** |
 | gpt-oss-20b | 20.91B | Q4_K_M | 78.6 | 94.6 | 74.5 | 94.8 | 94.5 | **87.4** |
 | Nemotron-3-Nano | 31.58B | UD-Q4_K_XL | 74.5 | 89.9 | 75.6 | 90.5 | 80.5 | **82.2** |
@@ -63,7 +65,7 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ⁴ NVFP4-GGUF (s-batman MTP GGUF, 14.6GB, flat quant), llama.cpp b9365 `BLACKWELL_NATIVE_FP4`, June numbers, pre-pin: [NVFP4 vs Q6_K](reports/nvfp4-vs-q6-qwen3-6-27b.md). Rows ³ and ⁴ share a format name and nothing else; the 0.9 q_avg spread between them is recipe coverage (which modules stay high-precision), not the FP4 format.
 ⁵ QuantTrio true AWQ (4-bit g128 gemm, 8 modules ignored — flat recipe, 21.9GB), served via vLLM 0.21.0 awq_marlin, measured 2026-07-16 under the same pin. sglang 0.5.14 cannot serve this artifact (hybrid-GDN dtype wall: degenerate output at bf16, crash at fp16) — [report](reports/qwen3-6-27b-awq.md). The recipe-coverage rule now holds cross-format: flat recipes cluster (⁴ 93.2, ⁵ 93.1) while the protected recipe (³) holds the baseline.
 
-⁶ 127.5B-total / 5.1B-active hybrid MoE (bailingmoe3), run 2026-08-08 on the open llama.cpp PR [#26608](https://github.com/ggml-org/llama.cpp/pull/26608) branch (head 0266ebca6) — upstream support had not merged at run time. All 512 routed experts in system RAM (`--n-cpu-moe 99`): 46.0 tok/s tg128, VRAM peak 3.8GB. [Report](reports/ling-3-0-flash-q3-k-m.md).
+⁶ 127.5B-total / 5.1B-active hybrid MoE (bailingmoe3), run 2026-08-08/09 on the open llama.cpp PR [#26608](https://github.com/ggml-org/llama.cpp/pull/26608) branch (head 0266ebca6) — upstream support had not merged at run time. All 512 routed experts in system RAM (`--n-cpu-moe 99`): Q3_K_M 46.0 tok/s tg128 at 3.8GB VRAM peak ([report](reports/ling-3-0-flash-q3-k-m.md)). Three-quant ladder measured 2026-08-09 under the identical harness: IQ3_XXS 39.6 tok/s ([report](reports/ling-3-0-flash-iq3-xxs.md)), IQ2_M 45.6 tok/s ([report](reports/ling-3-0-flash-iq2-m.md)) — decode speed is non-monotonic across the ladder (IQ3 dequant cost), prefill scales with file size. Companion: [`--n-cpu-moe` offload-curve sweep](reports/ling-3-offload-sweep.md) (peak 66 tok/s at 27.5GiB VRAM; the optimum sits ~4GiB below the 32GB ceiling).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
