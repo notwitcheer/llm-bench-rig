@@ -74,8 +74,10 @@ def render():
     if IDEAL_BOX:
         xl, yb, xr, yt = IDEAL_BOX
         ax.add_patch(Rectangle((xl, yb), xr-xl, yt-yb, color=IDEAL, alpha=0.10, zorder=1))
-        ax.text((xl*xr)**0.5, yb+0.4, "fast  and  smart", color=IDEAL, fontsize=11.5,
-                fontweight="bold", ha="center", va="bottom", alpha=0.95)
+        # anchor the wash label in the box's top-left corner: the geometric centre is
+        # exactly where subject points tend to live (collision found 2026-08-11)
+        ax.text(xl*1.04, yt-0.25, "fast  and  smart", color=IDEAL, fontsize=11.5,
+                fontweight="bold", ha="left", va="top", alpha=0.95)
 
     for label, q, ts, fam, off, show, subject in DATA:
         c = C.get(fam, C["other"])
