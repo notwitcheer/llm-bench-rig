@@ -48,6 +48,7 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Qwen3.6-35B-A3B | 34.66B | UD-Q4_K_M | 85.0 | 95.7 | 93.3 | 96.7 | 95.7 | **93.3** |
 | Qwen3.6-27B | 26.90B | NVFP4-GGUF⁴ | 87.0 | 96.7 | 94.9 | 97.1 | 90.2 | **93.2** |
 | Qwen3.6-27B² | 26.90B | AWQ-int4⁵ | 87.5 | 96.4 | 95.2 | 97.3 | 89.0 | **93.1** |
+| Qwen3.6-35B-A3B | 34.66B | Escha-W2 2-bit⁷ | 84.2 | 95.4 | 92.7 | 96.6 | 93.3 | **92.4** |
 | Ling-3.0-flash⁶ | 127.49B | Q3_K_M | 84.0 | 96.3 | 93.2 | 93.5 | 92.1 | **91.8** |
 | Qwen3-Coder-Next | 79.67B | UD-Q2_K_XL | 83.7 | 96.0 | 89.3 | 96.0 | 93.3 | **91.7** |
 | Ling-3.0-flash⁶ | 127.49B | IQ3_XXS | 83.3 | 96.1 | 92.2 | 93.0 | 93.3 | **91.6** |
@@ -66,6 +67,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ⁵ QuantTrio true AWQ (4-bit g128 gemm, 8 modules ignored — flat recipe, 21.9GB), served via vLLM 0.21.0 awq_marlin, measured 2026-07-16 under the same pin. sglang 0.5.14 cannot serve this artifact (hybrid-GDN dtype wall: degenerate output at bf16, crash at fp16) — [report](reports/qwen3-6-27b-awq.md). The recipe-coverage rule now holds cross-format: flat recipes cluster (⁴ 93.2, ⁵ 93.1) while the protected recipe (³) holds the baseline.
 
 ⁶ 127.5B-total / 5.1B-active hybrid MoE (bailingmoe3), run 2026-08-08/09 on the open llama.cpp PR [#26608](https://github.com/ggml-org/llama.cpp/pull/26608) branch (head 0266ebca6) — upstream support had not merged at run time. All 512 routed experts in system RAM (`--n-cpu-moe 99`): Q3_K_M 46.0 tok/s tg128 at 3.8GB VRAM peak ([report](reports/ling-3-0-flash-q3-k-m.md)). Three-quant ladder measured 2026-08-09 under the identical harness: IQ3_XXS 39.6 tok/s ([report](reports/ling-3-0-flash-iq3-xxs.md)), IQ2_M 45.6 tok/s ([report](reports/ling-3-0-flash-iq2-m.md)) — decode speed is non-monotonic across the ladder (IQ3 dequant cost), prefill scales with file size. Companion: [`--n-cpu-moe` offload-curve sweep](reports/ling-3-offload-sweep.md) (peak 66 tok/s at 27.5GiB VRAM; the optimum sits ~4GiB below the 32GB ceiling).
+
+⁷ EschaLabs `eschamoe` 2-bit (12.3GB: 2/3-bit experts, int8 dense), served via the vendor's closed-source escha-sglang runtime (their published 5090 recipe, THINK=0) — the only non-open serving stack on this board, flagged accordingly. Same five-task harness over the server's OpenAI-compatible `/v1`; 285.7 tok/s single-stream decode measured (vendor claim 283, confirmed). Same base model as the UD-Q4_K_M row two lines up: the 2-bit build gives up 0.9 q_avg (concentrated in HumanEval, −2.4) for a 40% smaller file that also fits 16GB cards. [Report](reports/escha-w2-qwen36-35b-a3b.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
