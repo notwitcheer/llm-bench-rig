@@ -73,6 +73,7 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 |-------|-------:|-------|-----:|------:|----------:|------:|----------:|------:|
 | Qwen3.6-35B-A3B | 34.66B | UD-Q6_K | 94.7 | 97.0 | 87.0 | 92.0 | 98.0 | **93.8** |
 | gpt-oss-120B¹ | 116.83B | MXFP4 | 89.5 | 95.0 | 80.0 | 97.0 | 98.0 | **91.9** |
+| Muse-Glimmer-30B² | 29.85B | UD-Q4_K_XL | 80.6 | 93.5 | 88.8 | 96.7 | 95.7 | **91.1** |
 | Qwen3.6-28B-REAP-A3B | 28.24B | Q6_K | 87.7 | 95.0 | 82.0 | 90.0 | 94.0 | **89.7** |
 
 > **HumanEval correction (2026-06-04).** An earlier harness passed API stop sequences (`\ndef`, `\nclass`) that fired *mid-reasoning*, truncating inline-reasoning models before they emitted code — producing false-low scores (Qwen3-Coder-Next read **10%**, not 93%). Every model has since been re-run on the fixed, reasoning-aware harness (no stop sequences, `max_tokens=4096`, indentation-preserving response handling). A second extraction fix (2026-06-04) makes program assembly format-agnostic — it generates candidate assemblies and keeps whichever one compiles — after Nemotron-3-Nano exposed a case where the model indents only the *first* body line differently (raw HumanEval read **21%**; corrected to 80.5%). **Do not cite any HumanEval figure published before this date.**
@@ -80,6 +81,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 > **Why two tables.** Thinking-off rows answer directly; thinking-on rows emit an extended reasoning chain first. The two modes are not comparable on the same axis — including on MCQ/GSM8K — so they are ranked separately. Within a family, turning thinking on trades raw knowledge recall for reasoning depth (compare Qwen3.6-35B-A3B in both tables: MMLU 85.0 → 94.7).
 >
 > ¹ **gpt-oss-120B** runs via MoE CPU-offload (`--n-cpu-moe 20`) — it does not fit 32GB VRAM (59GB model); ~30GB VRAM + the rest in system RAM, ~47 tok/s generation. It and the other two thinking-on rows were run on a ~100-item-per-task subset (MMLU 2/subject).
+>
+> ² **Muse-Glimmer-30B** (Meta, VLM: 28B text decoder + 2B vision encoder; text benches exercise the decoder only) sits in this table because its chat template's reasoning channel has no off switch — `reasoning_strength` (default `high`) modulates depth but every off-looking value (`low`/`minimal`/`none`/`off`) still produces ~60 reasoning tokens before an MC answer letter. Scored with the standard 50% sampling at `reasoning_strength: low`; runs fully resident (15.4GB VRAM peak, 85.7 tok/s tg128) on llama.cpp master b10349, the Muse Glimmer merge commit (PR #26841, merged day-0). Full report in [`reports/muse-glimmer-30b-ud-q4-k-xl.md`](reports/muse-glimmer-30b-ud-q4-k-xl.md).
 
 > **Sampling.** MMLU & HellaSwag use 50% stratified sampling (seed=42); ARC-Challenge, GSM8K, and HumanEval run the full item counts (HumanEval = all 164). Full per-model reports in [`reports/`](reports/).
 
