@@ -55,6 +55,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Ling-3.0-flash⁶ | 127.49B | IQ2_M | 82.3 | 95.6 | 91.9 | 92.3 | 89.0 | **90.2** |
 | Gemma 4 12B-it | 11.91B | Q6_K | 78.9 | 94.0 | 81.6 | 96.4 | 87.2 | **87.6** |
 | gpt-oss-20b | 20.91B | Q4_K_M | 78.6 | 94.6 | 74.5 | 94.8 | 94.5 | **87.4** |
+| Nemotron-3.5-Lightning | 31.58B | NVFP4⁸ | 77.7 | 92.6 | 81.4 | 87.0 | 81.7 | **84.1** |
+| Nemotron-3.5-Lightning | 31.58B | Q4_K_M | 77.9 | 92.2 | 80.6 | 85.6 | 82.3 | **83.7** |
 | Nemotron-3-Nano | 31.58B | UD-Q4_K_XL | 74.5 | 89.9 | 75.6 | 90.5 | 80.5 | **82.2** |
 | Nemotron-Cascade-2 | 31.58B | Q4_K_M | 74.4 | 91.5 | 75.7 | 87.1 | 79.3 | **81.6** |
 | North-Mini-Code-1.0† | 30.48B | Q6_K | 73.3 | 60.2 | 70.8 | 95.8 | 86.6 | **77.4** |
@@ -69,6 +71,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ⁶ 127.5B-total / 5.1B-active hybrid MoE (bailingmoe3), run 2026-08-08/09 on the open llama.cpp PR [#26608](https://github.com/ggml-org/llama.cpp/pull/26608) branch (head 0266ebca6) — upstream support had not merged at run time. All 512 routed experts in system RAM (`--n-cpu-moe 99`): Q3_K_M 46.0 tok/s tg128 at 3.8GB VRAM peak ([report](reports/ling-3-0-flash-q3-k-m.md)). Three-quant ladder measured 2026-08-09 under the identical harness: IQ3_XXS 39.6 tok/s ([report](reports/ling-3-0-flash-iq3-xxs.md)), IQ2_M 45.6 tok/s ([report](reports/ling-3-0-flash-iq2-m.md)) — decode speed is non-monotonic across the ladder (IQ3 dequant cost), prefill scales with file size. Companion: [`--n-cpu-moe` offload-curve sweep](reports/ling-3-offload-sweep.md) (peak 66 tok/s at 27.5GiB VRAM; the optimum sits ~4GiB below the 32GB ceiling).
 
 ⁷ EschaLabs `eschamoe` 2-bit (12.3GB: 2/3-bit experts, int8 dense), served via the vendor's closed-source escha-sglang runtime (their published 5090 recipe, THINK=0) — the only non-open serving stack on this board, flagged accordingly. Same five-task harness over the server's OpenAI-compatible `/v1`; 285.7 tok/s single-stream decode measured (vendor claim 283, confirmed). Same base model as the UD-Q4_K_M row two lines up: the 2-bit build gives up 0.9 q_avg (concentrated in HumanEval, −2.4) for a 40% smaller file that also fits 16GB cards. [Report](reports/escha-w2-qwen36-35b-a3b.md).
+
+⁸ Official NVIDIA NVFP4 release build (21.6GB), served via vLLM 0.25.1 on the native cutlass sm_120 FP4 path, measured 2026-08-11 same-day with the Q4_K_M row below it. First board pair where the vendor's own FP4 recipe is compared against a community Q4 GGUF of the same model on identical harness: quality is a wash (+0.4 q_avg, all per-task deltas ≤1.4), and NVFP4 decodes in the same speed class or slightly ahead (410.5 tok/s chat-server median vs 377.4 tg128 — different conventions, see the [report](reports/nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m.md) for both legs and the sm_120 reproduction traps).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
