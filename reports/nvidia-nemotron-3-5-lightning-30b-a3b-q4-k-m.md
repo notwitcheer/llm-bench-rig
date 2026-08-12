@@ -103,6 +103,24 @@ Two sm_120 traps for reproducers: vLLM 0.25.1's flashinfer JIT fails with `nvcc 
 
 ---
 
+## Speculative-decode leg: both shipped drafters measure negative
+
+NVIDIA ships two speculative-decode drafter modules with this release (DFlash 1.18GB and an MTP head; community GGUF conversions in `bartowski/...-GGUF` as `mtp-*.gguf`). llama.cpp merged `draft-dflash` support for nemotron-3.5 the same day (PR #26905). Measured on this rig: base vs MTP (draft lengths 2/4/8) vs DFlash, chat-server conditions, four workloads (8 prompts x 256 tokens each, temperature 0), llama.cpp b10371.
+
+| leg | prose | code | repetitive | chat |
+|---|---:|---:|---:|---:|
+| plain decoding | 328.6 | 335.4 | 335.1 | 335.3 |
+| MTP n=2 | 239.0 (0.73x) | 256.0 (0.76x) | 260.1 (0.78x) | 248.7 (0.74x) |
+| MTP n=4 | 230.6 (0.70x) | 252.9 (0.75x) | 247.8 (0.74x) | 235.1 (0.70x) |
+| MTP n=8 | 186.9 (0.57x) | 201.9 (0.60x) | 211.9 (0.63x) | 195.4 (0.58x) |
+| DFlash | 175.5 (0.53x) | 206.3 (0.62x) | 203.3 (0.61x) | 186.5 (0.56x) |
+
+**Every drafter configuration is slower than plain decoding on every workload, and more drafting makes it worse.** The mechanism is visible in the acceptance logs: MTP n=2 acceptance is healthy (68-84%, mean accepted length ~2.5) — the drafts are good, they just cannot pay for themselves. At ~335 tok/s the target model produces a token every ~3ms, and the drafter's own forward passes plus verification overhead exceed what accepted tokens save. Longer drafts (n=8: acceptance falls to ~38-45%) and DFlash (36-44%, mean len ~2.1) add more rejected work on top.
+
+Speculative decoding is a rescue for expensive decoders; a 3B-active MoE that already decodes at 335 tok/s on this card has nothing to rescue. Caveat: this is llama.cpp's day-1 dflash/nemotron implementation — NVIDIA's own TRT-LLM stack may show different economics, and these numbers say nothing about the drafters on slower cards, where the break-even moves. Raw data: `results/<slug>/spec_decode.json`. Conversion note for reproducers: converting the official DFlash safetensors to GGUF requires `--target-model-dir` pointing at a directory with the target model's tokenizer files, or `convert_hf_to_gguf.py` refuses.
+
+---
+
 ## Methodology
 
 ### Evaluation Framework
