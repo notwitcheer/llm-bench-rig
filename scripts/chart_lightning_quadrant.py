@@ -35,8 +35,8 @@ C = {  # per-family colours
 }
 
 # ================= EDIT PER CHART =================
-TITLE    = "NVIDIA claims 4x. Measured: 1.4x, against the wrong rival."
-SUBTITLE = "Nemotron 3.5 Lightning (Q4 GGUF and official NVFP4) vs 13 local models on one RTX 5090  \u00b7  thinking off"
+TITLE    = "Nemotron 3.5 Lightning"
+SUBTITLE = "Q4 GGUF and official NVFP4 vs 13 local models on one RTX 5090  \u00b7  thinking off"
 OUT      = "/opt/data/mercury-cards/nemotron-lightning/quadrant-lightning-4x.png"
 # ideal-quadrant box: (x_left, y_bottom, x_right, y_top) in data coords, or None to omit
 IDEAL_BOX = (150, 92, 520, 96)
