@@ -55,8 +55,14 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Ling-3.0-flash⁶ | 127.49B | IQ2_M | 82.3 | 95.6 | 91.9 | 92.3 | 89.0 | **90.2** |
 | Gemma 4 12B-it | 11.91B | Q6_K | 78.9 | 94.0 | 81.6 | 96.4 | 87.2 | **87.6** |
 | gpt-oss-20b | 20.91B | Q4_K_M | 78.6 | 94.6 | 74.5 | 94.8 | 94.5 | **87.4** |
+| Nemotron-3.5-Lightning | 31.58B | Q5_K_M⁹ | 78.0 | 92.7 | 82.1 | 86.9 | 81.7 | **84.3** |
 | Nemotron-3.5-Lightning | 31.58B | NVFP4⁸ | 77.7 | 92.6 | 81.4 | 87.0 | 81.7 | **84.1** |
+| Nemotron-3.5-Lightning | 31.58B | IQ3_XXS⁹ | 78.0 | 92.4 | 81.1 | 86.4 | 82.3 | **84.0** |
+| Nemotron-3.5-Lightning | 31.58B | IQ2_M⁹ | 77.2 | 92.1 | 80.3 | 87.3 | 82.9 | **83.9** |
 | Nemotron-3.5-Lightning | 31.58B | Q4_K_M | 77.9 | 92.2 | 80.6 | 85.6 | 82.3 | **83.7** |
+| Nemotron-3.5-Lightning | 31.58B | IQ4_XS⁹ | 77.9 | 92.6 | 82.2 | 84.7 | 79.9 | **83.5** |
+| Nemotron-3.5-Lightning | 31.58B | Q3_K_M⁹ | 77.1 | 91.7 | 81.3 | 86.4 | 79.3 | **83.2** |
+| Nemotron-3.5-Lightning | 31.58B | IQ2_XXS⁹ | 76.8 | 92.2 | 75.7 | 84.9 | 81.7 | **82.3** |
 | Nemotron-3-Nano | 31.58B | UD-Q4_K_XL | 74.5 | 89.9 | 75.6 | 90.5 | 80.5 | **82.2** |
 | Nemotron-Cascade-2 | 31.58B | Q4_K_M | 74.4 | 91.5 | 75.7 | 87.1 | 79.3 | **81.6** |
 | North-Mini-Code-1.0† | 30.48B | Q6_K | 73.3 | 60.2 | 70.8 | 95.8 | 86.6 | **77.4** |
@@ -73,6 +79,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ⁷ EschaLabs `eschamoe` 2-bit (12.3GB: 2/3-bit experts, int8 dense), served via the vendor's closed-source escha-sglang runtime (their published 5090 recipe, THINK=0) — the only non-open serving stack on this board, flagged accordingly. Same five-task harness over the server's OpenAI-compatible `/v1`; 285.7 tok/s single-stream decode measured (vendor claim 283, confirmed). Same base model as the UD-Q4_K_M row two lines up: the 2-bit build gives up 0.9 q_avg (concentrated in HumanEval, −2.4) for a 40% smaller file that also fits 16GB cards. [Report](reports/escha-w2-qwen36-35b-a3b.md).
 
 ⁸ Official NVIDIA NVFP4 release build (21.6GB), served via vLLM 0.25.1 on the native cutlass sm_120 FP4 path, measured 2026-08-11 same-day with the Q4_K_M row below it. First board pair where the vendor's own FP4 recipe is compared against a community Q4 GGUF of the same model on identical harness: quality is a wash (+0.4 q_avg, all per-task deltas ≤1.4), and NVFP4 decodes in the same speed class or slightly ahead (410.5 tok/s chat-server median vs 377.4 tg128 — different conventions, see the [report](reports/nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m.md) for both legs and the sm_120 reproduction traps).
+
+⁹ Six-rung GGUF quant-tax ladder (bartowski imatrix repo), measured 2026-08-12/13, llama.cpp b10338 worktree, all rungs fully VRAM-resident. The tax is nearly zero above the floor: Q5_K_M to IQ2_M spans 0.4 q_avg while decode climbs 349 → 399 tok/s and VRAM drops 25.2 → 17.7 GiB. Only IQ2_XXS pays (−1.7 q_avg vs IQ2_M), and the entire drop is HellaSwag. IQ2_M strictly dominates Q3_K_M and IQ4_XS (smaller, higher q_avg, faster). Ladder GGUFs embed the MTP drafter head (inert here). [Ladder report](reports/nemotron-lightning-quant-ladder.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
