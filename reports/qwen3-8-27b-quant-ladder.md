@@ -24,6 +24,26 @@ All seven rungs measured on the same pinned stack (rig harness, llama-server b96
 
 ![ladder chart](chart_q38_ladder.png)
 
+## Depth addendum: the ladder's tightness does not survive long context (added 2026-08-16)
+
+A reader asked whether the IQ3_XXS gap widens at long context. Measured same-day: the rig's long-context retrieve-and-use battery (15 tasks per depth — a fact buried mid-haystack under agent load, the model must find it with a tool and use it) at 16k/32k/64k, UD-IQ3_XXS vs Q6_K, identical stack to the ladder.
+
+| depth | UD-IQ3_XXS | Q6_K |
+|------:|-----------:|-----:|
+| 16k | 11/15 (73.3) | 15/15 (100) |
+| 32k | 10/15 (66.7) | 15/15 (100) |
+| 64k | 12/15 (80.0) | 15/15 (100) |
+| **total** | **33/45 (73.3)** | **45/45 (100)** |
+
+![depth A/B chart](chart_q38_depth_ab.png)
+
+Two reads:
+
+1. **A gap the short-context board cannot see.** On the five-suite board these rungs sit 1.0 q_avg apart (92.7 vs 93.7); under long-context load Q6_K is perfect at every depth while IQ3_XXS drops roughly a quarter of the tasks. The ladder's headline ("no cliff") is a short-prompt statement — the low rungs pay a real long-context tax the q_avg column does not show.
+2. **The deficit is depth-flat, not depth-growing.** IQ3_XXS scores 73/67/80 across 16k/32k/64k — no monotonic slide, and the same task ids recur among its misses (lc-001 at all three depths). So the mechanism looks like quant-induced fragility on retrieval-under-load generally, switched on as soon as context is long, rather than decay that keeps worsening with every extra 16k.
+
+Honest limits: n=15 per depth per rung, one task family (needle retrieve-and-use), two rungs A/B'd — the middle rungs and other long-context task shapes are unmeasured. 64k is the top tested depth (KV budget at Q6_K: the 64k+margin server peaked well inside 32GB).
+
 ## Reads
 
 1. **No cliff anywhere.** The full spread from Q8_0 to 2-bit XXS is 2.9 q_avg points across a 3.4x file-size range. For contrast, the same harness put Nemotron Lightning's floor rung 1.7 points below its neighbour in one step, and Qwen3.6-27B's ladder paid its first real step at Q3. Here every step down is 0.2–1.2 points, spread across suites rather than concentrated in one.
@@ -38,4 +58,4 @@ All seven rungs measured on the same pinned stack (rig harness, llama-server b96
 
 - The UD rungs use unsloth's dynamic imatrix recipe; the Q6_K/Q8_0/Q4_K_M rungs are static cuts from the same repo. Recipe and bit-width move together at the bottom of this ladder, so "2-bit costs 2.9" conflates both (the recipe-coverage lesson from the Qwen3.6 NVFP4 rows applies).
 - Day-0 GGUFs: unsloth re-cut files in the repo's first hours (the Q4_K_M download died once to a mid-file re-upload). Files here are the cuts as of 2026-08-14 evening; a later re-cut could shift low-rung numbers.
-- Thinking-off only, matching the board convention for this model family. VRAM peaks are bench-context peaks, not long-context budgets — the hybrid-attention long-context story (day-0 depth sweep: tg128 −9.6% at d=32768) is a separate axis from this ladder.
+- Thinking-off only, matching the board convention for this model family. VRAM peaks are bench-context peaks, not long-context budgets. The q_avg table is short-prompt quality; for quality at depth see the depth addendum above (the hybrid-attention decode story — day-0 depth sweep tg128 −9.6% at d=32768 — is the speed side of the same axis).
