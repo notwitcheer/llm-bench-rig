@@ -45,13 +45,20 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Qwen3.6-27B² | 26.90B | NVFP4³ | 87.6 | 96.4 | 95.4 | 97.5 | 93.3 | **94.1** |
 | Qwopus3.6-27B-Coder-Compat | 27.32B | Q6_K | 87.9 | 96.7 | 95.3 | 97.8 | 90.9 | **93.7** |
 | Qwable-5-27B-Coder | 26.90B | Q6_K | 87.9 | 97.1 | 95.5 | 97.0 | 90.9 | **93.7** |
+| Qwen3.8-27B | 27.32B | Q6_K¹⁰ | 85.3 | 96.7 | 94.3 | 97.5 | 94.5 | **93.7** |
+| Qwen3.8-27B | 27.32B | Q8_0¹⁰ | 85.2 | 96.8 | 94.4 | 97.4 | 94.5 | **93.7** |
+| Qwen3.8-27B | 27.32B | UD-Q4_K_XL¹⁰ | 85.1 | 96.6 | 94.4 | 97.3 | 93.9 | **93.5** |
 | Qwen3.6-35B-A3B | 34.66B | UD-Q4_K_M | 85.0 | 95.7 | 93.3 | 96.7 | 95.7 | **93.3** |
+| Qwen3.8-27B | 27.32B | Q4_K_M¹⁰ | 85.0 | 96.8 | 94.3 | 97.1 | 92.7 | **93.2** |
 | Qwen3.6-27B | 26.90B | NVFP4-GGUF⁴ | 87.0 | 96.7 | 94.9 | 97.1 | 90.2 | **93.2** |
 | Qwen3.6-27B² | 26.90B | AWQ-int4⁵ | 87.5 | 96.4 | 95.2 | 97.3 | 89.0 | **93.1** |
+| Qwen3.8-27B | 27.32B | UD-IQ3_XXS¹⁰ | 84.3 | 96.3 | 93.8 | 96.8 | 92.1 | **92.7** |
 | Qwen3.6-35B-A3B | 34.66B | Escha-W2 2-bit⁷ | 84.2 | 95.4 | 92.7 | 96.6 | 93.3 | **92.4** |
 | Ling-3.0-flash⁶ | 127.49B | Q3_K_M | 84.0 | 96.3 | 93.2 | 93.5 | 92.1 | **91.8** |
 | Qwen3-Coder-Next | 79.67B | UD-Q2_K_XL | 83.7 | 96.0 | 89.3 | 96.0 | 93.3 | **91.7** |
 | Ling-3.0-flash⁶ | 127.49B | IQ3_XXS | 83.3 | 96.1 | 92.2 | 93.0 | 93.3 | **91.6** |
+| Qwen3.8-27B | 27.32B | UD-IQ2_M¹⁰ | 83.7 | 94.9 | 93.7 | 96.7 | 88.4 | **91.5** |
+| Qwen3.8-27B | 27.32B | UD-IQ2_XXS¹⁰ | 82.0 | 95.7 | 92.3 | 95.1 | 89.0 | **90.8** |
 | Ling-3.0-flash⁶ | 127.49B | IQ2_M | 82.3 | 95.6 | 91.9 | 92.3 | 89.0 | **90.2** |
 | Gemma 4 12B-it | 11.91B | Q6_K | 78.9 | 94.0 | 81.6 | 96.4 | 87.2 | **87.6** |
 | gpt-oss-20b | 20.91B | Q4_K_M | 78.6 | 94.6 | 74.5 | 94.8 | 94.5 | **87.4** |
@@ -81,6 +88,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ⁸ Official NVIDIA NVFP4 release build (21.6GB), served via vLLM 0.25.1 on the native cutlass sm_120 FP4 path, measured 2026-08-11 same-day with the Q4_K_M row below it. First board pair where the vendor's own FP4 recipe is compared against a community Q4 GGUF of the same model on identical harness: quality is a wash (+0.4 q_avg, all per-task deltas ≤1.4), and NVFP4 decodes in the same speed class or slightly ahead (410.5 tok/s chat-server median vs 377.4 tg128 — different conventions, see the [report](reports/nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m.md) for both legs and the sm_120 reproduction traps).
 
 ⁹ Six-rung GGUF quant-tax ladder (bartowski imatrix repo), measured 2026-08-12/13, llama.cpp b10338 worktree, all rungs fully VRAM-resident. The tax is nearly zero above the floor: Q5_K_M to IQ2_M spans 0.4 q_avg while decode climbs 349 → 399 tok/s and VRAM drops 25.2 → 17.7 GiB. Only IQ2_XXS pays (−1.7 q_avg vs IQ2_M), and the entire drop is HellaSwag. IQ2_M strictly dominates Q3_K_M and IQ4_XS (smaller, higher q_avg, faster). Ladder GGUFs embed the MTP drafter head (inert here). [Ladder report](reports/nemotron-lightning-quant-ladder.md).
+
+¹⁰ Seven-rung GGUF quant-tax ladder (unsloth day-0 repo, UD = dynamic imatrix recipe), measured 2026-08-14/15, llama.cpp b9653, all rungs fully VRAM-resident. No cliff anywhere: Q8_0 to UD-IQ2_XXS spans 2.9 q_avg over a 3.4x file-size range, Q6_K ties Q8_0 to the second decimal (93.66 both), and UD-IQ3_XXS holds 92.7 from an 11.1GB file (12.8 GiB peak — 16GB-card territory) at 96 tok/s. MMLU pays most of the tax; the IQ2 rungs pinch HumanEval first. [Ladder report](reports/qwen3-8-27b-quant-ladder.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
