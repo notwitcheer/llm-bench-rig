@@ -6,11 +6,16 @@ from pathlib import Path
 
 from lib.config import get
 from lib.evals import (LLMClient, MMLUEval, ARCEval,  # noqa: E402
-                       HellaSwagEval, GSM8KEval, HumanEvalEval)
+                       HellaSwagEval, GSM8KEval, HumanEvalEval, GPQAEval)
 from lib.evals.base import CompletionLengthGate, InstrumentGateError
 
-EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval"}
-MC_TASKS = {"mmlu", "arc_challenge", "hellaswag"}
+EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval", "gpqa"}
+# NOTE: q_avg stays the five-task mean by construction (drivers pass the five
+# board tasks explicitly). "gpqa" is the standing SECOND-TIER task (adopted
+# 2026-08-17 after the qwen3.8 pilot separated rungs the board called tight):
+# request it alongside the board, report it as its own row, never fold it
+# into q_avg — that would break comparability with every pre-2026-08-17 row.
+MC_TASKS = {"mmlu", "arc_challenge", "hellaswag", "gpqa"}
 
 
 def _build_mc_gate(think: bool, threshold) -> CompletionLengthGate | None:
@@ -127,6 +132,8 @@ def _make_evaluator(task: str, client, results_dir, sample: float | None,
         return GSM8KEval(client=client, limit=limit, results_dir=results_dir)
     if task == "humaneval":
         return HumanEvalEval(client=client, limit=limit, results_dir=results_dir)
+    if task == "gpqa":
+        return GPQAEval(client=client, limit=limit, results_dir=results_dir, gate=gate)
     raise ValueError(f"Unknown eval task: {task}")
 
 
