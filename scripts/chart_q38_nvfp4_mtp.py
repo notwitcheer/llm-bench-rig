@@ -42,8 +42,9 @@ for i, (b, m) in enumerate(zip(base, mtp)):
             color=GREEN, fontsize=12.5, fontweight="bold")
 
 ax.text(0.99, 0.05,
-        "same head, same ratio at every depth\nquality tax vs GGUF lane: q_avg 92.5 vs Q4_K_M 93.2 (see report)",
-        transform=ax.transAxes, color=MUTE, fontsize=10.5, ha="right", va="bottom")
+        "the trade: quality drops to q_avg 92.5, under the 15.9GB Q4_K_M gguf (93.2)",
+        transform=ax.transAxes, color=TEXT, fontsize=13, ha="right", va="bottom",
+        fontweight="bold")
 
 ax.set_xticks(x); ax.set_xticklabels(shapes)
 ax.set_ylim(0, 145)
