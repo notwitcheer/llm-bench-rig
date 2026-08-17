@@ -4,3 +4,4 @@ from .arc import ARCEval
 from .hellaswag import HellaSwagEval
 from .gsm8k import GSM8KEval
 from .humaneval import HumanEvalEval
+from .gpqa import GPQAEval
