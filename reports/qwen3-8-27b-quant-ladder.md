@@ -44,6 +44,30 @@ Two reads:
 
 Honest limits: n=15 per depth per rung, one task family (needle retrieve-and-use), two rungs A/B'd — the middle rungs and other long-context task shapes are unmeasured. 64k is the top tested depth (KV budget at Q6_K: the 64k+margin server peaked well inside 32GB).
 
+## GPQA addendum: the ladder splits on a hard benchmark too (added 2026-08-17)
+
+A reader (EschaLabs) made the complementary point to the depth question: the five-task board is saturated at 92-97 on this model, so how much of the ladder's tightness is the benchmark's ceiling rather than the quants' equivalence? Measured same-day: GPQA-diamond (198 graduate-level items, zero-shot, think-off, deterministic option shuffle, same server stack as the ladder) across all seven GGUF rungs plus the [NVFP4 lane](qwen3-8-27b-nvfp4.md).
+
+| Rung | GPQA-diamond | board q_avg |
+|------|-------------:|------------:|
+| Q4_K_M | **50.5** | 93.2 |
+| Q6_K | **49.0** | 93.7 |
+| UD-Q4_K_XL | **49.0** | 93.5 |
+| NVFP4 (vLLM) | **47.0** | 92.5 |
+| Q8_0 | **47.0** | 93.7 |
+| UD-IQ3_XXS | **45.0** | 92.7 |
+| UD-IQ2_XXS | **42.9** | 90.8 |
+| UD-IQ2_M | **39.4** | 91.5 |
+
+Sample-size caveat first: 198 items means one item is half a point, and gaps under ~3 points are noise. Reading only past that band:
+
+1. **The spread nearly quadruples: 2.9 board points become 11.1 GPQA points.** The ladder the board calls tight is not tight when the benchmark has headroom. Together with the depth addendum this is the second independent axis (difficulty, after context load) on which quant damage shows up that the saturated board hides.
+2. **The 4-bit band is the ceiling, and the floor drops hard.** Q4_K_M/Q6_K/UD-Q4_K_XL sit in one noise band at 49-50.5 (Q4_K_M's nominal lead over Q6_K is 1.5 points — noise). The IQ2 rungs lose 6-10 points from that band, far more than the 1.9-2.9 the board showed.
+3. **The two IQ2 rungs swap order** (IQ2_XXS 42.9 over IQ2_M 39.4, reversing their board order). The gap is 3.5 points — at the edge of the noise band, so we flag rather than lean on it, but it cautions against ranking neighbouring 2-bit rungs on any single 198-item read.
+4. **Q8_0's 47.0 sits 2 points under Q6_K — inside the noise band** (and their board tie already said the top of the ladder is flat). Single-seed variance at this sample size; a multi-seed rerun would be needed before reading anything into it.
+
+GPQA-diamond is a standing second-tier metric on this rig from this date: reported alongside q_avg on future treatments, never folded into it (which would break comparability with every earlier board row).
+
 ## Reads
 
 1. **No cliff anywhere.** The full spread from Q8_0 to 2-bit XXS is 2.9 q_avg points across a 3.4x file-size range. For contrast, the same harness put Nemotron Lightning's floor rung 1.7 points below its neighbour in one step, and Qwen3.6-27B's ladder paid its first real step at Q3. Here every step down is 0.2–1.2 points, spread across suites rather than concentrated in one.
