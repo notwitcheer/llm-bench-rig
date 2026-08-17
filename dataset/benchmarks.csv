@@ -299,3 +299,5 @@ Qwen3.8-27B,Dense (hybrid attn),27.32,Q8_0,27.04,llama.cpp,CUDA,RTX 5090,32,pp40
 Qwen3.8-27B,Dense (hybrid attn),27.32,Q8_0,27.04,llama.cpp,CUDA,RTX 5090,32,pp8192,3680.71,5.43,2026-08-15
 Qwen3.8-27B,Dense (hybrid attn),27.32,Q8_0,27.04,llama.cpp,CUDA,RTX 5090,32,pp16384,3543.55,2.17,2026-08-15
 Qwen3.8-27B,Dense (hybrid attn),27.32,Q8_0,27.04,llama.cpp,CUDA,RTX 5090,32,tg128,53.07,0.06,2026-08-15
+Qwen3.8-27B,Dense (hybrid attn),27.32,NVFP4,21.02,vllm-0.25.1,CUDA,RTX 5090,32,tg128,68.95,,2026-08-17
+Qwen3.8-27B,Dense (hybrid attn),27.32,NVFP4+MTP,21.81,vllm-0.25.1,CUDA,RTX 5090,32,tg128,119.79,,2026-08-17

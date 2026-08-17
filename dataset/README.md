@@ -53,6 +53,7 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Qwen3.6-27B | 26.90B | NVFP4-GGUF⁴ | 87.0 | 96.7 | 94.9 | 97.1 | 90.2 | **93.2** |
 | Qwen3.6-27B² | 26.90B | AWQ-int4⁵ | 87.5 | 96.4 | 95.2 | 97.3 | 89.0 | **93.1** |
 | Qwen3.8-27B | 27.32B | UD-IQ3_XXS¹⁰ | 84.3 | 96.3 | 93.8 | 96.8 | 92.1 | **92.7** |
+| Qwen3.8-27B | 27.32B | NVFP4¹¹ | 84.3 | 96.9 | 94.3 | 97.1 | 89.6 | **92.5** |
 | Qwen3.6-35B-A3B | 34.66B | Escha-W2 2-bit⁷ | 84.2 | 95.4 | 92.7 | 96.6 | 93.3 | **92.4** |
 | Ling-3.0-flash⁶ | 127.49B | Q3_K_M | 84.0 | 96.3 | 93.2 | 93.5 | 92.1 | **91.8** |
 | Qwen3-Coder-Next | 79.67B | UD-Q2_K_XL | 83.7 | 96.0 | 89.3 | 96.0 | 93.3 | **91.7** |
@@ -90,6 +91,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ⁹ Six-rung GGUF quant-tax ladder (bartowski imatrix repo), measured 2026-08-12/13, llama.cpp b10338 worktree, all rungs fully VRAM-resident. The tax is nearly zero above the floor: Q5_K_M to IQ2_M spans 0.4 q_avg while decode climbs 349 → 399 tok/s and VRAM drops 25.2 → 17.7 GiB. Only IQ2_XXS pays (−1.7 q_avg vs IQ2_M), and the entire drop is HellaSwag. IQ2_M strictly dominates Q3_K_M and IQ4_XS (smaller, higher q_avg, faster). Ladder GGUFs embed the MTP drafter head (inert here). [Ladder report](reports/nemotron-lightning-quant-ladder.md).
 
 ¹⁰ Seven-rung GGUF quant-tax ladder (unsloth day-0 repo, UD = dynamic imatrix recipe), measured 2026-08-14/15, llama.cpp b9653, all rungs fully VRAM-resident. No cliff anywhere: Q8_0 to UD-IQ2_XXS spans 2.9 q_avg over a 3.4x file-size range, Q6_K ties Q8_0 to the second decimal (93.66 both), and UD-IQ3_XXS holds 92.7 from an 11.1GB file (12.8 GiB peak — 16GB-card territory) at 96 tok/s. MMLU pays most of the tax; the IQ2 rungs pinch HumanEval first. The tightness is short-context only: on long-context retrieve-and-use (15 tasks per depth at 16k/32k/64k, measured 2026-08-16) Q6_K is perfect at every depth while UD-IQ3_XXS holds 73/67/80 — the 1.0 q_avg gap becomes ~27 points under depth load. [Ladder report + depth addendum](reports/qwen3-8-27b-quant-ladder.md).
+
+¹¹ NVFP4 checkpoint (unsloth day-0 cut, 22.6GB) served by vLLM 0.25.1 on sm_120, measured 2026-08-17 — the only non-llama.cpp Qwen3.8 row; quality same-harness over HTTP, cross-stack for speed. Q6_K-sized but lands below Q4_K_M, HumanEval pays nearly the whole tax (89.6 vs 94.5). The lane's draw is the shipped MTP speculative head, which llama.cpp cannot run yet: 1.72–1.81x decode at every prompt depth tested (69 → 114–125 tok/s effective, held at 32k). [NVFP4 report](reports/qwen3-8-27b-nvfp4.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 
