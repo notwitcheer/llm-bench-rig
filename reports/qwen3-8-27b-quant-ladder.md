@@ -44,6 +44,40 @@ Two reads:
 
 Honest limits: n=15 per depth per rung, one task family (needle retrieve-and-use), two rungs A/B'd — the middle rungs and other long-context task shapes are unmeasured. 64k is the top tested depth (KV budget at Q6_K: the 64k+margin server peaked well inside 32GB).
 
+## Depth addendum II: the full column, and a correction (added 2026-08-18)
+
+The A/B above promised the middle of the ladder; here it is. Same battery (15
+retrieve-and-use tasks per depth at 16k/32k/64k, per-depth self-sized servers,
+identical stack), run on the four remaining VRAM-safe rungs. Q8_0 stays
+untested: the 27GB file plus 64k KV does not fit 32GB.
+
+| rung | file | 16k | 32k | 64k | total |
+|------|-----:|----:|----:|----:|------:|
+| Q4_K_M | 15.9GB | 15/15 | 15/15 | 15/15 | **45/45** |
+| UD-Q4_K_XL | 16.7GB | 15/15 | 15/15 | 15/15 | **45/45** |
+| Q6_K | 21.3GB | 15/15 | 15/15 | 15/15 | **45/45** |
+| UD-IQ2_M | 9.6GB | 15/15 | 15/15 | 15/15 | **45/45** |
+| UD-IQ2_XXS | 8.4GB | 11/15 | 13/15 | 15/15 | **39/45** |
+| UD-IQ3_XXS | 11.1GB | 11/15 | 10/15 | 12/15 | **33/45** |
+
+Because IQ3_XXS was suddenly the outlier rather than the trend, I reran it
+same-day before writing anything: **33/45 again, and the 12 missed task ids
+are identical between the two runs.** At temp 0 that establishes the result is
+deterministic — not a transient server fault — though it cannot rule out that
+this fixed task set happens to sit badly for this one quant.
+
+**This revises the A/B's read.** With only two points, the natural reading
+was that depth risk scales with file size. The full column says
+otherwise: UD-IQ2_M (9.6GB) is perfect at every depth while UD-IQ3_XXS
+(11.1GB, a bigger file) fails a quarter of the tasks. The depth tax follows
+the quantisation recipe, not the file size — which specific tensors each
+recipe squeezes evidently matters more at depth than how hard it squeezes
+overall. Practical consequence: depth-test the exact file you plan to run;
+its size class tells you nothing here.
+
+Honest limits: n=15 per depth per rung, one task family, single seed
+(deterministic decode), 64k top depth, Q8_0 untested.
+
 ## GPQA addendum: the ladder splits on a hard benchmark too (added 2026-08-17)
 
 A reader (EschaLabs) made the complementary point to the depth question: the five-task board is saturated at 92-97 on this model, so how much of the ladder's tightness is the benchmark's ceiling rather than the quants' equivalence? Measured same-day: GPQA-diamond (198 graduate-level items, zero-shot, think-off, deterministic option shuffle, same server stack as the ladder) across all seven GGUF rungs plus the [NVFP4 lane](qwen3-8-27b-nvfp4.md).
