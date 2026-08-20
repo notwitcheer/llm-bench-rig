@@ -47,6 +47,7 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Qwable-5-27B-Coder | 26.90B | Q6_K | 87.9 | 97.1 | 95.5 | 97.0 | 90.9 | **93.7** |
 | Qwen3.8-27B | 27.32B | Q6_K¹⁰ | 85.3 | 96.7 | 94.3 | 97.5 | 94.5 | **93.7** |
 | Qwen3.8-27B | 27.32B | Q8_0¹⁰ | 85.2 | 96.8 | 94.4 | 97.4 | 94.5 | **93.7** |
+| Qwen3.8-27B | 27.32B | BF16¹² | 85.3 | 96.8 | 94.3 | 97.4 | 93.9 | **93.5** |
 | Qwen3.8-27B | 27.32B | UD-Q4_K_XL¹⁰ | 85.1 | 96.6 | 94.4 | 97.3 | 93.9 | **93.5** |
 | Qwen3.6-35B-A3B | 34.66B | UD-Q4_K_M | 85.0 | 95.7 | 93.3 | 96.7 | 95.7 | **93.3** |
 | Qwen3.8-27B | 27.32B | Q4_K_M¹⁰ | 85.0 | 96.8 | 94.3 | 97.1 | 92.7 | **93.2** |
@@ -93,6 +94,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ¹⁰ Seven-rung GGUF quant-tax ladder (unsloth day-0 repo, UD = dynamic imatrix recipe), measured 2026-08-14/15, llama.cpp b9653, all rungs fully VRAM-resident. No cliff anywhere: Q8_0 to UD-IQ2_XXS spans 2.9 q_avg over a 3.4x file-size range, Q6_K ties Q8_0 to the second decimal (93.66 both), and UD-IQ3_XXS holds 92.7 from an 11.1GB file (12.8 GiB peak — 16GB-card territory) at 96 tok/s. MMLU pays most of the tax; the IQ2 rungs pinch HumanEval first. The tightness is short-context only: on long-context retrieve-and-use (15 tasks per depth at 16k/32k/64k, measured 2026-08-16) Q6_K is perfect at every depth while UD-IQ3_XXS holds 73/67/80 — the 1.0 q_avg gap becomes ~27 points under depth load. And it is a benchmark-ceiling artifact too: on GPQA-diamond (standing second-tier metric since 2026-08-17) the same seven rungs spread 11.1 points where the board spreads 2.9 — the 4-bit band ties the top at 49-50.5 while the IQ2 rungs fall to 39-43. [Ladder report + both addenda](reports/qwen3-8-27b-quant-ladder.md).
 
 ¹¹ NVFP4 checkpoint (unsloth day-0 cut, 22.6GB) served by vLLM 0.25.1 on sm_120, measured 2026-08-17 — the only non-llama.cpp Qwen3.8 row; quality same-harness over HTTP, cross-stack for speed. Q6_K-sized but lands below Q4_K_M, HumanEval pays nearly the whole tax (89.6 vs 94.5). The lane's draw is the shipped MTP speculative head, which llama.cpp cannot run yet: 1.72–1.81x decode at every prompt depth tested (69 → 114–125 tok/s effective, held at 32k). [NVFP4 report](reports/qwen3-8-27b-nvfp4.md).
+
+¹² Full-precision BF16 reference (split GGUF, 54.7GB — 1.7x the card), quality-only via llama.cpp partial offload (`-ngl 40`), banked 2026-08-17→20 across three overnight windows. Lands mid-ladder at 93.5 (ties UD-Q4_K_XL, 0.1 under the Q6_K/Q8_0 pair) with GPQA-diamond 48.5 inside the 4-bit band's noise band — the ladder's 4-bit-and-up rungs were already at the full-precision ceiling, and the IQ2 floor's loss is now measured against a true reference. No speed rows by design (partial-offload decode is not comparable to resident rungs). [BF16 addendum](reports/qwen3-8-27b-quant-ladder.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 

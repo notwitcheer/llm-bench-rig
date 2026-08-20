@@ -102,6 +102,24 @@ Sample-size caveat first: 198 items means one item is half a point, and gaps und
 
 GPQA-diamond is a standing second-tier metric on this rig from this date: reported alongside q_avg on future treatments, never folded into it (which would break comparability with every earlier board row).
 
+## BF16 addendum: the true reference point (added 2026-08-20)
+
+Every read above measured quants against the best quant. This closes the loop: the full-precision BF16 checkpoint (split GGUF, 54.7GB — 1.7x the card) run through the identical five-task board plus GPQA-diamond via llama.cpp partial offload (`-ngl 40`), thinking off, same pinned stack. Quality-only by design: partial-offload decode speed says nothing about the resident rungs, so no speed rows exist for this leg. Banked across three overnight windows (2026-08-17 → 08-20, checkpoint resumes on MMLU/GPQA/GSM8K, ~19.4h of eval time).
+
+| | File | MMLU | ARC-C | HellaSwag | GSM8K | HumanEval | q_avg | GPQA-diamond |
+|--|-----:|-----:|------:|----------:|------:|----------:|------:|-------------:|
+| **BF16** | 54.7GB | 85.3 | 96.8 | 94.3 | 97.4 | 93.9 | **93.5** | 48.5 |
+| Q6_K | 21.3GB | 85.3 | 96.7 | 94.3 | 97.5 | 94.5 | **93.7** | 49.0 |
+| Q4_K_M | 15.9GB | 85.0 | 96.8 | 94.3 | 97.1 | 92.7 | **93.2** | 50.5 |
+
+Three reads:
+
+1. **BF16 lands mid-ladder.** 93.5 ties UD-Q4_K_XL to the decimal and sits 0.1 under the Q6_K/Q8_0 pair (93.66) — differences of one or two problems per suite. The whole 4-bit-and-up band was already at the full-precision ceiling; the "no cliff" headline was never grading quants against a degraded reference.
+2. **GPQA agrees from the hard end.** BF16's 48.5 sits inside the 4-bit band's 49–50.5 noise band (198 items: gaps under ~3 points are noise). Two consequences: the 4-bit rungs match full precision even where the benchmark has headroom, and the IQ2 floor (39.4–42.9) is now measured against a true reference — a genuine 5.6–9.1 point loss, not an artifact of comparing quants to each other.
+3. **Quants nominally out-scoring BF16 (HumanEval 94.5 vs 93.9, GPQA Q4_K_M 50.5 vs 48.5) is the noise band showing itself.** Single seed, deterministic decode: anything under half a board point or ~3 GPQA points is over-reading. The table above is an equivalence result, not a ranking.
+
+Honest limits: partial offload runs a different CPU/GPU kernel split than the resident rungs — numerically equivalent in principle at temp 0, but not bit-identical execution; single-seed, and the HellaSwag leg is the board's standard 50% sample. Speed intentionally unmeasured.
+
 ## Reads
 
 1. **No cliff anywhere.** The full spread from Q8_0 to 2-bit XXS is 2.9 q_avg points across a 3.4x file-size range. For contrast, the same harness put Nemotron Lightning's floor rung 1.7 points below its neighbour in one step, and Qwen3.6-27B's ladder paid its first real step at Q3. Here every step down is 0.2–1.2 points, spread across suites rather than concentrated in one.
