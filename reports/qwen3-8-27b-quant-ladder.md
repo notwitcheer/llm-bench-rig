@@ -135,3 +135,24 @@ Honest limits: partial offload runs a different CPU/GPU kernel split than the re
 - The UD rungs use unsloth's dynamic imatrix recipe; the Q6_K/Q8_0/Q4_K_M rungs are static cuts from the same repo. Recipe and bit-width move together at the bottom of this ladder, so "2-bit costs 2.9" conflates both (the recipe-coverage lesson from the Qwen3.6 NVFP4 rows applies).
 - Day-0 GGUFs: unsloth re-cut files in the repo's first hours (the Q4_K_M download died once to a mid-file re-upload). Files here are the cuts as of 2026-08-14 evening; a later re-cut could shift low-rung numbers.
 - Thinking-off only, matching the board convention for this model family. VRAM peaks are bench-context peaks, not long-context budgets. The q_avg table is short-prompt quality; for quality at depth see the depth addendum above (the hybrid-attention decode story — day-0 depth sweep tg128 −9.6% at d=32768 — is the speed side of the same axis).
+
+## Thinking-mode addendum: what the quants preserve when reasoning is on (added 2026-08-21)
+
+Every row above is thinking OFF — the regime the board harness pins for cross-model comparability. This leg asks the other question: turn the hybrid's reasoning mode on, does the quant tax reappear? Three rungs (Q8_0, Q6_K, UD-IQ3_XXS) re-ran GPQA-diamond with thinking on: same pinned stack, zero-shot greedy, `max_tokens` 16384, ctx 24576, chat-template thinking enabled. Banked across the 2026-08-19 night window and a witcheer-approved 2026-08-20 day drain (~9h of eval time; q6 leg checkpoint-resumed across the 04:10 hard stop).
+
+| Rung | GPQA think-on | GPQA think-off | delta | parse failures² |
+|------|--------------:|---------------:|------:|----------------:|
+| Q8_0 | **80.8** | 47.0 | +33.8 | 19 |
+| Q6_K | **79.3** | 49.0 | +30.3 | 14 |
+| UD-IQ3_XXS | **78.8** | 45.0 | +33.8 | 19 |
+
+² items where no final answer letter could be extracted after the reasoning budget; scored as wrong, so the think-on scores are floors, not midpoints.
+
+![think-on paired chart](chart_q38_thinkon_paired.png)
+
+Reads, same n=198 noise band (~3 pts) as every GPQA row on this rig:
+
+1. **Thinking mode is worth ~30 GPQA points on this model** (+30.3 to +33.8 across the three rungs). That dwarfs every quant effect this ladder has measured: the entire think-off spread of eight rungs (11.1 points) fits three times inside the thinking delta.
+2. **The quant tax stays inside the noise band with reasoning on.** The 11.1GB UD-IQ3_XXS lands 78.8 vs the 27GB Q8_0's 80.8 — a 2.0-point gap, under the noise threshold. Whatever long-form reasoning depends on, 3-bit dynamic quantisation preserves it on this model at this sample size.
+3. **The think-off rung order does not carry over** (Q6_K led think-off, Q8_0 leads think-on; both gaps inside noise). Consistent with the standing single-seed caveat: neighbouring rungs are unrankable per read in either regime.
+4. Boundary: three rungs, one benchmark, one seed. The IQ2 floor and the board tasks were not re-run think-on; whether 2-bit collapses harder with reasoning on is an open follow-up.
