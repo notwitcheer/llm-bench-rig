@@ -138,7 +138,7 @@ Honest limits: partial offload runs a different CPU/GPU kernel split than the re
 
 ## Thinking-mode addendum: what the quants preserve when reasoning is on (added 2026-08-21)
 
-Every row above is thinking OFF — the regime the board harness pins for cross-model comparability. This leg asks the other question: turn the hybrid's reasoning mode on, does the quant tax reappear? Three rungs (Q8_0, Q6_K, UD-IQ3_XXS) re-ran GPQA-diamond with thinking on: same pinned stack, zero-shot greedy, `max_tokens` 16384, ctx 24576, chat-template thinking enabled. Banked across the 2026-08-19 night window and a witcheer-approved 2026-08-20 day drain (~9h of eval time; q6 leg checkpoint-resumed across the 04:10 hard stop).
+Every row above is thinking OFF — the regime the board harness pins for cross-model comparability. This leg asks the other question: turn the hybrid's reasoning mode on, does the quant tax reappear? Three rungs (Q8_0, Q6_K, UD-IQ3_XXS) re-ran GPQA-diamond with thinking on: same pinned stack, zero-shot greedy, `max_tokens` 16384, ctx 24576, chat-template thinking enabled. A second leg re-ran the rig's long-context retrieve-and-use eval think-on for the ladder's split pair (details in read 4). Banked across the 2026-08-19 night window and a witcheer-approved 2026-08-20 day drain (~9h of eval time; q6 leg checkpoint-resumed across the 04:10 hard stop).
 
 | Rung | GPQA think-on | GPQA think-off | delta | parse failures² |
 |------|--------------:|---------------:|------:|----------------:|
@@ -155,4 +155,13 @@ Reads, same n=198 noise band (~3 pts) as every GPQA row on this rig:
 1. **Thinking mode is worth ~30 GPQA points on this model** (+30.3 to +33.8 across the three rungs). That dwarfs every quant effect this ladder has measured: the entire think-off spread of eight rungs (11.1 points) fits three times inside the thinking delta.
 2. **The quant tax stays inside the noise band with reasoning on.** The 11.1GB UD-IQ3_XXS lands 78.8 vs the 27GB Q8_0's 80.8 — a 2.0-point gap, under the noise threshold. Whatever long-form reasoning depends on, 3-bit dynamic quantisation preserves it on this model at this sample size.
 3. **The think-off rung order does not carry over** (Q6_K led think-off, Q8_0 leads think-on; both gaps inside noise). Consistent with the standing single-seed caveat: neighbouring rungs are unrankable per read in either regime.
-4. Boundary: three rungs, one benchmark, one seed. The IQ2 floor and the board tasks were not re-run think-on; whether 2-bit collapses harder with reasoning on is an open follow-up.
+4. **The long-context deficit disappears too.** Think-off, UD-IQ3_XXS scored 73.3 overall on the retrieve-and-use eval (66.7 at 32K) while Q6_K held 100 at every depth. Re-run think-on (same 15 tasks per depth at 16K/32K/64K, `max_tokens` 16384, per-depth self-sized servers, banked 2026-08-21), UD-IQ3_XXS goes 45/45 — 100 at every depth, matching Q6_K exactly:
+
+   | Rung | 16K | 32K | 64K | think-off (16/32/64) |
+   |------|----:|----:|----:|---------------------:|
+   | Q6_K | 100 | 100 | 100 | 100 / 100 / 100 |
+   | UD-IQ3_XXS | 100 | 100 | 100 | 73.3 / 66.7 / 80.0 |
+
+   Granularity caveat: 15 tasks per depth means one task is ~6.7 points; a real few-percent deficit hides under a ceiling like this. What it does establish: the reproducible 33-point think-off hole at 32K is gone under reasoning.
+
+5. Boundary: three GPQA rungs, one seed; depth re-ran the split pair only (Q8_0 not re-run at depth — Q6_K already ceilings both regimes, so it is the binding anchor). The IQ2 floor and the board tasks were not re-run think-on; whether 2-bit collapses harder with reasoning on is an open follow-up.
