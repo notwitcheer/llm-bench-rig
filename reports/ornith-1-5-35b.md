@@ -1,6 +1,6 @@
 # Ornith 1.5 35B-A3B on one RTX 5090: dense-27B-class answers at 3.8x the decode speed
 
-**TL;DR.** Ornith 1.5 35B-A3B (MoE, ~3B active) at the vendor's first-party Q4_K_M fits an RTX 5090 in 21.4 GiB and decodes at **303 tok/s** — ~3.8x the dense Qwen3.8-27B rung on the same card. It pays ~3.8 points on the five-task board (89.4 vs 93.2) but holds the harder floor: **GPQA-diamond 52.0 vs the dense rung's 50.5**, inside noise. The NVFP4 build reproduces the board within noise (89.3) at ~300 tok/s via vLLM, so llama.cpp and vLLM are both live serving paths. One negative result: the shipped MTP speculative head measures **slower** than base decode on vLLM 0.25.1 (245-254 vs ~300 tok/s).
+**TL;DR.** Ornith 1.5 35B-A3B (MoE, ~3B active) at the vendor's first-party Q4_K_M fits an RTX 5090 in 21.4 GiB and decodes at **303 tok/s** — ~3.8x the dense Qwen3.8-27B rung on the same card. It pays ~3.8 points on the five-task board (89.4 vs 93.2) but holds the harder floor: **GPQA-diamond 52.0 think-off / 81.8 think-on**, level with the dense rung in both regimes (50.5 / 80.8). The NVFP4 build reproduces the board within noise (89.3) at ~300 tok/s via vLLM, so llama.cpp and vLLM are both live serving paths. One negative result: the shipped MTP speculative head measures **slower** than base decode on vLLM 0.25.1 (245-254 vs ~300 tok/s).
 
 ## Setup
 
@@ -43,6 +43,19 @@ Two reads:
 
 Long-context retrieve-and-use (15 tasks/depth): 97.78 overall — 100 @16K, 93.33 @32K, 100 @64K. The dense rung scores 100 flat; the 32K dip is one task, single run.
 
+## Think-on addendum (added same day)
+
+GPQA-diamond re-run with the reasoning channel on (max_tokens 16384, ctx 24576, zero-shot, greedy — the identical recipe used for the Qwen3.8-27B think-on calibration legs):
+
+| model | GPQA think-off | GPQA think-on | delta |
+|---|---|---|---|
+| **Ornith 1.5 35B Q4_K_M** | 52.02 | **81.82** | +29.8 |
+| Qwen3.8-27B Q8_0 (dense) | 47.0 | 80.81 | +33.8 |
+| Qwen3.8-27B Q6_K (dense) | 48.99 | 79.29 | +30.3 |
+| Qwen3.8-27B UD-IQ3_XXS (dense) | 45.0 | 78.79 | +33.8 |
+
+Thinking is worth ~30 GPQA points on this model, the same band the dense ladder measured. Ornith lands at the top of the think-on field (81.8 vs 79.3-80.8), though the spread is inside the 3-pt noise floor — the honest read is *level with the dense 27B rungs, at 3.8x their decode speed*. Parse failures: 14/198, in line with the dense think-on legs (14-19). One regime note: these are greedy zero-shot numbers on the 198-item set; vendor-card GPQA figures are typically sampled with larger budgets and are not directly comparable.
+
 ## NVFP4 speed, and the MTP surprise
 
 Chat-server convention (decode_tps = completion/(total-ttft), single stream — not llama-bench tg128; medians of 3):
@@ -62,7 +75,7 @@ Base NVFP4 decode is ~300 tok/s and nearly flat with depth. The shipped **MTP sp
 
 ## Honest limits
 
-- All quality legs think-off; the model is a reasoner and a think-on GPQA leg (16k budget) is the natural addendum.
+- The five-task board is think-off for comparability with the banked rows; GPQA now carries both regimes (52.0 off / 81.8 on). A think-on board pass is the remaining gap.
 - The 9B sibling is unbenched; a 9B-vs-35B pass is the obvious follow-up.
 - No Qwen3.6-35B-A3B depth sweep yet for a like-for-like depth curve.
 - GPQA-diamond is 198 items; treat sub-3-pt gaps as noise.
