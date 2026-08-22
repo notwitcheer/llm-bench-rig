@@ -62,6 +62,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 | Qwen3.8-27B | 27.32B | UD-IQ2_M¹⁰ | 83.7 | 94.9 | 93.7 | 96.7 | 88.4 | **91.5** |
 | Qwen3.8-27B | 27.32B | UD-IQ2_XXS¹⁰ | 82.0 | 95.7 | 92.3 | 95.1 | 89.0 | **90.8** |
 | Ling-3.0-flash⁶ | 127.49B | IQ2_M | 82.3 | 95.6 | 91.9 | 92.3 | 89.0 | **90.2** |
+| Ornith 1.5 35B-A3B¹³ | 35.51B | Q4_K_M | 82.2 | 94.1 | 91.0 | 91.7 | 87.8 | **89.4** |
+| Ornith 1.5 35B-A3B¹³ | 35.51B | NVFP4 | 81.8 | 94.9 | 90.9 | 92.3 | 86.6 | **89.3** |
 | Gemma 4 12B-it | 11.91B | Q6_K | 78.9 | 94.0 | 81.6 | 96.4 | 87.2 | **87.6** |
 | gpt-oss-20b | 20.91B | Q4_K_M | 78.6 | 94.6 | 74.5 | 94.8 | 94.5 | **87.4** |
 | Nemotron-3.5-Lightning | 31.58B | Q5_K_M⁹ | 78.0 | 92.7 | 82.1 | 86.9 | 81.7 | **84.3** |
@@ -96,6 +98,8 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 ¹¹ NVFP4 checkpoint (unsloth day-0 cut, 22.6GB) served by vLLM 0.25.1 on sm_120, measured 2026-08-17 — the only non-llama.cpp Qwen3.8 row; quality same-harness over HTTP, cross-stack for speed. Q6_K-sized but lands below Q4_K_M, HumanEval pays nearly the whole tax (89.6 vs 94.5). The lane's draw is the shipped MTP speculative head, which llama.cpp cannot run yet: 1.72–1.81x decode at every prompt depth tested (69 → 114–125 tok/s effective, held at 32k). [NVFP4 report](reports/qwen3-8-27b-nvfp4.md).
 
 ¹² Full-precision BF16 reference (split GGUF, 54.7GB — 1.7x the card), quality-only via llama.cpp partial offload (`-ngl 40`), banked 2026-08-17→20 across three overnight windows. Lands mid-ladder at 93.5 (ties UD-Q4_K_XL, 0.1 under the Q6_K/Q8_0 pair) with GPQA-diamond 48.5 inside the 4-bit band's noise band — the ladder's 4-bit-and-up rungs were already at the full-precision ceiling, and the IQ2 floor's loss is now measured against a true reference. No speed rows by design (partial-offload decode is not comparable to resident rungs). [BF16 addendum](reports/qwen3-8-27b-quant-ladder.md).
+
+¹³ Ornith 1.5 35B-A3B (MoE, ~3B active), a reasoning model run think-off for board parity, measured 2026-08-21. Q4_K_M is the vendor's first-party GGUF (20.2GB, llama.cpp b9653, 21.4 GiB resident, **303 tok/s tg128**); NVFP4 (23.4GB) served via vLLM 0.25.1 on sm_120 at ~300 tok/s chat-server decode — the two stacks land within 0.1 q_avg. The board understates the model twice over: think-off parity, and GPQA-diamond 52.0 — level with the dense Qwen3.8-27B 4-bit rungs (50.5) that beat it by ~4 board points. Shipped MTP speculative head measures negative on vLLM 0.25.1 (245-254 vs ~300 base). [Report](reports/ornith-1-5-35b.md).
 
 ### Thinking ON (reasoning · extended chain-of-thought)
 

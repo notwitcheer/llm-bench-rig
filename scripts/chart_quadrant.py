@@ -31,32 +31,33 @@ HILITE= "#ffffff"   # subject ring
 C = {  # per-family colours
     "qwen":   "#4c9be8", "gemma":  "#e8b64c", "ling":   "#a86fe0",
     "nemo":   "#e0645f", "gptoss": "#57c78a", "coder":  "#e88fb8",
-    "mistral":"#ff8c42", "muse":   "#e0645f", "other":  "#9aa7b8",
+    "mistral":"#ff8c42", "muse":   "#e0645f", "other":  "#35d0a5",
 }
 
 # ================= EDIT PER CHART =================
-TITLE    = "Quality vs speed on one RTX 5090"
-SUBTITLE = "12 local models, five-task quality average vs generation throughput  ·  thinking off"
-OUT      = "/opt/data/mercury-cards/quadrant-5090-quality-vs-speed.png"
+TITLE    = "Ornith 1.5 35B-A3B: quality vs speed on one RTX 5090"
+SUBTITLE = "13 local models, five-task quality average vs generation throughput  \u00b7  thinking off  \u00b7  q_avg from the board, tok/s = llama-bench tg128 (chat-server decode where noted)"
+OUT      = "/opt/data/mercury-cards/quadrant-ornith-15-35b.png"
 # ideal-quadrant box: (x_left, y_bottom, x_right, y_top) in data coords, or None to omit
-IDEAL_BOX = (150, 92, 470, 96)
+IDEAL_BOX = (150, 89, 470, 96)
 XLIM = (40, 470); YLIM = (75, 96); XTICKS = [50, 100, 200, 400]
 LEGEND = [("Qwen","qwen"),("Gemma","gemma"),("Ling","ling"),
-          ("Nemotron","nemo"),("gpt-oss","gptoss"),("Coder","coder")]
+          ("Nemotron","nemo"),("gpt-oss","gptoss"),("Coder","coder"),("Ornith","other")]
 # (label, q_avg, tok_s, family, (dx,dy,ha), show_label, subject?)
 DATA = [
+    ("Ornith 1.5 35B-A3B", 89.4, 303.2, "other", (0, 14, "center"), True,  True),
     ("Qwen3.6-35B-A3B",   93.3, 270.6, "qwen",  (0, 13, "center"), True,  False),
     ("Gemma 4 31B",       94.2,  55.4, "gemma", (-10, 2, "right"), True,  False),
     ("Qwen3.6-27B dense", 94.2,  61.9, "qwen",  (10, 11, "left"),  True,  False),
     ("Qwopus-27B-Coder",  94.1,  70.5, "coder", (11, 1, "left"),   True,  False),
-    ("Qwable-5-27B",      93.7,  62.9, "coder", (2, -17, "center"),False, False),
+    ("Qwen3.8-27B dense", 93.2,  78.9, "qwen",  (8, -16, "left"),  True,  False),
     ("Qwen3-Coder-Next",  91.7, 224.7, "qwen",  (0, 13, "center"), True,  False),
     ("Ling-3.0-flash",    91.8,  46.0, "ling",  (-10, 0, "right"), True,  False),
     ("Gemma 4 12B",       87.6, 122.3, "gemma", (0, -18, "center"),True,  False),
     ("gpt-oss-20B",       87.4, 367.4, "gptoss",(0, 13, "center"), True,  False),
-    ("Nemotron-3-Nano",   82.2, 369.6, "nemo",  (10, 6, "left"),   True,  False),
-    ("Nemotron-Cascade-2",81.6, 350.8, "nemo",  (-10, -4, "right"),True,  False),
-    ("North-Mini-Code",   77.4, 304.8, "other", (0, 12, "center"), True,  False),
+    ("Nemotron-3.5-Lightning", 84.3, 349.1, "nemo", (-12, 6, "right"), True, False),
+    ("Nemotron-3-Nano",   82.2, 369.6, "nemo",  (0, 13, "center"), True,  False),
+    ("Nemotron-Cascade-2",81.6, 350.8, "nemo",  (-10, -6, "right"),True,  False),
 ]
 XLABEL = "generation speed  (tokens/sec, log scale)"
 YLABEL = "quality  (5-task average, %)"
