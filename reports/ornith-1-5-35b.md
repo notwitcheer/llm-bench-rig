@@ -76,7 +76,7 @@ Base NVFP4 decode is ~300 tok/s and nearly flat with depth. The shipped **MTP sp
 ## Honest limits
 
 - The five-task board is think-off for comparability with the banked rows; GPQA now carries both regimes (52.0 off / 81.8 on). A think-on board pass is the remaining gap.
-- The 9B sibling is unbenched; a 9B-vs-35B pass is the obvious follow-up.
+- The 9B sibling is now benched: [Ornith 1.5 9B report](ornith-1-5-9b.md) — the 35B dominates it on every measured axis on this card.
 - No Qwen3.6-35B-A3B depth sweep yet for a like-for-like depth curve.
 - GPQA-diamond is 198 items; treat sub-3-pt gaps as noise.
 - Long-context and depth rows are single-run.
