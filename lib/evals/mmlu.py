@@ -143,6 +143,7 @@ class MMLUEval:
 
             correct = 0
             parse_failures = 0
+            fb0 = getattr(self.client, "reasoning_fallback_count", 0)
             t0 = time.time()
 
             for item in test_items:
@@ -166,6 +167,7 @@ class MMLUEval:
                 "total": n,
                 "accuracy": round(acc, 4),
                 "parse_failures": parse_failures,
+                "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
                 "elapsed_s": round(elapsed, 1),
             }
             self._save_progress(completed)
@@ -203,6 +205,9 @@ class MMLUEval:
             "metric": "acc",
             "correct": total_correct,
             "total": total_count,
+            "parse_failures": sum(r.get("parse_failures", 0) for r in completed.values()),
+            "reasoning_fallback_count": sum(r.get("reasoning_fallback_count", 0)
+                                            for r in completed.values()),
             "completion_tokens_mean": (
                 round(self.gate.mean, 1)
                 if self.gate is not None and self.gate.mean is not None else None

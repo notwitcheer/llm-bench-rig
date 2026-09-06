@@ -55,3 +55,20 @@ def test_build_quality_board_groups_and_sorts(tmp_path):
     assert [e["slug"] for e in board["on"]] == ["on-one"]
     assert [e["slug"] for e in board["unknown"]] == ["mystery"]
     assert board["off"][0]["q_avg"] == 87.5
+
+
+def test_quality_average_ignores_gpqa_and_unknown_keys():
+    """q_avg is the five-task mean by construction: a second-tier task in
+    quality.json (gpqa, or anything else) must not move it."""
+    five = {
+        "mmlu": {"score": 80.0},
+        "arc_challenge": {"score": 90.0},
+        "hellaswag": {"score": 70.0},
+        "humaneval": {"score": 100.0},
+        "gsm8k": {"score": 60.0},
+    }
+    with_gpqa = dict(five, gpqa={"score": 5.0}, future_task=1.0, _meta="x")
+    assert quality_average(five) == 80.0
+    assert quality_average(with_gpqa) == quality_average(five)
+    # gpqa alone is not a board score
+    assert quality_average({"gpqa": {"score": 40.0}}) is None

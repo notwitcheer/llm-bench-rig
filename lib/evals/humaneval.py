@@ -265,6 +265,7 @@ class HumanEvalEval:
 
         passed = 0
         errors = []
+        fb0 = getattr(self.client, "reasoning_fallback_count", 0)
         t0 = time.time()
         n = len(test_items)
 
@@ -308,6 +309,7 @@ class HumanEvalEval:
             "metric": "pass@1",
             "passed": passed,
             "total": n,
+            "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
             "errors": errors[:50],
             "elapsed_s": round(elapsed, 1),
         }

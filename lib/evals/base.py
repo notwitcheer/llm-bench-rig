@@ -29,6 +29,12 @@ class LLMClient:
         self.model = model_name
         self.think = think
         self.last_completion_tokens: int | None = None
+        # Set when the last answer came from reasoning_content because content was
+        # empty (think-on model that never closed its reasoning, or a template that
+        # routes the answer there). Per-eval results record the count so a row whose
+        # score leaned on reasoning text is visible in the detail json.
+        self.last_scored_reasoning_fallback: bool = False
+        self.reasoning_fallback_count: int = 0
         self._client = httpx.Client(timeout=timeout)
 
     def chat(self, messages: list[dict], max_tokens: int = 2048,
@@ -70,8 +76,12 @@ class LLMClient:
                     usage = len(content + reasoning) // 4 + 1
                 self.last_completion_tokens = usage
                 text = _clean(content)
+                self.last_scored_reasoning_fallback = False
                 if not text:
                     text = _clean(reasoning)
+                    if text:
+                        self.last_scored_reasoning_fallback = True
+                        self.reasoning_fallback_count += 1
                 return text
             except (httpx.HTTPError, KeyError, IndexError):
                 if attempt == 2:

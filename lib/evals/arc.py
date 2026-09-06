@@ -77,6 +77,7 @@ class ARCEval:
         correct = ckpt["correct"] if ckpt else 0
         parse_failures = ckpt["parse_failures"] if ckpt else 0
 
+        fb0 = getattr(self.client, "reasoning_fallback_count", 0)
         t0 = time.time()
         n = len(test_items)
 
@@ -117,6 +118,7 @@ class ARCEval:
             "correct": correct,
             "total": n,
             "parse_failures": parse_failures,
+            "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
             "completion_tokens_mean": (
                 round(self.gate.mean, 1)
                 if self.gate is not None and self.gate.mean is not None else None

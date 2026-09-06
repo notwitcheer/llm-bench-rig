@@ -84,6 +84,7 @@ class GPQAEval:
         done = self._load_progress()
         correct = sum(1 for r in done.values() if r["correct"])
         parse_failures = sum(1 for r in done.values() if r.get("predicted") is None)
+        fb0 = getattr(self.client, "reasoning_fallback_count", 0)
         t0 = time.time()
 
         for i, item in enumerate(items):
@@ -117,6 +118,7 @@ class GPQAEval:
             "correct": correct,
             "total": n,
             "parse_failures": parse_failures,
+            "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
             "n_shot": 0,
             "shuffle_seed": SHUFFLE_SEED,
             "completion_tokens_mean": (

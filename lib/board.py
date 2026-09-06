@@ -31,6 +31,10 @@ THINK_ON = frozenset({
 })
 
 QUALITY_TASKS = ("mmlu", "arc_challenge", "hellaswag", "humaneval", "gsm8k")
+# Explicit allowlist for q_avg. quality.json may carry second-tier tasks (gpqa)
+# or future keys; none of them may move the board mean. q_avg is the five-task
+# mean by construction, so anything outside this set is ignored, never averaged.
+BOARD_TASKS = frozenset(QUALITY_TASKS)
 
 
 def _score(val):
@@ -43,8 +47,15 @@ def _score(val):
 
 
 def quality_average(quality: dict) -> float | None:
-    """Mean of the present numeric task scores. None if nothing scorable."""
-    vals = [s for s in (_score(quality.get(t)) for t in QUALITY_TASKS) if isinstance(s, (int, float))]
+    """Mean of the present numeric board-task scores. None if nothing scorable.
+
+    Only keys in BOARD_TASKS are read; gpqa or any other key in the dict is
+    ignored so a second-tier task can never change q_avg.
+    """
+    if not isinstance(quality, dict):
+        return None
+    vals = [s for s in (_score(v) for k, v in quality.items() if k in BOARD_TASKS)
+            if isinstance(s, (int, float))]
     return round(sum(vals) / len(vals), 2) if vals else None
 
 
