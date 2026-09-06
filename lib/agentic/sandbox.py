@@ -1,6 +1,6 @@
 """Execute a model-written code action with mock tools injected, in an isolated
 subprocess. The code is expected to assign a variable named `result`."""
-import json, os, subprocess, tempfile
+import json, os, subprocess, sys, tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -10,10 +10,15 @@ class ActionOutput:
     result: object = None
     error: str = ""
 
+# mock_tools is loaded by file path on purpose: `from lib.agentic.mock_tools import`
+# would run lib/agentic/__init__.py, which imports the evaluators and httpx, and
+# that import chain alone can eat most of the action timeout on a loaded box.
 _HARNESS = '''
-import json, sys
-from lib.agentic.mock_tools import build_namespace
-_ns = build_namespace()
+import importlib.util, json, sys
+_spec = importlib.util.spec_from_file_location("mock_tools", sys.argv[2])
+_mt = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_mt)
+_ns = _mt.build_namespace()
 globals().update(_ns)
 try:
     exec(compile(open(sys.argv[1]).read(), "<action>", "exec"), globals())
@@ -33,7 +38,9 @@ def run_code_action(code: str, timeout: int = 10) -> ActionOutput:
         hf.write(_HARNESS); hf.flush(); harness_path = hf.name
     try:
         proc = subprocess.run(
-            ["python3", harness_path, code_path],
+            # the interpreter running the harness, so a venv install sees its own deps
+            [sys.executable, harness_path, code_path,
+             str(rig_root / "lib" / "agentic" / "mock_tools.py")],
             capture_output=True, text=True, timeout=timeout, cwd=str(rig_root),
             env={**os.environ, "PYTHONPATH": str(rig_root)},
         )

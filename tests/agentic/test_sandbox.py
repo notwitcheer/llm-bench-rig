@@ -1,4 +1,9 @@
+import pytest
+
 from lib.agentic.sandbox import run_code_action
+
+# every test here spawns the sandbox interpreter; slow but runs anywhere the venv does
+pytestmark = pytest.mark.needs_sandbox
 
 def test_runs_code_and_captures_result():
     code = "result = calc('2+2')"

@@ -27,19 +27,19 @@ class _VramSampler(threading.Thread):
     def __init__(self, interval: float = 0.5):
         super().__init__(daemon=True)
         self.interval = interval
-        self._stop = threading.Event()
+        self._stop_event = threading.Event()  # not _stop: Thread._stop() is called by join()
         self.peak_mib = 0
 
     def run(self):
-        while not self._stop.is_set():
+        while not self._stop_event.is_set():
             try:
                 self.peak_mib = max(self.peak_mib, get_vram_used_mib())
             except Exception:
                 pass
-            self._stop.wait(self.interval)
+            self._stop_event.wait(self.interval)
 
     def stop(self) -> int:
-        self._stop.set()
+        self._stop_event.set()
         self.join(timeout=3)
         return self.peak_mib
 

@@ -1,3 +1,5 @@
+import pytest
+
 from lib.agentic.native.dispatch import dispatch_tool
 
 
@@ -12,6 +14,7 @@ def test_web_search_dispatch():
     assert "32GB" in str(out["result"])
 
 
+@pytest.mark.needs_sandbox
 def test_execute_python_via_sandbox():
     out = dispatch_tool("execute_python", {"code": "result = calc('6*7')"})
     assert out["ok"] is True and "42" in str(out["result"])
