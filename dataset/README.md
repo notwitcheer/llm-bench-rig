@@ -137,6 +137,10 @@ All benchmarks run at `temperature=0`. MCQ and GSM8K use `max_tokens=2048`; Huma
 
 Full per-model reports with MMLU category breakdowns, parse reliability stats, and speed data: [`reports/`](reports/)
 
+#### Error bars
+
+Every score above is a single greedy pass, so each is a binomial proportion with a sampling interval. [`board_ci.csv`](board_ci.csv) publishes a Wilson 95% interval per task per row (from the `correct`/`total` counts in each run's detail files) together with the parse-failure count, and a `q_avg` row whose half-width propagates the five task variances through the mean, treating tasks as independent. Measured across the 45 rows with all five tasks, the median q_avg half-width is 0.97 points (0.94 for the 41 full-sample rows; the four think-on rows scored on small subsets run 2 to 4 points), and humaneval dominates it in 42 of 45 rows with a median 82% share of the variance, because 164 problems at ~93% pass gives a task half-width of about 4.5 points against under 1 point for the other four. Two rows whose q_avg differ by less than that half-width are a tie; the tables stay sorted by q_avg for continuity, so read neighbouring rows as a band of roughly one point rather than a ranking. Regenerate with `python3 scripts/board_ci.py results/`.
+
 ---
 
 ## Speed Benchmarks
