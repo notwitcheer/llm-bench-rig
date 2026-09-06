@@ -151,6 +151,10 @@ Every score above is a single greedy pass, so each is a binomial proportion with
 - **Text generation (tg)**: sequential autoregressive token throughput at 128 tokens
 - All models fully GPU-offloaded (ngl=99)
 
+#### Served (HTTP) lane
+
+The llama-bench numbers above measure the engine on its own. The served lane (`scripts/speed_served.py`, `lib/speed_served.py`) measures what a client sees through llama-server's streaming chat-completions endpoint, the path the spec-decode and prompt-cache reports were timed on. Four fixed workloads (prose, code, repetitive, chat; 8 prompts each, `lib/workloads.py`, the same prompt set those reports used) are sent at temperature 0 with `max_tokens=256` after one discarded warm-up request; every request is appended as one json line with the server flag set (`mode`), `cache_prompt`, the wall time to the first content chunk, the total wall time, prompt and completion token counts, the server's own `timings` object when present, and a sha256 of the text so two flag sets can be checked for byte-identical output. Vocabulary: **TTFT** is the time to the first content token as the reader perceives it (prefill plus queueing); **perceived TPS** is `completion_tokens / (total_s - ttft_s)`, the rate text arrives at once it starts; **total TPS** is `completion_tokens / total_s`, throughput including the wait. Percentiles (p50 and p90 over the 32 requests per pass), not means, are reported, alongside the server's `predicted_per_second` p50 and, when speculation is on, the acceptance rate `sum(draft_n_accepted) / sum(draft_n)`. A served TPS is not comparable to a tg128 figure from llama-bench: different prompt, different token budget, and the HTTP and tokeniser overhead are inside the served number.
+
 ### Speed data schema
 
 | Column | Description |
