@@ -100,7 +100,7 @@ def _run_evals(api_base: str, model_name: str, tasks: list[str],
                mmlu_limit: int | None = None,
                mc_gate_tokens=None) -> dict:
     results = {}
-    with LLMClient(api_base, model_name, think=think) as client:
+    with LLMClient(api_base, model_name, think=think, timeout=1800) as client:
         for task in tasks:
             print(f"\n[quality] === {task} ===")
             gate = _build_mc_gate(think, mc_gate_tokens) if task in MC_TASKS else None

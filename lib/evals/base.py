@@ -49,6 +49,8 @@ class LLMClient:
                 "enable_thinking": False,
                 "reasoning": False,
                 "reasoning_effort": "none",
+                # Muse Glimmer (muse_glimmer) reads reasoning_strength, default high (2026-08-10)
+                "reasoning_strength": "low",
             }
         if stop:
             payload["stop"] = stop
