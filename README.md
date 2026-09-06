@@ -6,8 +6,10 @@ Dual-engine: **llama.cpp** for GGUF models, **vLLM** for safetensors. Produces s
 
 ## What it does
 
-- **Speed benchmarks** — prompt processing (pp128/pp512/pp2048) and text generation (tg128) via llama-bench or vLLM API
-- **Quality benchmarks** — MMLU, ARC-Challenge, HellaSwag, HumanEval, GSM8K via lm-evaluation-harness
+- **Speed benchmarks**: a llama-bench sweep, `-p 128,512,2048,4096,8192,16384 -n 128` (prompt processing at six context lengths plus tg128 generation, `speed.context_lengths` in config.yaml), or the vLLM API for safetensors models. A served (HTTP) lane, `scripts/speed_served.py`, times streaming chat completions against a running server and reports TTFT and perceived tokens per second as percentiles.
+- **Quality benchmarks**: five board tasks (MMLU, ARC-Challenge, HellaSwag, GSM8K, HumanEval) run through our own generative evaluators in `lib/evals/` against llama-server chat completions, at temperature 0, letter or number extraction and code execution for scoring. There is no lm-evaluation-harness dependency, so multiple-choice scores are generative rather than loglikelihood based and can differ from harness numbers by several points; they are consistent with each other, which is what the board needs. GPQA-diamond is a second tier task: reported alongside, never part of `q_avg`.
+- **Error bars**: `scripts/board_ci.py` writes `dataset/board_ci.csv` with a Wilson 95% interval per task per row and a propagated `q_avg` half-width, so neighbouring rows can be read as a tie when they should be.
+- **Provenance**: every run writes a `provenance` block into `results/<slug>/meta.json` (llama-server build and chat template hash, server command line, gguf sha256, harness git sha, resolved quality config) so a number can be traced back to what produced it.
 - **Live dashboard** — FastAPI + SSE, real-time GPU stats and benchmark progress
 - **Export** — HTML reports, PNG cards (1200x675 for X/HF), cross-model comparison pages
 - **Queue manager** — batch benchmarks with review gates between models
