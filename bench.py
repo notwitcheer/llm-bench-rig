@@ -12,6 +12,7 @@ from lib.gpu import get_vram_used_mib
 from lib.speed_llama import run_llama_bench
 from lib.speed_vllm import run_vllm_bench
 from lib.quality import run_quality_bench
+from lib.provenance import record_provenance
 from lib.progress import Progress
 
 
@@ -73,6 +74,10 @@ def run_benchmark(model_path: str, speed_only: bool = False, quality_only: bool 
 
         if not speed_only:
             _run_quality(model_path, engine, meta, out_dir, progress, offload)
+        else:
+            # No server is up on a speed-only run; still record what can be
+            # collected offline (gguf sha, harness sha, versions). Never raises.
+            record_provenance(out_dir, None, model_path, None, None)
 
         progress.done()
         print(f"\nBenchmark complete: {slug}")

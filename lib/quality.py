@@ -8,6 +8,7 @@ from lib.config import get
 from lib.evals import (LLMClient, MMLUEval, ARCEval,  # noqa: E402
                        HellaSwagEval, GSM8KEval, HumanEvalEval, GPQAEval)
 from lib.evals.base import CompletionLengthGate, InstrumentGateError
+from lib.provenance import record_provenance, resolve_quality_config
 
 EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval", "gpqa"}
 # NOTE: q_avg stays the five-task mean by construction (drivers pass the five
@@ -173,6 +174,14 @@ def run_quality_bench(model_path: str, engine: str, results_dir: Path | None = N
     unknown = [t for t in tasks if t not in EVAL_REGISTRY]
     if unknown:
         print(f"[quality] Skipping unknown tasks: {', '.join(unknown)}")
+
+    if results_dir is not None:
+        # Provenance (build, template hash, gguf sha, server flags, config, harness
+        # sha) goes into results/<slug>/meta.json while the server is up. It never
+        # raises: a failure is recorded as {"error": ...} in the block itself.
+        server_cmd = list(server_proc.args) if server_proc is not None else None
+        record_provenance(results_dir, api_base, model_path, server_cmd,
+                          resolve_quality_config(get))
 
     try:
         results = _run_evals(api_base, model_name, eval_tasks, results_dir, sample, think,
