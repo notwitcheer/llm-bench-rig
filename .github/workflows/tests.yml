@@ -26,6 +26,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
+      - name: provide a config
+        # config.yaml is private (local paths, hardware) and gitignored; the
+        # tests only need a well-formed one, so the checked-in example serves.
+        run: cp config.example.yaml config.yaml
+
       - name: adr enforced decisions
         # same gate pre-commit runs on every commit (adr/README.md)
         run: python -m tools.adr.run_all
