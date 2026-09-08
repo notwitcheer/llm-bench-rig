@@ -316,3 +316,5 @@ Ornith 1.5 9B,Dense (hybrid attn),8.95,Q6_K,6.85,llama.cpp,CUDA,RTX 5090,32,pp51
 Ornith 1.5 9B,Dense (hybrid attn),8.95,Q6_K,6.85,llama.cpp,CUDA,RTX 5090,32,tg128,187.71,0.23,2026-08-23
 Qwopus3.8-27B-Flash,Dense (hybrid attn),27.32,Q6_K,20.89,llama.cpp,CUDA,RTX 5090,32,pp512,3148.02,65.99,2026-09-07
 Qwopus3.8-27B-Flash,Dense (hybrid attn),27.32,Q6_K,20.89,llama.cpp,CUDA,RTX 5090,32,tg128,62.96,0.05,2026-09-07
+Qwen3.8-Flash-Next,MoE (10B active; experts of 28 layers in RAM),125,UD-Q2_K_XL,73.45,llama.cpp,CUDA,RTX 5090,32,pp512,770.14,33.56,2026-09-08
+Qwen3.8-Flash-Next,MoE (10B active; experts of 28 layers in RAM),125,UD-Q2_K_XL,73.45,llama.cpp,CUDA,RTX 5090,32,tg128,52.58,0.22,2026-09-08
