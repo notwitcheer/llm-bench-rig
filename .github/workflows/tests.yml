@@ -1,0 +1,37 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: install test dependencies
+        # requirements-dev.txt is the minimal set the tests import (pytest, httpx,
+        # pyyaml, jinja2, numpy, regex, sympy, latex2sympy2). requirements.txt holds
+        # the run-time stack (fastapi, playwright, datasets) that no unit test needs;
+        # the evals inject a fake `datasets` module where they need one.
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: adr enforced decisions
+        # same gate pre-commit runs on every commit (adr/README.md)
+        run: python -m tools.adr.run_all
+
+      - name: pytest
+        # pytest.ini carries the standing deselections: test_echo_maze_torch.py
+        # (torch, gpu box only) and test_threshold.py (private cadence package).
+        # everything else, including the needs_sandbox tests, must pass here.
+        run: python -m pytest -q
