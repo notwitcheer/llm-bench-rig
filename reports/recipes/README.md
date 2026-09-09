@@ -10,18 +10,21 @@ One page per model on the board, one recommended line at the top of each, and th
 | Nemotron 3.5 Lightning 30B-A3B Q4_K_M | `-fa on -np 1`, **no draft head** (MTP is 0.6 to 0.8x here) | 369 | 359 | 23.5 GiB | [recipe](nemotron-3-5-lightning-q4-k-m.md) |
 | Ornith 1.5 35B-A3B Q4_K_M | `-fa on -np 1`, f16 KV | 292 | 270 | 20.8 GiB | [recipe](ornith-1-5-35b-q4-k-m.md) |
 | Qwopus3.8-27B-Flash Q6_K | same as Qwen3.8-27B: `-fa on -np 1 --spec-type draft-mtp --spec-draft-n-max 2` | 141 code / 115 prose | 128 | 24.7 GiB | [recipe](qwopus3-8-27b-flash-q6-k.md) |
+| Qwen3.8-Flash-Next 125B-A10B UD-Q2_K_XL (offload) | `--n-cpu-moe 22 -fa on -np 1`, **q8 KV** (the one model where it pays); MTP head only at 24k ctx for code (1.4x) | 52 | 52 | 29.3 GiB | [recipe](qwen3-8-flash-next-ud-q2-k-xl.md) |
 
 ![six-model chart](../recipes-six.png)
 
 (pair-1 detail chart, absolute tok/s and VRAM per set: [recipes-pair1.png](../recipes-pair1.png))
 
-## What held across the models (6 pages, 6 models)
+## What held across the models (7 pages, 7 models)
+
+- **Under expert offload, read the long-context number.** Flash-Next short-prompt decode swung 47 to 59 tok/s across sets that agree to within 2 tok/s against the 16k prefix; the CPU side jitters, the long lane does not. Its MTP head pays 1.4x on code instead of the resident 2.2x at the same acceptance, because verification still streams CPU-resident experts.
 
 - **`--flash-attn on` changes nothing measurable** on this card and build (auto already picks it). Keep it explicit for hygiene.
 - **`--parallel 1` is free and sometimes a gain.** Within 1% on five of six models; +10% at 16k depth and 2.3 GiB saved on Gemma, whose sliding-window layers care about the cache layout. Always set it on a single-user box.
-- **q4_0 KV cache is a speed tax at depth, on every model measured: 17%, 23%, 27%, 23%, 29%, 17%.** Decode against a 16k prefix drops by that much on Qwen3.8-27B, Gemma 4 31B, Qwen3.6-35B-A3B, Lightning, Ornith 35B and Qwopus Flash. The 40-item GPQA spot checks stayed within 2 items on five of six; on Ornith q4 KV dropped the spot check by 5 items (20 to 15), so all 198 items were re-run in three arms: f16 100, q8 100, q4 98. Speed only, six for six. The 40-item flip was sampling: the predicted letter differs on ~55 of 198 items between any two KV arms while the totals agree, so spot checks screen for collapses, not one-point shifts.
+- **q4_0 KV cache is a speed tax at depth, on every model measured: 17%, 23%, 27%, 23%, 29%, 17%, 13%.** Decode against a 16k prefix drops by that much on Qwen3.8-27B, Gemma 4 31B, Qwen3.6-35B-A3B, Lightning, Ornith 35B, Qwopus Flash and Flash-Next under offload (mildest, because decode there is bound by the CPU expert path). The 40-item GPQA spot checks stayed within 2 items on five of six; on Ornith q4 KV dropped the spot check by 5 items (20 to 15), so all 198 items were re-run in three arms: f16 100, q8 100, q4 98. Speed only, six for six. The 40-item flip was sampling: the predicted letter differs on ~55 of 198 items between any two KV arms while the totals agree, so spot checks screen for collapses, not one-point shifts.
 - **q8_0 KV cache is a memory lever on dense models only.** It saves 0.9 to 2.6 GiB at 32k ctx on the dense 27B/31B for 1 to 5 tok/s; on the three 3B-active MoEs it saves 0.1 to 0.25 GiB (the cache is a sliver of their footprint) and still costs 5 to 7% at depth, so there is nothing to win.
 - **MTP pays when the base is slow enough and the head guesses well enough.** Qwen3.8's embedded head (0.61 to 0.99 acceptance) pays 1.8 to 2.3x on a 63 tok/s base; Gemma's community head (0.36 to 0.51) pays 1.5 to 1.7x on 76; Lightning's head accepts 0.59 to 0.87 and is **0.6 to 0.8x** on a 364 tok/s base, because at 2.8 ms per plain token the verification pass costs more than the tokens it saves. Qwopus Flash's embedded head matches Qwen3.8's cell for cell (2.2x code). Rule of thumb from six models: above roughly 300 tok/s, leave the head off.
 - **Cold TTFT on 16k tokens: 5.0 to 5.8 s on a dense 27B/31B, 1.6 to 2.2 s on a 3B-active MoE; warm is 0.04 to 0.37 s.** Prompt caching is the flag that matters most and it is on by default (`cache_prompt`).
 
-Queued: Qwen3.8-Flash-Next UD-Q2_K_XL (offload line, its own build).
+Series complete for the current board; new models get a page when they get a treatment.
