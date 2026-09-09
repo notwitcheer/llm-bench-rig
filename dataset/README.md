@@ -183,6 +183,10 @@ How to read it: **held** is `tg128 @32k / tg128`, the share of decode speed that
 
 [`card_fit.md`](card_fit.md) turns the board into a fit table for 8, 12, 16, 24 and 32 GB cards. Each row's **VRAM @16k** is the peak sampled on the 5090 during the speed sweep (whose largest prompt is 16,384 tokens, so weights + a 16k KV cache + compute buffers), applied as a budget with 768 MiB of headroom: ✅ resident with a 16k context on the board recipe, 🟡 the file fits but the 16k peak does not (shorter context, q8_0 KV cache, or a smaller quant), ⬜ the file is larger than the card, 🟠 measured with experts in system RAM (the MoE offload rows, which need the RAM as well). Quality (q_avg, GPQA-diamond) sits next to each row so the question "what is the best thing a 16 GB card runs" reads off directly. These are 5090 measurements applied to other cards' capacities, not measurements on those cards: peak bytes are the same on any CUDA card at the same context and flags, decode speed is not. Regenerate with `python scripts/card_fit.py results/`.
 
+### Recipes: which llama-server line for this model
+
+[`reports/recipes/`](reports/recipes/) answers the question the board does not: given this model on this card, which flags. One page per model, one recommended line at the top, and a six-set table behind it (base, `--flash-attn on`, KV `q8_0`, KV `q4_0`, `--parallel 1`, MTP draft head), each set served and measured on the four short workloads and on a 16k-token system prompt cold and warm, with VRAM peak and a 40-item GPQA spot check on the KV-quantised sets. Two pages in (Qwen3.8-27B Q6_K, Gemma 4 31B Q4_0): flash-attn changes nothing, `--parallel 1` is free, q8 KV is the memory lever and q4 KV costs 17 to 23% of decode at depth, MTP pays 1.5 to 2.3x depending on the head.
+
 ### Speed data schema
 
 | Column | Description |
