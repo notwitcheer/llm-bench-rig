@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Walk a results root and write dataset/board_ci.csv with Wilson 95% intervals.
 
-Columns: slug,task,score,correct,total,parse_failures,ci_low,ci_high
+Columns: slug,task,score,correct,total,parse_failures,ci_low,ci_high,
+         tokens_per_correct,completion_tokens_median,capped_rate
 
 One row per task that has a detail json (the five board tasks plus gpqa), and one
 `q_avg` row per slug whose five board tasks are all present; its ci_low/ci_high
 come from the propagated half-width (see lib/ci.py). Only slugs that have a
 quality.json are included by default, since those are the rows the board shows;
-pass --all to include partial or private dirs as well.
+pass --all to include partial or private dirs as well. Think-on gpqa dirs
+(`<slug>-thinkon/`, or gpqa.json with `regime: think-on`) are the exception: their
+gpqa.json alone yields a `gpqa_thinkon` row, and the last three columns carry the
+tokens-per-correct standing metric; every other row leaves them empty.
 
 Usage:
     python3 scripts/board_ci.py results/ [-o dataset/board_ci.csv] [--all]
@@ -19,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import statistics
 import sys
 from collections import Counter
@@ -28,36 +33,118 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from lib.ci import BOARD_TASKS, dominant_variance_task, slug_intervals  # noqa: E402
 
-COLUMNS = ["slug", "task", "score", "correct", "total", "parse_failures", "ci_low", "ci_high"]
+COLUMNS = ["slug", "task", "score", "correct", "total", "parse_failures", "ci_low", "ci_high",
+           "tokens_per_correct", "completion_tokens_median", "capped_rate"]
+# the three token columns are only ever filled on gpqa_thinkon rows
+TOKEN_COLUMNS = ("tokens_per_correct", "completion_tokens_median", "capped_rate")
+THINKON_SUFFIX = "-thinkon"
 
 
 def _fmt(v):
     return "" if v is None else v
 
 
+def _load_json(path: Path) -> dict | None:
+    try:
+        data = json.loads(path.read_text() or "null")
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def is_thinkon_dir(d: Path, gpqa: dict | None = None) -> bool:
+    """A think-on gpqa result: `<slug>-thinkon/` or gpqa.json saying so itself."""
+    if d.name.endswith(THINKON_SUFFIX):
+        return True
+    if gpqa is None:
+        gpqa = _load_json(d / "gpqa.json")
+    if not gpqa:
+        return False
+    return gpqa.get("regime") == "think-on" or gpqa.get("think") is True
+
+
+def token_extras(d: Path, gpqa: dict | None) -> dict:
+    """The three token columns for a gpqa_thinkon row.
+
+    Prefers the keys GPQAEval now writes into gpqa.json. Older think-on dirs only
+    carry the hand-rolled gpqa_tokens.jsonl (one {completion_tokens, ...} per item,
+    no correctness), so median and tokens_per_correct (sidecar total / gpqa.json
+    correct) are derived from it; capped_rate needs a per-row `capped` flag or a
+    `max_tokens` budget and stays empty otherwise.
+    """
+    gpqa = gpqa or {}
+    out = {c: gpqa.get(c) for c in TOKEN_COLUMNS}
+    if all(out[c] is not None for c in TOKEN_COLUMNS):
+        return out
+    side = d / "gpqa_tokens.jsonl"
+    if not side.exists():
+        return out
+    rows = []
+    for line in side.read_text().splitlines():
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(r, dict) and isinstance(r.get("completion_tokens"), int):
+            rows.append(r)
+    if not rows:
+        return out
+    tokens = [r["completion_tokens"] for r in rows]
+    if out["completion_tokens_median"] is None:
+        out["completion_tokens_median"] = statistics.median(tokens)
+    correct = gpqa.get("correct")
+    if out["tokens_per_correct"] is None and isinstance(correct, int) and correct > 0:
+        out["tokens_per_correct"] = round(sum(tokens) / correct, 1)
+    if out["capped_rate"] is None:
+        budget = gpqa.get("max_tokens")
+        if all("capped" in r for r in rows):
+            capped = sum(1 for r in rows if r["capped"])
+        elif isinstance(budget, int):
+            capped = sum(1 for t in tokens if t >= budget - 8)
+        else:
+            return out
+        out["capped_rate"] = round(capped / len(rows), 4)
+    return out
+
+
 def collect_rows(results_root: Path, include_all: bool = False) -> tuple[list[dict], list[dict]]:
-    """Return (csv_rows, per_slug_summaries) for every eligible slug directory."""
+    """Return (csv_rows, per_slug_summaries) for every eligible slug directory.
+
+    Think-on gpqa dirs (`<slug>-thinkon/`, or a gpqa.json with regime think-on)
+    never carry a quality.json, so they are eligible on their gpqa.json alone; their
+    gpqa row is emitted as task `gpqa_thinkon` (slug stays the dir name) with the
+    three token columns filled. Other rows leave those columns empty.
+    """
     rows, summaries = [], []
     for d in sorted(p for p in Path(results_root).iterdir() if p.is_dir()):
-        if not include_all and not (d / "quality.json").exists():
+        gpqa = _load_json(d / "gpqa.json")
+        thinkon = is_thinkon_dir(d, gpqa)
+        if not include_all and not (d / "quality.json").exists() and not (thinkon and gpqa):
             continue
         res = slug_intervals(d)
         if not res["tasks"]:
             continue
+        slug = res["slug"]
         for t in list(BOARD_TASKS) + ["gpqa"]:
             r = res["tasks"].get(t)
             if r is None:
                 continue
-            rows.append({"slug": res["slug"], "task": t, "score": r["score"],
-                         "correct": r["correct"], "total": r["total"],
-                         "parse_failures": _fmt(r["parse_failures"]),
-                         "ci_low": r["ci_low"], "ci_high": r["ci_high"]})
+            row = {"slug": slug, "task": t, "score": r["score"],
+                   "correct": r["correct"], "total": r["total"],
+                   "parse_failures": _fmt(r["parse_failures"]),
+                   "ci_low": r["ci_low"], "ci_high": r["ci_high"]}
+            row.update({c: "" for c in TOKEN_COLUMNS})
+            if t == "gpqa" and thinkon:
+                row["task"] = "gpqa_thinkon"
+                row.update({c: _fmt(v) for c, v in token_extras(d, gpqa).items()})
+            rows.append(row)
         q = res["q_avg"]
         if q is not None:
-            rows.append({"slug": res["slug"], "task": "q_avg", "score": q["score"],
+            rows.append({"slug": slug, "task": "q_avg", "score": q["score"],
                          "correct": q["correct"], "total": q["total"],
                          "parse_failures": _fmt(q["parse_failures"]),
-                         "ci_low": q["ci_low"], "ci_high": q["ci_high"]})
+                         "ci_low": q["ci_low"], "ci_high": q["ci_high"],
+                         **{c: "" for c in TOKEN_COLUMNS}})
             dom = dominant_variance_task(res["tasks"])
             summaries.append({"slug": res["slug"], "halfwidth": q["halfwidth"],
                               "dominant": dom[0] if dom else None,
