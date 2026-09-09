@@ -179,6 +179,10 @@ tg128 on an empty context is the number every board quotes and the one an agent 
 
 How to read it: **held** is `tg128 @32k / tg128`, the share of decode speed that survives 32k tokens of context. **TTFT for a 16k prompt** is an estimate, `16384 / pp512 @8k`: prefill throughput measured at 8,192 tokens of depth is the closest measured rate for a mid-size prompt, and the true number is a little worse because prefill slows as the prompt grows (compare pp512 @8k with @32k in the csv). When a treatment measured TTFT on the served lane with a real 16k system prompt, that number replaces the estimate and is shown without the tilde. Rows are llama-bench on fully resident models unless a `--n-cpu-moe` flag is shown; the offload row's prefill is RAM-bandwidth bound and its estimate is cache-state dependent (see the [Flash-Next report](reports/qwen3-8-flash-next-ud-q2-k-xl.md)). Rows without a depth sweep on disk are absent, not zero; the backfill continues through the idle queue.
 
+### What your card can run
+
+[`card_fit.md`](card_fit.md) turns the board into a fit table for 8, 12, 16, 24 and 32 GB cards. Each row's **VRAM @16k** is the peak sampled on the 5090 during the speed sweep (whose largest prompt is 16,384 tokens, so weights + a 16k KV cache + compute buffers), applied as a budget with 768 MiB of headroom: ✅ resident with a 16k context on the board recipe, 🟡 the file fits but the 16k peak does not (shorter context, q8_0 KV cache, or a smaller quant), ⬜ the file is larger than the card, 🟠 measured with experts in system RAM (the MoE offload rows, which need the RAM as well). Quality (q_avg, GPQA-diamond) sits next to each row so the question "what is the best thing a 16 GB card runs" reads off directly. These are 5090 measurements applied to other cards' capacities, not measurements on those cards: peak bytes are the same on any CUDA card at the same context and flags, decode speed is not. Regenerate with `python scripts/card_fit.py results/`.
+
 ### Speed data schema
 
 | Column | Description |

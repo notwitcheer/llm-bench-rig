@@ -1,0 +1,43 @@
+slug,model,quant,think,size_gib,vram_peak_mib,offload_n_cpu_moe,q_avg,gpqa,fits_8gb,fits_12gb,fits_16gb,fits_24gb,fits_32gb
+gemma-4-31b-it-q6-k,Gemma 4 31B-it,Q6_K,False,23.46,27636,,94.37,,no,no,no,tight,yes
+gemma-4-31b-q4-0-it,Gemma 4 31B-it (unsloth cut),Q4_0,False,16.42,20436,,94.26,58.59,no,no,no,yes,yes
+qwen3-6-27b-q6-k,Qwen3.6-27B,Q6_K,False,20.97,23528,,94.17,54.55,no,no,no,yes,yes
+google-gemma-4-31b-it-q4-0,Gemma 4 31B-it (Google QAT),Q4_0,False,16.82,20842,,94.07,,no,no,no,yes,yes
+qwopus3-6-27b-coder-mtp-q5-k-m,Qwopus3.6-27B-Coder-MTP,Q5_K_M,False,18.18,20072,,94.06,,no,no,no,yes,yes
+qwen3-8-flash-next-ud-q2-k-xl,Qwen3.8-Flash-Next 125B-A10B,UD-Q2_K_XL,,73.45,28484,22,93.89,54.04,no,no,no,no,offload
+qwen3-6-35b-a3b-ud-q6-k,Qwen3.6-35B-A3B,UD-Q6_K,True,27.29,,,93.75,,no,no,no,no,?
+qwopus-coder-compat,Qwopus3.6-27B-Coder-Compat-MTP,Q6_K,False,20.88,22672,,93.7,,no,no,no,yes,yes
+qwable-5-27b-coder,Qwable-5-27B-Coder,Q6_K,False,20.88,22672,,93.69,,no,no,no,yes,yes
+qwen3-8-27b-q6-k,Qwen3.8-27B,Q6_K,False,21.3,22802,,93.66,48.99,no,no,no,yes,yes
+qwen3-8-27b-q8-0,Qwen3.8-27B,Q8_0,False,27.04,28258,,93.66,46.97,no,no,no,no,yes
+qwen3-8-27b-ud-q4-k-xl,Qwen3.8-27B,UD-Q4_K_XL,False,16.68,18416,,93.46,48.99,no,no,no,yes,yes
+qwable-27b-q4-k-m,Qwable-27B,Q4_K_M,False,15.4,19487,,93.4,55.05,no,no,tight,yes,yes
+qwen3-6-27b-mtp-pi-tune-q6-k,Qwen3.6-27B-MTP-pi-tune,Q6_K,False,20.89,24797,,93.3,,no,no,no,tight,yes
+qwen3-6-35b-a3b-ud-q4-k-m,Qwen3.6-35B-A3B,UD-Q4_K_M,False,20.6,22402,,93.29,,no,no,no,yes,yes
+qwen3-6-27b-nvfp4-mtp,Qwen3.6-27B-NVFP4-MTP (gguf),NVFP4,False,14.63,17316,,93.19,,no,no,tight,yes,yes
+qwen3-8-27b-q4-k-m,Qwen3.8-27B,Q4_K_M,False,15.92,17674,,93.17,50.51,no,no,tight,yes,yes
+qwen3-8-27b-ud-iq3-xxs,Qwen3.8-27B,UD-IQ3_XXS,False,11.09,13088,,92.66,44.95,no,tight,yes,yes,yes
+gpt-oss-120b-mxfp4,gpt-oss-120b,mxfp4,True,59.02,,,91.89,,no,no,no,no,no
+ling-3-0-flash-q3-k-m,Ling-3.0-flash 127B-A5B,Q3_K_M,False,58.26,3762,all,91.8,,offload,offload,offload,offload,offload
+qwen3-coder-next-ud-q2-k-xl,Qwen3-Coder-Next,UD-Q2_K_XL,False,24.92,27206,,91.65,,no,no,no,no,yes
+ling-3-0-flash-iq3-xxs,Ling-3.0-flash 127B-A5B,IQ3_XXS,False,47.69,3090,all,91.58,,offload,offload,offload,offload,offload
+qwen3-8-27b-ud-iq2-m,Qwen3.8-27B,UD-IQ2_M,False,9.6,11556,,91.47,39.39,no,tight,yes,yes,yes
+muse-glimmer-30b-ud-q4-k-xl,Muse-Glimmer-30B,UD-Q4_K_XL,True,14.78,15726,,91.08,70.71,no,no,tight,yes,yes
+qwen3-8-27b-ud-iq2-xxs,Qwen3.8-27B,UD-IQ2_XXS,False,8.38,10304,,90.82,42.93,no,yes,yes,yes,yes
+ling-3-0-flash-iq2-m,Ling-3.0-flash 127B-A5B,IQ2_M,False,39.2,2972,all,90.21,,offload,offload,offload,offload,offload
+qwen3-6-28b-reap20-a3b-q6-k,Qwen3.6-28B-REAP20-A3B,Q6_K,True,21.63,,,89.74,,no,no,no,?,?
+ornith-1-5-35b-q4-k-m,Ornith 1.5 35B-A3B,Q4_K_M,False,20.21,21394,,89.36,52.02,no,no,no,yes,yes
+gemma-4-12b-it-q6-k,Gemma 4 12B-it,Q6_K,False,9.1,11908,,87.61,,no,tight,yes,yes,yes
+gpt-oss-20b-q4-k-m,gpt-oss-20b,Q4_K_M,False,10.81,14830,,87.39,,no,tight,yes,yes,yes
+nvidia-nemotron-3-5-lightning-30b-a3b-q5-k-m,Nemotron 3.5 Lightning 30B-A3B,Q5_K_M,False,25.1,25766,,84.26,38.89,no,no,no,no,yes
+nvidia-nemotron-3-5-lightning-30b-a3b-iq3-xxs,Nemotron 3.5 Lightning 30B-A3B,IQ3_XXS,False,18.43,18994,,84.03,39.9,no,no,no,yes,yes
+nvidia-nemotron-3-5-lightning-30b-a3b-iq2-m,Nemotron 3.5 Lightning 30B-A3B,IQ2_M,False,17.55,18094,,83.93,37.37,no,no,no,yes,yes
+nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m,Nemotron 3.5 Lightning 30B-A3B,Q4_K_M,False,22.82,24168,,83.73,39.39,no,no,no,tight,yes
+nvidia-nemotron-3-5-lightning-30b-a3b-iq4-xs,Nemotron 3.5 Lightning 30B-A3B,IQ4_XS,False,17.61,18156,,83.46,37.88,no,no,no,yes,yes
+nvidia-nemotron-3-5-lightning-30b-a3b-q3-k-m,Nemotron 3.5 Lightning 30B-A3B,Q3_K_M,False,18.45,19016,,83.16,38.89,no,no,no,yes,yes
+nvidia-nemotron-3-5-lightning-30b-a3b-iq2-xxs,Nemotron 3.5 Lightning 30B-A3B,IQ2_XXS,False,17.54,18080,,82.25,42.93,no,no,no,yes,yes
+nemotron-3-nano-30b-a3b-ud-q4-k-xl,Nemotron-3-Nano-30B-A3B,UD-Q4_K_XL,False,21.26,23870,,82.22,,no,no,no,tight,yes
+nvidia-nemotron-cascade-2-30b-a3b-q4-k-m,Nemotron Cascade 2 30B-A3B,Q4_K_M,False,23.02,,,81.61,,no,no,no,?,?
+mistral-small-4-119b-2603-mxfp4-moe,Mistral-Small-4-119B-2603-MXFP4_MOE,,True,66.87,27464,all,81.36,,no,no,no,no,offload
+qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,,20.9,,,79.65,51.01,no,no,no,?,?
+north-mini-code,North-Mini-Code 1.0,UD-Q6_K,False,23.75,26204,,77.36,,no,no,no,tight,yes
