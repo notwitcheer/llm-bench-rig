@@ -7,4 +7,4 @@ gemma-4-31b-q4-0-it,Gemma 4 31B-it,Q4_0,llama.cpp,,76.39,70.71,65.36,85.6,3672.8
 qwen3-8-27b-q6-k,Qwen3.8-27B,Q6_K,llama.cpp,,63.08,60.41,58.28,92.4,3118.51,5.3,
 qwen3-6-27b-q6-k,Qwen3.6-27B,Q6_K,llama.cpp,,61.85,60.74,58.24,94.2,3026.47,5.4,
 qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,llama.cpp,,62.96,60.41,58.05,92.2,3025.42,5.4,
-qwen3-8-flash-next-ud-q2-k-xl,Qwen3.8-Flash-Next 125B-A10B,UD-Q2_K_XL,llama.cpp,22,59.69,56.11,51.04,85.5,826.41,19.8,
+qwen3-8-flash-next-ud-q2-k-xl,Qwen3.8-Flash-Next 125B-A10B,UD-Q2_K_XL,llama.cpp,22,59.69,56.11,51.04,85.5,826.41,19.8,29.39

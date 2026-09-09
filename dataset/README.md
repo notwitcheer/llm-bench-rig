@@ -175,7 +175,7 @@ tg128 on an empty context is the number every board quotes and the one an agent 
 | Qwen3.8-27B | Q6_K | 63.1 | 58.3 | 92% | 3,119 | ~5.3 s |
 | Qwen3.6-27B | Q6_K | 61.9 | 58.2 | 94% | 3,026 | ~5.4 s |
 | Qwopus3.8-27B-Flash | Q6_K | 63.0 | 58.0 | 92% | 3,025 | ~5.4 s |
-| Qwen3.8-Flash-Next 125B-A10B (`--n-cpu-moe 22`) | UD-Q2_K_XL | 59.7 | 51.0 | 86% | 826 | ~19.8 s |
+| Qwen3.8-Flash-Next 125B-A10B (`--n-cpu-moe 22`) | UD-Q2_K_XL | 59.7 | 51.0 | 86% | 826 | **29.4 s measured** (derived 19.8 s; the derivation is a floor under offload) |
 
 How to read it: **held** is `tg128 @32k / tg128`, the share of decode speed that survives 32k tokens of context. **TTFT for a 16k prompt** is an estimate, `16384 / pp512 @8k`: prefill throughput measured at 8,192 tokens of depth is the closest measured rate for a mid-size prompt, and the true number is a little worse because prefill slows as the prompt grows (compare pp512 @8k with @32k in the csv). When a treatment measured TTFT on the served lane with a real 16k system prompt, that number replaces the estimate and is shown without the tilde. Rows are llama-bench on fully resident models unless a `--n-cpu-moe` flag is shown; the offload row's prefill is RAM-bandwidth bound and its estimate is cache-state dependent (see the [Flash-Next report](reports/qwen3-8-flash-next-ud-q2-k-xl.md)). Rows without a depth sweep on disk are absent, not zero; the backfill continues through the idle queue.
 
