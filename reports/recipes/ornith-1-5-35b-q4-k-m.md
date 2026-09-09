@@ -6,7 +6,7 @@
 llama-server -m Ornith-1.5-35B-Q4_K_M.gguf --jinja -ngl 99 -c 32768 -fa on -np 1
 ```
 
-292 tok/s short, 270 decoding against a 16k-token context, 20.8 GiB at 32k ctx, cold 16k TTFT 2.2 s, warm 0.06 s. Keep the KV cache at f16: on this model q4 KV is the one set in the whole recipe series that cost quality as well as speed.
+292 tok/s short, 270 decoding against a 16k-token context, 20.8 GiB at 32k ctx, cold 16k TTFT 2.2 s, warm 0.06 s. Keep the KV cache at f16: q4 KV is 29% slower at depth here and saves 0.4 GiB.
 
 ## The six sets
 
@@ -23,14 +23,14 @@ llama-server -m Ornith-1.5-35B-Q4_K_M.gguf --jinja -ngl 99 -c 32768 -fa on -np 1
 ## Reads
 
 1. **Nothing to tune.** Flash attention and `--parallel 1` land within 1% of base; `-np 1` saves 0.2 GiB. The recipe is the base line plus hygiene, the same as the other 3B-active MoE (Qwen3.6-35B-A3B).
-2. **q4 KV: 29% slower at depth and 5 GPQA items down.** 191 vs 268 tok/s against the 16k prefix, and the 40-item spot check fell from 20 to 15 (q8 KV: 21). At n=40 one item is 2.5 points, so 5 items is the first move in six models that clears the noise floor. It is one pass on one model, so it is a flag to run the full 198 items on, not a finding yet; but it is the reason this page says f16 and means it.
+2. **q4 KV: 29% slower at depth; quality did not move on the full set.** 191 vs 268 tok/s against the 16k prefix. The 40-item spot check fell from 20 to 15 (q8 KV: 21), which looked like the first quality move in six models, so all 198 GPQA-diamond items were re-run on the same server line in three arms: **f16 100/198, q8_0 100/198, q4_0 98/198** (50.5 / 50.5 / 49.5, one unparsed on q4). Two items is inside the noise band. The per-item diff explains the spot check: the predicted letter differs on 52 to 56 of 198 items between any two arms, f16 vs q8 included, and the flips cancel in aggregate. Greedy decode on a near-tie item is fragile under any KV perturbation; a 40-item sample catches the flips, not the score. Spot checks screen for collapses, not for one-point shifts.
 3. **KV quantisation saves almost nothing on a 3B-active MoE.** 0.25 GiB for q8, 0.4 GiB for q4, out of 21 GiB. Same as Qwen3.6-35B-A3B and Lightning: the cache is a sliver of the footprint, the dequant tax is the whole story.
 4. **The agent numbers.** 2.2 s to prefill 16k tokens cold, 0.06 s warm, decode holds 93% of its short-prompt speed at depth. With GPQA 52 think-off and 82 think-on on the board, this is the reasoning MoE a coding agent on a 24 GB card would run.
 
 ## Worth knowing
 
 - 21 GiB at 32k ctx leaves 11 GiB on a 5090: 64k or 128k context is a matter of adding it; on a 24 GB card 32k fits with 3 GiB to spare.
-- The 5-item GPQA move on q4 KV is queued for a full 198-item pass (`gpqa` at f16 vs q4 KV, ~1 h think-off) before it goes anywhere near a headline.
+- Full-set arms: `results/ornith-1-5-35b-q4-k-m/kv-gpqa/{f16,q8,q4}/` (`ornith-kv-gpqa.sh`, 2026-09-09 12:28 to 12:32 CEST, 4 minutes for three arms on this MoE).
 - One model, one quant, one build, one pass per cell; the GPQA spot check is 40 items, a screen, not a score.
 
 ## Method
