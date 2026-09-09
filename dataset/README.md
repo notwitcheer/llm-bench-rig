@@ -161,6 +161,24 @@ Every score above is a single greedy pass, so each is a binomial proportion with
 
 The llama-bench numbers above measure the engine on its own. The served lane (`scripts/speed_served.py`, `lib/speed_served.py`) measures what a client sees through llama-server's streaming chat-completions endpoint, the path the spec-decode and prompt-cache reports were timed on. Four fixed workloads (prose, code, repetitive, chat; 8 prompts each, `lib/workloads.py`, the same prompt set those reports used) are sent at temperature 0 with `max_tokens=256` after one discarded warm-up request; every request is appended as one json line with the server flag set (`mode`), `cache_prompt`, the wall time to the first content chunk, the total wall time, prompt and completion token counts, the server's own `timings` object when present, and a sha256 of the text so two flag sets can be checked for byte-identical output. Vocabulary: **TTFT** is the time to the first content token as the reader perceives it (prefill plus queueing); **perceived TPS** is `completion_tokens / (total_s - ttft_s)`, the rate text arrives at once it starts; **total TPS** is `completion_tokens / total_s`, throughput including the wait. Percentiles (p50 and p90 over the 32 requests per pass), not means, are reported, alongside the server's `predicted_per_second` p50 and, when speculation is on, the acceptance rate `sum(draft_n_accepted) / sum(draft_n)`. A served TPS is not comparable to a tg128 figure from llama-bench: different prompt, different token budget, and the HTTP and tokeniser overhead are inside the served number.
 
+### Speed at depth (agent-shaped)
+
+tg128 on an empty context is the number every board quotes and the one an agent loop never sees. Coding harnesses hand the model a 10k to 20k token prompt and then decode against it, so two numbers matter more: how fast the first token arrives on a long prompt, and how much decode speed survives at depth. Both come from the same llama-bench depth sweep (`-p 512 -n 128 -d 0,8192,32768`, `-r 2`) that has been a standing leg on every treatment since 2026-08-14 and was backfilled on the resident rows on 2026-09-08/09. [`speed_at_depth.csv`](speed_at_depth.csv) carries the raw columns; the table is regenerated with `python scripts/depth_table.py table results/`.
+
+| Model | Quant | tg128 | tg128 @32k | held | pp512 @8k | TTFT, 16k prompt (est.) |
+|-------|-------|------:|-----------:|-----:|----------:|------------------------:|
+| Nemotron 3.5 Lightning 30B-A3B | Q4_K_M | 377.4 | 353.1 | 94% | 10,950 | ~1.5 s |
+| Ornith 1.5 35B-A3B | Q4_K_M | 303.2 | 263.5 | 87% | 8,336 | ~2.0 s |
+| Qwen3.8-27B | UD-IQ3_XXS | 96.2 | 86.5 | 90% | 3,720 | ~4.4 s |
+| Qwen3.6-27B | Q4_K_M | 77.1 | 71.6 | 93% | 3,640 | ~4.5 s |
+| Gemma 4 31B-it | Q4_0 | 76.4 | 65.4 | 86% | 3,673 | ~4.5 s |
+| Qwen3.8-27B | Q6_K | 63.1 | 58.3 | 92% | 3,119 | ~5.3 s |
+| Qwen3.6-27B | Q6_K | 61.9 | 58.2 | 94% | 3,026 | ~5.4 s |
+| Qwopus3.8-27B-Flash | Q6_K | 63.0 | 58.0 | 92% | 3,025 | ~5.4 s |
+| Qwen3.8-Flash-Next 125B-A10B (`--n-cpu-moe 22`) | UD-Q2_K_XL | 59.7 | 51.0 | 86% | 826 | ~19.8 s |
+
+How to read it: **held** is `tg128 @32k / tg128`, the share of decode speed that survives 32k tokens of context. **TTFT for a 16k prompt** is an estimate, `16384 / pp512 @8k`: prefill throughput measured at 8,192 tokens of depth is the closest measured rate for a mid-size prompt, and the true number is a little worse because prefill slows as the prompt grows (compare pp512 @8k with @32k in the csv). When a treatment measured TTFT on the served lane with a real 16k system prompt, that number replaces the estimate and is shown without the tilde. Rows are llama-bench on fully resident models unless a `--n-cpu-moe` flag is shown; the offload row's prefill is RAM-bandwidth bound and its estimate is cache-state dependent (see the [Flash-Next report](reports/qwen3-8-flash-next-ud-q2-k-xl.md)). Rows without a depth sweep on disk are absent, not zero; the backfill continues through the idle queue.
+
 ### Speed data schema
 
 | Column | Description |
