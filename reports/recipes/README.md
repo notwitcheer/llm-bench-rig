@@ -11,7 +11,9 @@ One page per model on the board, one recommended line at the top of each, and th
 | Ornith 1.5 35B-A3B Q4_K_M | `-fa on -np 1`, f16 KV (q4 KV cost quality here too) | 292 | 270 | 20.8 GiB | [recipe](ornith-1-5-35b-q4-k-m.md) |
 | Qwopus3.8-27B-Flash Q6_K | same as Qwen3.8-27B: `-fa on -np 1 --spec-type draft-mtp --spec-draft-n-max 2` | 141 code / 115 prose | 128 | 24.7 GiB | [recipe](qwopus3-8-27b-flash-q6-k.md) |
 
-![pair 1 chart](../recipes-pair1.png)
+![six-model chart](../recipes-six.png)
+
+(pair-1 detail chart, absolute tok/s and VRAM per set: [recipes-pair1.png](../recipes-pair1.png))
 
 ## What held across the models (6 pages, 6 models)
 
