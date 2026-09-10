@@ -222,14 +222,20 @@ def build_executable_program(
     # real error instead of this function raising.
     return candidates[-1]
 
-def _execute(code: str, timeout: int = 10) -> tuple[bool, str]:
-    """Run code in a subprocess. Returns (passed, error_message)."""
+def _execute(code: str, timeout: int = 10,
+             interpreter: str = "python3") -> tuple[bool, str]:
+    """Run code in a subprocess. Returns (passed, error_message).
+
+    `interpreter` defaults to the system python3 (HumanEval tests are stdlib
+    only). EvalPlus test suites import numpy, so evalplus.py passes
+    sys.executable to run them under the rig venv.
+    """
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write(code)
         f.flush()
         try:
             result = subprocess.run(
-                ["python3", f.name],
+                [interpreter, f.name],
                 capture_output=True, text=True, timeout=timeout,
             )
             if result.returncode == 0:

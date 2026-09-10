@@ -248,3 +248,55 @@ def load_checkpoint(path: Path | None) -> dict | None:
         with open(path) as f:
             return json.load(f)
     return None
+
+
+class ProgressFile:
+    """Resumable `<task>_progress.json` + append-only `<task>_tokens.jsonl` sidecar.
+
+    Same layout gpqa.py established: `{"completed": {idx: row}, "timestamp": ...}`
+    written atomically via a .tmp rename, plus one token row per NEW item. Every
+    path is None when no results dir is given, so evals run without a sidecar.
+    """
+
+    def __init__(self, results_dir: Path | None, task: str):
+        self.results_dir = Path(results_dir) if results_dir else None
+        self.task = task
+        self.progress_path = (
+            self.results_dir / f"{task}_progress.json" if self.results_dir else None
+        )
+        self.tokens_path = (
+            self.results_dir / f"{task}_tokens.jsonl" if self.results_dir else None
+        )
+        self.detail_path = (
+            self.results_dir / f"{task}_detail.json" if self.results_dir else None
+        )
+
+    def load(self) -> dict:
+        if self.progress_path and self.progress_path.exists():
+            with open(self.progress_path) as f:
+                return json.load(f).get("completed", {})
+        return {}
+
+    def save(self, completed: dict) -> None:
+        if not self.progress_path:
+            return
+        self.progress_path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = self.progress_path.with_suffix(".tmp")
+        with open(tmp, "w") as f:
+            json.dump({"completed": completed,
+                       "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S")}, f, indent=2)
+        tmp.rename(self.progress_path)
+
+    def append_token_row(self, row: dict) -> None:
+        if not self.tokens_path:
+            return
+        self.tokens_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.tokens_path, "a") as f:
+            f.write(json.dumps(row) + "\n")
+
+    def write_detail(self, results: dict) -> None:
+        if not self.detail_path:
+            return
+        self.detail_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.detail_path, "w") as f:
+            json.dump(results, f, indent=2)
