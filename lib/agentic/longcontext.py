@@ -73,8 +73,11 @@ class LongContextUseEval:
                          {"role": "user", "content": user}], max_tokens=self.max_tokens)
                     out = run_code_action(extract_code(resp), timeout=self.exec_timeout)
                     ok = bool(out.ok and check_result(out.result, item["check"]))
-                except Exception:
+                except Exception as e:
                     ok = False  # OOM / context overflow -> scored 0 at this depth
+                    err = f"{type(e).__name__}: {str(e)[:300]}"
+                    print(f"[longcontext] {depth//1024}K {item[id]}: EXCEPTION {err}", flush=True)
+                    state.setdefault("errors", {})[key] = err
                 state["done"][key] = ok
                 if ok:
                     per_depth[depth]["passed"] += 1
