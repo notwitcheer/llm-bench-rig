@@ -6,11 +6,17 @@ from pathlib import Path
 
 from lib.config import get
 from lib.evals import (LLMClient, MMLUEval, ARCEval,  # noqa: E402
-                       HellaSwagEval, GSM8KEval, HumanEvalEval, GPQAEval)
+                       HellaSwagEval, GSM8KEval, HumanEvalEval, GPQAEval,
+                       IFEvalEval, Math500Eval, EvalPlusEval)
 from lib.evals.base import CompletionLengthGate, InstrumentGateError
 from lib.provenance import record_provenance, resolve_quality_config
 
-EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval", "gpqa"}
+# Second-tier tasks: requested alongside the board, each reported as its own
+# row, NEVER folded into q_avg (lib.board.BOARD_TASKS is the only allowlist).
+# "gpqa" adopted 2026-08-17; ifeval / math500 / humaneval_plus / mbpp_plus
+# added 2026-09-10 (see lib/evals/README.md).
+SECOND_TIER_TASKS = {"gpqa", "ifeval", "math500", "humaneval_plus", "mbpp_plus"}
+EVAL_REGISTRY = {"mmlu", "arc_challenge", "hellaswag", "gsm8k", "humaneval"} | SECOND_TIER_TASKS
 # NOTE: q_avg stays the five-task mean by construction (drivers pass the five
 # board tasks explicitly). "gpqa" is the standing SECOND-TIER task (adopted
 # 2026-08-17 after the qwen3.8 pilot separated rungs the board called tight):
@@ -135,6 +141,12 @@ def _make_evaluator(task: str, client, results_dir, sample: float | None,
         return HumanEvalEval(client=client, limit=limit, results_dir=results_dir)
     if task == "gpqa":
         return GPQAEval(client=client, limit=limit, results_dir=results_dir, gate=gate)
+    if task == "ifeval":
+        return IFEvalEval(client=client, limit=limit, results_dir=results_dir)
+    if task == "math500":
+        return Math500Eval(client=client, limit=limit, results_dir=results_dir)
+    if task in ("humaneval_plus", "mbpp_plus"):
+        return EvalPlusEval(client=client, variant=task, limit=limit, results_dir=results_dir)
     raise ValueError(f"Unknown eval task: {task}")
 
 
