@@ -76,7 +76,7 @@ class LongContextUseEval:
                 except Exception as e:
                     ok = False  # OOM / context overflow -> scored 0 at this depth
                     err = f"{type(e).__name__}: {str(e)[:300]}"
-                    print(f"[longcontext] {depth//1024}K {item[id]}: EXCEPTION {err}", flush=True)
+                    print(f"[longcontext] {depth//1024}K {item["id"]}: EXCEPTION {err}", flush=True)
                     state.setdefault("errors", {})[key] = err
                 state["done"][key] = ok
                 if ok:
