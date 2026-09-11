@@ -188,6 +188,9 @@ def test_eval_loop_humaneval_plus(tmp_path, monkeypatch):
     assert res["metric"] == "pass@1" and res["score"] == 50.0
     assert res["correct"] == res["passed"] == 1 and res["total"] == 2
     assert res["capped_count"] == 1 and res["dataset"] == "evalplus/humanevalplus"
+    # standing token metrics come from token_summary (2026-09-11: were null in the first night's detail.json)
+    assert res["tokens_recorded"] == 2 and res["capped_rate"] == 0.5
+    assert res["tokens_per_correct"] == 12 + DEFAULT_MAX_TOKENS and res["completion_tokens_total"] == 12 + DEFAULT_MAX_TOKENS
     assert res["errors"][0]["task_id"] == "HumanEval/1"
     assert client.calls[0][1] == {"max_tokens": DEFAULT_MAX_TOKENS, "preserve_indent": True}
     prog = json.loads((tmp_path / "humaneval_plus_progress.json").read_text())["completed"]

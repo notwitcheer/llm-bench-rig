@@ -52,7 +52,7 @@ from .humaneval import (_build_messages as _humaneval_messages,
 
 DEFAULT_MAX_TOKENS = 4096
 DEFAULT_EXEC_TIMEOUT = 30  # plus suites run hundreds of inputs per task
-CAP_SLACK = 8
+from .gpqa import CAP_SLACK, token_summary  # shared cap slack + standing token metrics
 
 HUMANEVAL_PLUS = "evalplus/humanevalplus"
 MBPP_PLUS = "evalplus/mbppplus"
@@ -212,8 +212,7 @@ class EvalPlusEval:
             "total": n,
             "parse_failures": None,  # execution either passes or fails; no parse stage
             "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
-            "max_tokens": self.max_tokens,
-            "capped_count": sum(1 for r in done.values() if r.get("capped")),
+            **token_summary(done.values(), self.max_tokens),
             "exec_timeout": self.exec_timeout,
             "dataset": self.dataset,
             "errors": errors[:50],

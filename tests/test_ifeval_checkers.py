@@ -303,6 +303,9 @@ def test_eval_loop_scores_and_writes_sidecars(tmp_path, monkeypatch):
     assert res["inst_strict_acc"] == 50.0
     assert res["unsupported_instructions"] == 1
     assert res["capped_count"] == 1
+    # standing token metrics via token_summary (2026-09-11: were missing, detail.json read null)
+    assert res["tokens_recorded"] == 3 and res["capped_rate"] == pytest.approx(0.3333, abs=1e-4)
+    assert res["completion_tokens_total"] == 10 + 1024 + 5 and res["tokens_per_correct"] == 1039.0
     assert res["parse_failures"] == 0
     assert client.calls[0][1]["max_tokens"] == ifeval.DEFAULT_MAX_TOKENS == 1024
     assert client.calls[0][0] == [{"role": "user", "content": "no commas please"}]

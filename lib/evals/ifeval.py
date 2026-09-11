@@ -41,7 +41,7 @@ from pathlib import Path
 from .base import LLMClient, ProgressFile
 
 DEFAULT_MAX_TOKENS = 1024
-CAP_SLACK = 8
+from .gpqa import CAP_SLACK, token_summary  # shared cap slack + standing token metrics
 DATASET = "google/IFEval"
 
 # --- relation helper (shared by every "at least / less than" instruction) ---
@@ -385,7 +385,6 @@ class IFEvalEval:
         inst_pass = sum(r["inst_pass"] for r in done.values())
         inst_checked = sum(r["inst_checked"] for r in done.values())
         unsupported = sum(r["unsupported"] for r in done.values())
-        capped_count = sum(1 for r in done.values() if r.get("capped"))
         prompt_acc = strict / n if n else 0
         inst_acc = inst_pass / inst_checked if inst_checked else 0
         print(f"\n[ifeval] prompt-strict {prompt_acc:.1%} ({strict}/{n}), "
@@ -401,8 +400,7 @@ class IFEvalEval:
             "inst_pass": inst_pass,
             "inst_checked": inst_checked,
             "unsupported_instructions": unsupported,
-            "max_tokens": self.max_tokens,
-            "capped_count": capped_count,
+            **token_summary(done.values(), self.max_tokens),
             "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
             "caveat": ("strict mode only; language:response_language is skipped "
                        "(unsupported) unless langdetect is importable"),
