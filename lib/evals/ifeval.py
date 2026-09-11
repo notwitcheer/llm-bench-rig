@@ -38,7 +38,7 @@ import re
 import time
 from pathlib import Path
 
-from .base import LLMClient, ProgressFile
+from .base import chat_or_error, drop_errored, LLMClient, ProgressFile
 
 DEFAULT_MAX_TOKENS = 1024
 from .gpqa import CAP_SLACK, token_summary  # shared cap slack + standing token metrics
@@ -347,7 +347,7 @@ class IFEvalEval:
 
     def evaluate(self) -> dict:
         items = self.load_items()
-        done = self.progress.load()
+        done = drop_errored(self.progress.load())
         fb0 = getattr(self.client, "reasoning_fallback_count", 0)
         t0 = time.time()
 
@@ -355,8 +355,13 @@ class IFEvalEval:
             key = str(i)
             if key in done:
                 continue
-            response = self.client.chat(_build_messages(item["prompt"]),
-                                        max_tokens=self.max_tokens)
+            response, err = chat_or_error(self.client, _build_messages(item["prompt"]),
+                                          max_tokens=self.max_tokens)
+            if err is not None:
+                print(f"[ifeval] item {i} request error, recorded and retried on resume: {err}", flush=True)
+                done[key] = {"correct": False, "completion_tokens": None, "capped": False, "inst_pass": 0, "inst_checked": 0, "unsupported": 0, "error_request": err}
+                self.progress.save(done)
+                continue
             tokens = getattr(self.client, "last_completion_tokens", None)
             scored = score_response(response, item["instruction_id_list"], item["kwargs"])
             capped = isinstance(tokens, int) and tokens >= self.max_tokens - CAP_SLACK
@@ -396,6 +401,7 @@ class IFEvalEval:
             "correct": strict,
             "total": n,
             "parse_failures": 0,
+            "request_errors": sum(1 for r in done.values() if r.get("error_request")),
             "inst_strict_acc": round(inst_acc * 100, 2),
             "inst_pass": inst_pass,
             "inst_checked": inst_checked,

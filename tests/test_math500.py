@@ -127,3 +127,32 @@ def test_limit(monkeypatch):
     client = _Client(["\\boxed{2}"], [1])
     res = Math500Eval(client, limit=1).evaluate()
     assert res["total"] == 1 and res["correct"] == 0 and len(client.calls) == 1
+
+
+class _FlakyClient(_Client):
+    """Raises a server error on one call, like llama-server's HTTP 500 at math500 item 371 (2026-09-11)."""
+    def __init__(self, answers, tokens, fail_at):
+        super().__init__(answers, tokens); self.fail_at = fail_at
+    def chat(self, messages, **kw):
+        import httpx
+        i = len(self.calls)
+        if i == self.fail_at:
+            self.calls.append((messages, kw))
+            req = httpx.Request("POST", "http://x/v1/chat/completions")
+            raise httpx.HTTPStatusError("500", request=req,
+                                        response=httpx.Response(500, request=req, text="slot error"))
+        return super().chat(messages, **kw)
+
+
+def test_request_error_is_recorded_and_rerun_on_resume(tmp_path, monkeypatch):
+    _patch_datasets(monkeypatch)
+    c1 = _FlakyClient(["\\boxed{\\frac{1}{2}}", None, "\\boxed{10}"], [10, None, 12], fail_at=1)
+    r1 = Math500Eval(c1, results_dir=tmp_path).evaluate()
+    # the leg finished instead of dying: item 1 is a recorded request error, the other two scored
+    assert r1["total"] == 3 and r1["correct"] == 2 and r1["request_errors"] == 1
+    prog = json.loads((tmp_path / "math500_progress.json").read_text())["completed"]
+    assert prog["1"]["error_request"].startswith("HTTPStatusError: 500")
+    # resume: only the errored item is re-run, and it now scores
+    c2 = _Client(["\\boxed{3}"], [7])
+    r2 = Math500Eval(c2, results_dir=tmp_path).evaluate()
+    assert len(c2.calls) == 1 and r2["correct"] == 3 and r2["request_errors"] == 0

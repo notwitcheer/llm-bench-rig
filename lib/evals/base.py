@@ -98,6 +98,33 @@ class LLMClient:
         self.close()
 
 
+def chat_or_error(client, messages, **kw) -> tuple[str | None, str | None]:
+    """`client.chat` that survives a per-item server failure.
+
+    Returns (text, None) on success, (None, "<ExcType>: <detail>") when the client's
+    own retries are exhausted. Added 2026-09-11 after one HTTP 500 from llama-server
+    at math500 item 371/500 killed a whole think-on row (three legs lost, 2.3 h of
+    GPU). The response body is included when the server sent one, so the cause is
+    in the progress file and not only in a server log that the next leg overwrites.
+    """
+    try:
+        return client.chat(messages, **kw), None
+    except httpx.HTTPStatusError as e:
+        body = ""
+        try:
+            body = e.response.text[:300].replace("\n", " ")
+        except Exception:
+            pass
+        return None, f"HTTPStatusError: {e.response.status_code} {body}".strip()
+    except (httpx.HTTPError, KeyError, IndexError) as e:
+        return None, f"{type(e).__name__}: {str(e)[:300]}"
+
+
+def drop_errored(done: dict) -> dict:
+    """Resume rule: items recorded with a request `error` are re-run, everything else is kept."""
+    return {k: v for k, v in done.items() if not v.get("error_request")}
+
+
 # --- Letter choice parsing (MMLU, ARC, HellaSwag) ---
 
 _ANSWER_PATTERN = re.compile(

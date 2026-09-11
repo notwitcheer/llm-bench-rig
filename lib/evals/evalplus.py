@@ -46,7 +46,7 @@ import sys
 import time
 from pathlib import Path
 
-from .base import LLMClient, ProgressFile
+from .base import chat_or_error, drop_errored, LLMClient, ProgressFile
 from .humaneval import (_build_messages as _humaneval_messages,
                         _execute, _extract_completion, build_executable_program)
 
@@ -172,7 +172,7 @@ class EvalPlusEval:
 
     def evaluate(self) -> dict:
         items = self.load_items()
-        done = self.progress.load()
+        done = drop_errored(self.progress.load())
         fb0 = getattr(self.client, "reasoning_fallback_count", 0)
         t0 = time.time()
         tag = f"[{self.variant}]"
@@ -181,8 +181,13 @@ class EvalPlusEval:
             key = str(i)
             if key in done:
                 continue
-            response = self.client.chat(self.messages(item), max_tokens=self.max_tokens,
-                                        preserve_indent=True)
+            response, err = chat_or_error(self.client, self.messages(item), max_tokens=self.max_tokens,
+                                          preserve_indent=True)
+            if err is not None:
+                print(f"{tag} item {i} request error, recorded and retried on resume: {err}", flush=True)
+                done[key] = {"correct": False, "completion_tokens": None, "capped": False, "task_id": str(item.get("task_id")), "error": "request error", "error_request": err}
+                self.progress.save(done)
+                continue
             tokens = getattr(self.client, "last_completion_tokens", None)
             ok, err = self.run_one(item, response)
             capped = isinstance(tokens, int) and tokens >= self.max_tokens - CAP_SLACK
@@ -211,6 +216,7 @@ class EvalPlusEval:
             "passed": passed,
             "total": n,
             "parse_failures": None,  # execution either passes or fails; no parse stage
+            "request_errors": sum(1 for r in done.values() if r.get("error_request")),
             "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
             **token_summary(done.values(), self.max_tokens),
             "exec_timeout": self.exec_timeout,

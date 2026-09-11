@@ -25,7 +25,7 @@ import re
 import time
 from pathlib import Path
 
-from .base import LLMClient, ProgressFile
+from .base import chat_or_error, drop_errored, LLMClient, ProgressFile
 from .gpqa import CAP_SLACK, token_summary
 
 DEFAULT_MAX_TOKENS = 2048
@@ -127,7 +127,7 @@ class Math500Eval:
 
     def evaluate(self) -> dict:
         items = self.load_items()
-        done = self.progress.load()
+        done = drop_errored(self.progress.load())
         correct = sum(1 for r in done.values() if r["correct"])
         parse_failures = sum(1 for r in done.values() if r.get("predicted") is None)
         fb0 = getattr(self.client, "reasoning_fallback_count", 0)
@@ -137,8 +137,13 @@ class Math500Eval:
             key = str(i)
             if key in done:
                 continue
-            response = self.client.chat(_build_messages(item["problem"]),
-                                        max_tokens=self.max_tokens)
+            response, err = chat_or_error(self.client, _build_messages(item["problem"]),
+                                          max_tokens=self.max_tokens)
+            if err is not None:
+                print(f"[math500] item {i} request error, recorded and retried on resume: {err}", flush=True)
+                done[key] = {"correct": False, "completion_tokens": None, "capped": False, "error_request": err}
+                self.progress.save(done)
+                continue
             tokens = getattr(self.client, "last_completion_tokens", None)
             predicted = extract_boxed(response)
             ok = is_equivalent(predicted, item["answer"])
@@ -168,6 +173,7 @@ class Math500Eval:
             "correct": correct,
             "total": n,
             "parse_failures": parse_failures,
+            "request_errors": sum(1 for r in done.values() if r.get("error_request")),
             "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
             "n_shot": 0,
             **tok,

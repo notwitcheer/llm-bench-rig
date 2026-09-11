@@ -19,7 +19,7 @@ import statistics
 import time
 from pathlib import Path
 
-from .base import CompletionLengthGate, LLMClient, parse_choice
+from .base import CompletionLengthGate, LLMClient, chat_or_error, drop_errored, parse_choice
 
 LETTERS = "ABCD"
 SHUFFLE_SEED = 42  # per-item option order derived from this + item index
@@ -122,7 +122,7 @@ class GPQAEval:
         if self.limit:
             items = items[: self.limit]
 
-        done = self._load_progress()
+        done = drop_errored(self._load_progress())
         correct = sum(1 for r in done.values() if r["correct"])
         parse_failures = sum(1 for r in done.values() if r.get("predicted") is None)
         fb0 = getattr(self.client, "reasoning_fallback_count", 0)
@@ -132,7 +132,12 @@ class GPQAEval:
             key = str(i)
             if key in done:
                 continue
-            response = self.client.chat(_build_messages(item), max_tokens=self.max_tokens)
+            response, err = chat_or_error(self.client, _build_messages(item), max_tokens=self.max_tokens)
+            if err is not None:
+                print(f"[gpqa] item {i} request error, recorded and retried on resume: {err}", flush=True)
+                done[key] = {"correct": False, "completion_tokens": None, "capped": False, "predicted": None, "error_request": err}
+                self.progress.save(done)
+                continue
             tokens = getattr(self.client, "last_completion_tokens", None)
             if self.gate is not None:
                 self.gate.observe(tokens)
@@ -171,6 +176,7 @@ class GPQAEval:
             "correct": correct,
             "total": n,
             "parse_failures": parse_failures,
+            "request_errors": sum(1 for r in done.values() if r.get("error_request")),
             "reasoning_fallback_count": getattr(self.client, "reasoning_fallback_count", 0) - fb0,
             "n_shot": 0,
             "shuffle_seed": SHUFFLE_SEED,
