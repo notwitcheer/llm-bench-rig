@@ -13,6 +13,23 @@ _FILLER = "[mem] tool_log: routine status ok; cache warm; no action needed. "
 def approx_tokens(text: str) -> int:
     return len(text) // 4
 
+
+def server_token_count(client, text: str) -> int | None:
+    """Real token count from llama-server's /tokenize (derived from the client's chat url).
+    Returns None when the endpoint is unavailable (non-llama.cpp server, or a client
+    without a url), so callers fall back to approx_tokens silently."""
+    url = getattr(client, "url", None)
+    http = getattr(client, "_client", None)
+    if not url or http is None:
+        return None
+    base = url.split("/v1/")[0] if "/v1/" in url else url.rsplit("/chat/completions", 1)[0]
+    try:
+        r = http.post(f"{base}/tokenize", json={"content": text, "add_special": True}, timeout=120)
+        r.raise_for_status()
+        return len(r.json().get("tokens", []))
+    except Exception:
+        return None
+
 def build_haystack(needle: str, target_tokens: int, depth: float = 0.5) -> str:
     target_chars = target_tokens * 4
     pre_chars = int(target_chars * depth)
@@ -67,6 +84,19 @@ class LongContextUseEval:
                 hay = build_haystack(item["needle"], target_tokens=hay_tokens)
                 user = (f"{tooldoc}\n\nContext (memory + tool logs):\n{hay}\n\n"
                         f"Task: {item['question']}\nWrite a ```python``` block; assign `result`.")
+                # approx_tokens is a generic 4-chars-per-token ratio; tokenizers that run
+                # longer on the filler (Gemma 4: every 64K item was HTTP 400 "prompt over
+                # n_ctx" on 2026-09-10) need the haystack re-sized from a REAL count. One
+                # /tokenize round trip per item, then shrink proportionally and rebuild.
+                real = server_token_count(self.client, self.system_prompt + user)
+                if real and real + self.max_tokens + 256 > depth:
+                    ratio = (depth - overhead) / max(real - overhead, 1)
+                    hay_tokens = max(int(hay_tokens * ratio * 0.97), 256)
+                    hay = build_haystack(item["needle"], target_tokens=hay_tokens)
+                    user = (f"{tooldoc}\n\nContext (memory + tool logs):\n{hay}\n\n"
+                            f"Task: {item['question']}\nWrite a ```python``` block; assign `result`.")
+                    print(f"[longcontext] {depth//1024}K {item['id']}: resized haystack "
+                          f"({real} real tokens > {depth} budget, ratio {ratio:.2f})", flush=True)
                 try:
                     resp = self.client.chat(
                         [{"role": "system", "content": self.system_prompt},
