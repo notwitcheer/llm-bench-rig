@@ -29,6 +29,7 @@ from .base import chat_or_error, drop_errored, LLMClient, ProgressFile
 from .gpqa import CAP_SLACK, token_summary
 
 DEFAULT_MAX_TOKENS = 2048
+UNBOXED_TAIL_CHARS = 600
 DATASET = "HuggingFaceH4/MATH-500"
 
 _SYSTEM = (
@@ -155,6 +156,10 @@ class Math500Eval:
             done[key] = {"correct": ok, "predicted": predicted, "expected": item["answer"],
                          "subject": item["subject"], "level": item["level"],
                          "completion_tokens": tokens, "capped": capped}
+            if predicted is None:
+                # keep the end of the text so an unboxed row can be read afterwards
+                # (2026-09-14: a 325/500 unboxed row was unreadable from disk)
+                done[key]["response_tail"] = (response or "")[-UNBOXED_TAIL_CHARS:]
             self.progress.append_token_row({"idx": i, "completion_tokens": tokens,
                                             "correct": ok, "capped": capped})
             if (i + 1) % 25 == 0 or i + 1 == len(items):

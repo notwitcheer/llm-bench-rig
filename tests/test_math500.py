@@ -106,6 +106,8 @@ def test_eval_scores_and_flags_capped(tmp_path, monkeypatch):
     assert "\\boxed" in client.calls[0][0][0]["content"]
     prog = json.loads((tmp_path / "math500_progress.json").read_text())["completed"]
     assert prog["2"]["capped"] is True and prog["2"]["predicted"] is None
+    assert prog["2"]["response_tail"].endswith("\\boxed{1")  # unboxed rows keep their tail
+    assert "response_tail" not in prog["0"]  # boxed rows do not
     assert prog["0"]["capped"] is False and prog["0"]["completion_tokens"] == 100
     assert prog["1"]["expected"] == "3"
     assert (tmp_path / "math500_detail.json").exists()
