@@ -1,0 +1,41 @@
+slug,model,quant,file_bytes,task,metric,score,correct,total,capped_count,capped_rate,parse_failures,tokens_per_correct,completion_tokens_median,regime,regraded
+gemma-4-31b-q4-0-it,Gemma 4 31B-it,QAT Q4_0,17650999456,ifeval,prompt_strict_acc,91.13,493,541,9,0.0166,0,1944.0,1122,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+gemma-4-31b-q4-0-it,Gemma 4 31B-it,QAT Q4_0,17650999456,math500,acc,94.0,470,500,11,0.022,11,3143.3,1637.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+gemma-4-31b-q4-0-it,Gemma 4 31B-it,QAT Q4_0,17650999456,humaneval_plus,pass@1,94.51,155,164,0,0.0,,1402.5,868.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+gemma-4-31b-q4-0-it,Gemma 4 31B-it,QAT Q4_0,17650999456,mbpp_plus,pass@1,80.95,306,378,5,0.0132,,1427.9,487.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m,Nemotron 3.5 Lightning 30B-A3B,Q4_K_M,24515129280,ifeval,prompt_strict_acc,87.8,475,541,18,0.0333,0,4062.0,2161,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m,Nemotron 3.5 Lightning 30B-A3B,Q4_K_M,24515129280,math500,acc,90.2,451,500,31,0.062,31,2799.4,863.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
+nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m,Nemotron 3.5 Lightning 30B-A3B,Q4_K_M,24515129280,humaneval_plus,pass@1,81.1,133,164,1,0.0061,,2689.5,1470.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m,Nemotron 3.5 Lightning 30B-A3B,Q4_K_M,24515129280,mbpp_plus,pass@1,80.42,304,378,10,0.0265,,1675.2,465.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ornith-1-5-35b-q4-k-m,Ornith 1.5 35B-A3B,Q4_K_M,21713462848,ifeval,prompt_strict_acc,77.26,418,541,9,0.0166,0,1633.3,653,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ornith-1-5-35b-q4-k-m,Ornith 1.5 35B-A3B,Q4_K_M,21713462848,math500,acc,88.2,441,500,11,0.022,6,1909.4,705.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
+ornith-1-5-35b-q4-k-m,Ornith 1.5 35B-A3B,Q4_K_M,21713462848,humaneval_plus,pass@1,91.46,150,164,2,0.0122,,785.6,335.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ornith-1-5-35b-q4-k-m,Ornith 1.5 35B-A3B,Q4_K_M,21713462848,mbpp_plus,pass@1,81.48,308,378,9,0.0238,,1057.2,211.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ornith-9b,Ornith 1.5 9B,Q6_K,7359259392,ifeval,prompt_strict_acc,69.5,376,541,32,0.0591,0,2725.9,736,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ornith-9b,Ornith 1.5 9B,Q6_K,7359259392,math500,acc,84.6,423,500,29,0.058,27,2712.4,749.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
+ornith-9b,Ornith 1.5 9B,Q6_K,7359259392,humaneval_plus,pass@1,89.02,146,164,8,0.0488,,1706.7,473.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ornith-9b,Ornith 1.5 9B,Q6_K,7359259392,mbpp_plus,pass@1,76.98,291,378,25,0.0661,,2284.4,355.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwable-27b-q4-k-m,Qwable-27B,Q4_K_M,16547398976,ifeval,prompt_strict_acc,87.62,474,541,31,0.0573,0,4136.8,2587,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwable-27b-q4-k-m,Qwable-27B,Q4_K_M,16547398976,math500,acc,71.6,358,500,144,0.288,127,12895.3,8647.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwable-27b-q4-k-m,Qwable-27B,Q4_K_M,16547398976,humaneval_plus,pass@1,93.9,154,164,13,0.0793,,3967.8,2337.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwable-27b-q4-k-m,Qwable-27B,Q4_K_M,16547398976,mbpp_plus,pass@1,72.22,273,378,46,0.1217,,5754.4,1703.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-6-27b-q6-k,Qwen3.6-27B,Q6_K,22884406400,ifeval,prompt_strict_acc,88.54,479,541,20,0.037,0,3610.8,2383,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-6-27b-q6-k,Qwen3.6-27B,Q6_K,22884406400,math500,acc,73.2,366,500,135,0.27,114,12405.8,8140.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
+qwen3-6-27b-q6-k,Qwen3.6-27B,Q6_K,22884406400,humaneval_plus,pass@1,94.51,155,164,1,0.0061,,2692.9,2243.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-6-27b-q6-k,Qwen3.6-27B,Q6_K,22884406400,mbpp_plus,pass@1,79.37,300,378,16,0.0423,,3236.1,1514.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-6-35b-a3b-ud-q5-k-m,Qwen3.6-35B-A3B,UD-Q5_K_M,26456194016,ifeval,prompt_strict_acc,87.25,472,541,23,0.0425,0,3748.8,2375,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-6-35b-a3b-ud-q5-k-m,Qwen3.6-35B-A3B,UD-Q5_K_M,26456194016,math500,acc,72.8,364,500,151,0.302,122,12610.4,8493.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
+qwen3-6-35b-a3b-ud-q5-k-m,Qwen3.6-35B-A3B,UD-Q5_K_M,26456194016,humaneval_plus,pass@1,95.12,156,164,0,0.0,,2523.2,2258.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-6-35b-a3b-ud-q5-k-m,Qwen3.6-35B-A3B,UD-Q5_K_M,26456194016,mbpp_plus,pass@1,81.22,307,378,4,0.0106,,2383.6,1276.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-q6-k,Qwen3.8-27B,Q6_K,22884408288,ifeval,prompt_strict_acc,89.65,485,541,15,0.0277,0,2235.4,807,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-q6-k,Qwen3.8-27B,Q6_K,22884408288,math500,acc,95.2,476,500,8,0.016,4,1779.6,558.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
+qwen3-8-27b-q6-k,Qwen3.8-27B,Q6_K,22884408288,humaneval_plus,pass@1,92.07,151,164,5,0.0305,,1712.8,472.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-q6-k,Qwen3.8-27B,Q6_K,22884408288,mbpp_plus,pass@1,81.75,309,378,14,0.037,,2107.0,363.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-ud-iq3-xxs,Qwen3.8-27B,UD-IQ3_XXS,11913559104,ifeval,prompt_strict_acc,90.2,488,541,18,0.0333,0,2483.3,839,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-ud-iq3-xxs,Qwen3.8-27B,UD-IQ3_XXS,11913559104,math500,acc,94.6,473,500,6,0.012,2,1891.3,602.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-ud-iq3-xxs,Qwen3.8-27B,UD-IQ3_XXS,11913559104,humaneval_plus,pass@1,92.68,152,164,5,0.0305,,1675.0,504.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-ud-iq3-xxs,Qwen3.8-27B,UD-IQ3_XXS,11913559104,mbpp_plus,pass@1,80.69,305,378,17,0.045,,2299.2,332.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,ifeval,prompt_strict_acc,83.55,452,541,0,0.0,0,1260.7,608,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,math500,acc,33.6,168,500,19,0.038,325,5176.9,551.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
+qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,humaneval_plus,pass@1,74.39,122,164,0,0.0,,1062.3,547.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,mbpp_plus,pass@1,80.69,305,378,6,0.0159,,1631.8,645.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",

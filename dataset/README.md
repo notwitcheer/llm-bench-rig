@@ -129,6 +129,25 @@ Results are **split by reasoning mode**: comparing a thinking-on (reasoning) mod
 
 > **Sampling.** MMLU & HellaSwag use 50% stratified sampling (seed=42); ARC-Challenge, GSM8K, and HumanEval run the full item counts (HumanEval = all 164). Full per-model reports in [`reports/`](reports/).
 
+### Second tier, thinking on (IFEval · MATH-500 · HumanEval+ · MBPP+)
+
+The five-task boards above are short-answer tasks. This table is the harder second tier, run with thinking on at a fixed budget: `max_tokens 16384`, `ctx 24576`, greedy, zero-shot, one pass per item, llama.cpp b9653, 1,583 items per model. Scores are percentages; IFEval is prompt-strict. **cap** is the share of items whose completion hit the 16k budget: a cell at 10% or more (▲) is a floor, not a ceiling, and is never flat-compared with a low-cap cell. ◆ marks a format miss (answers without `\boxed{}`). Full per-task counts, capped items, parse failures, tokens per correct answer and median completion length: [`second_tier.csv`](second_tier.csv). Report with the reads and limits: [thinking on at a 16k budget](../reports/second-tier-thinkon-16k.md) · [chart](../reports/second-tier-thinkon-16k.png).
+
+| Model | Quant | GGUF | IFEval | MATH-500 | HumanEval+ | MBPP+ | Mean | MATH-500 cap |
+|-------|-------|-----:|-------:|---------:|-----------:|------:|-----:|-------------:|
+| Gemma 4 31B-it | QAT Q4_0 | 17.7 GB | 91.1 | 94.0 | 94.5 | 81.0 | **90.1** | 2.2% |
+| Qwen3.8-27B | Q6_K | 22.9 GB | 89.7 | 95.2 | 92.1 | 81.8 | **89.7** | 1.6% |
+| Qwen3.8-27B | UD-IQ3_XXS | 11.9 GB | 90.2 | 94.6 | 92.7 | 80.7 | **89.5** | 1.2% |
+| Nemotron-3.5-Lightning 30B-A3B | Q4_K_M | 24.5 GB | 87.8 | 90.2 | 81.1 | 80.4 | **84.9** | 6.2% |
+| Ornith 1.5 35B-A3B | Q4_K_M | 21.7 GB | 77.3 | 88.2 | 91.5 | 81.5 | **84.6** | 2.2% |
+| Qwen3.6-35B-A3B | UD-Q5_K_M | 26.5 GB | 87.2 | 72.8 ▲ | 95.1 | 81.2 | **84.1** | 30.2% |
+| Qwen3.6-27B | Q6_K | 22.9 GB | 88.5 | 73.2 ▲ | 94.5 | 79.4 | **83.9** | 27.0% |
+| Qwable-27B | Q4_K_M | 16.5 GB | 87.6 | 71.6 ▲ | 93.9 | 72.2 ▲ | **81.3** | 28.8% |
+| Ornith 1.5 9B | Q6_K | 7.4 GB | 69.5 | 84.6 | 89.0 | 77.0 | **80.0** | 5.8% |
+| Qwopus3.8-27B-Flash | Q6_K | 22.4 GB | 83.6 | 33.6 ◆ | 74.4 | 80.7 | **68.1** | 3.8% |
+
+The top three are a tie: the Wilson 95% half-width on a four-task mean here is 1.6 points. The three ▲ MATH-500 cells spent 12.4k to 12.9k completion tokens per correct answer against 1.8k to 1.9k for the two Qwen3.8 rows; a 32k pass on exactly those three legs is queued and will publish as a separate table. Qwable-27B MBPP+ capped 12.2%. The Qwopus3.8-27B-Flash MATH-500 cell has 325 of 500 answers unboxed at 3.8% capped, a formatting result in the same family as its main-board HumanEval (footnote 15).
+
 ### Methodology
 
 | Benchmark | Dataset | Few-shot | Scoring | Items |
