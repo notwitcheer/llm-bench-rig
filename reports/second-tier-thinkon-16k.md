@@ -1,6 +1,6 @@
 # Thinking on at a 16k budget: ten models, four tasks, one RTX 5090
 
-**Rig:** RTX 5090 32GB (capsule), llama.cpp b9653 (`9dbc6621a`), llama-server, batch 1 · **Window:** 2026-09-10 to 2026-09-20, inside the box's cheap-electricity hours · **Harness:** [llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig) second-tier lane, `scripts/` night and idle-queue items, artefacts in `results/<slug>-thinkon/` · **Data:** [`dataset/second_tier.csv`](../dataset/second_tier.csv) · **Chart:** [`second-tier-thinkon-16k.png`](second-tier-thinkon-16k.png)
+**Rig:** RTX 5090 32GB (capsule), llama.cpp build 10371 (`5d16e81dd`), llama-server (corrected 2026-09-27: first published as b9653 `9dbc6621a`; the rig's `server_bin` has pointed at the `5d16e81dd` build since 2026-08-11), batch 1 · **Window:** 2026-09-10 to 2026-09-20, inside the box's cheap-electricity hours · **Harness:** [llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig) second-tier lane, `scripts/` night and idle-queue items, artefacts in `results/<slug>-thinkon/` · **Data:** [`dataset/second_tier.csv`](../dataset/second_tier.csv) · **Chart:** [`second-tier-thinkon-16k.png`](second-tier-thinkon-16k.png)
 
 ![second-tier think-on board](second-tier-thinkon-16k.png)
 
@@ -65,7 +65,7 @@ Wilson 95% half-widths per task run 1.9 to 6.6 points on these set sizes (HumanE
 
 ## Owed
 
-- The 32k pass on the three capped MATH-500 legs (`results/<slug>-thinkon-32k/`, separate bench, same rows) is queued and will publish as its own table, never merged into this one.
+- ~~The 32k pass on the three capped MATH-500 legs~~ published 2026-09-27 as its own table: [thinking on at a 32k budget](second-tier-thinkon-32k.md).
 - Tolerant-extractor regrade for the Qwopus3.8-27B-Flash MATH-500 cell.
 - The think-off second-tier pass (class-default budgets, ctx 8192) for the think-on vs think-off delta.
 

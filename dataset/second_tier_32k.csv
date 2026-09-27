@@ -1,0 +1,4 @@
+slug,model,quant,file_bytes,task,metric,score,correct,total,capped_count,capped_rate,parse_failures,tokens_per_correct,completion_tokens_median,regime,bench
+qwen3-6-35b-a3b-ud-q5-k-m,Qwen3.6-35B-A3B,UD-Q5_K_M,26456194016,math500,acc,91.2,456,500,60,0.12,28,13242.9,8493.0,"think-on, max_tokens 32768, ctx 40960, zero-shot, greedy","second-tier-32k (separate pass, not comparable to the 16k -thinkon rows)"
+qwen3-6-27b-q6-k,Qwen3.6-27B,Q6_K,22884406400,math500,acc,92.0,460,500,39,0.078,19,12265.1,8140.0,"think-on, max_tokens 32768, ctx 40960, zero-shot, greedy","second-tier-32k (separate pass, not comparable to the 16k -thinkon rows)"
+qwable-27b-q4-k-m,Qwable-27B,Q4_K_M,16547398976,math500,acc,90.0,450,500,51,0.102,34,13310.8,8647.5,"think-on, max_tokens 32768, ctx 40960, zero-shot, greedy","second-tier-32k (separate pass, not comparable to the 16k -thinkon rows)"
