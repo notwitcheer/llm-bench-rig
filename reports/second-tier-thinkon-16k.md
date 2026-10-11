@@ -26,6 +26,8 @@ Scores are percentages. `cap` is the share of items that hit the 16k completion 
 | Gemma 4 31B-it | QAT Q4_0 | 17.7 GB | 91.1 | 94.0 | 94.5 | 81.0 | **90.1** | 2.2% | 11 | 3,143 |
 | Qwen3.8-27B | Q6_K | 22.9 GB | 89.7 | 95.2 | 92.1 | 81.8 | **89.7** | 1.6% | 4 | 1,780 |
 | Qwen3.8-27B | UD-IQ3_XXS | 11.9 GB | 90.2 | 94.6 | 92.7 | 80.7 | **89.5** | 1.2% | 2 | 1,891 |
+| Ternary-Bonsai-2-27B † | PQ2_0 | 7.2 GB | 87.3 | 95.0 | 92.1 | 80.4 | **88.7** | 2.2% | 6 | 2,075 |
+| Ternary-Bonsai-2-27B † | PTQ1_0 | 5.9 GB | 87.6 | 93.8 | 93.9 | 79.4 | **88.7** | 2.8% | 11 | 2,127 |
 | Nemotron 3.5 Lightning 30B-A3B | Q4_K_M | 24.5 GB | 87.8 | 90.2 | 81.1 | 80.4 | **84.9** | 6.2% | 31 | 2,799 |
 | Ornith 1.5 35B-A3B | Q4_K_M | 21.7 GB | 77.3 | 88.2 | 91.5 | 81.5 | **84.6** | 2.2% | 6 | 1,909 |
 | Qwen3.6-35B-A3B | UD-Q5_K_M | 26.5 GB | 87.2 | 72.8 ▲ | 95.1 | 81.2 | **84.1** | 30.2% | 122 | 12,610 |
@@ -34,7 +36,7 @@ Scores are percentages. `cap` is the share of items that hit the 16k completion 
 | Ornith 1.5 9B | Q6_K | 7.4 GB | 69.5 | 84.6 | 89.0 | 77.0 | **80.0** | 5.8% | 27 | 2,712 |
 | Qwopus3.8-27B-Flash | Q6_K | 22.4 GB | 83.6 | 33.6 ◆ | 74.4 | 80.7 | **68.1** | 3.8% | 325 | 5,177 |
 
-▲ budget-limited: 10% or more of the items hit the cap (Qwable-27B MBPP+ capped 12.2%). ◆ format miss: 325 of 500 answers unboxed. Per-task `correct`/`total`, `capped_count`, `parse_failures`, `tokens_per_correct` and the median completion length are in [`dataset/second_tier.csv`](../dataset/second_tier.csv).
+† added 2026-10-11, after the chart above was published; see the addendum below. ▲ budget-limited: 10% or more of the items hit the cap (Qwable-27B MBPP+ capped 12.2%). ◆ format miss: 325 of 500 answers unboxed. Per-task `correct`/`total`, `capped_count`, `parse_failures`, `tokens_per_correct` and the median completion length are in [`dataset/second_tier.csv`](../dataset/second_tier.csv).
 
 Wilson 95% half-widths per task run 1.9 to 6.6 points on these set sizes (HumanEval+ at 164 items is the widest); the propagated half-width on a four-task mean is 1.6 to 2.3 points per row. Differences under two points on the mean column are not rankings.
 
@@ -46,6 +48,30 @@ Wilson 95% half-widths per task run 1.9 to 6.6 points on these set sizes (HumanE
 4. **IFEval is where the MoE and small rows separate.** Ornith 1.5 35B-A3B posts 91.5 on HumanEval+ but 77.3 on IFEval; Ornith 1.5 9B 89.0 and 69.5. Both are at 1.7% and 5.9% capped, so this is not a budget effect.
 5. **Nemotron 3.5 Lightning is the second most expensive row on IFEval** (4,062 tokens per correct, behind Qwable-27B's 4,137) and spends 2,799 on MATH-500 for 90.2, with 31 unboxed at 6.2% capped.
 6. **The Qwopus3.8-27B-Flash maths cell is a format miss.** 325 unboxed at 3.8% capped and a 552-token median means the answers were short and plain, without the `\boxed{}` wrapper. It is a formatting failure of the same kind as this model's HumanEval collapse on the main board (footnote 15 there: a leading-space indentation issue the model card discloses). The HumanEval+ 74.4 here is thinking on with a 16k budget, a different regime from the main board's 26.8, so the two are not a pair. A tolerant extractor (last-line fallback) and an offline regrade would settle what the maths score is; that is a harness change, not a GPU run, and it is on the owed list.
+
+## Addendum 2026-10-11: Ternary-Bonsai-2-27B (two rows)
+
+[prism-ml/Ternary-Bonsai-2-27B-gguf](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf) is Qwen3.8-27B with ternary weights, published 2026-09-16 under Apache-2.0. Its model card claims 98.2% of FP16 across 14 thinking-mode benchmarks and "within 0.4 points of UD-Q4_K_XL". This board has the same base model at Q6_K and UD-IQ3_XXS, so both packings went through the identical regime.
+
+- **Only change:** the server binary. PTQ1_0 and PQ2_0 kernels are not in mainline llama.cpp, so both rows ran on the PrismML fork (`PrismML-Eng/llama.cpp`, `prism` branch, commit `4fbda12`, CUDA 12.8, sm_120); every detail json records it in `server_bin`. Regime, tasks, grader and budget are the same as every other row: thinking on, `max_tokens 16384`, `ctx 24576`, greedy, zero-shot.
+- **Files:** PTQ1_0 5,946,648,928 bytes, PQ2_0 7,206,168,928 bytes (`stat -L`), against 22,884,408,288 for Qwen3.8-27B Q6_K.
+- **Window:** 2026-10-08 to 2026-10-10, idle-queue item `65-bonsai2-secondtier`.
+
+| Row | IFEval | MATH-500 | HumanEval+ | MBPP+ | Mean | vs Q6_K mean |
+|---|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-27B Q6_K (22.9 GB) | 89.65 | 95.2 | 92.07 | 81.75 | 89.67 | |
+| Qwen3.8-27B UD-IQ3_XXS (11.9 GB) | 90.2 | 94.6 | 92.68 | 80.69 | 89.54 | -0.13 |
+| Ternary-Bonsai-2-27B PQ2_0 (7.2 GB) | 87.25 | 95.0 | 92.07 | 80.42 | 88.69 | -0.98 |
+| Ternary-Bonsai-2-27B PTQ1_0 (5.9 GB) | 87.62 | 93.8 | 93.9 | 79.37 | 88.67 | -1.00 |
+
+Reads:
+
+1. **Both ternary rows land one point under Q6_K on the four-task mean, at 26% and 31% of its file size.** The propagated Wilson half-width on a four-task mean on this board is 1.6 to 2.3 points per row, so the gap is inside the interval. As a ratio, 88.7 / 89.7 is 98.9% of the Q6_K mean; the vendor's 98.2% is against FP16 on a different task set, so the two numbers are not a pair, but nothing here contradicts it.
+2. **IFEval is the one column where the gap is clear of the others.** 87.25 and 87.62 against 89.65 (Q6_K) and 90.2 (UD-IQ3_XXS), with 7.2% and 7.4% of IFEval items reaching the cap against 2.8% and 3.3%. The ternary rows think longer on instruction following (2,816 and 2,920 completion tokens per correct, against 2,235 and 2,483).
+3. **The two packings are the same model on this board.** 88.67 vs 88.69; the 1.3 GB smaller PTQ1_0 file costs nothing measurable here.
+4. **Cost per answer is higher than the 3-bit cut.** MATH-500 tokens per correct 2,075 and 2,127 against 1,780 (Q6_K) and 1,891 (UD-IQ3_XXS). The smaller file buys VRAM, not speed per answer.
+
+In flight on the same two rows: GPQA Diamond thinking on at 16k and this year's AIME and HMMT at 32k, plus two more sub-10 GB Qwen3.8-27B files on this regime (ConwayResearch Underdog-Saluki-27B IQ2-mix and ISTA-DASLab GSQ-RCO IQ2_XS). Those land in a separate report.
 
 ## Worth it if / not if
 

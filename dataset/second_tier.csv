@@ -39,3 +39,11 @@ qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,ifeval,prompt_stri
 qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,math500,acc,33.6,168,500,19,0.038,325,5176.9,551.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",2026-09-14 qwen-math grader (latex2sympy2_extended on py>=3.13)
 qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,humaneval_plus,pass@1,74.39,122,164,0,0.0,,1062.3,547.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
 qwopus3-8-27b-flash-q6-k,Qwopus3.8-27B-Flash,Q6_K,22430995552,mbpp_plus,pass@1,80.69,305,378,6,0.0159,,1631.8,645.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-ptq1-0,Ternary-Bonsai-2-27B,PTQ1_0,5946648928,ifeval,prompt_strict_acc,87.62,474,541,39,0.0721,0,2816.5,769,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-ptq1-0,Ternary-Bonsai-2-27B,PTQ1_0,5946648928,math500,acc,93.8,469,500,14,0.028,11,2127.1,570.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-ptq1-0,Ternary-Bonsai-2-27B,PTQ1_0,5946648928,humaneval_plus,pass@1,93.9,154,164,7,0.0427,,1933.3,472.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-ptq1-0,Ternary-Bonsai-2-27B,PTQ1_0,5946648928,mbpp_plus,pass@1,79.37,300,378,18,0.0476,,2272.2,373.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,ifeval,prompt_strict_acc,87.25,472,541,40,0.0739,0,2920.0,776,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,math500,acc,95.0,475,500,11,0.022,6,2075.1,578.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,humaneval_plus,pass@1,92.07,151,164,7,0.0427,,1811.9,463.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,mbpp_plus,pass@1,80.42,304,378,15,0.0397,,2222.3,369.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
