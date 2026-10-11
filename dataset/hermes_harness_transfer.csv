@@ -1,0 +1,17 @@
+checkpoint,hf_repo,slice,n_tasks,samples,correct,graded,ungraded,mean_pass_at_1_pct,ci95_lo_pct,ci95_hi_pct,graded_only_pct,pass1_pct,pass2_pct,pass3_pct,pass4_pct,diff_vs_base_pp,diff_ci95_lo_pp,diff_ci95_hi_pp,wilcoxon_p,signflip_p,tasks_better,tasks_worse,pass1_mcnemar_gained,pass1_mcnemar_lost,pass1_mcnemar_p
+LFM2.5-2.6B (base),LiquidAI/LFM2.5-2.6B@654f9463,all,250,1000,136,1000,0,13.6,10.5,16.9,13.6,15.6,14.0,11.6,13.2,reference,,,,,,,,,
+LFM2.5-2.6B (base),LiquidAI/LFM2.5-2.6B@654f9463,easy,33,132,37,,,28.0,17.4,38.6,,,,,,,,,,,,,,,
+LFM2.5-2.6B (base),LiquidAI/LFM2.5-2.6B@654f9463,medium,118,472,63,,,13.3,9.1,18.2,,,,,,,,,,,,,,,
+LFM2.5-2.6B (base),LiquidAI/LFM2.5-2.6B@654f9463,hard,99,396,36,,,9.1,5.1,13.6,,,,,,,,,,,,,,,
+multi-harness RL,FineEnvs/LFM2.5-2.6B-multiharness-RL@3c1e3522,all,250,1000,154,996,4,15.4,12.1,18.9,15.5,16.0,16.4,15.6,13.6,1.8,-0.8,4.4,0.2,0.21,41,30,17,16,1
+multi-harness RL,FineEnvs/LFM2.5-2.6B-multiharness-RL@3c1e3522,easy,33,132,36,,,27.3,16.7,38.6,,,,,,,,,,,,,,,
+multi-harness RL,FineEnvs/LFM2.5-2.6B-multiharness-RL@3c1e3522,medium,118,472,75,,,15.9,11.4,21.0,,,,,,,,,,,,,,,
+multi-harness RL,FineEnvs/LFM2.5-2.6B-multiharness-RL@3c1e3522,hard,99,396,43,,,10.9,6.3,15.9,,,,,,,,,,,,,,,
+OpenCode-only RL,FineEnvs/LFM2.5-2.6B-opencode-RL@a0bcdab2,all,250,1000,220,1000,0,22.0,18.5,25.8,22.0,19.6,24.4,21.2,22.8,8.4,5.7,11.1,1.7e-08,5e-05,78,22,23,13,0.13
+OpenCode-only RL,FineEnvs/LFM2.5-2.6B-opencode-RL@a0bcdab2,easy,33,132,46,,,34.8,25.0,45.5,,,,,,,,,,,,,,,
+OpenCode-only RL,FineEnvs/LFM2.5-2.6B-opencode-RL@a0bcdab2,medium,118,472,119,,,25.2,19.9,30.7,,,,,,,,,,,,,,,
+OpenCode-only RL,FineEnvs/LFM2.5-2.6B-opencode-RL@a0bcdab2,hard,99,396,55,,,13.9,9.3,19.2,,,,,,,,,,,,,,,
+multi-harness SFT,FineEnvs/LFM2.5-2.6B-multiharness-SFT@748e2377,all,250,1000,305,998,2,30.5,26.2,34.9,30.6,31.6,28.8,32.8,28.8,16.9,13.0,20.8,1.5e-13,5e-05,110,19,54,14,1.1e-06
+multi-harness SFT,FineEnvs/LFM2.5-2.6B-multiharness-SFT@748e2377,easy,33,132,83,,,62.9,52.3,73.5,,,,,,,,,,,,,,,
+multi-harness SFT,FineEnvs/LFM2.5-2.6B-multiharness-SFT@748e2377,medium,118,472,153,,,32.4,26.3,38.8,,,,,,,,,,,,,,,
+multi-harness SFT,FineEnvs/LFM2.5-2.6B-multiharness-SFT@748e2377,hard,99,396,69,,,17.4,12.4,23.0,,,,,,,,,,,,,,,
