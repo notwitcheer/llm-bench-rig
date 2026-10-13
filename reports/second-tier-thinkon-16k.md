@@ -71,7 +71,7 @@ Reads:
 3. **The two packings are the same model on this board.** 88.67 vs 88.69; the 1.3 GB smaller PTQ1_0 file costs nothing measurable here.
 4. **Cost per answer is higher than the 3-bit cut.** MATH-500 tokens per correct 2,075 and 2,127 against 1,780 (Q6_K) and 1,891 (UD-IQ3_XXS). The smaller file buys VRAM, not speed per answer.
 
-In flight on the same two rows: GPQA Diamond thinking on at 16k and this year's AIME and HMMT at 32k, plus two more sub-10 GB Qwen3.8-27B files on this regime (ConwayResearch Underdog-Saluki-27B IQ2-mix and ISTA-DASLab GSQ-RCO IQ2_XS). Those land in a separate report.
+In flight on the same two rows: GPQA Diamond thinking on at 16k and this year's AIME and HMMT at 32k, plus two more sub-10 GB Qwen3.8-27B files on this regime (ConwayResearch Underdog-Saluki-27B IQ2-mix and ISTA-DASLab GSQ-RCO IQ2_XS). Those land in a separate report: [Qwen3.8-27B under 10 GB](sub10-qwen38-27b.md) (Saluki published 2026-10-13, GSQ-RCO pending).
 
 ## Worth it if / not if
 

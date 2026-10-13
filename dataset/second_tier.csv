@@ -47,3 +47,7 @@ ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,ifeval,prompt_s
 ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,math500,acc,95.0,475,500,11,0.022,6,2075.1,578.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
 ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,humaneval_plus,pass@1,92.07,151,164,7,0.0427,,1811.9,463.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
 ternary-bonsai-2-27b-pq2-0,Ternary-Bonsai-2-27B,PQ2_0,7206168928,mbpp_plus,pass@1,80.42,304,378,15,0.0397,,2222.3,369.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,ifeval,prompt_strict_acc,84.84,459,541,54,0.0998,0,3935.4,1220,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,math500,acc,91.6,458,500,27,0.054,18,3022.8,704.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,humaneval_plus,pass@1,89.02,146,164,12,0.0732,,2748.2,598.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,mbpp_plus,pass@1,77.25,292,378,29,0.0767,,3145.4,426.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
