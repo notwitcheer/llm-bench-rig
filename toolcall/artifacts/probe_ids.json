@@ -1,0 +1,37 @@
+{
+ "S1": [
+  "parallel_114",
+  "live_parallel_12-8-0",
+  "parallel_multiple_3",
+  "parallel_multiple_120",
+  "parallel_multiple_153"
+ ],
+ "S2": [
+  "live_multiple_185-80-0",
+  "live_simple_130-84-0",
+  "live_multiple_992-223-0",
+  "multiple_199",
+  "simple_python_335"
+ ],
+ "S3": [
+  "multiple_136",
+  "multiple_22",
+  "simple_python_43",
+  "simple_python_6",
+  "simple_python_26"
+ ],
+ "S4": [
+  "irrelevance_203",
+  "irrelevance_52",
+  "irrelevance_121",
+  "irrelevance_16",
+  "irrelevance_9"
+ ],
+ "S5": [
+  "multi_turn_base_4",
+  "multi_turn_base_91",
+  "multi_turn_base_186",
+  "multi_turn_base_174",
+  "multi_turn_base_0"
+ ]
+}

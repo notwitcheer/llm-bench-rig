@@ -1,0 +1,79 @@
+{
+ "official_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+ "rows": {
+  "/home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf": {
+   "sha256": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce",
+   "identical_to_official": false,
+   "identical_after_strip": false,
+   "tokenizer.ggml.model": "gpt2",
+   "tokenizer.ggml.pre": "qwen35",
+   "n_tokens": 248320,
+   "general.name": "Qwen3.8-27B",
+   "tokenizer.ggml.eos_token_id": 248046,
+   "tokenizer.ggml.bos_token_id": 248044,
+   "tokenizer.ggml.add_bos_token": null,
+   "diff": "--- official\n+++ /home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf\n@@ -44,2 +44,14 @@\n {%- endif %}\n+{%- set sysns = namespace(count=0, text='') %}\n+{%- for message in messages %}\n+    {%- if sysns.count == loop.index0 and (message.role == 'system' or message.role == 'developer') %}\n+        {%- set sys_content = render_content(message.content, false, true)|trim %}\n+        {%- if sys_content %}\n+            {%- set sysns.text = sysns.text + ('\\n' if sysns.text else '') + sys_content %}\n+        {%- endif %}\n+        {%- set sysns.count = sysns.count + 1 %}\n+    {%- endif %}\n+{%- endfor %}\n+{%- set num_sys = sysns.count %}\n+{%- set merged_system = sysns.text %}\n {%- set reasoning_instructions = '' %}\n@@ -47,2 +59,5 @@\n     {%- set resolved_reasoning_effort = reasoning_effort|default('xhigh') %}\n+    {%- if resolved_reasoning_effort == 'high' %}\n+        {%- set resolved_reasoning_effort = 'xhigh' %}\n+    {%- endif %}\n     {%- if resolved_reasoning_effort not in ('xhigh', 'medium', 'low') %}\n@@ -68,7 +83,4 @@\n     {{- '\\n\\nIf you choose to call a function ONLY reply in the following format with NO suffix:\\n\\n<tool_call>\\n<function=example_function_name>\\n<parameter=example_parameter_1>\\nvalue_1\\n</parameter>\\n<parameter=example_parameter_2>\\nThis is the value for the second parameter\\nthat can span\\nmultiple lines\\n</parameter>\\n</function>\\n</tool_call>\\n\\n<IMPORTANT>\\nReminder:\\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\\n- Required parameters MUST be specified\\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\\n</IMPORTANT>' }}\n-    {%- if messages[0].role == 'system' %}\n-        {%- set content = render_content(messages[0].content, false, true)|trim %}\n-        {%- if content %}\n-            {{- '\\n\\n' + content }}\n-        {%- endif %}\n+    {%- if merged_system %}\n+        {{- '\\n\\n' + merged_system }}\n     {%- endif %}\n@@ -76,9 +88,4 @@\n {%- else %}\n-    {%- if messages[0].role == 'system' %}\n-        {%- set content = render_content(messages[0].content, false, true)|trim %}\n-        {%- if content %}\n-            {{- '<|im_start|>system\\n' + (reasoning_instructions + '\\n\\n' if reasoning_instructions else '')  + content + '<|im_end|>\\n' }}\n-        {%- elif reasoning_instructions %}\n-            {{- '<|im_start|>system\\n' + reasoning_instructions + '<|im_end|>\\n' }}\n-        {%- endif %}\n+    {%- if merged_system %}\n+        {{- '<|im_start|>system\\n' + (reasoning_instructions + '\\n\\n' if reasoning_instructions else '')  + merged_system + '<|im_end|>\\n' }}\n     {%- elif reasoning_instructions %}\n@@ -98,11 +105,7 @@\n {%- endfor %}\n-{%- if ns.multi_step_tool %}\n-    {{- raise_exception('No user query found in messages.') }}\n-{%- endif %}\n {%- for message in messages %}\n+    {%- if loop.index0 >= num_sys %}\n     {%- set content = render_content(message.content, true)|trim %}\n-    {%- if message.role == \"system\" %}\n-        {%- if not loop.first %}\n-            {{- raise_exception('System message must be at the beginning.') }}\n-        {%- endif %}\n+    {%- if message.role == \"system\" or message.role == \"developer\" %}\n+        {{- raise_exception('System message must be at the beginning.') }}\n     {%- elif message.role == \"user\" %}\n@@ -125,2 +128,5 @@\n                 {%- endif %}\n+                {%- if tool_call.name is not defined or tool_call.name is none %}\n+                    {{- raise_exception('Tool call is missing a function name.') }}\n+                {%- endif %}\n                 {%- if loop.first %}\n@@ -134,3 +140,3 @@\n                 {%- endif %}\n-                {%- if tool_call.arguments is defined and tool_call.arguments != '' %}\n+                {%- if tool_call.arguments is mapping %}\n                     {%- for args_name, args_value in tool_call.arguments|items %}\n@@ -141,2 +147,8 @@\n                     {%- endfor %}\n+                {%- elif tool_call.arguments is string %}\n+                    {%- if tool_call.arguments|trim %}\n+                        {{- raise_exception('Tool call arguments for function \"' + (tool_call.name | string) + '\" were passed as a JSON string. Parse them into an object before calling apply_chat_template.') }}\n+                    {%- endif %}\n+                {%- elif tool_call.arguments is defined and tool_call.arguments is not none %}\n+                    {{- raise_exception('Tool call arguments for function \"' + (tool_call.name | string) + '\" must be an object/mapping or a JSON string.') }}\n                 {%- endif %}\n@@ -161,2 +173,3 @@\n     {%- endif %}\n+    {%- endif %}\n {%- endfor %}\n@@ -169,2 +182,3 @@\n     {%- endif %}\n-{%- endif %}+{%- endif %}\n+{#- Unsloth fixes - developer role, merged system messages, tool calling #}"
+  },
+  "/home/witcheer/models/qwen38-27b/Qwen3.8-27B-UD-IQ3_XXS.gguf": {
+   "sha256": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce",
+   "identical_to_official": false,
+   "identical_after_strip": false,
+   "tokenizer.ggml.model": "gpt2",
+   "tokenizer.ggml.pre": "qwen35",
+   "n_tokens": 248320,
+   "general.name": "Qwen3.8-27B",
+   "tokenizer.ggml.eos_token_id": 248046,
+   "tokenizer.ggml.bos_token_id": 248044,
+   "tokenizer.ggml.add_bos_token": null,
+   "diff": "--- official\n+++ /home/witcheer/models/qwen38-27b/Qwen3.8-27B-UD-IQ3_XXS.gguf\n@@ -44,2 +44,14 @@\n {%- endif %}\n+{%- set sysns = namespace(count=0, text='') %}\n+{%- for message in messages %}\n+    {%- if sysns.count == loop.index0 and (message.role == 'system' or message.role == 'developer') %}\n+        {%- set sys_content = render_content(message.content, false, true)|trim %}\n+        {%- if sys_content %}\n+            {%- set sysns.text = sysns.text + ('\\n' if sysns.text else '') + sys_content %}\n+        {%- endif %}\n+        {%- set sysns.count = sysns.count + 1 %}\n+    {%- endif %}\n+{%- endfor %}\n+{%- set num_sys = sysns.count %}\n+{%- set merged_system = sysns.text %}\n {%- set reasoning_instructions = '' %}\n@@ -47,2 +59,5 @@\n     {%- set resolved_reasoning_effort = reasoning_effort|default('xhigh') %}\n+    {%- if resolved_reasoning_effort == 'high' %}\n+        {%- set resolved_reasoning_effort = 'xhigh' %}\n+    {%- endif %}\n     {%- if resolved_reasoning_effort not in ('xhigh', 'medium', 'low') %}\n@@ -68,7 +83,4 @@\n     {{- '\\n\\nIf you choose to call a function ONLY reply in the following format with NO suffix:\\n\\n<tool_call>\\n<function=example_function_name>\\n<parameter=example_parameter_1>\\nvalue_1\\n</parameter>\\n<parameter=example_parameter_2>\\nThis is the value for the second parameter\\nthat can span\\nmultiple lines\\n</parameter>\\n</function>\\n</tool_call>\\n\\n<IMPORTANT>\\nReminder:\\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\\n- Required parameters MUST be specified\\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\\n</IMPORTANT>' }}\n-    {%- if messages[0].role == 'system' %}\n-        {%- set content = render_content(messages[0].content, false, true)|trim %}\n-        {%- if content %}\n-            {{- '\\n\\n' + content }}\n-        {%- endif %}\n+    {%- if merged_system %}\n+        {{- '\\n\\n' + merged_system }}\n     {%- endif %}\n@@ -76,9 +88,4 @@\n {%- else %}\n-    {%- if messages[0].role == 'system' %}\n-        {%- set content = render_content(messages[0].content, false, true)|trim %}\n-        {%- if content %}\n-            {{- '<|im_start|>system\\n' + (reasoning_instructions + '\\n\\n' if reasoning_instructions else '')  + content + '<|im_end|>\\n' }}\n-        {%- elif reasoning_instructions %}\n-            {{- '<|im_start|>system\\n' + reasoning_instructions + '<|im_end|>\\n' }}\n-        {%- endif %}\n+    {%- if merged_system %}\n+        {{- '<|im_start|>system\\n' + (reasoning_instructions + '\\n\\n' if reasoning_instructions else '')  + merged_system + '<|im_end|>\\n' }}\n     {%- elif reasoning_instructions %}\n@@ -98,11 +105,7 @@\n {%- endfor %}\n-{%- if ns.multi_step_tool %}\n-    {{- raise_exception('No user query found in messages.') }}\n-{%- endif %}\n {%- for message in messages %}\n+    {%- if loop.index0 >= num_sys %}\n     {%- set content = render_content(message.content, true)|trim %}\n-    {%- if message.role == \"system\" %}\n-        {%- if not loop.first %}\n-            {{- raise_exception('System message must be at the beginning.') }}\n-        {%- endif %}\n+    {%- if message.role == \"system\" or message.role == \"developer\" %}\n+        {{- raise_exception('System message must be at the beginning.') }}\n     {%- elif message.role == \"user\" %}\n@@ -125,2 +128,5 @@\n                 {%- endif %}\n+                {%- if tool_call.name is not defined or tool_call.name is none %}\n+                    {{- raise_exception('Tool call is missing a function name.') }}\n+                {%- endif %}\n                 {%- if loop.first %}\n@@ -134,3 +140,3 @@\n                 {%- endif %}\n-                {%- if tool_call.arguments is defined and tool_call.arguments != '' %}\n+                {%- if tool_call.arguments is mapping %}\n                     {%- for args_name, args_value in tool_call.arguments|items %}\n@@ -141,2 +147,8 @@\n                     {%- endfor %}\n+                {%- elif tool_call.arguments is string %}\n+                    {%- if tool_call.arguments|trim %}\n+                        {{- raise_exception('Tool call arguments for function \"' + (tool_call.name | string) + '\" were passed as a JSON string. Parse them into an object before calling apply_chat_template.') }}\n+                    {%- endif %}\n+                {%- elif tool_call.arguments is defined and tool_call.arguments is not none %}\n+                    {{- raise_exception('Tool call arguments for function \"' + (tool_call.name | string) + '\" must be an object/mapping or a JSON string.') }}\n                 {%- endif %}\n@@ -161,2 +173,3 @@\n     {%- endif %}\n+    {%- endif %}\n {%- endfor %}\n@@ -169,2 +182,3 @@\n     {%- endif %}\n-{%- endif %}+{%- endif %}\n+{#- Unsloth fixes - developer role, merged system messages, tool calling #}"
+  },
+  "/home/witcheer/models/saluki-27b/Underdog-Saluki-27B-1.0-IQ2-mix.gguf": {
+   "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+   "identical_to_official": true,
+   "identical_after_strip": true,
+   "tokenizer.ggml.model": "gpt2",
+   "tokenizer.ggml.pre": "qwen35",
+   "n_tokens": 248320,
+   "general.name": "Qwen3.8-27B GSQ-RCO",
+   "tokenizer.ggml.eos_token_id": 248046,
+   "tokenizer.ggml.bos_token_id": 248044,
+   "tokenizer.ggml.add_bos_token": false
+  },
+  "/home/witcheer/models/gsq-rco-27b/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf": {
+   "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+   "identical_to_official": true,
+   "identical_after_strip": true,
+   "tokenizer.ggml.model": "gpt2",
+   "tokenizer.ggml.pre": "qwen35",
+   "n_tokens": 248320,
+   "general.name": "Qwen3.8-27B GSQ-RCO",
+   "tokenizer.ggml.eos_token_id": 248046,
+   "tokenizer.ggml.bos_token_id": 248044,
+   "tokenizer.ggml.add_bos_token": false
+  },
+  "/home/witcheer/models/bonsai2-27b/Ternary-Bonsai-2-27B-PQ2_0.gguf": {
+   "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+   "identical_to_official": true,
+   "identical_after_strip": true,
+   "tokenizer.ggml.model": "gpt2",
+   "tokenizer.ggml.pre": "qwen35",
+   "n_tokens": 248320,
+   "general.name": "Hf",
+   "tokenizer.ggml.eos_token_id": 248046,
+   "tokenizer.ggml.bos_token_id": 248044,
+   "tokenizer.ggml.add_bos_token": false
+  },
+  "/home/witcheer/models/bonsai2-27b/Ternary-Bonsai-2-27B-PTQ1_0.gguf": {
+   "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+   "identical_to_official": true,
+   "identical_after_strip": true,
+   "tokenizer.ggml.model": "gpt2",
+   "tokenizer.ggml.pre": "qwen35",
+   "n_tokens": 248320,
+   "general.name": "Hf",
+   "tokenizer.ggml.eos_token_id": 248046,
+   "tokenizer.ggml.bos_token_id": 248044,
+   "tokenizer.ggml.add_bos_token": false
+  }
+ }
+}
