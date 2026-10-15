@@ -51,3 +51,7 @@ underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,ifeval,pr
 underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,math500,acc,91.6,458,500,27,0.054,18,3022.8,704.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
 underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,humaneval_plus,pass@1,89.02,146,164,12,0.0732,,2748.2,598.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
 underdog-saluki-27b-iq2-mix,Underdog-Saluki-27B-1.0,IQ2-mix,7898369152,mbpp_plus,pass@1,77.25,292,378,29,0.0767,,3145.4,426.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,ifeval,prompt_strict_acc,86.14,466,541,31,0.0573,0,3007.5,885,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,math500,acc,92.8,464,500,18,0.036,11,2501.7,678.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,humaneval_plus,pass@1,90.24,148,164,10,0.061,,2399.6,550.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,mbpp_plus,pass@1,78.84,298,378,22,0.0582,,2623.5,367.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
