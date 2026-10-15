@@ -180,7 +180,8 @@ def run_multi_turn(server, tok, i, think, max_tokens, ctx, deadline, label):
 def main():
     ap = argparse.ArgumentParser()
     for a in ("--server", "--label", "--ids", "--manifest", "--tokenizer", "--prompts", "--out", "--server-bin"):
-        ap.add_argument(a, required=a != "--server-bin", default="")
+        ap.add_argument(a, required=a not in ("--server-bin", "--ids"), default="")
+    ap.add_argument("--sets", default="", help="build the id list from the frozen manifest, e.g. S1,S2,S3,S4 or S5 (phase 1)")
     ap.add_argument("--think", default="on")
     ap.add_argument("--max-tokens", type=int, default=16384)
     ap.add_argument("--ctx", type=int, default=24576)
@@ -194,7 +195,13 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     tok = AutoTokenizer.from_pretrained(a.tokenizer)
     man = {d["id"]: d for d in json.loads(Path(a.manifest).read_text())["items"]}
-    probe = json.loads(Path(a.ids).read_text())
+    if a.ids:
+        probe = json.loads(Path(a.ids).read_text())
+    else:
+        want = [x for x in a.sets.split(",") if x]
+        assert want, "give --ids or --sets"
+        items_m = json.loads(Path(a.manifest).read_text())["items"]
+        probe = {s: [d["id"] for d in items_m if s in d["sets"]] for s in want}
     prompts = {}
     with gzip.open(a.prompts, "rt") as f:
         for line in f:
@@ -210,89 +217,128 @@ def main():
                "n_ctx": (props.get("default_generation_settings") or {}).get("n_ctx"),
                "embedded_template_sha256": hashlib.sha256(tpl.encode()).hexdigest() if tpl else None}
 
-    # tokenizer parity: server /tokenize vs official HF tokenizer, every frozen prompt (or probe prompts only)
-    keys = [k for k in prompts if a.tokenize_all or k[0] in set(sum(probe.values(), []))]
-    par, mism = [], 0
-    t0 = time.time()
-    for k in keys:
-        pr = prompts[k]["prompt"]
-        ids_s = post(a.server, "/tokenize", {"content": pr, "add_special": False, "parse_special": True}, 60)["tokens"]
-        ids_h = tok.encode(pr, add_special_tokens=False)
-        same = ids_s == ids_h
-        mism += not same
-        par.append({"id": k[0], "think": k[1], "n_server": len(ids_s), "n_hf": len(ids_h), "identical": same,
-                    "server_ids_sha256": hashlib.sha256(json.dumps(ids_s).encode()).hexdigest()})
-    (out / "tokenize_parity.json").write_text(json.dumps(par))
-    summary["tokenize_parity"] = {"prompts": len(par), "mismatches_vs_hf": mism, "seconds": round(time.time() - t0, 1)}
+    # tokenizer parity: server /tokenize vs official HF tokenizer, every frozen prompt (or probe prompts only); once per leg dir
+    par_p = out / "tokenize_parity.json"
+    if par_p.exists():
+        par = json.loads(par_p.read_text())
+        summary["tokenize_parity"] = {"prompts": len(par), "mismatches_vs_hf": sum(1 for x in par if not x["identical"]), "seconds": None}
+    else:
+        keys = [k for k in prompts if a.tokenize_all or k[0] in set(sum(probe.values(), []))]
+        par, mism = [], 0
+        t0 = time.time()
+        for k in keys:
+            pr = prompts[k]["prompt"]
+            ids_s = post(a.server, "/tokenize", {"content": pr, "add_special": False, "parse_special": True}, 60)["tokens"]
+            ids_h = tok.encode(pr, add_special_tokens=False)
+            same = ids_s == ids_h
+            mism += not same
+            par.append({"id": k[0], "think": k[1], "n_server": len(ids_s), "n_hf": len(ids_h), "identical": same,
+                        "server_ids_sha256": hashlib.sha256(json.dumps(ids_s).encode()).hexdigest()})
+        par_p.write_text(json.dumps(par))
+        summary["tokenize_parity"] = {"prompts": len(par), "mismatches_vs_hf": mism, "seconds": round(time.time() - t0, 1)}
     print(json.dumps({"tokenize_parity": summary["tokenize_parity"]}), flush=True)
 
-    # single-turn
-    items = []
-    with open(out / "items.jsonl", "w") as fo:
-        for s in ("S1", "S2", "S3", "S4"):
-            for i in probe.get(s, []):
-                left = deadline - time.time()
-                if left < 30:
-                    items.append({"id": i, "set": s, "outcome": "budget_abort (unscored)"})
-                    continue
-                e = B.entry(i)
-                tools = B.tools_for(e)
-                pr = prompts[(i, think)]["prompt"]
-                assert pr == X.render_prompt(tok, B.messages_for(e), tools, think), f"prompt drift on {i}"
-                try:
-                    r = complete(a.server, pr, a.max_tokens, timeout=left)
-                except Exception as ex:  # noqa: BLE001
-                    items.append({"id": i, "set": s, "outcome": "budget_abort (unscored)", "error": repr(ex)[:200]})
-                    continue
-                gen = r.get("content", "")
-                p = X.parse_reply(gen, tools, think, r.get("stop_type"))
-                oc, chk, lo = grade_single(i, e, tools, p, s == "S4")
-                rec = {"id": i, "set": s, "tags": {k: man[i].get(k) for k in ("n_calls", "nested", "json_arg", "gt_nested")},
-                       "parser": X.PARSER_VERSION, "prompt_sha256": prompts[(i, think)]["sha256"], "prompt_tokens_hf": prompts[(i, think)]["n_tokens"],
-                       **comp_meta(r), "bucket": p.bucket, "detail": p.detail, "flags": p.flags,
-                       "outcome": oc, "outcome_lenient": lo, "bfcl": chk, "decoded": p.calls,
-                       "reasoning_chars": len(p.reasoning), "answer": p.answer, "generated": gen}
-                items.append(rec)
-                fo.write(json.dumps(rec, default=str) + "\n")
-                fo.flush()
-                print(f"[{a.label}] {s} {i}: {oc} ({p.bucket}) {rec['completion_tokens']} tok {rec['wall_s']}s "
-                      f"prompt {rec['prompt_tokens']}/{rec['prompt_tokens_hf']}", flush=True)
-    # multi-turn
-    mts = []
-    with open(out / "multi_turn.jsonl", "w") as fo:
+    def load_done(path):
+        done = {}
+        if path.exists():
+            for line in path.read_text().splitlines():
+                if line.strip():
+                    r = json.loads(line)
+                    done[r["id"]] = r
+        return done
+
+    # single-turn: each id once (an item can sit in two sets), S1 then S2 first so the first-post scope lands first;
+    # resumable: ids already in items.jsonl are skipped, a budget-aborted item is not written and reruns next time
+    order, sets_of = [], {}
+    for s in ("S1", "S2", "S3", "S4"):
+        for i in probe.get(s, []):
+            if i not in sets_of:
+                order.append(i)
+                sets_of[i] = []
+            sets_of[i].append(s)
+    st_p = out / "items.jsonl"
+    done = load_done(st_p)
+    aborted = 0
+    with open(st_p, "a") as fo:
+        for i in order:
+            if i in done:
+                continue
+            left = deadline - time.time()
+            if left < 30:
+                aborted += 1
+                continue
+            e = B.entry(i)
+            tools = B.tools_for(e)
+            pr = prompts[(i, think)]["prompt"]
+            assert pr == X.render_prompt(tok, B.messages_for(e), tools, think), f"prompt drift on {i}"
+            try:
+                r = complete(a.server, pr, a.max_tokens, timeout=left)
+            except Exception as ex:  # noqa: BLE001
+                aborted += 1
+                TRANSPORT_LOG.append({"t": time.time(), "id": i, "error": repr(ex)[:300]})
+                print(f"[{a.label}] {i}: request aborted {repr(ex)[:200]}", flush=True)
+                continue
+            gen = r.get("content", "")
+            p = X.parse_reply(gen, tools, think, r.get("stop_type"))
+            oc, chk, lo = grade_single(i, e, tools, p, "S4" in sets_of[i])
+            rec = {"id": i, "set": sets_of[i][0], "sets": sets_of[i],
+                   "tags": {k: man[i].get(k) for k in ("n_calls", "nested", "json_arg", "gt_nested")},
+                   "parser": X.PARSER_VERSION, "prompt_sha256": prompts[(i, think)]["sha256"], "prompt_tokens_hf": prompts[(i, think)]["n_tokens"],
+                   **comp_meta(r), "bucket": p.bucket, "detail": p.detail, "flags": p.flags,
+                   "outcome": oc, "outcome_lenient": lo, "bfcl": chk, "decoded": p.calls,
+                   "reasoning_chars": len(p.reasoning), "answer": p.answer, "generated": gen}
+            done[i] = rec
+            fo.write(json.dumps(rec, default=str) + "\n")
+            fo.flush()
+            print(f"[{a.label}] {'+'.join(sets_of[i])} {i}: {oc} ({p.bucket}) {rec['completion_tokens']} tok {rec['wall_s']}s "
+                  f"prompt {rec['prompt_tokens']}/{rec['prompt_tokens_hf']}", flush=True)
+    # multi-turn (same resume rule; a budget-aborted entry is not written and restarts from turn 1 next time)
+    mt_p = out / "multi_turn.jsonl"
+    mt_done = load_done(mt_p)
+    with open(mt_p, "a") as fo:
         for i in probe.get("S5", []):
+            if i in mt_done:
+                continue
             if deadline - time.time() < 90:
-                mts.append({"id": i, "outcome": "not started (budget)"})
+                aborted += 1
                 continue
             rec = run_multi_turn(a.server, tok, i, think, a.max_tokens, a.ctx, deadline, a.label)
-            mts.append({k: v for k, v in rec.items() if k not in ("steps_log", "decoded")})
+            if rec["outcome"].startswith("budget_abort"):
+                aborted += 1
+                continue
+            mt_done[i] = rec
             fo.write(json.dumps(rec, default=str) + "\n")
             fo.flush()
             print(f"[{a.label}] S5 {i}: {rec['outcome']} steps {rec['steps']} turns {rec['turns_done']}/{rec['turns_gt']} "
                   f"{rec['completion_tokens']} tok {rec['wall_s']}s max prompt {rec['max_prompt_tokens']} "
                   f"max prompt+gen {rec['max_prompt_plus_gen']} buckets {rec['step_buckets']}", flush=True)
 
-    scored = [x for x in items if "prompt_sha256" in x]
+    items = [done[i] for i in order if i in done]
+    mts = [{k: v for k, v in mt_done[i].items() if k not in ("steps_log", "decoded")} for i in probe.get("S5", []) if i in mt_done]
     def agg(xs):
         d = {}
         for x in xs:
             d[x["outcome"]] = d.get(x["outcome"], 0) + 1
         return d
-    summary["single_turn"] = {s: agg([x for x in items if x["set"] == s]) for s in ("S1", "S2", "S3", "S4")}
+    summary["single_turn"] = {s: agg([x for x in items if s in x.get("sets", [x["set"]])]) for s in ("S1", "S2", "S3", "S4")}
     summary["single_turn_pace"] = {
-        "n": len(scored),
-        "wall_s_total": round(sum(x["wall_s"] for x in scored), 1),
-        "wall_s_per_item": sorted(x["wall_s"] for x in scored),
-        "completion_tokens": sorted(x["completion_tokens"] or 0 for x in scored),
-        "decode_tok_s_median": sorted(x["decode_tok_s"] or 0 for x in scored)[len(scored) // 2] if scored else None,
-        "prompt_tokens_server_eq_hf": sum(1 for x in scored if x["prompt_tokens"] == x["prompt_tokens_hf"]),
-        "capped": sum(1 for x in scored if x["bucket"] == "capped"),
-        "python_bool_replies": sum(1 for x in scored if "python_bool" in (x.get("flags") or []))}
+        "n": len(items),
+        "wall_s_total": round(sum(x["wall_s"] for x in items), 1),
+        "completion_tokens_mean": round(sum((x["completion_tokens"] or 0) for x in items) / len(items), 1) if items else None,
+        "decode_tok_s_median": sorted(x["decode_tok_s"] or 0 for x in items)[len(items) // 2] if items else None,
+        "prompt_tokens_server_eq_hf": sum(1 for x in items if x["prompt_tokens"] == x["prompt_tokens_hf"]),
+        "capped": sum(1 for x in items if x["bucket"] == "capped"),
+        "python_bool_replies": sum(1 for x in items if "python_bool" in (x.get("flags") or []))}
     summary["multi_turn"] = mts
-    summary["transport_errors"] = TRANSPORT_LOG
-    summary["wall_s"] = round(time.time() - t_start, 1)
-    (out / "summary.json").write_text(json.dumps(summary, indent=1, default=str))
-    print(json.dumps({k: summary[k] for k in ("label", "single_turn", "single_turn_pace", "wall_s")}, default=str), flush=True)
+    summary["multi_turn_outcomes"] = agg(mts)
+    summary["transport_errors_this_session"] = TRANSPORT_LOG
+    summary["wall_s_this_session"] = round(time.time() - t_start, 1)
+    expected = len(order) + len(probe.get("S5", []))
+    summary["progress"] = {"done": len(items) + len(mts), "expected": expected, "aborted_this_session": aborted}
+    is_complete = len(items) == len(order) and len(mts) == len(probe.get("S5", []))
+    (out / ("summary.json" if is_complete else "progress.json")).write_text(json.dumps(summary, indent=1, default=str))
+    print(json.dumps({k: summary[k] for k in ("label", "single_turn", "multi_turn_outcomes", "progress")}, default=str), flush=True)
+    sys.exit(0 if is_complete else 3)
 
 
 if __name__ == "__main__":
