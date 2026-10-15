@@ -127,7 +127,7 @@ def run_multi_turn(server, tok, i, think, max_tokens, ctx, deadline, label):
             gen = r.get("content", "")
             p = X.parse_reply(gen, tools, think, r.get("stop_type"))
             meta = comp_meta(r)
-            steps_log.append({"turn": t_idx, "step": count, "n_prompt_hf": n_prompt, "n_predict": n_pred, **meta,
+            steps_log.append({"turn": t_idx, "step": count, "parser": X.PARSER_VERSION, "n_prompt_hf": n_prompt, "n_predict": n_pred, **meta,
                               "bucket": p.bucket, "detail": p.detail, "flags": p.flags, "n_calls": len(p.calls),
                               "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(), "generated": gen})
             if p.bucket != "ok" or not p.calls:
@@ -248,7 +248,7 @@ def main():
                 p = X.parse_reply(gen, tools, think, r.get("stop_type"))
                 oc, chk, lo = grade_single(i, e, tools, p, s == "S4")
                 rec = {"id": i, "set": s, "tags": {k: man[i].get(k) for k in ("n_calls", "nested", "json_arg", "gt_nested")},
-                       "prompt_sha256": prompts[(i, think)]["sha256"], "prompt_tokens_hf": prompts[(i, think)]["n_tokens"],
+                       "parser": X.PARSER_VERSION, "prompt_sha256": prompts[(i, think)]["sha256"], "prompt_tokens_hf": prompts[(i, think)]["n_tokens"],
                        **comp_meta(r), "bucket": p.bucket, "detail": p.detail, "flags": p.flags,
                        "outcome": oc, "outcome_lenient": lo, "bfcl": chk, "decoded": p.calls,
                        "reasoning_chars": len(p.reasoning), "answer": p.answer, "generated": gen}
@@ -286,7 +286,8 @@ def main():
         "completion_tokens": sorted(x["completion_tokens"] or 0 for x in scored),
         "decode_tok_s_median": sorted(x["decode_tok_s"] or 0 for x in scored)[len(scored) // 2] if scored else None,
         "prompt_tokens_server_eq_hf": sum(1 for x in scored if x["prompt_tokens"] == x["prompt_tokens_hf"]),
-        "capped": sum(1 for x in scored if x["bucket"] == "capped")}
+        "capped": sum(1 for x in scored if x["bucket"] == "capped"),
+        "python_bool_replies": sum(1 for x in scored if "python_bool" in (x.get("flags") or []))}
     summary["multi_turn"] = mts
     summary["transport_errors"] = TRANSPORT_LOG
     summary["wall_s"] = round(time.time() - t_start, 1)

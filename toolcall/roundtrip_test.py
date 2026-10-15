@@ -42,7 +42,9 @@ def negative_controls():
         ("stray text in block", "\n</think>\n\n<tool_call>\n<function=f>\nlet me see\n<parameter=s>\nhi\n</parameter>\n</function>\n</tool_call>", "eos", "malformed_structure"),
         ("bad int value", "\n</think>\n\n<tool_call>\n<function=f>\n<parameter=s>\nhi\n</parameter>\n<parameter=n>\nthree\n</parameter>\n</function>\n</tool_call>", "eos", "malformed_value"),
         ("bad array value", "\n</think>\n\n<tool_call>\n<function=f>\n<parameter=s>\nhi\n</parameter>\n<parameter=xs>\n[1, 2,\n</parameter>\n</function>\n</tool_call>", "eos", "malformed_value"),
-        ("python bool", "\n</think>\n\n<tool_call>\n<function=f>\n<parameter=s>\nhi\n</parameter>\n<parameter=b>\nTrue\n</parameter>\n</function>\n</tool_call>", "eos", "malformed_value"),
+        ("python bool (parser-2: accepted, flagged)", "\n</think>\n\n<tool_call>\n<function=f>\n<parameter=s>\nhi\n</parameter>\n<parameter=b>\nTrue\n</parameter>\n</function>\n</tool_call>", "eos", "ok"),
+        ("bool written TRUE", "\n</think>\n\n<tool_call>\n<function=f>\n<parameter=s>\nhi\n</parameter>\n<parameter=b>\nTRUE\n</parameter>\n</function>\n</tool_call>", "eos", "malformed_value"),
+        ("bool written yes", "\n</think>\n\n<tool_call>\n<function=f>\n<parameter=s>\nhi\n</parameter>\n<parameter=b>\nyes\n</parameter>\n</function>\n</tool_call>", "eos", "malformed_value"),
         ("json call leaked as text", '\n</think>\n\n{"name": "f", "arguments": {"s": "hi"}}', "eos", "leaked"),
         ("python call leaked as text", "\n</think>\n\nf(s='hi')", "eos", "leaked"),
         ("call only in reasoning", "I'll do <tool_call>\n<function=f>\n</think>\n\nSure, done.", "eos", "leaked"),
@@ -52,9 +54,11 @@ def negative_controls():
     for name, text, stop, want in cases:
         p = X.parse_reply(text, tools, think=True, stop_type=stop)
         res.append({"case": name, "want": want, "got": p.bucket, "detail": p.detail, "pass": p.bucket == want})
-    # lenient decode of the python bool case must recover True
+    # parser-2: the python bool case decodes to a real boolean and carries the python_bool flag
     p = X.parse_reply(cases[12][1], tools, think=True, stop_type="eos")
-    res.append({"case": "lenient recovers python bool", "pass": p.calls_lenient == [{"f": {"s": "hi", "b": True}}]})
+    res.append({"case": "python bool -> True + flag", "pass": p.calls == [{"f": {"s": "hi", "b": True}}] and "python_bool" in p.flags})
+    p = X.parse_reply(cases[0][1], tools, think=True, stop_type="eos")
+    res.append({"case": "json path carries no python_bool flag", "pass": "python_bool" not in p.flags})
     return res
 
 

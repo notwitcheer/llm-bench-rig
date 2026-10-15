@@ -39,7 +39,10 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-PARSER_VERSION = "toolcall-v1-parser-1"
+PARSER_VERSION = "toolcall-v1-parser-2"
+# parser-2 (2026-10-15, after the step-1 probe, operator go): a boolean parameter written as the Python
+# literal True / False (exact casing, surrounding whitespace ignored) is accepted as a boolean and flagged
+# "python_bool" (format-adherence column). parser-1 counted it malformed_value. Nothing else changed.
 
 TOOL_OPEN, TOOL_CLOSE = "<tool_call>", "</tool_call>"
 FUNC_RE = re.compile(r"<function=([^>\n]*)>")
@@ -130,6 +133,8 @@ def _convert(raw: str, typ: str | None, lenient: bool) -> tuple[bool, Any]:
         return True, json.loads(raw)
     except Exception:
         pass
+    if typ == "boolean" and raw.strip() in ("True", "False"):
+        return True, raw.strip() == "True"
     if lenient:
         s = raw.strip()
         low = s.lower()
@@ -247,6 +252,8 @@ def parse_reply(generated: str, tools: list[dict], think: bool, stop_type: str |
         sargs, largs = {}, {}
         for k, raw in res.items():
             t = ftypes.get(k)
+            if t == "boolean" and raw.strip() in ("True", "False") and "python_bool" not in p.flags:
+                p.flags.append("python_bool")
             ok, v = _convert(raw, t, lenient=False)
             if not ok:
                 value_errs.append(f"{name}.{k}:{t}={raw[:40]!r}")
