@@ -55,3 +55,7 @@ qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,ifeval,prompt_s
 qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,math500,acc,92.8,464,500,18,0.036,11,2501.7,678.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
 qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,humaneval_plus,pass@1,90.24,148,164,10,0.061,,2399.6,550.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
 qwen3-8-27b-gsq-rco-iq2-xs,Qwen3.8-27B,GSQ-RCO IQ2_XS,8422841472,mbpp_plus,pass@1,78.84,298,378,22,0.0582,,2623.5,367.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-coder390-q6-k-mtp,Qwen3.8-27B-Coder390,Q6_K,23177516384,ifeval,prompt_strict_acc,86.32,467,541,29,0.0536,0,2345.7,609,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-coder390-q6-k-mtp,Qwen3.8-27B-Coder390,Q6_K,23177516384,math500,acc,94.8,474,500,7,0.014,2,1489.0,535.5,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-coder390-q6-k-mtp,Qwen3.8-27B-Coder390,Q6_K,23177516384,humaneval_plus,pass@1,92.07,151,164,4,0.0244,,1239.8,399.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
+qwen3-8-27b-coder390-q6-k-mtp,Qwen3.8-27B-Coder390,Q6_K,23177516384,mbpp_plus,pass@1,82.54,312,378,4,0.0106,,1191.4,324.0,"think-on, max_tokens 16384, ctx 24576, zero-shot, greedy",
