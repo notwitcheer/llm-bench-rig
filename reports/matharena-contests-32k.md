@@ -61,3 +61,36 @@ Wilson 95% intervals on 63 problems are wide: 51 is 69.6 to 88.8%, 47 is 62.7 to
 - A leg cut by a block's hard stop re-ran from its per-problem progress file at the next block, or from the start of the leg when no detail file had been written. Every final detail json matches its progress json (`correct` and `total` asserted by `scripts/contest_board_data.py`).
 
 *Sources: `results/<slug>-matharena-32k/{ma_aime_2026,ma_hmmt_feb_2026}_{detail,progress}.json` and `_tokens.jsonl` on the rig, rebuilt 2026-10-07 with `scripts/contest_board_data.py` (identical to the 2026-10-06 build); MATH-500 cells from `results/<slug>-thinkon[-32k]/math500_detail.json` (same files as the second-tier boards); release dates from the Hub `createdAt` of each base repo; paired tests from the per-problem progress files; chart script `scripts/chart_contest_board.py`.*
+
+## Addendum 2026-10-20: Ternary-Bonsai-2-27B, both packings
+
+The two [Ternary-Bonsai-2-27B](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf) files from the [sub-10 GB Qwen3.8-27B study](sub10-qwen38-27b.md) ran the same 63 problems under the same regime (thinking on, `max_tokens 32768`, `ctx 40960`, greedy, exact-number veto on). One condition differs from the nine rows above: the server binary is the PrismML llama.cpp fork (`prism` branch, `4fbda12`, CUDA 12.8, sm_120), recorded in each detail json's `server_bin`, because the PTQ1_0 and PQ2_0 kernels are not in mainline. Run window 2026-10-11 to 2026-10-20 (idle-queue item `66-bonsai2-phase2`; the last leg, PQ2_0 HMMT, finished 2026-10-20 02:36 CEST). The chart at the top is the nine-row card as published and is left unchanged.
+
+| Model | Quant | GGUF | AIME 2026 | HMMT Feb 2026 | Solved /63 | Capped /63 | Finished right | MATH-500 (budget) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-27B (from the table above) | UD-IQ3_XXS | 11.9 GB | 26 | 22 | **48** | 18 | 44/45 (97.8%) | 94.6 (16k) |
+| Qwen3.8-27B (from the table above) | Q6_K | 22.9 GB | 25 | 22 | **47** | 19 | 42/44 (95.5%) | 95.2 (16k) |
+| Ternary-Bonsai-2-27B † | PQ2_0 | 7.2 GB | 24 | 22 | **46** | 20 | 42/43 (97.7%) | 95.0 (16k) |
+| Ternary-Bonsai-2-27B † | PTQ1_0 | 5.9 GB | 23 | 20 | **43** | 20 | 40/43 (93.0%) | 93.8 (16k) |
+
+† PrismML llama.cpp fork `4fbda12`. File sizes 7,206,168,928 and 5,946,648,928 bytes (`stat -L`). Per-leg counts, parse failures, tokens per correct answer and median completion: the four `ternary-bonsai-2-27b-*` rows of [`dataset/matharena_contest_32k.csv`](../dataset/matharena_contest_32k.csv).
+
+Paired per problem on the same 63 (exact McNemar, two-sided; first number = the Bonsai file right and the other row wrong):
+
+| Bonsai file | vs Q6_K | vs UD-IQ3_XXS | vs Gemma 4 31B | vs Ornith 1.5 35B |
+|---|---:|---:|---:|---:|
+| PQ2_0 | 6 / 7 (p = 1.0) | 3 / 5 (p = 0.73) | 2 / 7 (p = 0.18) | 7 / 4 (p = 0.55) |
+| PTQ1_0 | 2 / 6 (p = 0.29) | 1 / 6 (p = 0.13) | 2 / 10 (p = 0.04) | 6 / 6 (p = 1.0) |
+
+### Reads (addendum)
+
+1. **The 7.2 GB PQ2_0 file sits level with the 22.9 GB Q6_K file on this year's contests:** 46 against 47 solved, 6 against 7 discordant problems. Wilson 95% intervals on 63 problems: 46 is 61.0 to 82.4%, 47 is 62.7 to 83.7%.
+2. **The same mechanism as the rest of this page.** Both Bonsai files capped on 20 of 63 problems, against 19 for Q6_K and 18 for UD-IQ3_XXS; 13 of PQ2_0's 20 capped problems are also capped for Q6_K. Of the answers that finished inside 32k, PQ2_0 is right on 42 of 43. The grader credited 4 of PQ2_0's capped answers and 3 of PTQ1_0's (a final answer written before the cut).
+3. **PTQ1_0 (5.9 GB) is three problems behind PQ2_0** (5 / 2 discordant, p = 0.45), not a significant gap on 63 problems. Against Gemma 4 31B it is the only Bonsai comparison under p = 0.05 (2 / 10).
+
+### Limits (addendum)
+
+- Different server binary from the nine rows above (PrismML fork against mainline b10371); harness, prompt, grader, veto and regime are identical. Zero request errors and zero vetoes on all four legs.
+- One greedy pass per problem, 63 problems, the same limits as the rest of this page. The model card recommends a longer output budget (`-n 16384` or more with `-c 65536`); 32k is this page's budget for every row, not a Bonsai-specific choice.
+
+*Sources (addendum): `results/ternary-bonsai-2-27b-{pq2-0,ptq1-0}-matharena-32k/{ma_aime_2026,ma_hmmt_feb_2026}_{detail,progress}.json` on the rig, read 2026-10-20 ~07:30 CEST; MATH-500 cells from `results/ternary-bonsai-2-27b-*-thinkon/math500_detail.json`; paired tests from the per-problem progress files.*

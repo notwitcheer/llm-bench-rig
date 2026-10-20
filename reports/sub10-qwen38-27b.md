@@ -90,7 +90,8 @@ Paired against each row on identical items (A-only = the comparison row right, S
 ## Owed
 
 - ~~ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF IQ2_XS on the same four tasks~~ done 2026-10-15, see the Addendum.
-- GPQA Diamond (think-on 16k) and AIME 2026 + HMMT Feb 2026 (think-on 32k) for both sub-10 GB rows (idle-queue item `67-sub10-qwen38-27b`).
+- GPQA Diamond (think-on 16k) and AIME 2026 + HMMT Feb 2026 (think-on 32k) for both sub-10 GB rows (idle-queue item `67-sub10-qwen38-27b`). Bonsai rows done 2026-10-20, see the Addendum of that date; Saluki and GSQ-RCO still running.
+- GPQA Diamond at a 32k budget for both Bonsai rows (their 16k legs capped on a third of the questions), queued 2026-10-20 (idle-queue item `67b-bonsai2-gpqa32k`).
 - A 32k pass on Saluki's four legs, to measure how much of the gap is the 16k budget.
 
 ## Addendum 2026-10-15: GSQ-RCO IQ2_XS, the file Saluki is built on
@@ -151,3 +152,32 @@ Per task, capped misses / misses: Saluki IFEval 46 / 82, MATH-500 22 / 42, Human
 - Paired and cap-hit numbers: [`scripts/sub10_paired.py`](../scripts/sub10_paired.py) `--subject qwen3-8-27b-gsq-rco-iq2-xs` on the rig against the `*_progress.json` files (the default subject reproduces the Saluki tables above unchanged).
 
 *Sources: `results/underdog-saluki-27b-iq2-mix-thinkon/{ifeval,math500,humaneval_plus,mbpp_plus}_detail.json` and `*_progress.json` on the rig, read 2026-10-13; `results/qwen3-8-27b-gsq-rco-iq2-xs-thinkon/` (same files), read 2026-10-15; `dataset/second_tier.csv` in this commit; model card [ConwayResearch/Underdog-Saluki-27B-1.0](https://huggingface.co/ConwayResearch/Underdog-Saluki-27B-1.0), read 2026-10-13 and 2026-10-15 (`base_model`); charts `scripts/chart_sub10_qwen38.py` (default and `--with-gsq`).*
+
+## Addendum 2026-10-20: GPQA Diamond and this year's contests for the two Bonsai files
+
+Phase 2 of the Bonsai study finished 2026-10-20 02:36 CEST (idle-queue item `66-bonsai2-phase2`, PrismML fork `4fbda12`, same harness).
+
+![Ternary-Bonsai-2-27B on this year's contests and GPQA Diamond](bonsai2-phase2.png)
+
+Chart: [`scripts/chart_bonsai2_phase2.py`](../scripts/chart_bonsai2_phase2.py).
+
+**AIME 2026 + HMMT Feb 2026, think-on 32k:** PQ2_0 solved 46 of 63 (24 + 22), PTQ1_0 43 (23 + 20), against 47 for Q6_K and 48 for UD-IQ3_XXS on the same problems. PQ2_0 against Q6_K is 6 / 7 discordant problems (p = 1.0). Full table, paired tests and limits: [the contest report's 2026-10-20 addendum](matharena-contests-32k.md#addendum-2026-10-20-ternary-bonsai-2-27b-both-packings).
+
+**GPQA Diamond, think-on 16k (budget-limited, a floor):**
+
+| Row | Score | Correct / 198 | Wilson 95% | Capped | Capped and wrong | Finished right | Tokens / correct | Median completion |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-27B Q6_K | 79.29 | 157 | 73.1 to 84.4 | 43 (21.7%) | 35 | 149 / 155 (96.1%) | 7,740 | 2,274.5 |
+| Qwen3.8-27B UD-IQ3_XXS | 78.79 | 156 | 72.6 to 83.9 | not recorded | | | | |
+| Ternary-Bonsai-2-27B PQ2_0 † | 69.7 | 138 | 63.0 to 75.7 | 67 (33.8%) | 54 | 125 / 131 (95.4%) | 11,980 | 7,278 |
+| Ternary-Bonsai-2-27B PTQ1_0 † | 68.69 | 136 | 61.9 to 74.7 | 64 (32.3%) | 57 | 129 / 134 (96.3%) | 12,215 | 7,413.5 |
+
+The Q6_K row's capped count is derived from its tokens sidecar (completion >= 16,376 tokens; that August leg predates the per-item `capped` flag); the UD-IQ3_XXS leg recorded no per-item tokens. Paired on the same 198 questions, Q6_K is right where PQ2_0 is wrong 26 times and the reverse 7 (p = 0.001); against PTQ1_0 27 / 6 (p = 0.0003); PQ2_0 against PTQ1_0 13 / 11 (p = 0.84).
+
+### Reads (2026-10-20)
+
+1. **On the contests at 32k, PQ2_0 is level with Q6_K** from a file a third of the size; PTQ1_0 is three problems behind, inside the noise.
+2. **On GPQA at 16k the Bonsai files score 10 points under Q6_K, and the gap is the budget, not the answers.** A third of their questions hit the 16k cap (67 and 64, against 43 for Q6_K) and 54 / 57 of their misses are capped ones. On the questions that finished inside the budget, both are as accurate as Q6_K (95.4% and 96.3% against 96.1%). Their median completion is about 3.2x Q6_K's (7,278 against 2,274.5 tokens).
+3. **So the 16k GPQA number is a floor, and is not the model's score.** The model card recommends `-n 16384` or more with `-c 65536`. A 32k pass on both files is queued (`67b-bonsai2-gpqa32k`), the same treatment the [three rows that capped at 16k](gpqa-thinkon-32k.md) got. This does not show that the capped questions would be answered right at 32k.
+
+*Sources: `results/ternary-bonsai-2-27b-{pq2-0,ptq1-0}-thinkon/gpqa.json` + `gpqa_progress.json` + `gpqa_tokens.jsonl`, `results/qwen3-8-27b-q6-k-thinkon-rerun/` (same files), `results/qwen3-8-27b-ud-iq3-xxs-thinkon/gpqa.json`, read 2026-10-20 ~07:30 CEST; Wilson 95% intervals computed from correct / 198 (the Bonsai rows match their `gpqa_thinkon` rows in `dataset/board_ci.csv`).*
