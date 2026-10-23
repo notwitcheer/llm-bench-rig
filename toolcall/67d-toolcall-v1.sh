@@ -1,5 +1,5 @@
 #!/bin/bash
-# 68-toolcall-v1.sh: idle-queue item (2026-10-15, mercury; operator go "queue it" in the GPU thread after the step-1 probe).
+# 67d-toolcall-v1.sh (was 68, moved ahead of 67-sub10 on 2026-10-23: drives Hermes tool calls, local-agent hardening first): idle-queue item (2026-10-15, mercury; operator go "queue it" in the GPU thread after the step-1 probe).
 # toolcall-v1 = BFCL v4 slice in raw mode (design: vault 99-personal/benchmark-rig/drafts/2026-10-15-toolcall-slice-design.md,
 # status: toolcall-v1-status.md). Client-side official Qwen3.8 template -> llama-server /completion, greedy, parser
 # toolcall-v1-parser-2, BFCL 2026.3.23 checkers unchanged. Six Qwen3.8-27B-family rows, legs task-major:

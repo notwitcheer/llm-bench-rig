@@ -1,5 +1,5 @@
 #!/bin/bash
-# 70-voxel-qwen-msm3b.sh: idle-queue SIDE TEST (2026-10-23 ~06:50 CEST, mercury, GPU thread; operator agreed: keep msm-v2 on h2 as the
+# 67f-voxel-qwen-msm3b.sh (was 70, moved up 2026-10-23 18:0x CEST: hardening first): idle-queue SIDE TEST (2026-10-23 ~06:50 CEST, mercury, GPU thread; operator agreed: keep msm-v2 on h2 as the
 # series prompt, queue a fixed v3 as a side test only). 66zz2 (msm-v3) hit the 60 min wall with six split JS files in work/src/
 # and no index.html (gate no_html). msm-v3b = v3 + ONE line: work in index.html from the first write, never split into source
 # files, grow one feature at a time. one variable vs 66zz2: that line. sorts after 69 so it never delays bench items.
