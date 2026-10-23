@@ -1,0 +1,40 @@
+meeting notes, platform sync, 19 october
+attendees: sam, priya, jonas, lee, mira
+agenda: launch timing, budget, database migration, hiring, office move
+sam opened with the status of the beta.
+the beta has 312 active testers this week.
+crash rate is down to 0.4 percent.
+jonas raised concerns about the onboarding flow.
+the team agreed the launch date is 14 november.
+marketing needs final screenshots by 3 november.
+lee will draft the launch blog post.
+budget discussion: the approved budget for the quarter is 48,000 euros.
+about a third of it goes to cloud costs.
+mira asked whether the budget covers the conference booth.
+answer: no, the booth is a separate line.
+database migration: priya owns the migration to the new cluster.
+priya expects a two-hour maintenance window.
+the migration will happen the weekend before launch.
+rollback plan is to keep the old cluster warm for a week.
+jonas will write the runbook for the rollback.
+hiring: two backend roles are open.
+interviews continue next week.
+sam asked everyone to review the job descriptions.
+office move: postponed to january.
+the new office has better meeting rooms.
+lee mentioned parking is limited.
+action items were reviewed.
+sam: confirm press list.
+priya: schedule the migration window.
+jonas: rollback runbook.
+lee: blog draft.
+mira: booth quote.
+open question: do we need a status page before launch?
+decision deferred to next sync.
+next sync is 26 october.
+notes taken by mira.
+no other business.
+the meeting ran ten minutes over.
+sam thanked the team.
+recording is in the shared drive.
+end of notes.

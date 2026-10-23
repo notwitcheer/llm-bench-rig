@@ -1,0 +1,22 @@
+{
+  "mmlu": {
+    "score": 83.31,
+    "metric": "acc"
+  },
+  "arc_challenge": {
+    "score": 96.08,
+    "metric": "acc"
+  },
+  "hellaswag": {
+    "score": 92.19,
+    "metric": "acc"
+  },
+  "humaneval": {
+    "score": 93.29,
+    "metric": "pass@1"
+  },
+  "gsm8k": {
+    "score": 93.03,
+    "metric": "exact_match"
+  }
+}

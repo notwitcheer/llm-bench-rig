@@ -1,0 +1,37 @@
+{
+  "pp128": {
+    "tokens_per_sec": 72.95,
+    "stddev": 15.94
+  },
+  "pp512": {
+    "tokens_per_sec": 261.13,
+    "stddev": 14.51
+  },
+  "pp2048": {
+    "tokens_per_sec": 290.12,
+    "stddev": 2.38
+  },
+  "pp4096": {
+    "tokens_per_sec": 298.45,
+    "stddev": 1.24
+  },
+  "pp8192": {
+    "tokens_per_sec": 300.37,
+    "stddev": 1.03
+  },
+  "pp16384": {
+    "tokens_per_sec": 302.48,
+    "stddev": 0.92
+  },
+  "tg128": {
+    "tokens_per_sec": 46.01,
+    "stddev": 0.2
+  },
+  "model_size_gib": 58.26,
+  "params": "127.49 B",
+  "backend": "CUDA",
+  "vram_before_mib": 2,
+  "vram_peak_mib": 3762,
+  "vram_idle_mib": 3762,
+  "engine": "llama.cpp"
+}

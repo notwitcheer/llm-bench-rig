@@ -1,0 +1,200 @@
+2026-10-19 10:00:00 ERROR worker 0 failed
+2026-10-19 10:01:00 INFO request 1 ok
+2026-10-19 10:02:00 INFO request 2 ok
+2026-10-19 10:03:00 INFO request 3 ok
+2026-10-19 10:04:00 INFO request 4 ok
+2026-10-19 10:05:00 INFO request 5 ok
+2026-10-19 10:06:00 INFO request 6 ok
+2026-10-19 10:07:00 INFO request 7 ok
+2026-10-19 10:08:00 INFO request 8 ok
+2026-10-19 10:09:00 ERROR worker 9 failed
+2026-10-19 10:10:00 INFO request 10 ok
+2026-10-19 10:11:00 INFO request 11 ok
+2026-10-19 10:12:00 INFO request 12 ok
+2026-10-19 10:13:00 INFO request 13 ok
+2026-10-19 10:14:00 ERROR worker 14 failed
+2026-10-19 10:15:00 WARN error budget at 15%
+2026-10-19 10:16:00 ERROR worker 16 failed
+2026-10-19 10:17:00 ERROR worker 17 failed
+2026-10-19 10:18:00 INFO request 18 ok
+2026-10-19 10:19:00 INFO request 19 ok
+2026-10-19 10:20:00 INFO request 20 ok
+2026-10-19 10:21:00 ERROR worker 21 failed
+2026-10-19 10:22:00 INFO request 22 ok
+2026-10-19 10:23:00 INFO request 23 ok
+2026-10-19 10:24:00 INFO request 24 ok
+2026-10-19 10:25:00 INFO request 25 ok
+2026-10-19 10:26:00 INFO request 26 ok
+2026-10-19 10:27:00 INFO request 27 ok
+2026-10-19 10:28:00 ERROR worker 28 failed
+2026-10-19 10:29:00 INFO request 29 ok
+2026-10-19 10:30:00 INFO request 30 ok
+2026-10-19 10:31:00 INFO request 31 ok
+2026-10-19 10:32:00 ERROR worker 32 failed
+2026-10-19 10:33:00 INFO request 33 ok
+2026-10-19 10:34:00 INFO request 34 ok
+2026-10-19 10:35:00 INFO request 35 ok
+2026-10-19 10:36:00 INFO request 36 ok
+2026-10-19 10:37:00 INFO request 37 ok
+2026-10-19 10:38:00 INFO request 38 ok
+2026-10-19 10:39:00 INFO request 39 ok
+2026-10-19 10:40:00 INFO request 40 ok
+2026-10-19 10:41:00 INFO request 41 ok
+2026-10-19 10:42:00 INFO request 42 ok
+2026-10-19 10:43:00 INFO request 43 ok
+2026-10-19 10:44:00 INFO request 44 ok
+2026-10-19 10:45:00 ERROR worker 45 failed
+2026-10-19 10:46:00 ERROR worker 46 failed
+2026-10-19 10:47:00 WARN error budget at 47%
+2026-10-19 10:48:00 INFO request 48 ok
+2026-10-19 10:49:00 ERROR worker 49 failed
+2026-10-19 10:50:00 ERROR worker 50 failed
+2026-10-19 10:51:00 INFO request 51 ok
+2026-10-19 10:52:00 INFO request 52 ok
+2026-10-19 10:53:00 WARN error budget at 53%
+2026-10-19 10:54:00 ERROR worker 54 failed
+2026-10-19 10:55:00 INFO request 55 ok
+2026-10-19 10:56:00 WARN error budget at 56%
+2026-10-19 10:57:00 INFO request 57 ok
+2026-10-19 10:58:00 INFO request 58 ok
+2026-10-19 10:59:00 INFO request 59 ok
+2026-10-19 10:00:00 INFO request 60 ok
+2026-10-19 10:01:00 INFO request 61 ok
+2026-10-19 10:02:00 INFO request 62 ok
+2026-10-19 10:03:00 WARN error budget at 63%
+2026-10-19 10:04:00 INFO request 64 ok
+2026-10-19 10:05:00 INFO request 65 ok
+2026-10-19 10:06:00 WARN error budget at 66%
+2026-10-19 10:07:00 INFO request 67 ok
+2026-10-19 10:08:00 INFO no errors in batch 68
+2026-10-19 10:09:00 INFO request 69 ok
+2026-10-19 10:10:00 INFO request 70 ok
+2026-10-19 10:11:00 INFO request 71 ok
+2026-10-19 10:12:00 INFO request 72 ok
+2026-10-19 10:13:00 INFO request 73 ok
+2026-10-19 10:14:00 INFO request 74 ok
+2026-10-19 10:15:00 ERROR worker 75 failed
+2026-10-19 10:16:00 INFO request 76 ok
+2026-10-19 10:17:00 INFO request 77 ok
+2026-10-19 10:18:00 INFO request 78 ok
+2026-10-19 10:19:00 INFO request 79 ok
+2026-10-19 10:20:00 INFO request 80 ok
+2026-10-19 10:21:00 INFO request 81 ok
+2026-10-19 10:22:00 INFO no errors in batch 82
+2026-10-19 10:23:00 INFO request 83 ok
+2026-10-19 10:24:00 INFO request 84 ok
+2026-10-19 10:25:00 WARN error budget at 85%
+2026-10-19 10:26:00 INFO request 86 ok
+2026-10-19 10:27:00 ERROR worker 87 failed
+2026-10-19 10:28:00 ERROR worker 88 failed
+2026-10-19 10:29:00 WARN error budget at 89%
+2026-10-19 10:30:00 ERROR worker 90 failed
+2026-10-19 10:31:00 ERROR worker 91 failed
+2026-10-19 10:32:00 INFO request 92 ok
+2026-10-19 10:33:00 INFO no errors in batch 93
+2026-10-19 10:34:00 INFO request 94 ok
+2026-10-19 10:35:00 INFO request 95 ok
+2026-10-19 10:36:00 ERROR worker 96 failed
+2026-10-19 10:37:00 INFO request 97 ok
+2026-10-19 10:38:00 INFO request 98 ok
+2026-10-19 10:39:00 INFO request 99 ok
+2026-10-19 10:40:00 INFO request 100 ok
+2026-10-19 10:41:00 INFO request 101 ok
+2026-10-19 10:42:00 INFO request 102 ok
+2026-10-19 10:43:00 INFO request 103 ok
+2026-10-19 10:44:00 INFO request 104 ok
+2026-10-19 10:45:00 INFO request 105 ok
+2026-10-19 10:46:00 INFO request 106 ok
+2026-10-19 10:47:00 ERROR worker 107 failed
+2026-10-19 10:48:00 ERROR worker 108 failed
+2026-10-19 10:49:00 INFO request 109 ok
+2026-10-19 10:50:00 INFO request 110 ok
+2026-10-19 10:51:00 INFO request 111 ok
+2026-10-19 10:52:00 INFO request 112 ok
+2026-10-19 10:53:00 INFO no errors in batch 113
+2026-10-19 10:54:00 INFO request 114 ok
+2026-10-19 10:55:00 WARN error budget at 115%
+2026-10-19 10:56:00 INFO request 116 ok
+2026-10-19 10:57:00 ERROR worker 117 failed
+2026-10-19 10:58:00 INFO request 118 ok
+2026-10-19 10:59:00 INFO request 119 ok
+2026-10-19 10:00:00 INFO request 120 ok
+2026-10-19 10:01:00 INFO request 121 ok
+2026-10-19 10:02:00 ERROR worker 122 failed
+2026-10-19 10:03:00 INFO request 123 ok
+2026-10-19 10:04:00 INFO request 124 ok
+2026-10-19 10:05:00 INFO request 125 ok
+2026-10-19 10:06:00 WARN error budget at 126%
+2026-10-19 10:07:00 INFO request 127 ok
+2026-10-19 10:08:00 ERROR worker 128 failed
+2026-10-19 10:09:00 INFO request 129 ok
+2026-10-19 10:10:00 INFO request 130 ok
+2026-10-19 10:11:00 INFO request 131 ok
+2026-10-19 10:12:00 INFO request 132 ok
+2026-10-19 10:13:00 INFO request 133 ok
+2026-10-19 10:14:00 INFO request 134 ok
+2026-10-19 10:15:00 INFO no errors in batch 135
+2026-10-19 10:16:00 INFO request 136 ok
+2026-10-19 10:17:00 INFO request 137 ok
+2026-10-19 10:18:00 INFO request 138 ok
+2026-10-19 10:19:00 INFO request 139 ok
+2026-10-19 10:20:00 INFO request 140 ok
+2026-10-19 10:21:00 INFO request 141 ok
+2026-10-19 10:22:00 INFO request 142 ok
+2026-10-19 10:23:00 INFO request 143 ok
+2026-10-19 10:24:00 INFO request 144 ok
+2026-10-19 10:25:00 INFO request 145 ok
+2026-10-19 10:26:00 INFO request 146 ok
+2026-10-19 10:27:00 INFO request 147 ok
+2026-10-19 10:28:00 INFO request 148 ok
+2026-10-19 10:29:00 ERROR worker 149 failed
+2026-10-19 10:30:00 INFO request 150 ok
+2026-10-19 10:31:00 INFO no errors in batch 151
+2026-10-19 10:32:00 ERROR worker 152 failed
+2026-10-19 10:33:00 INFO request 153 ok
+2026-10-19 10:34:00 INFO request 154 ok
+2026-10-19 10:35:00 INFO request 155 ok
+2026-10-19 10:36:00 ERROR worker 156 failed
+2026-10-19 10:37:00 WARN error budget at 157%
+2026-10-19 10:38:00 ERROR worker 158 failed
+2026-10-19 10:39:00 WARN error budget at 159%
+2026-10-19 10:40:00 INFO request 160 ok
+2026-10-19 10:41:00 ERROR worker 161 failed
+2026-10-19 10:42:00 INFO request 162 ok
+2026-10-19 10:43:00 INFO request 163 ok
+2026-10-19 10:44:00 WARN error budget at 164%
+2026-10-19 10:45:00 INFO request 165 ok
+2026-10-19 10:46:00 INFO request 166 ok
+2026-10-19 10:47:00 INFO request 167 ok
+2026-10-19 10:48:00 INFO request 168 ok
+2026-10-19 10:49:00 INFO request 169 ok
+2026-10-19 10:50:00 INFO request 170 ok
+2026-10-19 10:51:00 INFO request 171 ok
+2026-10-19 10:52:00 INFO request 172 ok
+2026-10-19 10:53:00 INFO request 173 ok
+2026-10-19 10:54:00 INFO request 174 ok
+2026-10-19 10:55:00 INFO request 175 ok
+2026-10-19 10:56:00 INFO request 176 ok
+2026-10-19 10:57:00 INFO request 177 ok
+2026-10-19 10:58:00 INFO request 178 ok
+2026-10-19 10:59:00 ERROR worker 179 failed
+2026-10-19 10:00:00 INFO request 180 ok
+2026-10-19 10:01:00 INFO request 181 ok
+2026-10-19 10:02:00 ERROR worker 182 failed
+2026-10-19 10:03:00 INFO request 183 ok
+2026-10-19 10:04:00 INFO request 184 ok
+2026-10-19 10:05:00 INFO no errors in batch 185
+2026-10-19 10:06:00 INFO request 186 ok
+2026-10-19 10:07:00 INFO request 187 ok
+2026-10-19 10:08:00 INFO request 188 ok
+2026-10-19 10:09:00 INFO request 189 ok
+2026-10-19 10:10:00 INFO request 190 ok
+2026-10-19 10:11:00 INFO request 191 ok
+2026-10-19 10:12:00 INFO request 192 ok
+2026-10-19 10:13:00 INFO request 193 ok
+2026-10-19 10:14:00 INFO request 194 ok
+2026-10-19 10:15:00 ERROR worker 195 failed
+2026-10-19 10:16:00 INFO request 196 ok
+2026-10-19 10:17:00 INFO request 197 ok
+2026-10-19 10:18:00 INFO request 198 ok
+2026-10-19 10:19:00 INFO request 199 ok

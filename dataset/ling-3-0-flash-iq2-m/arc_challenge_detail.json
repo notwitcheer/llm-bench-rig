@@ -1,0 +1,9 @@
+{
+  "score": 95.56,
+  "metric": "acc",
+  "correct": 1120,
+  "total": 1172,
+  "parse_failures": 0,
+  "completion_tokens_mean": 2.0,
+  "elapsed_s": 833.1
+}

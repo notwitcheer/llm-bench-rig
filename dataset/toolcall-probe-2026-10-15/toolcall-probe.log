@@ -1,0 +1,82 @@
+[tcprobe] 08:47:22 PLAN phase (DRYRUN=0)
+[tcprobe] 08:47:22   ok: /home/witcheer/llama.cpp-nl/build/bin/llama-server
+[tcprobe] 08:47:22   ok: /home/witcheer/llama.cpp-prism/build/bin/llama-server
+[tcprobe] 08:47:22   ok: /home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf
+[tcprobe] 08:47:22   ok: /home/witcheer/models/bonsai2-27b/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+[tcprobe] 08:47:22   ok: /home/witcheer/toolcall-v1/.venv/bin/python
+[tcprobe] 08:47:22   ok: /home/witcheer/toolcall-v1/code/driver.py
+[tcprobe] 08:47:22   ok: /home/witcheer/toolcall-v1/frozen/toolcall-v1/manifest.json
+[tcprobe] 08:47:22   ok: /home/witcheer/toolcall-v1/artifacts/prompts/prompts_toolcall-v1.jsonl.gz
+[tcprobe] 08:47:22   ok: /home/witcheer/toolcall-v1/artifacts/probe_ids.json
+[tcprobe] 08:47:22   ok: /home/witcheer/toolcall-v1/qwen38-tokenizer/tokenizer.json
+[tcprobe] 08:47:22   ok: disk 273G free
+[tcprobe] 08:47:22   ok: frozen list sha256 intact
+[tcprobe] 08:47:23   ok: prism build 4fbda12
+[tcprobe] 08:47:23   ok: mainline build 5d16e81
+[tcprobe] 08:47:23   ok: no GPU-owning tmux session
+[tcprobe] 08:47:23   ok: window: 28 min until hard stop 09:16
+[tcprobe] 08:47:23 preflight green
+[tcprobe] 08:47:23 draining Donald
+[tcprobe] 08:47:26 drain clear (2MiB)
+[tcprobe] 08:47:26 === q6k: Qwen3.8-27B-Q6_K.gguf on ggml-org/llama.cpp mainline build 10371 (5d16e81dd), CUDA, sm_120, ctx 40960, budget 780s ===
+[tcprobe] 08:47:30   server up in 4s, VRAM 24384 MiB
+{"tokenize_parity": {"prompts": 1998, "mismatches_vs_hf": 0, "seconds": 3.8}}
+[q6k] S1 parallel_114: correct (ok) 815 tok 13.23s prompt 473/473
+[q6k] S1 live_parallel_12-8-0: correct (ok) 748 tok 12.23s prompt 559/559
+[q6k] S1 parallel_multiple_3: correct (ok) 412 tok 6.91s prompt 619/619
+[q6k] S1 parallel_multiple_120: correct (ok) 181 tok 3.21s prompt 596/596
+[q6k] S1 parallel_multiple_153: malformed_value (malformed_value) 433 tok 7.38s prompt 1032/1032
+[q6k] S2 live_multiple_185-80-0: correct (ok) 80 tok 2.08s prompt 2161/2161
+[q6k] S2 live_simple_130-84-0: correct (ok) 257 tok 4.44s prompt 610/610
+[q6k] S2 live_multiple_992-223-0: correct (ok) 76 tok 1.6s prompt 874/874
+[q6k] S2 multiple_199: malformed_value (malformed_value) 101 tok 1.94s prompt 661/661
+[q6k] S2 simple_python_335: correct (ok) 96 tok 1.79s prompt 462/462
+[q6k] S3 multiple_136: wrong_call (ok) 142 tok 2.55s prompt 590/590
+[q6k] S3 multiple_22: correct (ok) 70 tok 1.43s prompt 636/636
+[q6k] S3 simple_python_43: correct (ok) 138 tok 2.46s prompt 462/462
+[q6k] S3 simple_python_6: correct (ok) 85 tok 1.57s prompt 395/395
+[q6k] S3 simple_python_26: correct (ok) 75 tok 1.41s prompt 424/424
+[q6k] S4 irrelevance_203: called_when_should_not (ok) 122 tok 2.14s prompt 368/368
+[q6k] S4 irrelevance_52: correct (no_call) 28 tok 0.66s prompt 411/411
+[q6k] S4 irrelevance_121: correct (malformed_value) 133 tok 2.32s prompt 376/376
+[q6k] S4 irrelevance_16: correct (no_call) 604 tok 9.95s prompt 475/475
+[q6k] S4 irrelevance_9: correct (no_call) 180 tok 3.11s prompt 448/448
+[q6k] S5 multi_turn_base_4: wrong steps 14 turns 3/3 6909 tok 117.2s max prompt 13821 max prompt+gen 14003 buckets {'ok': 11, 'malformed_value': 1, 'no_call': 2}
+[q6k] S5 multi_turn_base_91: correct steps 5 turns 2/2 1068 tok 20.4s max prompt 7649 max prompt+gen 8198 buckets {'ok': 3, 'no_call': 2}
+[q6k] S5 multi_turn_base_186: correct steps 14 turns 6/6 2542 tok 45.7s max prompt 10589 max prompt+gen 10808 buckets {'ok': 8, 'no_call': 6}
+[q6k] S5 multi_turn_base_174: correct steps 16 turns 5/5 4026 tok 68.3s max prompt 12200 max prompt+gen 12289 buckets {'ok': 11, 'no_call': 5}
+[q6k] S5 multi_turn_base_0: correct steps 33 turns 4/4 3307 tok 58.0s max prompt 10465 max prompt+gen 11008 buckets {'ok': 29, 'no_call': 4}
+[tcprobe] 08:54:17   q6k done in 411s
+[tcprobe] 08:54:17 === ptq1: Ternary-Bonsai-2-27B-PTQ1_0.gguf on PrismML-Eng/llama.cpp prism 4fbda12 (CUDA 12.8, sm_120), ctx 40960, budget 600s ===
+[tcprobe] 08:54:21   server up in 4s, VRAM 9320 MiB
+{"tokenize_parity": {"prompts": 1998, "mismatches_vs_hf": 0, "seconds": 3.7}}
+[ptq1] S1 parallel_114: correct (ok) 857 tok 5.52s prompt 473/473
+[ptq1] S1 live_parallel_12-8-0: correct (ok) 762 tok 4.98s prompt 559/559
+[ptq1] S1 parallel_multiple_3: correct (ok) 184 tok 1.43s prompt 619/619
+[ptq1] S1 parallel_multiple_120: correct (ok) 177 tok 1.38s prompt 596/596
+[ptq1] S1 parallel_multiple_153: malformed_value (malformed_value) 494 tok 3.44s prompt 1032/1032
+[ptq1] S2 live_multiple_185-80-0: correct (ok) 80 tok 1.14s prompt 2161/2161
+[ptq1] S2 live_simple_130-84-0: correct (ok) 275 tok 2.0s prompt 610/610
+[ptq1] S2 live_multiple_992-223-0: correct (ok) 63 tok 0.72s prompt 874/874
+[ptq1] S2 multiple_199: malformed_value (malformed_value) 118 tok 1.02s prompt 661/661
+[ptq1] S2 simple_python_335: correct (ok) 76 tok 0.71s prompt 462/462
+[ptq1] S3 multiple_136: wrong_call (ok) 154 tok 1.2s prompt 590/590
+[ptq1] S3 multiple_22: correct (ok) 93 tok 0.86s prompt 636/636
+[ptq1] S3 simple_python_43: correct (ok) 85 tok 0.76s prompt 462/462
+[ptq1] S3 simple_python_6: correct (ok) 86 tok 0.72s prompt 395/395
+[ptq1] S3 simple_python_26: correct (ok) 83 tok 0.7s prompt 424/424
+[ptq1] S4 irrelevance_203: called_when_should_not (ok) 94 tok 0.75s prompt 368/368
+[ptq1] S4 irrelevance_52: correct (no_call) 147 tok 1.1s prompt 411/411
+[ptq1] S4 irrelevance_121: called_when_should_not (ok) 70 tok 0.61s prompt 376/376
+[ptq1] S4 irrelevance_16: correct (no_call) 875 tok 5.63s prompt 475/475
+[ptq1] S4 irrelevance_9: correct (no_call) 242 tok 1.71s prompt 448/448
+[ptq1] S5 multi_turn_base_4: wrong steps 4 turns 3/3 1261 tok 10.3s max prompt 7023 max prompt+gen 8076 buckets {'ok': 1, 'malformed_value': 3}
+[ptq1] S5 multi_turn_base_91: correct steps 9 turns 2/2 1614 tok 13.4s max prompt 8541 max prompt+gen 8843 buckets {'ok': 7, 'no_call': 2}
+[ptq1] S5 multi_turn_base_186: correct steps 14 turns 6/6 2180 tok 17.8s max prompt 10303 max prompt+gen 10416 buckets {'ok': 8, 'no_call': 6}
+[ptq1] S5 multi_turn_base_174: correct steps 15 turns 5/5 4371 tok 31.0s max prompt 12522 max prompt+gen 12596 buckets {'ok': 10, 'no_call': 5}
+[ptq1] S5 multi_turn_base_0: correct steps 24 turns 4/4 2742 tok 22.2s max prompt 9755 max prompt+gen 10234 buckets {'ok': 20, 'no_call': 4}
+[tcprobe] 08:56:46   ptq1 done in 149s
+[tcprobe] cross-binary tokenize: {"prompts_compared": 1998, "token_ids_differ_between_binaries": 0, "differing": [], "q6k_vs_hf_mismatch": 0, "ptq1_vs_hf_mismatch": 0}
+[tcprobe] 08:56:46 probe finished, 9 min since start (drain to last leg end)
+[tcprobe] 08:56:51 EXIT trap: restoring Donald
+[tcprobe] 08:56:53 Donald proxy health OK

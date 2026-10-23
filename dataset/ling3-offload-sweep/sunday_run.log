@@ -1,0 +1,372 @@
+[sunday 09:41:43] phase 0: config prep
+63:  ling-3-0-flash-q3-k-m: {n_cpu_moe: 99, n_gpu_layers: 99}  # 58GB file vs 32GB VRAM: all routed experts to CPU, gpt-oss-120b precedent
+64:  ling-3-0-flash-iq2-m: {n_cpu_moe: 99, n_gpu_layers: 99}
+65:  ling-3-0-flash-iq3-xxs: {n_cpu_moe: 99, n_gpu_layers: 99}
+[sunday 09:41:43] phase 1: downloads (~93GB total)
+[sunday 09:57:07] IQ3_XXS complete and size-verified
+[sunday 10:43:53] IQ2_M complete and size-verified
+[sunday 10:43:53] phase 2: n-cpu-moe sweep on Q3_K_M
+[sunday 10:43:53] VRAM drained (2MiB)
+[sunday 10:43:53] sweep point n_cpu_moe=99
+[sunday 10:45:26] point 99 done, VRAM peak 3622MiB
+[sunday 10:45:26] sweep point n_cpu_moe=38
+[sunday 10:46:14] point 38 done, VRAM peak 9082MiB
+[sunday 10:46:14] sweep point n_cpu_moe=34
+[sunday 10:47:05] point 34 done, VRAM peak 14542MiB
+[sunday 10:47:05] sweep point n_cpu_moe=30
+[sunday 10:47:50] point 30 done, VRAM peak 20002MiB
+[sunday 10:47:50] sweep point n_cpu_moe=26
+[sunday 10:48:29] point 26 done, VRAM peak 25462MiB
+[sunday 10:48:29] sweep point n_cpu_moe=24
+[sunday 10:49:10] point 24 done, VRAM peak 28192MiB
+[sunday 10:49:10] sweep point n_cpu_moe=22
+[sunday 10:49:48] point 22 done, VRAM peak 30922MiB
+[sunday 10:49:48] sweep point n_cpu_moe=20
+[sunday 10:49:55] point 20 FAILED (likely OOM) — recorded, continuing
+[sunday 10:49:55] point 20 done, VRAM peak 508MiB
+[sunday 10:49:55] restoring llama-server.service
+[sunday 10:50:00] Donald healthy again
+[sunday 10:50:00] SWEEP-COMPLETE
+[sunday 10:50:00] phase 3a: treatment IQ3_XXS (started 10h, guard ok)
+[guard] stopping Hermes llama-server.service ...
+[guard] waiting for port 8090 free + VRAM drained (<4GB) ...
+[guard] clear (port free, VRAM 2MiB)
+━━━ benchmarking Ling-3.0-flash-IQ3_XXS ━━━
+
+============================================================
+  Benchmarking: Ling-3.0-flash-IQ3_XXS
+  Engine: llama.cpp | Quant: unknown | Size: 47.69 GiB
+  Output: results/ling-3-0-flash-iq3-xxs
+============================================================
+
+  Offload override: {'n_cpu_moe': 99, 'n_gpu_layers': 99}
+[speed] Measuring VRAM before load...
+[speed] Running llama-bench...
+[speed] Measuring VRAM after inference...
+[speed] Results written to results/ling-3-0-flash-iq3-xxs/speed.json
+[quality] Starting eval harness...
+[quality] Sampling 50% of MMLU/HellaSwag (seed=42)
+[quality] Thinking disabled (chat_template_kwargs: enable_thinking/reasoning off, --jinja)
+[quality] MC completion-length gate: ARMED @ 50 tok (window 25)
+
+[quality] === mmlu ===
+[mmlu] abstract_algebra: 84.0% (42/50) [1/57] 1.1 q/s
+[mmlu] anatomy: 79.1% (53/67) [2/57] 1.4 q/s
+[mmlu] astronomy: 93.4% (71/76) [3/57] 1.2 q/s
+[mmlu] business_ethics: 82.0% (41/50) [4/57] 1.1 q/s
+[mmlu] clinical_knowledge: 85.6% (113/132) [5/57] 1.4 q/s
+[mmlu] college_biology: 97.2% (70/72) [6/57] 1.2 q/s
+[mmlu] college_chemistry: 66.0% (33/50) [7/57] 1.1 q/s
+[mmlu] college_computer_science: 80.0% (40/50) [8/57] 0.9 q/s
+[mmlu] college_mathematics: 72.0% (36/50) [9/57] 1.0 q/s
+[mmlu] college_medicine: 80.2% (69/86) [10/57] 1.1 q/s
+[mmlu] college_physics: 76.5% (39/51) [11/57] 1.1 q/s
+[mmlu] computer_security: 82.0% (41/50) [12/57] 1.2 q/s
+[mmlu] conceptual_physics: 92.3% (108/117) [13/57] 1.4 q/s
+[mmlu] econometrics: 73.7% (42/57) [14/57] 1.0 q/s
+[mmlu] electrical_engineering: 88.9% (64/72) [15/57] 1.4 q/s
+[mmlu] elementary_mathematics: 91.5% (173/189) [16/57] 1.2 q/s
+[mmlu] formal_logic: 57.1% (36/63) [17/57] 0.9 q/s
+[mmlu] global_facts: 76.0% (38/50) [18/57] 1.2 q/s
+[mmlu] high_school_biology: 92.3% (143/155) [19/57] 1.2 q/s
+[mmlu] high_school_chemistry: 79.2% (80/101) [20/57] 1.2 q/s
+[mmlu] high_school_computer_science: 92.0% (46/50) [21/57] 0.9 q/s
+[mmlu] high_school_european_history: 89.0% (73/82) [22/57] 0.6 q/s
+[mmlu] high_school_geography: 93.9% (93/99) [23/57] 1.4 q/s
+[mmlu] high_school_government_and_politics: 99.0% (95/96) [24/57] 1.2 q/s
+[mmlu] high_school_macroeconomics: 87.2% (170/195) [25/57] 1.3 q/s
+[mmlu] high_school_mathematics: 66.7% (90/135) [26/57] 1.1 q/s
+[mmlu] high_school_microeconomics: 95.8% (114/119) [27/57] 1.2 q/s
+[mmlu] high_school_physics: 85.3% (64/75) [28/57] 1.0 q/s
+[mmlu] high_school_psychology: 96.3% (262/272) [29/57] 1.3 q/s
+[mmlu] high_school_statistics: 85.2% (92/108) [30/57] 0.9 q/s
+[mmlu] high_school_us_history: 91.2% (93/102) [31/57] 0.7 q/s
+[mmlu] high_school_world_history: 90.7% (107/118) [32/57] 0.6 q/s
+[mmlu] human_aging: 78.4% (87/111) [33/57] 1.4 q/s
+[mmlu] human_sexuality: 87.7% (57/65) [34/57] 1.3 q/s
+[mmlu] international_law: 90.0% (54/60) [35/57] 1.1 q/s
+[mmlu] jurisprudence: 88.9% (48/54) [36/57] 1.2 q/s
+[mmlu] logical_fallacies: 93.8% (76/81) [37/57] 1.2 q/s
+[mmlu] machine_learning: 76.8% (43/56) [38/57] 1.0 q/s
+[mmlu] management: 88.2% (45/51) [39/57] 1.4 q/s
+[mmlu] marketing: 95.7% (112/117) [40/57] 1.2 q/s
+[mmlu] medical_genetics: 94.0% (47/50) [41/57] 1.3 q/s
+[mmlu] miscellaneous: 92.1% (360/391) [42/57] 1.4 q/s
+[mmlu] moral_disputes: 87.3% (151/173) [43/57] 1.2 q/s
+[mmlu] moral_scenarios: 66.4% (297/447) [44/57] 0.9 q/s
+[mmlu] nutrition: 93.5% (143/153) [45/57] 1.3 q/s
+[mmlu] philosophy: 87.1% (135/155) [46/57] 1.3 q/s
+[mmlu] prehistory: 87.7% (142/162) [47/57] 1.3 q/s
+[mmlu] professional_accounting: 75.9% (107/141) [48/57] 1.0 q/s
+[mmlu] professional_law: 64.9% (498/767) [49/57] 0.8 q/s
+[mmlu] professional_medicine: 92.6% (126/136) [50/57] 0.9 q/s
+[mmlu] professional_psychology: 87.3% (267/306) [51/57] 1.2 q/s
+[mmlu] public_relations: 81.8% (45/55) [52/57] 1.2 q/s
+[mmlu] security_studies: 83.6% (102/122) [53/57] 0.9 q/s
+[mmlu] sociology: 89.0% (89/100) [54/57] 1.2 q/s
+[mmlu] us_foreign_policy: 94.0% (47/50) [55/57] 1.3 q/s
+[mmlu] virology: 65.1% (54/83) [56/57] 1.3 q/s
+[mmlu] world_religions: 90.6% (77/85) [57/57] 1.5 q/s
+
+[mmlu] Overall: 83.3% (5840/7010) (sampled 50%)
+[mmlu]   stem: 84.6%
+[mmlu]   humanities: 81.5%
+[mmlu]   social_sciences: 90.4%
+[mmlu]   other: 78.5%
+
+[quality] === arc_challenge ===
+[arc] 96.0% (96/100) [100/1172] 1.1 q/s
+[arc] 96.5% (193/200) [200/1172] 1.2 q/s
+[arc] 97.0% (291/300) [300/1172] 1.2 q/s
+[arc] 96.5% (386/400) [400/1172] 1.2 q/s
+[arc] 96.2% (481/500) [500/1172] 1.2 q/s
+[arc] 96.7% (580/600) [600/1172] 1.2 q/s
+[arc] 97.0% (679/700) [700/1172] 1.2 q/s
+[arc] 96.8% (774/800) [800/1172] 1.2 q/s
+[arc] 96.1% (865/900) [900/1172] 1.3 q/s
+[arc] 95.9% (959/1000) [1000/1172] 1.3 q/s
+[arc] 96.0% (1056/1100) [1100/1172] 1.3 q/s
+[arc] 96.1% (1126/1172) [1172/1172] 1.3 q/s
+
+[arc] Final: 96.1% (1126/1172)
+
+[quality] === hellaswag ===
+[hellaswag] 79.5% (159/200) [200/5021] 1.2 q/s
+[hellaswag] 82.2% (329/400) [400/5021] 1.2 q/s
+[hellaswag] 80.5% (483/600) [600/5021] 1.2 q/s
+[hellaswag] 80.6% (645/800) [800/5021] 1.2 q/s
+[hellaswag] 81.7% (817/1000) [1000/5021] 1.2 q/s
+[hellaswag] 81.7% (980/1200) [1200/5021] 1.2 q/s
+[hellaswag] 81.6% (1142/1400) [1400/5021] 1.2 q/s
+[hellaswag] 81.5% (1304/1600) [1600/5021] 1.2 q/s
+[hellaswag] 83.4% (1501/1800) [1800/5021] 1.1 q/s
+[hellaswag] 84.7% (1693/2000) [2000/5021] 1.1 q/s
+[hellaswag] 85.7% (1886/2200) [2200/5021] 1.0 q/s
+[hellaswag] 86.6% (2078/2400) [2400/5021] 1.0 q/s
+[hellaswag] 87.3% (2271/2600) [2600/5021] 1.0 q/s
+[hellaswag] 88.1% (2467/2800) [2800/5021] 1.0 q/s
+[hellaswag] 88.8% (2664/3000) [3000/5021] 1.0 q/s
+[hellaswag] 89.2% (2853/3200) [3200/5021] 1.0 q/s
+[hellaswag] 89.6% (3048/3400) [3400/5021] 0.9 q/s
+[hellaswag] 90.1% (3244/3600) [3600/5021] 0.9 q/s
+[hellaswag] 90.3% (3432/3800) [3800/5021] 0.9 q/s
+[hellaswag] 90.8% (3631/4000) [4000/5021] 0.9 q/s
+[hellaswag] 91.1% (3828/4200) [4200/5021] 0.9 q/s
+[hellaswag] 91.5% (4024/4400) [4400/5021] 0.9 q/s
+[hellaswag] 91.8% (4221/4600) [4600/5021] 0.9 q/s
+[hellaswag] 92.0% (4415/4800) [4800/5021] 0.9 q/s
+[hellaswag] 92.2% (4608/5000) [5000/5021] 0.9 q/s
+[hellaswag] 92.2% (4629/5021) [5021/5021] 0.9 q/s
+
+[hellaswag] Final: 92.2% (4629/5021) (sampled 50%)
+
+[quality] === humaneval ===
+[humaneval] 20/20 passed [20/164] 0.4 q/s
+[humaneval] 39/40 passed [40/164] 0.4 q/s
+[humaneval] 59/60 passed [60/164] 0.4 q/s
+[humaneval] 77/80 passed [80/164] 0.4 q/s
+[humaneval] 95/100 passed [100/164] 0.4 q/s
+[humaneval] 114/120 passed [120/164] 0.4 q/s
+[humaneval] 132/140 passed [140/164] 0.4 q/s
+[humaneval] 150/160 passed [160/164] 0.4 q/s
+[humaneval] 153/164 passed [164/164] 0.4 q/s
+
+[humaneval] Final: pass@1 = 93.3% (153/164)
+
+[quality] === gsm8k ===
+[gsm8k] 94.0% (94/100) [100/1319] 0.3 q/s
+[gsm8k] 94.0% (188/200) [200/1319] 0.2 q/s
+[gsm8k] 93.0% (279/300) [300/1319] 0.3 q/s
+[gsm8k] 93.5% (374/400) [400/1319] 0.3 q/s
+[gsm8k] 93.2% (466/500) [500/1319] 0.3 q/s
+[gsm8k] 93.3% (560/600) [600/1319] 0.3 q/s
+[gsm8k] 93.3% (653/700) [700/1319] 0.3 q/s
+[gsm8k] 92.9% (743/800) [800/1319] 0.3 q/s
+[gsm8k] 93.0% (837/900) [900/1319] 0.3 q/s
+[gsm8k] 92.8% (928/1000) [1000/1319] 0.2 q/s
+[gsm8k] 92.5% (1018/1100) [1100/1319] 0.2 q/s
+[gsm8k] 92.6% (1111/1200) [1200/1319] 0.2 q/s
+[gsm8k] 93.1% (1210/1300) [1300/1319] 0.2 q/s
+[gsm8k] 93.0% (1227/1319) [1319/1319] 0.2 q/s
+
+[gsm8k] Final: 93.0% (1227/1319)
+[quality] Results written to results/ling-3-0-flash-iq3-xxs/quality.json
+
+Benchmark complete: ling-3-0-flash-iq3-xxs
+Results: results/ling-3-0-flash-iq3-xxs
+  ✓ Ling-3.0-flash-IQ3_XXS
+[done] treatment run complete
+[guard] cleaning up any stray llama-server on port 8090 before restore ...
+[guard] restoring llama-server.service ...
+[sunday 16:15:57] phase 3b: treatment IQ2_M (started 16h, guard ok)
+[guard] stopping Hermes llama-server.service ...
+[guard] waiting for port 8090 free + VRAM drained (<4GB) ...
+[guard] clear (port free, VRAM 2MiB)
+━━━ benchmarking Ling-3.0-flash-IQ2_M ━━━
+
+============================================================
+  Benchmarking: Ling-3.0-flash-IQ2_M
+  Engine: llama.cpp | Quant: unknown | Size: 39.21 GiB
+  Output: results/ling-3-0-flash-iq2-m
+============================================================
+
+  Offload override: {'n_cpu_moe': 99, 'n_gpu_layers': 99}
+[speed] Measuring VRAM before load...
+[speed] Running llama-bench...
+[speed] Measuring VRAM after inference...
+[speed] Results written to results/ling-3-0-flash-iq2-m/speed.json
+[quality] Starting eval harness...
+[quality] Sampling 50% of MMLU/HellaSwag (seed=42)
+[quality] Thinking disabled (chat_template_kwargs: enable_thinking/reasoning off, --jinja)
+[quality] MC completion-length gate: ARMED @ 50 tok (window 25)
+
+[quality] === mmlu ===
+[mmlu] abstract_algebra: 68.0% (34/50) [1/57] 1.2 q/s
+[mmlu] anatomy: 79.1% (53/67) [2/57] 1.5 q/s
+[mmlu] astronomy: 90.8% (69/76) [3/57] 1.3 q/s
+[mmlu] business_ethics: 80.0% (40/50) [4/57] 1.2 q/s
+[mmlu] clinical_knowledge: 86.4% (114/132) [5/57] 1.5 q/s
+[mmlu] college_biology: 93.1% (67/72) [6/57] 1.4 q/s
+[mmlu] college_chemistry: 60.0% (30/50) [7/57] 1.3 q/s
+[mmlu] college_computer_science: 80.0% (40/50) [8/57] 1.0 q/s
+[mmlu] college_mathematics: 66.0% (33/50) [9/57] 1.1 q/s
+[mmlu] college_medicine: 77.9% (67/86) [10/57] 1.2 q/s
+[mmlu] college_physics: 76.5% (39/51) [11/57] 1.2 q/s
+[mmlu] computer_security: 82.0% (41/50) [12/57] 1.3 q/s
+[mmlu] conceptual_physics: 92.3% (108/117) [13/57] 1.6 q/s
+[mmlu] econometrics: 68.4% (39/57) [14/57] 1.1 q/s
+[mmlu] electrical_engineering: 83.3% (60/72) [15/57] 1.6 q/s
+[mmlu] elementary_mathematics: 90.5% (171/189) [16/57] 1.3 q/s
+[mmlu] formal_logic: 61.9% (39/63) [17/57] 1.1 q/s
+[mmlu] global_facts: 62.0% (31/50) [18/57] 1.3 q/s
+[mmlu] high_school_biology: 92.9% (144/155) [19/57] 1.4 q/s
+[mmlu] high_school_chemistry: 84.2% (85/101) [20/57] 1.3 q/s
+[mmlu] high_school_computer_science: 96.0% (48/50) [21/57] 1.0 q/s
+[mmlu] high_school_european_history: 87.8% (72/82) [22/57] 0.7 q/s
+[mmlu] high_school_geography: 92.9% (92/99) [23/57] 1.5 q/s
+[mmlu] high_school_government_and_politics: 94.8% (91/96) [24/57] 1.4 q/s
+[mmlu] high_school_macroeconomics: 87.7% (171/195) [25/57] 1.4 q/s
+[mmlu] high_school_mathematics: 68.1% (92/135) [26/57] 1.2 q/s
+[mmlu] high_school_microeconomics: 91.6% (109/119) [27/57] 1.3 q/s
+[mmlu] high_school_physics: 76.0% (57/75) [28/57] 1.2 q/s
+[mmlu] high_school_psychology: 97.8% (266/272) [29/57] 1.5 q/s
+[mmlu] high_school_statistics: 83.3% (90/108) [30/57] 1.0 q/s
+[mmlu] high_school_us_history: 88.2% (90/102) [31/57] 0.8 q/s
+[mmlu] high_school_world_history: 92.4% (109/118) [32/57] 0.7 q/s
+[mmlu] human_aging: 80.2% (89/111) [33/57] 1.6 q/s
+[mmlu] human_sexuality: 81.5% (53/65) [34/57] 1.5 q/s
+[mmlu] international_law: 88.3% (53/60) [35/57] 1.2 q/s
+[mmlu] jurisprudence: 88.9% (48/54) [36/57] 1.4 q/s
+[mmlu] logical_fallacies: 91.4% (74/81) [37/57] 1.3 q/s
+[mmlu] machine_learning: 80.4% (45/56) [38/57] 1.2 q/s
+[mmlu] management: 84.3% (43/51) [39/57] 1.6 q/s
+[mmlu] marketing: 94.0% (110/117) [40/57] 1.4 q/s
+[mmlu] medical_genetics: 94.0% (47/50) [41/57] 1.5 q/s
+[mmlu] miscellaneous: 92.1% (360/391) [42/57] 1.6 q/s
+[mmlu] moral_disputes: 85.0% (147/173) [43/57] 1.4 q/s
+[mmlu] moral_scenarios: 63.5% (284/447) [44/57] 1.0 q/s
+[mmlu] nutrition: 93.5% (143/153) [45/57] 1.4 q/s
+[mmlu] philosophy: 85.8% (133/155) [46/57] 1.5 q/s
+[mmlu] prehistory: 87.0% (141/162) [47/57] 1.4 q/s
+[mmlu] professional_accounting: 77.3% (109/141) [48/57] 1.2 q/s
+[mmlu] professional_law: 64.8% (497/767) [49/57] 0.9 q/s
+[mmlu] professional_medicine: 94.9% (129/136) [50/57] 1.0 q/s
+[mmlu] professional_psychology: 86.3% (264/306) [51/57] 1.3 q/s
+[mmlu] public_relations: 83.6% (46/55) [52/57] 1.4 q/s
+[mmlu] security_studies: 82.0% (100/122) [53/57] 1.0 q/s
+[mmlu] sociology: 90.0% (90/100) [54/57] 1.3 q/s
+[mmlu] us_foreign_policy: 92.0% (46/50) [55/57] 1.4 q/s
+[mmlu] virology: 61.4% (51/83) [56/57] 1.5 q/s
+[mmlu] world_religions: 87.1% (74/85) [57/57] 1.6 q/s
+
+[mmlu] Overall: 82.3% (5767/7010) (sampled 50%)
+[mmlu]   stem: 83.2%
+[mmlu]   humanities: 79.9%
+[mmlu]   social_sciences: 89.3%
+[mmlu]   other: 78.2%
+
+[quality] === arc_challenge ===
+[arc] 94.0% (94/100) [100/1172] 1.3 q/s
+[arc] 96.5% (193/200) [200/1172] 1.4 q/s
+[arc] 96.3% (289/300) [300/1172] 1.4 q/s
+[arc] 95.8% (383/400) [400/1172] 1.4 q/s
+[arc] 95.4% (477/500) [500/1172] 1.4 q/s
+[arc] 95.5% (573/600) [600/1172] 1.4 q/s
+[arc] 96.0% (672/700) [700/1172] 1.4 q/s
+[arc] 95.5% (764/800) [800/1172] 1.4 q/s
+[arc] 94.9% (854/900) [900/1172] 1.4 q/s
+[arc] 94.9% (949/1000) [1000/1172] 1.4 q/s
+[arc] 95.3% (1048/1100) [1100/1172] 1.4 q/s
+[arc] 95.6% (1120/1172) [1172/1172] 1.4 q/s
+
+[arc] Final: 95.6% (1120/1172)
+
+[quality] === hellaswag ===
+[hellaswag] 81.0% (162/200) [200/5021] 1.3 q/s
+[hellaswag] 83.2% (333/400) [400/5021] 1.3 q/s
+[hellaswag] 81.2% (487/600) [600/5021] 1.3 q/s
+[hellaswag] 81.4% (651/800) [800/5021] 1.3 q/s
+[hellaswag] 82.2% (822/1000) [1000/5021] 1.3 q/s
+[hellaswag] 81.8% (982/1200) [1200/5021] 1.3 q/s
+[hellaswag] 81.9% (1146/1400) [1400/5021] 1.3 q/s
+[hellaswag] 81.4% (1303/1600) [1600/5021] 1.3 q/s
+[hellaswag] 83.3% (1500/1800) [1800/5021] 1.3 q/s
+[hellaswag] 84.7% (1693/2000) [2000/5021] 1.2 q/s
+[hellaswag] 85.9% (1889/2200) [2200/5021] 1.2 q/s
+[hellaswag] 86.8% (2083/2400) [2400/5021] 1.1 q/s
+[hellaswag] 87.5% (2276/2600) [2600/5021] 1.1 q/s
+[hellaswag] 88.1% (2467/2800) [2800/5021] 1.1 q/s
+[hellaswag] 88.8% (2663/3000) [3000/5021] 1.1 q/s
+[hellaswag] 89.1% (2851/3200) [3200/5021] 1.1 q/s
+[hellaswag] 89.6% (3046/3400) [3400/5021] 1.0 q/s
+[hellaswag] 90.0% (3241/3600) [3600/5021] 1.0 q/s
+[hellaswag] 90.3% (3430/3800) [3800/5021] 1.0 q/s
+[hellaswag] 90.7% (3628/4000) [4000/5021] 1.0 q/s
+[hellaswag] 91.1% (3825/4200) [4200/5021] 1.0 q/s
+[hellaswag] 91.2% (4013/4400) [4400/5021] 1.0 q/s
+[hellaswag] 91.5% (4209/4600) [4600/5021] 1.0 q/s
+[hellaswag] 91.8% (4404/4800) [4800/5021] 1.0 q/s
+[hellaswag] 91.9% (4594/5000) [5000/5021] 1.0 q/s
+[hellaswag] 91.9% (4615/5021) [5021/5021] 1.0 q/s
+
+[hellaswag] Final: 91.9% (4615/5021) (sampled 50%)
+
+[quality] === humaneval ===
+[humaneval] 20/20 passed [20/164] 0.5 q/s
+[humaneval] 39/40 passed [40/164] 0.4 q/s
+[humaneval] 59/60 passed [60/164] 0.4 q/s
+[humaneval] 79/80 passed [80/164] 0.4 q/s
+[humaneval] 94/100 passed [100/164] 0.4 q/s
+[humaneval] 111/120 passed [120/164] 0.4 q/s
+[humaneval] 127/140 passed [140/164] 0.4 q/s
+[humaneval] 143/160 passed [160/164] 0.4 q/s
+[humaneval] 146/164 passed [164/164] 0.4 q/s
+
+[humaneval] Final: pass@1 = 89.0% (146/164)
+
+[quality] === gsm8k ===
+[gsm8k] 92.0% (92/100) [100/1319] 0.3 q/s
+[gsm8k] 91.0% (182/200) [200/1319] 0.3 q/s
+[gsm8k] 92.7% (278/300) [300/1319] 0.3 q/s
+[gsm8k] 93.8% (375/400) [400/1319] 0.3 q/s
+[gsm8k] 93.6% (468/500) [500/1319] 0.3 q/s
+[gsm8k] 92.5% (555/600) [600/1319] 0.3 q/s
+[gsm8k] 92.3% (646/700) [700/1319] 0.3 q/s
+[gsm8k] 91.8% (734/800) [800/1319] 0.3 q/s
+[gsm8k] 91.9% (827/900) [900/1319] 0.3 q/s
+[gsm8k] 92.0% (920/1000) [1000/1319] 0.3 q/s
+[gsm8k] 91.8% (1010/1100) [1100/1319] 0.3 q/s
+[gsm8k] 92.2% (1106/1200) [1200/1319] 0.3 q/s
+[gsm8k] 92.3% (1200/1300) [1300/1319] 0.3 q/s
+[gsm8k] 92.3% (1217/1319) [1319/1319] 0.3 q/s
+
+[gsm8k] Final: 92.3% (1217/1319)
+[quality] Results written to results/ling-3-0-flash-iq2-m/quality.json
+
+Benchmark complete: ling-3-0-flash-iq2-m
+Results: results/ling-3-0-flash-iq2-m
+  ✓ Ling-3.0-flash-IQ2_M
+[done] treatment run complete
+[guard] cleaning up any stray llama-server on port 8090 before restore ...
+[guard] restoring llama-server.service ...
+[sunday 21:02:32] SUNDAY-COMPLETE

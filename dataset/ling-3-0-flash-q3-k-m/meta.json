@@ -1,0 +1,10 @@
+{
+  "name": "Ling-3.0-flash",
+  "filename": "Ling-3.0-flash-Q3_K_M.gguf",
+  "slug": "ling-3-0-flash-q3-k-m",
+  "engine": "llama.cpp",
+  "quant": "Q3_K_M",
+  "size_gib": 58.27,
+  "path": "/home/witcheer/models/ling-3-flash/Ling-3.0-flash-Q3_K_M.gguf",
+  "think": false
+}

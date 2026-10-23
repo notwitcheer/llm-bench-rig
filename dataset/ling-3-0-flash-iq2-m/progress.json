@@ -1,0 +1,64 @@
+{
+  "model": "ling-3-0-flash-iq2-m",
+  "step": "done",
+  "pct": 100,
+  "started_at": 1786284957.4961207,
+  "updated_at": 1786302152.5767162,
+  "partial": {
+    "pp128": {
+      "tokens_per_sec": 138.93,
+      "stddev": 13.42
+    },
+    "pp512": {
+      "tokens_per_sec": 400.64,
+      "stddev": 8.5
+    },
+    "pp2048": {
+      "tokens_per_sec": 414.94,
+      "stddev": 1.91
+    },
+    "pp4096": {
+      "tokens_per_sec": 418.1,
+      "stddev": 1.68
+    },
+    "pp8192": {
+      "tokens_per_sec": 419.3,
+      "stddev": 0.46
+    },
+    "pp16384": {
+      "tokens_per_sec": 420.64,
+      "stddev": 0.54
+    },
+    "tg128": {
+      "tokens_per_sec": 45.55,
+      "stddev": 0.08
+    },
+    "model_size_gib": 39.2,
+    "params": "127.49 B",
+    "backend": "CUDA",
+    "vram_before_mib": 2,
+    "vram_peak_mib": 2972,
+    "vram_idle_mib": 2972,
+    "engine": "llama.cpp",
+    "mmlu": {
+      "score": 82.27,
+      "metric": "acc"
+    },
+    "arc_challenge": {
+      "score": 95.56,
+      "metric": "acc"
+    },
+    "hellaswag": {
+      "score": 91.91,
+      "metric": "acc"
+    },
+    "humaneval": {
+      "score": 89.02,
+      "metric": "pass@1"
+    },
+    "gsm8k": {
+      "score": 92.27,
+      "metric": "exact_match"
+    }
+  }
+}

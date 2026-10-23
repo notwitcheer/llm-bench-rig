@@ -1,0 +1,15 @@
+{
+  "name": "demo",
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080
+  },
+  "logging": {
+    "level": "info",
+    "file": "/var/log/app.log"
+  },
+  "features": [
+    "search",
+    "export"
+  ]
+}

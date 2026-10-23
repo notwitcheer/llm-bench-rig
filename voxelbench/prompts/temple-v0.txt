@@ -1,0 +1,4 @@
+Use Goal Mode to create the following, delegate tasks if it helps you, define every step of the plan ahead, set milestones and walk through the whole plan. Don't stop until you're done. Verify your work.
+Task:
+Design and create a voxel diorama of an active, old chinese temple environment with a single temple in the center, birds, cherry trees, lakes, .... . Make it detailed, impressive, and varied, and use colorful voxels. Make the scene feel intricate with great attention to detail. Make the scene feel animated and interactive, with realistic weather physics, flying birds, and people walking around. Include various different types of; land, air, and sea. Use webGL and whatever libraries to get this done but make sure I can paste it all into a single HTML file and open it in Chrome.
+Save the final file as index.html in the current working directory.

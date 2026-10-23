@@ -1,0 +1,27 @@
+{"tokenize_parity": {"prompts": 1998, "mismatches_vs_hf": 0, "seconds": 3.8}}
+[q6k] S1 parallel_114: correct (ok) 815 tok 13.23s prompt 473/473
+[q6k] S1 live_parallel_12-8-0: correct (ok) 748 tok 12.23s prompt 559/559
+[q6k] S1 parallel_multiple_3: correct (ok) 412 tok 6.91s prompt 619/619
+[q6k] S1 parallel_multiple_120: correct (ok) 181 tok 3.21s prompt 596/596
+[q6k] S1 parallel_multiple_153: malformed_value (malformed_value) 433 tok 7.38s prompt 1032/1032
+[q6k] S2 live_multiple_185-80-0: correct (ok) 80 tok 2.08s prompt 2161/2161
+[q6k] S2 live_simple_130-84-0: correct (ok) 257 tok 4.44s prompt 610/610
+[q6k] S2 live_multiple_992-223-0: correct (ok) 76 tok 1.6s prompt 874/874
+[q6k] S2 multiple_199: malformed_value (malformed_value) 101 tok 1.94s prompt 661/661
+[q6k] S2 simple_python_335: correct (ok) 96 tok 1.79s prompt 462/462
+[q6k] S3 multiple_136: wrong_call (ok) 142 tok 2.55s prompt 590/590
+[q6k] S3 multiple_22: correct (ok) 70 tok 1.43s prompt 636/636
+[q6k] S3 simple_python_43: correct (ok) 138 tok 2.46s prompt 462/462
+[q6k] S3 simple_python_6: correct (ok) 85 tok 1.57s prompt 395/395
+[q6k] S3 simple_python_26: correct (ok) 75 tok 1.41s prompt 424/424
+[q6k] S4 irrelevance_203: called_when_should_not (ok) 122 tok 2.14s prompt 368/368
+[q6k] S4 irrelevance_52: correct (no_call) 28 tok 0.66s prompt 411/411
+[q6k] S4 irrelevance_121: correct (malformed_value) 133 tok 2.32s prompt 376/376
+[q6k] S4 irrelevance_16: correct (no_call) 604 tok 9.95s prompt 475/475
+[q6k] S4 irrelevance_9: correct (no_call) 180 tok 3.11s prompt 448/448
+[q6k] S5 multi_turn_base_4: wrong steps 14 turns 3/3 6909 tok 117.2s max prompt 13821 max prompt+gen 14003 buckets {'ok': 11, 'malformed_value': 1, 'no_call': 2}
+[q6k] S5 multi_turn_base_91: correct steps 5 turns 2/2 1068 tok 20.4s max prompt 7649 max prompt+gen 8198 buckets {'ok': 3, 'no_call': 2}
+[q6k] S5 multi_turn_base_186: correct steps 14 turns 6/6 2542 tok 45.7s max prompt 10589 max prompt+gen 10808 buckets {'ok': 8, 'no_call': 6}
+[q6k] S5 multi_turn_base_174: correct steps 16 turns 5/5 4026 tok 68.3s max prompt 12200 max prompt+gen 12289 buckets {'ok': 11, 'no_call': 5}
+[q6k] S5 multi_turn_base_0: correct steps 33 turns 4/4 3307 tok 58.0s max prompt 10465 max prompt+gen 11008 buckets {'ok': 29, 'no_call': 4}
+{"label": "q6k", "single_turn": {"S1": {"correct": 4, "malformed_value": 1}, "S2": {"correct": 4, "malformed_value": 1}, "S3": {"wrong_call": 1, "correct": 4}, "S4": {"called_when_should_not": 1, "correct": 4}}, "single_turn_pace": {"n": 20, "wall_s_total": 82.4, "wall_s_per_item": [0.66, 1.41, 1.43, 1.57, 1.6, 1.79, 1.94, 2.08, 2.14, 2.32, 2.46, 2.55, 3.11, 3.21, 4.44, 6.91, 7.38, 9.95, 12.23, 13.23], "completion_tokens": [28, 70, 75, 76, 80, 85, 96, 101, 122, 133, 138, 142, 180, 181, 257, 412, 433, 604, 748, 815], "decode_tok_s_median": 63.03306217279404, "prompt_tokens_server_eq_hf": 20, "capped": 0}, "wall_s": 397.0}

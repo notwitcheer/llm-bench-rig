@@ -1,0 +1,78 @@
+{
+ "version": "agenttest-v1-rebuilt-2026-10-22",
+ "frozen_note": "prompts copied verbatim from the first user message of each Muse Glimmer session (2026-10-20, /opt/data/tmp/museagent/home/state.db, sessions 20261020_1309..1314); only the work path /opt/data/tmp/museagent/work was replaced with /opt/data/tmp/sparkagent/work. muse_prompt_sha256 is the hash of the ORIGINAL prompt text.",
+ "work_root": "/opt/data/tmp/sparkagent/work",
+ "smoke_prompt": "Use the terminal tool to run: echo smoke-ok > /opt/data/tmp/sparkagent/work/smoke/s.txt. Then say done.",
+ "tasks": [
+  {
+   "id": "t01",
+   "label": "create a file",
+   "prompt": "Create the file /opt/data/tmp/sparkagent/work/t01/hello.txt containing exactly the single line: muse glimmer was here\nThen read it back to confirm and tell me it is done.",
+   "muse_session": "20261020_130944_03e9f3",
+   "muse_prompt_sha256": "ff584567ae6131826d3ccb87c0b8996a1a7f9bac47bcc4fb3d0d6dbe78ecd8b5"
+  },
+  {
+   "id": "t02",
+   "label": "CSV column total",
+   "prompt": "The file /opt/data/tmp/sparkagent/work/t02/sales.csv has a header row and a column called amount. Compute the total of the amount column and write just that number (no other text) to /opt/data/tmp/sparkagent/work/t02/total.txt.",
+   "muse_session": "20261020_131008_d12141",
+   "muse_prompt_sha256": "8445178f06ab8071472fbc77f7a4e0534acf51cbed09cde2febb498b5a0a924c"
+  },
+  {
+   "id": "t03",
+   "label": "find a phrase in 5 files",
+   "prompt": "Exactly one of the five .txt files in /opt/data/tmp/sparkagent/work/t03/docs contains the phrase \"blue heron protocol\". Find it and write only its file name (for example note_x.txt, not the full path) to /opt/data/tmp/sparkagent/work/t03/answer.txt.",
+   "muse_session": "20261020_131040_02d3cd",
+   "muse_prompt_sha256": "0a0c527e091f4a3c642a8c87d99cb03d3cfd7fa29cb198407e95a12202736b3f"
+  },
+  {
+   "id": "t04",
+   "label": "fix a bug until tests pass",
+   "prompt": "In /opt/data/tmp/sparkagent/work/t04 there is a small Python module stats.py and a test script test.py. Running python3 test.py in that folder currently fails. Fix the bug in stats.py (do not edit test.py) so that python3 test.py passes, and run it to confirm.",
+   "muse_session": "20261020_131108_f94986",
+   "muse_prompt_sha256": "66a55ceb287c076650cb2368c808822a158421b9a3b2c686078c1da3e89ea69f"
+  },
+  {
+   "id": "t05",
+   "label": "folder + 3 files + index",
+   "prompt": "Inside /opt/data/tmp/sparkagent/work/t05 create a folder called project. In it write three files: a.txt containing alpha, b.txt containing beta, c.txt containing gamma. Then write /opt/data/tmp/sparkagent/work/t05/project/index.txt listing the three file names a.txt, b.txt, c.txt, one per line, sorted alphabetically.",
+   "muse_session": "20261020_131144_6cbc2f",
+   "muse_prompt_sha256": "f21fcb589c17e91d767f408a3b00f884722c4b157cfaaaa10529a7174871ddfe"
+  },
+  {
+   "id": "t06",
+   "label": "fetch a web page, write a fact",
+   "prompt": "Fetch the web page https://hermes-agent.nousresearch.com/docs/ (use a web tool, or curl from the terminal if no web tool works) and write the name of the product that page documents, as a single line, to /opt/data/tmp/sparkagent/work/t06/fact.txt.",
+   "muse_session": "20261020_131215_1bc61b",
+   "muse_prompt_sha256": "22d3fec43941d3ccdd3219eac55e68263a20884f0165156725ecae1904189403"
+  },
+  {
+   "id": "t07",
+   "label": "count ERROR lines in a log",
+   "prompt": "Count how many lines in /opt/data/tmp/sparkagent/work/t07/app.log contain the exact uppercase word ERROR. Write only the number to /opt/data/tmp/sparkagent/work/t07/count.txt.",
+   "muse_session": "20261020_131241_710045",
+   "muse_prompt_sha256": "bafa790cad80ee9f949c145da6c14a277d2c85b817bb3307038735c5fcf6da67"
+  },
+  {
+   "id": "t08",
+   "label": "edit two JSON keys",
+   "prompt": "In /opt/data/tmp/sparkagent/work/t08/config.json, change the value of server.port to 8443 and set logging.level to \"debug\". Keep every other key and value unchanged and keep the file valid JSON.",
+   "muse_session": "20261020_131318_c91cc9",
+   "muse_prompt_sha256": "2fff981cf038da0316db1ad958b552b11889acf9597116461f9f18013c13c44b"
+  },
+  {
+   "id": "t09",
+   "label": "recover from a failing script",
+   "prompt": "Run the script /opt/data/tmp/sparkagent/work/t09/run_report.sh with bash. If it fails, work out why, fix the environment (do not edit the script itself) and run it again until it succeeds. It should produce /opt/data/tmp/sparkagent/work/t09/out/report.txt.",
+   "muse_session": "20261020_131347_d96820",
+   "muse_prompt_sha256": "a9dbbc2a592a229c87e542f9ee7cbdebac3c3f328856d82773d7bf49352ba708"
+  },
+  {
+   "id": "t10",
+   "label": "40 lines to 3 bullets",
+   "prompt": "Read /opt/data/tmp/sparkagent/work/t10/notes.txt (40 lines of meeting notes). Write a summary to /opt/data/tmp/sparkagent/work/t10/summary.txt that is exactly 3 lines, each line a bullet starting with \"- \", no blank lines and nothing else in the file. The summary must mention the launch date, the budget figure and the owner of the migration.",
+   "muse_session": "20261020_131417_c70e75",
+   "muse_prompt_sha256": "dc4654b57455c80c93341d1bfb075348b89bbe8493b01a82c27d1d2f3380bb97"
+  }
+ ]
+}

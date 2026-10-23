@@ -1,0 +1,25 @@
+{
+ "leg": "ptq1",
+ "parser": "toolcall-v1-parser-2",
+ "single_turn": {
+  "S1": {
+   "correct": 5
+  },
+  "S2": {
+   "correct": 5
+  },
+  "S3": {
+   "wrong_call": 1,
+   "correct": 4
+  },
+  "S4": {
+   "called_when_should_not": 2,
+   "correct": 3
+  }
+ },
+ "flips_vs_parser1": [
+  "parallel_multiple_153: malformed_value -> correct",
+  "multiple_199: malformed_value -> correct"
+ ],
+ "python_bool_replies": 2
+}

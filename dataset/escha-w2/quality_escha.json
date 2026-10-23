@@ -1,0 +1,15 @@
+{
+  "engine": "escha-sglang (EschaLabs runtime 1.0.2+qwen3moe)",
+  "model": "escha-qwen36-35b-a3b-w2",
+  "think": false,
+  "sample": 0.5,
+  "scores": {
+    "mmlu": 84.19,
+    "arc_challenge": 95.39,
+    "hellaswag": 92.67,
+    "gsm8k": 96.59,
+    "humaneval": 93.29
+  },
+  "q_avg": 9242.6,
+  "duration_s": 2893.4
+}

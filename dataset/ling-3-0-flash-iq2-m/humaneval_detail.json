@@ -1,0 +1,81 @@
+{
+  "score": 89.02,
+  "metric": "pass@1",
+  "passed": 146,
+  "total": 164,
+  "errors": [
+    {
+      "task_id": "HumanEval/32",
+      "error": "timeout"
+    },
+    {
+      "task_id": "HumanEval/82",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpvdvafoht.py\", line 45, in <module>\n    check(prime_length)\n    ~~~~~^^^^^^^^^^^^^^\n  File \"/tmp/tmpvdvafoht.py\", line 25, in check\n    assert candidate('Hello') == True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/83",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpg6ihmrwy.py\", line 28, in <module>\n    check(starts_one_ends)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpg6ihmrwy.py\", line 19, in check\n    assert candidate(2) == 18\n           ^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/93",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp2no2ud2d.py\", line 48, in <module>\n    check(encode)\n    ~~~~~^^^^^^^^\n  File \"/tmp/tmp2no2ud2d.py\", line 39, in check\n    assert candidate('TEST') == 'tgst', \"This prints if this assert fails 1 (good for debugging!)\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: This prints if this assert fails 1 (good for debugging!)\n"
+    },
+    {
+      "task_id": "HumanEval/95",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpb35icgen.py\", line 35, in <module>\n    check(check_dict_case)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpb35icgen.py\", line 25, in check\n    assert candidate({\"p\":\"pineapple\", 5:\"banana\", \"a\":\"apple\"}) == False, \"Third test error: \" + str(candidate({\"p\":\"pineapple\", 5:\"banana\", \"a\":\"apple\"}))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Third test error: True\n"
+    },
+    {
+      "task_id": "HumanEval/99",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpn9hgtg7h.py\", line 42, in <module>\n    check(closest_integer)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpn9hgtg7h.py\", line 35, in check\n    assert candidate(\"-15.5\") == -16, \"Test 3\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Test 3\n"
+    },
+    {
+      "task_id": "HumanEval/103",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmphot2olrm.py\", line 38, in <module>\n    check(rounded_avg)\n    ~~~~~^^^^^^^^^^^^^\n  File \"/tmp/tmphot2olrm.py\", line 25, in check\n    assert candidate(560,851) == \"0b1011000010\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/108",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpxp4y5zml.py\", line 39, in <module>\n    check(count_nums)\n    ~~~~~^^^^^^^^^^^^\n  File \"/tmp/tmpxp4y5zml.py\", line 27, in check\n    assert candidate([-1, -2, 0]) == 0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/115",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpz66gx_2x.py\", line 57, in <module>\n    check(max_fill)\n    ~~~~~^^^^^^^^^^\n  File \"/tmp/tmpz66gx_2x.py\", line 54, in check\n    assert candidate([[1,1,1,1], [1,1,1,1]], 9) == 2, \"Error\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Error\n"
+    },
+    {
+      "task_id": "HumanEval/129",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmppbo3hn17.py\", line 74, in <module>\n    check(minPath)\n    ~~~~~^^^^^^^^^\n  File \"/tmp/tmppbo3hn17.py\", line 59, in check\n    assert candidate([[1, 2, 3], [4, 5, 6], [7, 8, 9]], 3) == [1, 2, 1]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/130",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpuoj23xu4.py\", line 51, in <module>\n    check(tri)\n    ~~~~~^^^^^\n  File \"/tmp/tmpuoj23xu4.py\", line 38, in check\n    assert candidate(3) == [1, 3, 2.0, 8.0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/132",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpexv1phsr.py\", line 49, in <module>\n    check(is_nested)\n    ~~~~~^^^^^^^^^^^\n  File \"/tmp/tmpexv1phsr.py\", line 38, in check\n    assert candidate('[[]') == False\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/134",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpnf1u4c7a.py\", line 37, in <module>\n    check(check_if_last_char_is_a_letter)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpnf1u4c7a.py\", line 23, in check\n    assert candidate(\"apple pi e\") == True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/143",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp2x80eu3r.py\", line 48, in <module>\n    check(words_in_sentence)\n    ~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmp2x80eu3r.py\", line 37, in check\n    assert candidate(\"This is a test\") == \"is\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/145",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpde4i6efw.py\", line 37, in <module>\n    check(order_by_points)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpde4i6efw.py\", line 26, in check\n    assert candidate([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/146",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpdy36303v.py\", line 34, in <module>\n    check(specialFilter)\n    ~~~~~^^^^^^^^^^^^^^^\n  File \"/tmp/tmpdy36303v.py\", line 23, in check\n    assert candidate([15, -73, 14, -15]) == 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/151",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp5bv62i_0.py\", line 33, in <module>\n    check(double_the_difference)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmp5bv62i_0.py\", line 21, in check\n    assert candidate([0.1, 0.2, 0.3]) == 0 , \"This prints if this assert fails 3 (good for debugging!)\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: This prints if this assert fails 3 (good for debugging!)\n"
+    },
+    {
+      "task_id": "HumanEval/163",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp6589c6f5.py\", line 28, in <module>\n    check(generate_integers)\n    ~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmp6589c6f5.py\", line 19, in check\n    assert candidate(2, 10) == [2, 4, 6, 8], \"Test 1\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Test 1\n"
+    }
+  ],
+  "elapsed_s": 406.2
+}

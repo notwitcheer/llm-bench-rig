@@ -1,0 +1,7 @@
+{
+ "prompts_compared": 1998,
+ "token_ids_differ_between_binaries": 0,
+ "differing": [],
+ "q6k_vs_hf_mismatch": 0,
+ "ptq1_vs_hf_mismatch": 0
+}

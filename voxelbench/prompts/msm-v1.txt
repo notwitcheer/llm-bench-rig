@@ -1,0 +1,13 @@
+Use Goal Mode to create the following, delegate tasks if it helps you, define every step of the plan ahead, set milestones and walk through the whole plan. Don't stop until you're done. Verify your work.
+Task:
+Design and create an animated voxel diorama of Mont-Saint-Michel in Normandy, France, as the tide comes in. Make it detailed, impressive and varied, with colourful voxels and great attention to detail. It must include:
+1. The mount: a granite rock rising to a peak in the middle of the bay, not a flat island.
+2. The abbey on the summit: Gothic walls, the church, and a slender spire topped by a golden statue of Saint Michael.
+3. The village: medieval ramparts with towers around the base, and houses with pitched roofs climbing the slope along one main street.
+4. The bay: wide sand flats cut by channels, and a tide that visibly rises to surround the mount and falls again, on a loop of about one minute.
+5. The causeway from the mainland, with pilgrims and visitors walking along it and across the sands at low tide.
+6. Salt meadows on the mainland side with sheep grazing.
+7. The sky: flocks of seagulls flying, clouds drifting, a sun that moves across the sky, and a passing rain shower with realistic weather physics.
+8. Interaction: orbit the camera with the mouse and zoom with the wheel; press T to speed up the tide, W to start or stop the weather, N to switch between day and night (lit windows at night).
+Use WebGL and whatever libraries you need, but make sure it all fits in a single HTML file I can open in Chrome. It must run smoothly with no console errors.
+Save the final file as index.html in the current working directory.

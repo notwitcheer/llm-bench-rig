@@ -1,0 +1,201 @@
+{
+ "label": "ptq1",
+ "server_bin": "PrismML-Eng/llama.cpp prism 4fbda12 (CUDA 12.8, sm_120)",
+ "think": "on",
+ "max_tokens": 16384,
+ "ctx": 40960,
+ "parser_version": "toolcall-v1-parser-1",
+ "regime": "raw /completion, official Qwen3.8 template client-side, think-on, max_tokens 16384, ctx 40960, greedy (temperature 0), preserve_thinking default (undefined = keep)",
+ "props": {
+  "total_slots": 4,
+  "build_info": "b1-4fbda12",
+  "model_path": "/home/witcheer/models/bonsai2-27b/Ternary-Bonsai-2-27B-PTQ1_0.gguf"
+ },
+ "n_ctx": 40960,
+ "embedded_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+ "tokenize_parity": {
+  "prompts": 1998,
+  "mismatches_vs_hf": 0,
+  "seconds": 3.7
+ },
+ "single_turn": {
+  "S1": {
+   "correct": 4,
+   "malformed_value": 1
+  },
+  "S2": {
+   "correct": 4,
+   "malformed_value": 1
+  },
+  "S3": {
+   "wrong_call": 1,
+   "correct": 4
+  },
+  "S4": {
+   "called_when_should_not": 2,
+   "correct": 3
+  }
+ },
+ "single_turn_pace": {
+  "n": 20,
+  "wall_s_total": 36.4,
+  "wall_s_per_item": [
+   0.61,
+   0.7,
+   0.71,
+   0.72,
+   0.72,
+   0.75,
+   0.76,
+   0.86,
+   1.02,
+   1.1,
+   1.14,
+   1.2,
+   1.38,
+   1.43,
+   1.71,
+   2.0,
+   3.44,
+   4.98,
+   5.52,
+   5.63
+  ],
+  "completion_tokens": [
+   63,
+   70,
+   76,
+   80,
+   83,
+   85,
+   86,
+   93,
+   94,
+   118,
+   147,
+   154,
+   177,
+   184,
+   242,
+   275,
+   494,
+   762,
+   857,
+   875
+  ],
+  "decode_tok_s_median": 159.9618873416247,
+  "prompt_tokens_server_eq_hf": 20,
+  "capped": 0
+ },
+ "multi_turn": [
+  {
+   "id": "multi_turn_base_4",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 4,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7023,
+   "max_prompt_plus_gen": 8076,
+   "wall_s": 10.3,
+   "completion_tokens": 1261,
+   "step_buckets": {
+    "ok": 1,
+    "malformed_value": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model response execution results so far does not contain all the ground truth response execution results for turn 0.",
+    "error_type": "multi_turn:execution_response_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_91",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8541,
+   "max_prompt_plus_gen": 8843,
+   "wall_s": 13.4,
+   "completion_tokens": 1614,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_186",
+   "turns_gt": 6,
+   "turns_done": 6,
+   "steps": 14,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10303,
+   "max_prompt_plus_gen": 10416,
+   "wall_s": 17.8,
+   "completion_tokens": 2180,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 6
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_174",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 12522,
+   "max_prompt_plus_gen": 12596,
+   "wall_s": 31.0,
+   "completion_tokens": 4371,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_0",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 24,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9755,
+   "max_prompt_plus_gen": 10234,
+   "wall_s": 22.2,
+   "completion_tokens": 2742,
+   "step_buckets": {
+    "ok": 20,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  }
+ ],
+ "transport_errors": [],
+ "wall_s": 135.9
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Ling-3.0-flash-IQ2_M",
+  "filename": "Ling-3.0-flash-IQ2_M.gguf",
+  "slug": "ling-3-0-flash-iq2-m",
+  "engine": "llama.cpp",
+  "quant": "unknown",
+  "size_gib": 39.21,
+  "path": "/home/witcheer/models/ling-3-flash/Ling-3.0-flash-IQ2_M.gguf",
+  "think": false
+}

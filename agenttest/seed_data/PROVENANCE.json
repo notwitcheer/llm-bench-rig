@@ -1,0 +1,67 @@
+{
+ "t02/sales.csv": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "52ea4c43949b6ea4df057ad948ffb9d6ed368d442688ebf6fb2d78b7dd2b75f7",
+  "frozen_sha256": "52ea4c43949b6ea4df057ad948ffb9d6ed368d442688ebf6fb2d78b7dd2b75f7"
+ },
+ "t03/docs/note_alder.txt": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "f46d3e807b57118d21696d5a8506430f8e8b6d5aa28723d5c97ad43b3d66929a",
+  "frozen_sha256": "f46d3e807b57118d21696d5a8506430f8e8b6d5aa28723d5c97ad43b3d66929a"
+ },
+ "t03/docs/note_birch.txt": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "e1ef0bc6de78de64a4780db266c267f00eee6ca14bff5aaa2484e84efa5730c1",
+  "frozen_sha256": "e1ef0bc6de78de64a4780db266c267f00eee6ca14bff5aaa2484e84efa5730c1"
+ },
+ "t03/docs/note_cedar.txt": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "90fe7c09cd7b6dd5f1d4274370857b7c1192b9e790b0b490aaee243be2075e49",
+  "frozen_sha256": "90fe7c09cd7b6dd5f1d4274370857b7c1192b9e790b0b490aaee243be2075e49"
+ },
+ "t03/docs/note_douglas.txt": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "542d02a0bb659a25033d3eebe66fb5e3d255dd22680d07d073d0bb00ead356f5",
+  "frozen_sha256": "542d02a0bb659a25033d3eebe66fb5e3d255dd22680d07d073d0bb00ead356f5"
+ },
+ "t03/docs/note_elm.txt": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "a308d245da1fdb3441c8e0f671615247a9d91f21f6b25e83e899068a842d48f6",
+  "frozen_sha256": "a308d245da1fdb3441c8e0f671615247a9d91f21f6b25e83e899068a842d48f6"
+ },
+ "t04/test.py": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "9121a4e692f8798df6420822b4a540723e67dbfe25c8fd42866f454ea5d91c3a",
+  "frozen_sha256": "9121a4e692f8798df6420822b4a540723e67dbfe25c8fd42866f454ea5d91c3a"
+ },
+ "t07/app.log": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "dd095ed3c29d9405ca21f4b2202975f4e84758d3c1a2b6ef9cfea542e050c065",
+  "frozen_sha256": "dd095ed3c29d9405ca21f4b2202975f4e84758d3c1a2b6ef9cfea542e050c065"
+ },
+ "t09/data/input.txt": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+  "frozen_sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0"
+ },
+ "t10/notes.txt": {
+  "source": "surviving Muse seed file (mtime 2026-10-20 13:09:29 UTC, untouched by the model)",
+  "muse_sha256": "d985068d34a7f1c0131004fb22e798852a790794323daff10fa19c2f98f215f7",
+  "frozen_sha256": "d985068d34a7f1c0131004fb22e798852a790794323daff10fa19c2f98f215f7"
+ },
+ "t09/run_report.sh": {
+  "source": "surviving Muse seed file, work path replaced by the {WORK} placeholder",
+  "muse_sha256": "f58ce1ebf3ce727a472f5522e107d53a5d1565a2bdb9925ab6a09aea1460bfb8",
+  "frozen_sha256": "74d27e15521e60faefec9d046e947fa3997d6cc94d3abd684042078ddb6da580"
+ },
+ "t04/stats.py": {
+  "source": "reconstructed from the Muse t04 transcript read_file output (6 lines); size 85 B matches the read_file file_size 85",
+  "muse_sha256": null,
+  "frozen_sha256": "c2a3b0d2e9e6d1c52a8539400c6c02abf0b774f2d65ebe1466524d18330c15c7"
+ },
+ "t08/config.json": {
+  "source": "reconstructed from the Muse t08 transcript read_file output (15 lines, json.dumps indent=2 + newline); size 200 B matches file_size 200",
+  "muse_sha256": null,
+  "frozen_sha256": "53f8f828ba453025fff3dc5bf9eeec917473bc0876ad1915d6719bdaa7b466ee"
+ }
+}

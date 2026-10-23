@@ -1,0 +1,53 @@
+{
+  "score": 93.29,
+  "metric": "pass@1",
+  "passed": 153,
+  "total": 164,
+  "errors": [
+    {
+      "task_id": "HumanEval/32",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpq8xw1hz2.py\", line 54, in <module>\n    check(find_zero)\n    ~~~~~^^^^^^^^^^^\n  File \"/tmp/tmpq8xw1hz2.py\", line 50, in check\n    solution = candidate(copy.deepcopy(coeffs))\n  File \"/tmp/tmpq8xw1hz2.py\", line 27, in find_zero\n    x = x - poly(xs, x) / poly_d(xs, x)\n                          ^^^^^^\nNameError: name 'poly_d' is not defined. Did you mean: 'poly'?\n"
+    },
+    {
+      "task_id": "HumanEval/65",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpmat28p1m.py\", line 32, in <module>\n    check(circular_shift)\n    ~~~~~^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpmat28p1m.py\", line 24, in check\n    assert candidate(12, 2) == \"12\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/75",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmplg7t2bwq.py\", line 36, in <module>\n    check(is_multiply_prime)\n    ~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmplg7t2bwq.py\", line 26, in check\n    assert candidate(8) == True\n           ^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/83",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpr025b3xk.py\", line 25, in <module>\n    check(starts_one_ends)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpr025b3xk.py\", line 16, in check\n    assert candidate(2) == 18\n           ^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/93",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmppifjhqy1.py\", line 43, in <module>\n    check(encode)\n    ~~~~~^^^^^^^^\n  File \"/tmp/tmppifjhqy1.py\", line 34, in check\n    assert candidate('TEST') == 'tgst', \"This prints if this assert fails 1 (good for debugging!)\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: This prints if this assert fails 1 (good for debugging!)\n"
+    },
+    {
+      "task_id": "HumanEval/115",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmprkyiz9cw.py\", line 57, in <module>\n    check(max_fill)\n    ~~~~~^^^^^^^^^^\n  File \"/tmp/tmprkyiz9cw.py\", line 54, in check\n    assert candidate([[1,1,1,1], [1,1,1,1]], 9) == 2, \"Error\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Error\n"
+    },
+    {
+      "task_id": "HumanEval/120",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmprvdnm78x.py\", line 48, in <module>\n    check(maximum)\n    ~~~~~^^^^^^^^^\n  File \"/tmp/tmprvdnm78x.py\", line 45, in check\n    assert candidate([1, 2, 3, -23, 243, -400, 0], 0) == []\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/132",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpmlyrbpvp.py\", line 49, in <module>\n    check(is_nested)\n    ~~~~~^^^^^^^^^^^\n  File \"/tmp/tmpmlyrbpvp.py\", line 38, in check\n    assert candidate('[[]') == False\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/145",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpksi7x8zj.py\", line 31, in <module>\n    check(order_by_points)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpksi7x8zj.py\", line 20, in check\n    assert candidate([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/147",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpjl4ej23l.py\", line 31, in <module>\n    check(get_max_triples)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpjl4ej23l.py\", line 26, in check\n    assert candidate(5) == 1\n           ^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/163",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpimra5srs.py\", line 28, in <module>\n    check(generate_integers)\n    ~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpimra5srs.py\", line 19, in check\n    assert candidate(2, 10) == [2, 4, 6, 8], \"Test 1\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Test 1\n"
+    }
+  ],
+  "elapsed_s": 445.4
+}

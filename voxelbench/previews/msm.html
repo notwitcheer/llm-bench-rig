@@ -1,0 +1,57 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Mont-Saint-Michel voxel preview</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#9cc8e8}#l{position:fixed;left:14px;top:12px;color:#fff;font:14px sans-serif;text-shadow:0 1px 3px #0008}</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script></head>
+<body><div id="l">preview: Mont-Saint-Michel, rising tide (mercury mockup)</div><script type="module">
+import * as THREE from 'three';
+const R=new THREE.WebGLRenderer({antialias:true});R.setSize(innerWidth,innerHeight);R.setPixelRatio(1);R.shadowMap.enabled=true;document.body.appendChild(R.domElement);
+const S=new THREE.Scene();S.background=new THREE.Color(0xa8d4f0);S.fog=new THREE.Fog(0xa8d4f0,45,110);
+const C=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.5,500);
+S.add(new THREE.HemisphereLight(0xdff2ff,0x8a7350,0.9));const sun=new THREE.DirectionalLight(0xfff0d0,1.4);sun.position.set(80,45,30);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-70,right:70,top:70,bottom:-70});S.add(sun);
+const box=new THREE.BoxGeometry(1,1,1);const vox=[];const col=new THREE.Color();
+function v(x,y,z,c){vox.push([x,y,z,c]);}
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+// rock island
+for(let x=-14;x<=14;x++)for(let z=-14;z<=14;z++){const d=Math.hypot(x,z);const h=Math.floor(Math.max(0,24-d*1.75+rnd()*1.2));for(let y=0;y<h;y++)v(x,y,z,y<2?0x8f8466:(rnd()<0.5?0x7a7468:0x6b665c));
+ if(h>2&&h<16&&rnd()<0.22)v(x,h,z,0x4f7d3a);}
+// ramparts ring
+for(let a=0;a<Math.PI*2;a+=0.035){const x=Math.round(Math.cos(a)*13.5),z=Math.round(Math.sin(a)*13.5);if(z>-4)for(let y=1;y<5;y++)v(x,y,z,0xb8ad92);if(Math.round(a*40)%2)v(x,5,z,0xa89d84);}
+// village houses on slope
+for(let i=0;i<60;i++){const a=rnd()*Math.PI*1.2+0.1,r=7+rnd()*5;const x=Math.round(Math.cos(a)*r),z=Math.round(Math.sin(a)*r);const base=Math.floor(Math.max(0,24-Math.hypot(x,z)*1.75));
+ for(let y=base;y<base+2;y++)v(x,y,z,0xd8ccb0);v(x,base+2,z,0x4a4f5c);v(x,base+3,z,0x3e434e);}
+// abbey: tiers + church + spire
+for(let x=-4;x<=4;x++)for(let z=-4;z<=4;z++)for(let y=17;y<25;y++)if(Math.abs(x)==4||Math.abs(z)==4||y==24)v(x,y,z,(y%2)?0xc9bea4:0xbdb299);
+for(let x=-2;x<=2;x++)for(let z=-5;z<=5;z++)for(let y=25;y<29;y++)if(Math.abs(x)==2||Math.abs(z)==5)v(x,y,z,0xd6ccb4);
+for(let z=-5;z<=5;z++)for(let x=-2;x<=2;x++)v(x,29+(2-Math.abs(x)),z,0x5a6070);
+for(let y=29;y<40;y++){const w=y<33?1:0;for(let x=-w;x<=w;x++)for(let z=-w;z<=w;z++)v(x,y,z,y<33?0xcfc4aa:0x6c7280);}v(0,40,0,0xf2c94c);v(0,41,0,0xf2c94c);
+// sand flats + salt marsh
+for(let x=-60;x<=60;x+=1)for(let z=-60;z<=60;z+=1){const d=Math.hypot(x,z);if(d<15)continue;const n=Math.sin(x*0.15)*Math.cos(z*0.12)*0.6;
+ const bank=Math.sin(x*0.07+1)*Math.cos(z*0.06)+Math.sin((x+z)*0.045)*0.8;const marsh=z>35;
+ const y=marsh?-1:(bank>0.35?-1:-2);const c=marsh?(rnd()<0.6?0x6f9a4a:0x86ad5a):(y==-1?(rnd()<0.5?0xe0d1a2:0xd6c592):0xb8a77a);v(x,y,z,c);}
+// causeway
+for(let z=14;z<62;z++)for(let x=-1;x<=1;x++){v(x,0,z,0x9a9384);}
+const mesh=new THREE.InstancedMesh(box,new THREE.MeshLambertMaterial(),vox.length);const m=new THREE.Matrix4();
+vox.forEach((q,i)=>{m.makeTranslation(q[0],q[1],q[2]);mesh.setMatrixAt(i,m);mesh.setColorAt(i,col.setHex(q[3]));});mesh.castShadow=mesh.receiveShadow=true;S.add(mesh);
+// water: instanced grid, tide rises over time
+const W=[];for(let x=-60;x<=60;x+=1)for(let z=-60;z<=60;z+=1){if(Math.hypot(x,z)<14.5||(Math.abs(x)<=1&&z>14)||z>36)continue;W.push([x,z]);}
+const wm=new THREE.InstancedMesh(box,new THREE.MeshLambertMaterial({transparent:true,opacity:0.82}),W.length);W.forEach((q,i)=>wm.setColorAt(i,col.setHex(i%3?0x3d86b8:0x4a95c4)));S.add(wm);
+// gulls
+const gulls=[];for(let i=0;i<14;i++){const g=new THREE.Group();const b=new THREE.Mesh(box,new THREE.MeshLambertMaterial({color:0xffffff}));b.scale.set(0.5,0.4,1);g.add(b);g.scale.setScalar(0.6);
+ for(const s of[-1,1]){const w=new THREE.Mesh(box,new THREE.MeshLambertMaterial({color:0xe8e8e8}));w.scale.set(1.4,0.12,0.5);w.position.x=s*0.9;w.userData.s=s;g.add(w);}
+ g.userData={r:16+rnd()*25,h:20+rnd()*15,sp:0.15+rnd()*0.2,ph:rnd()*6};S.add(g);gulls.push(g);}
+// pilgrims on causeway, sheep on marsh
+const walkers=[];for(let i=0;i<10;i++){const p=new THREE.Mesh(box,new THREE.MeshLambertMaterial({color:[0x8b3a3a,0x3a5a8b,0x6b4f2a,0x2f6b4f][i%4]}));p.scale.set(0.6,1.4,0.6);p.userData={o:rnd()*48,sp:1+rnd()};S.add(p);walkers.push(p);}
+const sheep=[];for(let i=0;i<16;i++){const s=new THREE.Mesh(box,new THREE.MeshLambertMaterial({color:0xf4f1e8}));s.scale.set(1.2,0.8,0.8);s.position.set(-50+rnd()*100,0.4,40+rnd()*18);s.userData={ph:rnd()*6};S.add(s);sheep.push(s);}
+// clouds
+const clouds=[];for(let i=0;i<10;i++){const g=new THREE.Group();for(let k=0;k<8;k++){const c=new THREE.Mesh(box,new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:0.92}));c.scale.set(4+rnd()*4,2,3+rnd()*3);c.position.set(rnd()*8,rnd()*2,rnd()*5);g.add(c);}g.position.set(-90+rnd()*180,48+rnd()*12,-80+rnd()*120);S.add(g);clouds.push(g);}
+const clock=new THREE.Clock();
+function f(){const t=clock.getElapsedTime();
+ const tide=-2.6+Math.min(t/14,1)*2.4; // tide comes in over ~14 s
+ W.forEach((q,i)=>{const y=tide+Math.sin(q[0]*0.3+t*1.6)*0.18+Math.cos(q[1]*0.25+t*1.2)*0.18;m.makeTranslation(q[0],y,q[1]);wm.setMatrixAt(i,m);});wm.instanceMatrix.needsUpdate=true;
+ gulls.forEach(g=>{const u=g.userData,a=t*u.sp+u.ph;g.position.set(Math.cos(a)*u.r,u.h+Math.sin(t+u.ph)*2,Math.sin(a)*u.r);g.rotation.y=-a;g.children.forEach(w=>{if(w.userData.s)w.rotation.z=w.userData.s*Math.sin(t*8+u.ph)*0.6;});});
+ walkers.forEach(p=>{const z=62-((p.userData.o+t*p.userData.sp)%48);p.position.set((p.userData.o%3)-1,1.2+Math.abs(Math.sin(t*6+p.userData.o))*0.15,z);});
+ sheep.forEach(s=>{s.position.x+=Math.sin(t*0.5+s.userData.ph)*0.01;});
+ clouds.forEach(c=>{c.position.x+=0.03;if(c.position.x>100)c.position.x=-100;});
+ const a=t*0.08+1.15;C.position.set(Math.cos(a)*58,13,Math.sin(a)*58);C.lookAt(0,17,0);
+ R.render(S,C);requestAnimationFrame(f);}f();
+addEventListener('resize',()=>{C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix();R.setSize(innerWidth,innerHeight);});
+</script></body></html>
