@@ -40,7 +40,7 @@ nl_check_disk 20
 ss -ltnH "sport = :$RELAY_PORT" 2>/dev/null | grep -q . && nl_fail "port $RELAY_PORT already in use"
 # credential check without printing anything: the relay's own resolver, key length only
 case "${KEY_SOURCE:-}" in
-  hermes_home:*) D=${KEY_SOURCE#hermes_home:}; KL=$(HERMES_HOME=$D $HPY -c "from hermes_cli.auth_nous import resolve_nous_runtime_credentials as r; d=r(); print(len(d['api_key'] or ''), int(d.get('expires_in') or 0))" 2>/dev/null); [ -n "$KL" ] && nl_ok "credential resolves (key len, ttl s: $KL)" || nl_fail "credential did not resolve from $D";;
+  hermes_home:*) D=${KEY_SOURCE#hermes_home:}; KL=$(cd /home/witcheer/.hermes/hermes-agent && HERMES_HOME=$D PYTHONPATH=/home/witcheer/.hermes/hermes-agent $HPY -c "from hermes_cli.auth_nous import resolve_nous_runtime_credentials as r; d=r(); print(len(d['api_key'] or ''), int(d.get('expires_in') or 0))" 2>/dev/null); [ -n "$KL" ] && nl_ok "credential resolves (key len, ttl s: $KL)" || nl_fail "credential did not resolve from $D";;
   file:*) F=${KEY_SOURCE#file:}; [ -s "$F" ] && nl_ok "key file present ($(stat -c %a "$F") perms)" || nl_fail "key file $F missing/empty";;
 esac
 if nl_skip_exact "$ART"; then nl_say "nothing to run, $SLUG already has a gate verdict"; exit 0; fi

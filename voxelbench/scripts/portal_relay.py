@@ -40,8 +40,10 @@ def get_key(force=False):
             code = ("import json; from hermes_cli.auth_nous import resolve_nous_runtime_credentials as r; "
                     f"d=r(force_refresh={bool(force)}); "
                     "print(json.dumps({'k': d['api_key'], 'e': d.get('expires_in') or 0}))")
-            env = dict(os.environ, HERMES_HOME=val)
-            out = subprocess.run([A.hermes_python, "-c", code], env=env, capture_output=True, text=True, timeout=60)
+            # the venv python alone misses the checkout root on sys.path (`pm` package): run from the source tree
+            src = os.path.dirname(os.path.dirname(os.path.dirname(A.hermes_python)))
+            env = dict(os.environ, HERMES_HOME=val, PYTHONPATH=src)
+            out = subprocess.run([A.hermes_python, "-c", code], env=env, cwd=src, capture_output=True, text=True, timeout=60)
             if out.returncode != 0:
                 raise RuntimeError("credential resolve failed (rc %d): %s" % (out.returncode, out.stderr.strip()[-300:]))
             d = json.loads(out.stdout.strip().splitlines()[-1])
