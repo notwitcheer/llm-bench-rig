@@ -94,3 +94,39 @@ Paired per problem on the same 63 (exact McNemar, two-sided; first number = the 
 - One greedy pass per problem, 63 problems, the same limits as the rest of this page. The model card recommends a longer output budget (`-n 16384` or more with `-c 65536`); 32k is this page's budget for every row, not a Bonsai-specific choice.
 
 *Sources (addendum): `results/ternary-bonsai-2-27b-{pq2-0,ptq1-0}-matharena-32k/{ma_aime_2026,ma_hmmt_feb_2026}_{detail,progress}.json` on the rig, read 2026-10-20 ~07:30 CEST; MATH-500 cells from `results/ternary-bonsai-2-27b-*-thinkon/math500_detail.json`; paired tests from the per-problem progress files.*
+
+## Addendum 2026-10-25: Underdog-Saluki-27B and Qwen3.8-27B GSQ-RCO IQ2_XS
+
+The two other small files of the [sub-10 GB study](sub10-qwen38-27b.md) ran the same 63 problems under the same regime (thinking on, `max_tokens 32768`, `ctx 40960`, greedy, exact-number veto on; 0 vetoes fired). Same mainline llama.cpp b10371 (`5d16e81dd`) as the nine rows above; the legs finished 2026-10-25 (idle-queue item `67-sub10-qwen38-27b`). The chart at the top is the nine-row card as published and is left unchanged.
+
+| Model | Quant | GGUF | AIME 2026 | HMMT Feb 2026 | Solved /63 | Capped /63 | Finished right | MATH-500 (budget) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-27B (from the table above) | UD-IQ3_XXS | 11.9 GB | 26 | 22 | **48** | 18 | 44/45 (97.8%) | 94.6 (16k) |
+| Qwen3.8-27B (from the table above) | Q6_K | 22.9 GB | 25 | 22 | **47** | 19 | 42/44 (95.5%) | 95.2 (16k) |
+| Qwen3.8-27B GSQ-RCO | IQ2_XS | 8.4 GB | 23 | 19 | **42** | 21 | 37/42 (88.1%) | 92.8 (16k) |
+| Underdog-Saluki-27B-1.0 | IQ2-mix | 7.9 GB | 23 | 16 | **39** | 26 | 35/37 (94.6%) | 91.6 (16k) |
+
+Per-leg counts, parse failures, tokens per correct answer and median completion: the four new rows of [`dataset/matharena_contest_32k.csv`](../dataset/matharena_contest_32k.csv) (file sizes 8,422,841,472 and 7,898,369,152 bytes, `stat -L`).
+
+Paired per problem on the same 63 (exact McNemar, two-sided; first number = the first-named row right and the other wrong):
+
+| Pair | AIME (30) | HMMT (33) | Both (63) |
+|---|---:|---:|---:|
+| GSQ-RCO vs Saluki | 2 / 2 | 5 / 2 | 7 / 4 (p = 0.55) |
+| Q6_K vs GSQ-RCO | 2 / 0 | 5 / 2 | 7 / 2 (p = 0.18) |
+| Q6_K vs Saluki | 3 / 1 | 8 / 2 | 11 / 3 (p = 0.057) |
+| UD-IQ3_XXS vs GSQ-RCO | 4 / 1 | 5 / 2 | 9 / 3 (p = 0.15) |
+| UD-IQ3_XXS vs Saluki | 4 / 1 | 7 / 1 | 11 / 2 (p = 0.023) |
+
+### Reads (2026-10-25)
+
+1. **GSQ-RCO is level with Saluki on AIME (23 of 30 each, 2 / 2 discordant) and ahead on HMMT (19 against 16; 5 / 2, p = 0.45).** Neither gap is significant on 63 problems.
+2. **HMMT is a token-budget floor for both small files.** Saluki capped on 18 of 33 problems (54.5%, median completion 32,768 tokens) and is right on all 15 it finished; GSQ-RCO capped on 14 (43.8% by the harness over the 32 problems with a recorded completion, 42.4% of 33) against 12 for Q6_K and UD-IQ3_XXS. Read the HMMT column as how many chains ended inside 32k, not as the file's maths ceiling. AIME caps on 20% to 27% for every row, comparison rows included.
+3. **Saluki's model card lists AIME 2026 avg@4 80.0; this single greedy pass solved 23 of 30 (76.67).** 80.0% of 30 is 24 problems: one problem apart, inside the noise of a 30-problem set and a different harness. Not a contradiction.
+
+### Limits (2026-10-25)
+
+- One of GSQ-RCO's HMMT problems returned an HTTP 500 (context size exceeded), was scored wrong and counts as finished (1 request error in the detail json; zero on the other three legs).
+- One greedy pass per problem, 63 problems; the other limits of this page apply. The sub-10 GB report's [2026-10-25 addendum](sub10-qwen38-27b.md#addendum-2026-10-25-gpqa-diamond-and-this-years-contests-for-saluki-and-gsq-rco) carries the GPQA Diamond cells and the cap-split reads.
+
+*Sources (addendum): `results/{underdog-saluki-27b-iq2-mix,qwen3-8-27b-gsq-rco-iq2-xs}-matharena-32k/{ma_aime_2026,ma_hmmt_feb_2026}_{detail,progress}.json` on the rig, read 2026-10-25; MATH-500 cells from `results/*-thinkon/math500_detail.json`; paired tests and cap splits from [`scripts/sub10_addendum_1025.py`](../scripts/sub10_addendum_1025.py); model card [ConwayResearch/Underdog-Saluki-27B-1.0](https://huggingface.co/ConwayResearch/Underdog-Saluki-27B-1.0), read 2026-10-25.*

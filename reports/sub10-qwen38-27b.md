@@ -4,6 +4,8 @@
 
 **Addendum 2026-10-15:** a reader asked for the GSQ-RCO IQ2_XS file, the quant Saluki's model card names as its base. It scores 87.01 on the same four tasks (8.4 GB, 97.0% of the Q6_K mean), 1.33 above Saluki, which is inside the noise on a paired test. Details, a cap-hit breakdown for every row and a six-row chart are in the [Addendum](#addendum-2026-10-15-gsq-rco-iq2_xs-the-file-saluki-is-built-on) at the end.
 
+**Addendum 2026-10-25:** GPQA Diamond (think-on 16k) and AIME 2026 + HMMT Feb 2026 (think-on 32k) for both small files, next to the banked Q6_K and UD-IQ3_XXS. GSQ-RCO is level with or ahead of Saluki on every new cell (GPQA 68.18 against 65.66, AIME 23 against 23 of 30, HMMT 57.58 against 48.48), none of the gaps significant on its own; both trail the larger files, and the HMMT cells (and GPQA at 16k) are token-budget floors, not headlines. See the [Addendum](#addendum-2026-10-25-gpqa-diamond-and-this-years-contests-for-saluki-and-gsq-rco).
+
 **Rig:** RTX 5090 32GB (capsule), llama-server, batch 1 · **Window:** Saluki 2026-10-11 to 2026-10-13, GSQ-RCO 2026-10-13 to 2026-10-15, inside the box's cheap-electricity hours (idle-queue item `65s-sub10-core`) · **Harness:** [llm-bench-rig](https://github.com/notwitcheer/llm-bench-rig) second-tier lane, artefacts in `results/<slug>-thinkon/` · **Data:** [`dataset/second_tier.csv`](../dataset/second_tier.csv) · **Chart:** [`sub10-qwen38-27b.png`](sub10-qwen38-27b.png) (five rows, as posted), [`sub10-qwen38-27b-gsq.png`](sub10-qwen38-27b-gsq.png) (six rows, 2026-10-15) · **Parent board:** [thinking on at a 16k budget](second-tier-thinkon-16k.md)
 
 ![sub-10 GB Qwen3.8-27B card](sub10-qwen38-27b.png)
@@ -62,14 +64,14 @@ Paired against each row on identical items (A-only = the comparison row right, S
 2. **As a ratio, Saluki keeps 94.5% to 96.7% of the Q6_K score per task, 95.6% of the mean.** The model card's "96% average retention across 9 benchmarks" is against the full-size model on a different task set, so the two are not a pair, but the numbers sit close together. What this page adds is that other files of the same base model keep more on these four tasks: 98.9% (both Bonsai packings) and 99.9% (UD-IQ3_XXS).
 3. **A large share of the gap is answers that ran out of budget.** Saluki has 66 fewer correct answers than Q6_K over the four tasks and 80 more capped generations. This does not prove a bigger budget closes the gap (a capped item can be wrong at any budget), but it does mean these scores are partly a 16k-budget read. A 32k pass on the four legs would settle it; it is on the owed list.
 4. **IFEval: the widest instruction-group gap is change_case.** 78 of 89 change_case instructions pass for Saluki against 87 of 89 for Q6_K; startend 60 of 67 against 65 of 67. The card names "letter-level instruction puzzles (palindromes, vowel rules, alphabetical order)" as its weakest area; IFEval has no palindrome or vowel instructions, so change_case (all caps, all lowercase) is only the nearest group, not a check of that sentence.
-5. **MATH-500 is not competition maths.** 91.6 against 95.2 is 96.2% of Q6_K. The card says Saluki keeps "about 82 to 85% of the full model's competition math score" (AIME); AIME 2026 and HMMT Feb 2026 at a 32k budget are queued for this row and will be the comparable number.
+5. **MATH-500 is not competition maths.** 91.6 against 95.2 is 96.2% of Q6_K. The card says Saluki keeps "about 82 to 85% of the full model's competition math score" (AIME); AIME 2026 and HMMT Feb 2026 at a 32k budget are queued for this row and will be the comparable number. (2026-10-25: done, see the [Addendum](#addendum-2026-10-25-gpqa-diamond-and-this-years-contests-for-saluki-and-gsq-rco); one greedy pass solved 23 of 30 against the card's avg@4 80.0.)
 
 ## The model card's claims, checked where this regime can
 
 - **IFEval 93.5 (prompt-loose).** This board grades prompt-strict, a stricter metric: Saluki scores 84.84 prompt-strict and 90.91 inst-strict (730 of 803 instructions). The detail json does not carry a loose score, so the card's number is neither confirmed nor contradicted here. For scale, the same harness gives Q6_K 89.65 prompt-strict and 94.52 inst-strict, so on the strict metrics Saluki is below the base model, where the card's loose figure (93.5) is above its quoted full-size public number (91.5). Different metric, different harness, sampling (the card recommends temperature 0.6 with thinking on; this board is greedy): not a contradiction, but not the same picture either.
 - **MBPP+ 78.0.** This board: 77.25 (292 of 378, ± 4.2). Consistent.
 - **Tool calling (Underdog Bench, 120 BFCL v4 tasks, thinking off): Saluki 88, full size 84, Bonsai 2 70.** Not run here. The card's comparison with Bonsai 2 is on tool calling; this page measures instruction following, maths and code with thinking on, where the 5.95 GB Bonsai 2 file (PTQ1_0 above, same size) scores 88.67 against Saluki's 85.68. Both can be true; the two measurements answer different questions.
-- **Parallel tool calls, SWE-bench Verified, IFBench, MuSR, AIME 2025:** not run here. AIME 2026 is queued (32k, think-on), see Owed.
+- **Parallel tool calls, SWE-bench Verified, IFBench, MuSR, AIME 2025:** not run here. AIME 2026 was queued when this page was published and ran 2026-10-25: 23 of 30, see the [Addendum](#addendum-2026-10-25-gpqa-diamond-and-this-years-contests-for-saluki-and-gsq-rco).
 
 ## Worth it if / not if
 
@@ -84,13 +86,13 @@ Paired against each row on identical items (A-only = the comparison row right, S
 - The Bonsai rows ran on a different server binary (PrismML fork); the regime and harness are otherwise identical.
 - The comparison rows were measured 2026-09 (Qwen3.8) and 2026-10-08 to 10 (Bonsai), Saluki 2026-10-11 to 13; build, regime and harness held constant.
 - No speed or memory measurement here; the file size is the GGUF on disk, not peak VRAM.
-- Tool calling, the card's headline, is not measured on this rig.
+- Tool calling, the card's headline, is not measured on this page (2026-10-25: a separate study measures it, see [toolcall-v1](toolcall-v1.md)).
 - ISTA-DASLab GSQ-RCO IQ2_XS (8.42 GB, the base Saluki builds on) was added 2026-10-15 after the post went out; the TL;DR, Reads and the first chart describe the five rows published 2026-10-13, the Addendum covers the sixth.
 
 ## Owed
 
 - ~~ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF IQ2_XS on the same four tasks~~ done 2026-10-15, see the Addendum.
-- GPQA Diamond (think-on 16k) and AIME 2026 + HMMT Feb 2026 (think-on 32k) for both sub-10 GB rows (idle-queue item `67-sub10-qwen38-27b`). Bonsai rows done 2026-10-20, see the Addendum of that date; Saluki and GSQ-RCO still running.
+- ~~GPQA Diamond (think-on 16k) and AIME 2026 + HMMT Feb 2026 (think-on 32k) for both sub-10 GB rows (idle-queue item `67-sub10-qwen38-27b`)~~ done: Bonsai rows 2026-10-20, Saluki and GSQ-RCO 2026-10-25, see the Addenda of those dates.
 - GPQA Diamond at a 32k budget for both Bonsai rows (their 16k legs capped on a third of the questions), queued 2026-10-20 (idle-queue item `67b-bonsai2-gpqa32k`).
 - A 32k pass on Saluki's four legs, to measure how much of the gap is the 16k budget.
 
@@ -181,3 +183,54 @@ The Q6_K row's capped count is derived from its tokens sidecar (completion >= 16
 3. **So the 16k GPQA number is a floor, and is not the model's score.** The model card recommends `-n 16384` or more with `-c 65536`. A 32k pass on both files is queued (`67b-bonsai2-gpqa32k`), the same treatment the [three rows that capped at 16k](gpqa-thinkon-32k.md) got. This does not show that the capped questions would be answered right at 32k.
 
 *Sources: `results/ternary-bonsai-2-27b-{pq2-0,ptq1-0}-thinkon/gpqa.json` + `gpqa_progress.json` + `gpqa_tokens.jsonl`, `results/qwen3-8-27b-q6-k-thinkon-rerun/` (same files), `results/qwen3-8-27b-ud-iq3-xxs-thinkon/gpqa.json`, read 2026-10-20 ~07:30 CEST; Wilson 95% intervals computed from correct / 198 (the Bonsai rows match their `gpqa_thinkon` rows in `dataset/board_ci.csv`).*
+
+## Addendum 2026-10-25: GPQA Diamond and this year's contests for Saluki and GSQ-RCO
+
+The last legs of the sub-10 GB study finished 2026-10-25 (idle-queue item `67-sub10-qwen38-27b`, mainline llama.cpp b10371 `5d16e81dd`, same harness as the rows above). Both small files ran GPQA Diamond (think-on, 16k budget) and the two MathArena contest sets (AIME 2026, HMMT Feb 2026; think-on, 32k budget) next to the banked Qwen3.8-27B rows. The posted charts above stay as they were; the tables below carry the new cells.
+
+- **Files:** `Underdog-Saluki-27B-1.0-IQ2-mix.gguf` 7,898,369,152 bytes, `Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf` 8,422,841,472 bytes (`stat -L`). Comparison rows are the banked Q6_K (22,884,408,288 bytes) and UD-IQ3_XXS (11,913,559,104), not re-run.
+- **GPQA regime:** thinking on, `max_tokens 16384`, `ctx 24576`, greedy, zero-shot, the 198 Diamond questions in shuffle seed 42, one pass. GPQA is second-tier here and is not folded into any four-task mean. Every think-on score carries its `capped_rate`.
+- **Contest regime:** thinking on, `max_tokens 32768`, `ctx 40960`, greedy, zero-shot; strict Qwen-Math grader plus an exact-number veto (0 fired on all four new legs); AIME 2026 has 30 problems and HMMT Feb 2026 has 33, so one problem is 3.3 and 3.0 points.
+- **Run windows:** GSQ-RCO's GPQA leg ran in one session, 2026-10-24 22:32 to 2026-10-25 02:32 CEST (240 min). Saluki's GPQA leg started 2026-10-20 02:36 CEST and was cut by the block's hard stop at 06:10 (exit 124, resumable; items cut mid-flight re-ran from scratch), then resumed 2026-10-24 21:30 to 22:32 CEST (61 min). Wall time per recorded completion token is within 4% (about 105 tok/s over Saluki's two sessions, which include the re-run of cut items, and 109 for GSQ-RCO), and the run log shows no server slowdown; the wall times differ mainly because Saluki generates 10% more tokens (1,728,967 against 1,571,791). The four contest legs ran back to back afterwards and finished at 08:12 on 2026-10-25 (CET: the box's clock went back an hour at 03:00 CEST while they ran).
+- **Paired tests:** exact two-sided binomial on the discordant items, per-item flags from each leg's `*_progress.json`. Script: [`scripts/sub10_addendum_1025.py`](../scripts/sub10_addendum_1025.py), run on the rig.
+
+**GPQA Diamond, think-on 16k (budget-limited, a floor):**
+
+| Row | Score | Correct / 198 | Wilson 95% | Capped | Capped and wrong | Finished right | Tokens / correct | Median completion |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-27B Q6_K | 79.29 | 157 | 73.1 to 84.4 | 43 (21.7%) ▲ | 35 | 149 / 155 (96.1%) | 7,740 | 2,274.5 |
+| Qwen3.8-27B UD-IQ3_XXS | 78.79 | 156 | 72.6 to 83.9 | not recorded | | | | |
+| Qwen3.8-27B GSQ-RCO IQ2_XS | 68.18 | 135 | 61.4 to 74.3 | 66 (33.3%) ▲ | 52 | 121 / 132 (91.7%) | 11,643 | 6,185.5 |
+| Underdog-Saluki-27B-1.0 IQ2-mix | 65.66 | 130 | 58.8 to 71.9 | 73 (36.9%) ▲ | 62 | 119 / 125 (95.2%) | 13,300 | 8,472.5 |
+
+Paired on the same 198 questions (first row right and second wrong / the reverse): GSQ-RCO against Saluki 20 / 15 (p = 0.50); Q6_K against GSQ-RCO 28 / 6 (p = 0.0002) and against Saluki 32 / 5 (p < 0.0001); UD-IQ3_XXS against GSQ-RCO 29 / 8 (p = 0.0008) and against Saluki 32 / 6 (p < 0.0001). The Q6_K capped count is derived from its tokens sidecar (completion >= 16,376 tokens; that leg predates the per-item `capped` flag); the UD-IQ3_XXS leg recorded no per-item tokens.
+
+**AIME 2026 and HMMT Feb 2026, think-on 32k:**
+
+| Row | AIME 2026 | HMMT Feb 2026 | Solved / 63 | Capped / 63 | Finished right | AIME cap | HMMT cap |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-27B UD-IQ3_XXS | 26 (86.67) | 22 (66.67) | 48 | 18 | 44 / 45 (97.8%) | 20.0% ▲ | 36.4% ▲ |
+| Qwen3.8-27B Q6_K | 25 (83.33) | 22 (66.67) | 47 | 19 | 42 / 44 (95.5%) | 23.3% ▲ | 36.4% ▲ |
+| Qwen3.8-27B GSQ-RCO IQ2_XS | 23 (76.67) | 19 (57.58) | 42 | 21 | 37 / 42 (88.1%) | 23.3% ▲ | 43.8% ▲ (14 of 33) |
+| Underdog-Saluki-27B-1.0 IQ2-mix | 23 (76.67) | 16 (48.48) | 39 | 26 | 35 / 37 (94.6%) | 26.7% ▲ | 54.5% ▲ |
+
+Every cell above caps on 10% or more of its problems, so every contest score on this page is a budget-limited read, the comparison rows included; the ▲ is the board's floor flag. Saluki's HMMT cell is the clearest floor: 18 of 33 problems reached 32,768 tokens (median completion 32,768) and the 15 it finished are all right. GSQ-RCO's HMMT cap rate is the harness's figure over the 32 problems with a recorded completion; its 33rd problem returned an HTTP 500 (context size exceeded), was scored wrong and counts as finished, so 14 of 33 (42.4%) hit the cap and 15 of the 19 finished are right. The grader credited 3 of Saluki's capped AIME answers and 1 of its capped HMMT answers (1 and 4 for GSQ-RCO's AIME and HMMT; a final answer written before the cut).
+
+Paired on the same 63 problems (first row right and second wrong / the reverse): GSQ-RCO against Saluki 7 / 4 (p = 0.55; AIME 2 / 2, HMMT 5 / 2); Q6_K against GSQ-RCO 7 / 2 (p = 0.18) and against Saluki 11 / 3 (p = 0.057); UD-IQ3_XXS against GSQ-RCO 9 / 3 (p = 0.15) and against Saluki 11 / 2 (p = 0.023, one of ten unadjusted comparisons in the GPQA and pooled-contest pairings above).
+
+### Reads (2026-10-25)
+
+1. **GSQ-RCO is ahead of or level with Saluki on every new cell, and no gap is significant on its own.** GPQA 68.18 against 65.66 (20 / 15, p = 0.50), AIME 2026 a tie at 23 of 30 (2 / 2 discordant), HMMT Feb 2026 57.58 against 48.48 (5 / 2, p = 0.45), 42 against 39 problems pooled (7 / 4, p = 0.55). With the four-task result of 2026-10-15 that is seven cells out of seven where GSQ-RCO is level or ahead, the same direction every time and never separable by itself. On the axes this board measures, Saluki's tuning did not buy anything over the file it is built on. Its aim, tool calling, is a different test: see [toolcall-v1](toolcall-v1.md).
+2. **The HMMT cells for both small files are a token-budget floor, not a headline.** Saluki capped on 54.5% of HMMT and GSQ-RCO on 43.8%, against 36.4% for Q6_K and UD-IQ3_XXS. Saluki's finished answers are 15 of 15 right, so its HMMT score counts how many chains ended inside 32k. The same holds for GPQA at 16k: a third of both files' questions capped (73 and 66, against 43 for Q6_K) and 62 and 52 of their misses are capped ones; on the questions that finished, Saluki is right on 95.2% (Q6_K 96.1%) and GSQ-RCO on 91.7%. This does not show that a bigger budget would turn those capped questions into right answers, and GSQ-RCO's finished accuracy is a few points under Q6_K's on both sets (91.7 against 96.1 on GPQA, 88.1 against 95.5 on the contests; small counts: 11 finished-and-wrong GPQA answers against 6, 5 contest answers against 2), so part of its gap is not the budget.
+3. **Against the larger files the small ones trail on every new cell.** On GPQA both are 10.6 to 13.6 points under Q6_K and UD-IQ3_XXS (all four paired tests p < 0.001). On the contests they solve 39 and 42 of 63 against 47 and 48. The AIME-only gap is smaller (23 against 25 and 26 solved) and sits within a problem or two at 30 problems.
+4. **Saluki's card number is one problem away from ours.** The card lists AIME 2026 avg@4 80.0 (read 2026-10-25); our single greedy pass solved 23 of 30 (76.67). 80.0% of 30 is 24 problems, so the difference is one problem, inside the 59.1 to 88.2 Wilson interval of a 30-problem set and within what a different harness and sampling (the card's sampling is averaged over four runs) move. This is not a contradiction. The card's "about 82 to 85% of the full model's competition math score" divides by the full-size model's published AIME 2026 (94.6); against our banked Q6_K on the same 63 problems Saluki solves 39 of 47 (83.0%), inside that band, which is a different reference than the card uses.
+5. **Saluki thinks longer than its base file on all three cells.** Tokens per correct answer 13,300 against 11,643 on GPQA (1.14x), 23,756 against 22,296 on AIME (1.07x) and 49,213 against 36,424 on HMMT (1.35x), the same direction as the 16k four-task rows above. Q6_K spends 7,740, 19,932 and 32,389 on the same three.
+
+### Limits (2026-10-25)
+
+- One greedy pass per item. GPQA has 198 questions (one question is half a point), the contests 63 problems; the Wilson interval on GPQA is about 12 points wide.
+- GPQA at 16k and the contests at 32k are budget-limited for every row with a recorded cap rate. A 32k GPQA pass would show how much of that is budget; none has run for these two rows.
+- The HMMT figure for GSQ-RCO carries one request error (HTTP 500, context exceeded), scored wrong and not counted as capped; see the contest paragraph above.
+- Card claims are checked only where this regime can: AIME 2026 above; the other benchmarks on the card (IFBench, MuSR, SWE-bench Verified, AIME 2025) are not run on this rig.
+
+*Sources: `results/{underdog-saluki-27b-iq2-mix,qwen3-8-27b-gsq-rco-iq2-xs}-thinkon/gpqa{,_progress}.json` + `gpqa_tokens.jsonl`, `results/{...}-matharena-32k/ma_{aime_2026,hmmt_feb_2026}_{detail,progress}.json`, comparison rows from `results/qwen3-8-27b-q6-k-thinkon-rerun/`, `qwen3-8-27b-ud-iq3-xxs-thinkon/`, `qwen3-8-27b-{q6-k,ud-iq3-xxs}-matharena-32k/`, read 2026-10-25 ~09:00 CEST; run log `idleq-67-sub10-qwen38-27b.log`; [`dataset/matharena_contest_32k.csv`](../dataset/matharena_contest_32k.csv) (four new rows), [`dataset/board_ci.csv`](../dataset/board_ci.csv) (two `gpqa_thinkon` rows); model card [ConwayResearch/Underdog-Saluki-27B-1.0](https://huggingface.co/ConwayResearch/Underdog-Saluki-27B-1.0), read 2026-10-25.*
