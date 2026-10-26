@@ -1,0 +1,91 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>stub tree (gate dry-run only)</title>
+<style>html,body{margin:0;background:#9cc;overflow:hidden}canvas{display:block}#hud{position:fixed;left:8px;top:6px;font:14px monospace;color:#012}</style></head>
+<body><canvas id="c"></canvas><div id="hud"></div>
+<script>
+// STUB for dry-running gate_trees.py / growth_clip.py. Not a tree model: a toy seeded branching process.
+// MODE is replaced by sed: pass | wronglambda | nondet | nohook
+const MODE = "__MODE__";
+const P = new URLSearchParams(location.search);
+const SEED = parseInt(P.get("seed") || "1"), LAMBDA = parseFloat(P.get("lambda") || "0.5");
+const TARGET = parseInt(P.get("seasons") || "30"), AUTOPLAY = (P.get("autoplay") || "1") === "1", INSTANT = P.get("instant") === "1";
+let orbitOn = (P.get("orbit") || "1") === "1";
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+let rnd, segs, tips, season, shed, paused = false;
+function restart(){ rnd = MODE === "nondet" ? Math.random : mulberry32(SEED * 7919 + 13); segs = []; tips = [{p:[0,0,0], d:[0,1,0]}]; season = 0; shed = 0; grow1(); }
+function norm(v){const l=Math.hypot(v[0],v[1],v[2])||1;return[v[0]/l,v[1]/l,v[2]/l]}
+function grow1(){
+  season++;
+  const ang = (MODE === "wronglambda" ? 0.35 + 2.4*(LAMBDA-0.46) : 1.15 - 2.4*(LAMBDA-0.46));
+  const nt = [];
+  for (const t of tips) {
+    const d = norm([t.d[0]+(rnd()-.5)*.2, t.d[1]+.15, t.d[2]+(rnd()-.5)*.2]);
+    const e = [t.p[0]+d[0], t.p[1]+d[1], t.p[2]+d[2]];
+    segs.push([t.p, e]); nt.push({p:e, d});
+    if (rnd() < 0.55 && tips.length < 400) {
+      const az = rnd()*6.283, s = Math.sin(ang), c = Math.cos(ang);
+      const dl = norm([d[0]*c + Math.cos(az)*s, d[1]*c, d[2]*c + Math.sin(az)*s]);
+      nt.push({p:e, d:dl});
+    }
+  }
+  tips = nt;
+  if (season % 9 === 0 && segs.length > 200) { segs.splice(0, 3); shed += 3; }
+}
+function setSeasonImpl(n){ if (n < season) restart(); while (season < n) grow1(); draw(); }
+if (MODE !== "nohook") {
+  if (MODE !== "nosetseason") window.setSeason = setSeasonImpl;
+  window.treeStats = function(){
+    let hy = 0, x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9;
+    for (const s of segs) { const e = s[1]; hy = Math.max(hy, e[1]); x0 = Math.min(x0, e[0]); x1 = Math.max(x1, e[0]); z0 = Math.min(z0, e[2]); z1 = Math.max(z1, e[2]); }
+    return {season, metamers: segs.length, buds: tips.length, height: hy, crownWidth: Math.max(x1-x0, z1-z0), shed, done: season >= TARGET};
+  };
+}
+const cv = document.getElementById("c"); cv.width = innerWidth; cv.height = innerHeight;
+const gl = cv.getContext("webgl");
+const vs = "attribute vec3 a;uniform mat4 m;uniform float ps;void main(){gl_Position=m*vec4(a,1.);gl_PointSize=ps;}";
+const fs = "precision mediump float;uniform vec3 col;void main(){gl_FragColor=vec4(col,1.);}";
+function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o}
+const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr); gl.useProgram(pr);
+const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc);
+let yaw = 0;
+function draw(){
+  const v = new Float32Array(segs.length * 6); segs.forEach((s,i)=>{v.set(s[0], i*6); v.set(s[1], i*6+3)});
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, v, gl.DYNAMIC_DRAW); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+  const c = Math.cos(yaw), s = Math.sin(yaw), sc = 0.05, asp = cv.width / cv.height;
+  // rotate about y, orthographic, scale; tree base near the bottom
+  const m = new Float32Array([c*sc/asp,0,0,0, 0,sc,0,0, s*sc*.3,0,sc*.1,0, 0,-0.7,0,1]);
+  gl.uniformMatrix4fv(gl.getUniformLocation(pr, "m"), false, m);
+  gl.clearColor(0.6, 0.78, 0.9, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+  const gq = new Float32Array([-1,-1,0, 1,-1,0, -1,-0.8,0, 1,-0.8,0]);
+  gl.bufferData(gl.ARRAY_BUFFER, gq, gl.DYNAMIC_DRAW); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+  gl.uniformMatrix4fv(gl.getUniformLocation(pr, "m"), false, new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]));
+  gl.uniform3f(gl.getUniformLocation(pr, "col"), 0.25, 0.2, 0.12); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.bufferData(gl.ARRAY_BUFFER, v, gl.DYNAMIC_DRAW); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+  gl.uniformMatrix4fv(gl.getUniformLocation(pr, "m"), false, m);
+  gl.uniform3f(gl.getUniformLocation(pr, "col"), 0.35, 0.2, 0.1); gl.drawArrays(gl.LINES, 0, segs.length * 2);
+  gl.uniform1f(gl.getUniformLocation(pr, "ps"), 16); gl.uniform3f(gl.getUniformLocation(pr, "col"), 0.1, 0.55, 0.15); gl.drawArrays(gl.POINTS, 0, segs.length * 2);
+  // three world-space markers around the tree (they sweep across the screen while the camera orbits)
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([12,1,0, 0,1,12, -12,1,0]), gl.DYNAMIC_DRAW); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+  gl.uniform1f(gl.getUniformLocation(pr, "ps"), 48); gl.uniform3f(gl.getUniformLocation(pr, "col"), 0.85, 0.1, 0.1); gl.drawArrays(gl.POINTS, 0, 3);
+  document.getElementById("hud").textContent = `season ${season}/${TARGET} metamers ${segs.length} lambda ${LAMBDA} seed ${SEED}`;
+}
+addEventListener("keydown", e => {
+  const k = e.key.toLowerCase();
+  if (k === "o") { if (MODE !== "dragonly") orbitOn = !orbitOn; } else if (k === " ") paused = !paused; else if (k === "n") { if (season < TARGET) grow1(); } else if (k === "r") restart();
+});
+let dragging = false, lx = 0;
+addEventListener("mousedown", e => { dragging = true; lx = e.clientX; });
+addEventListener("mouseup", () => { dragging = false; });
+addEventListener("mousemove", e => { if (dragging) { yaw -= (e.clientX - lx) * 0.005; lx = e.clientX; } });
+restart();
+if (INSTANT) { while (season < TARGET) grow1(); }
+let last = performance.now(), acc = 0;
+function frame(now){
+  const dt = (now - last) / 1000; last = now;
+  if (!INSTANT && AUTOPLAY && !paused && season < TARGET) { acc += dt; if (acc >= 1) { acc = 0; grow1(); } }
+  if (orbitOn) yaw += dt * 0.7;
+  draw(); requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>
