@@ -24,6 +24,7 @@ ling-3-0-flash-iq3-xxs,Ling-3.0-flash 127B-A5B,IQ3_XXS,False,47.69,3090,all,91.5
 qwen3-8-27b-ud-iq2-m,Qwen3.8-27B,UD-IQ2_M,False,9.6,11556,,91.47,39.39,no,tight,yes,yes,yes
 muse-glimmer-30b-ud-q4-k-xl,Muse-Glimmer-30B,UD-Q4_K_XL,True,14.78,15726,,91.08,70.71,no,no,tight,yes,yes
 qwen3-8-27b-ud-iq2-xxs,Qwen3.8-27B,UD-IQ2_XXS,False,8.38,10304,,90.82,42.93,no,yes,yes,yes,yes
+ornith-1-5-122b-ud-iq3-xxs,Ornith 1.5 122B-A10B,UD-IQ3_XXS,,46.1,28336,24,90.34,47.47,no,no,no,no,offload
 ling-3-0-flash-iq2-m,Ling-3.0-flash 127B-A5B,IQ2_M,False,39.2,2972,all,90.21,,offload,offload,offload,offload,offload
 qwen3-6-28b-reap20-a3b-q6-k,Qwen3.6-28B-REAP20-A3B,Q6_K,True,21.63,,,89.74,,no,no,no,?,?
 ornith-1-5-35b-q4-k-m,Ornith 1.5 35B-A3B,Q4_K_M,False,20.21,21394,,89.36,52.02,no,no,no,yes,yes

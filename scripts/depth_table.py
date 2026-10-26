@@ -46,6 +46,7 @@ NAMES = {
     "nvidia-nemotron-3-5-lightning-30b-a3b-q4-k-m": ("Nemotron 3.5 Lightning 30B-A3B", "Q4_K_M"),
     "qwopus3-8-27b-flash-q6-k": ("Qwopus3.8-27B-Flash", "Q6_K"),
     "qwen3-8-flash-next-ud-q2-k-xl": ("Qwen3.8-Flash-Next 125B-A10B", "UD-Q2_K_XL"),
+    "ornith-1-5-122b-ud-iq3-xxs": ("Ornith 1.5 122B-A10B", "UD-IQ3_XXS"),
 }
 
 

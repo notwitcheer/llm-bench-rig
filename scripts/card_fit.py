@@ -50,6 +50,7 @@ NAMES = {
     "qwen3-8-27b-ud-iq2-m": ("Qwen3.8-27B", "UD-IQ2_M"),
     "qwen3-8-27b-ud-iq2-xxs": ("Qwen3.8-27B", "UD-IQ2_XXS"),
     "qwen3-8-flash-next-ud-q2-k-xl": ("Qwen3.8-Flash-Next 125B-A10B", "UD-Q2_K_XL"),
+    "ornith-1-5-122b-ud-iq3-xxs": ("Ornith 1.5 122B-A10B", "UD-IQ3_XXS"),
     "qwopus3-8-27b-flash-q6-k": ("Qwopus3.8-27B-Flash", "Q6_K"),
     "qwopus-coder-compat": ("Qwopus3.6-27B-Coder-Compat-MTP", "Q6_K"),
     "qwable-5-27b-coder": ("Qwable-5-27B-Coder", "Q6_K"),

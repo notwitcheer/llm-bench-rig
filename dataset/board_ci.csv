@@ -317,3 +317,11 @@ qwopus3-8-27b-flash-q6-k-thinkon,gpqa_thinkon,70.71,140,198,12,64.02,76.6,4228.9
 ternary-bonsai-2-27b-pq2-0-thinkon,gpqa_thinkon,69.7,138,198,31,62.97,75.67,11979.7,7278.0,0.3384
 ternary-bonsai-2-27b-ptq1-0-thinkon,gpqa_thinkon,68.69,136,198,40,61.92,74.74,12215.1,7413.5,0.3232
 underdog-saluki-27b-iq2-mix-thinkon,gpqa_thinkon,65.66,130,198,38,58.8,71.92,13299.7,8472.5,0.3687
+ornith-1-5-122b-ud-iq3-xxs,mmlu,85.83,6017,7010,9,85.0,86.63,,,
+ornith-1-5-122b-ud-iq3-xxs,arc_challenge,96.16,1127,1172,0,94.9,97.12,,,
+ornith-1-5-122b-ud-iq3-xxs,hellaswag,92.15,4627,5021,1,91.38,92.86,,,
+ornith-1-5-122b-ud-iq3-xxs,humaneval,85.98,141,164,,79.83,90.47,,,
+ornith-1-5-122b-ud-iq3-xxs,gsm8k,91.58,1208,1319,0,89.96,92.96,,,
+ornith-1-5-122b-ud-iq3-xxs,gpqa,47.47,94,198,0,40.63,54.41,,,
+ornith-1-5-122b-ud-iq3-xxs,q_avg,90.34,13120,14686,,89.19,91.49,,,
+ornith-1-5-122b-ud-iq3-xxs-thinkon,gpqa_thinkon,83.33,165,198,13,77.52,87.88,7121.2,2579.0,0.2121

@@ -30,6 +30,7 @@ Every row is a model + quant measured on the RTX 5090 board (think-off quality t
 | Ling-3.0-flash 127B-A5B (`--n-cpu-moe all`) | IQ3_XXS | 47.7 | 3.0 | 91.6 |  | 🟠 | 🟠 | 🟠 | 🟠 | 🟠 |
 | Qwen3.8-27B | UD-IQ2_M | 9.6 | 11.3 | 91.5 | 39.4 | ⬜ | 🟡 | ✅ | ✅ | ✅ |
 | Qwen3.8-27B | UD-IQ2_XXS | 8.4 | 10.1 | 90.8 | 42.9 | ⬜ | ✅ | ✅ | ✅ | ✅ |
+| Ornith 1.5 122B-A10B (`--n-cpu-moe 24`) | UD-IQ3_XXS | 46.1 | 27.7 | 90.3 | 47.5 | ⬜ | ⬜ | ⬜ | ⬜ | 🟠 |
 | Ling-3.0-flash 127B-A5B (`--n-cpu-moe all`) | IQ2_M | 39.2 | 2.9 | 90.2 |  | 🟠 | 🟠 | 🟠 | 🟠 | 🟠 |
 | Ornith 1.5 35B-A3B | Q4_K_M | 20.2 | 20.9 | 89.4 | 52.0 | ⬜ | ⬜ | ⬜ | ✅ | ✅ |
 | Gemma 4 12B-it | Q6_K | 9.1 | 11.6 | 87.6 |  | ⬜ | 🟡 | ✅ | ✅ | ✅ |

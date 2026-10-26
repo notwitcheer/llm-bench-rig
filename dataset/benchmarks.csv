@@ -318,3 +318,10 @@ Qwopus3.8-27B-Flash,Dense (hybrid attn),27.32,Q6_K,20.89,llama.cpp,CUDA,RTX 5090
 Qwopus3.8-27B-Flash,Dense (hybrid attn),27.32,Q6_K,20.89,llama.cpp,CUDA,RTX 5090,32,tg128,62.96,0.05,2026-09-07
 Qwen3.8-Flash-Next,MoE (10B active; experts of 22 layers in RAM),125,UD-Q2_K_XL,73.45,llama.cpp,CUDA,RTX 5090,32,pp512,895.68,43.71,2026-09-09
 Qwen3.8-Flash-Next,MoE (10B active; experts of 22 layers in RAM),125,UD-Q2_K_XL,73.45,llama.cpp,CUDA,RTX 5090,32,tg128,59.69,0.15,2026-09-09
+Ornith 1.5 122B-A10B,MoE (10B active; experts of 24 layers in RAM),124.64,UD-IQ3_XXS,46.1,llama.cpp,CUDA,RTX 5090,32,pp128,233.03,13.12,2026-10-25
+Ornith 1.5 122B-A10B,MoE (10B active; experts of 24 layers in RAM),124.64,UD-IQ3_XXS,46.1,llama.cpp,CUDA,RTX 5090,32,pp512,631.44,5.77,2026-10-25
+Ornith 1.5 122B-A10B,MoE (10B active; experts of 24 layers in RAM),124.64,UD-IQ3_XXS,46.1,llama.cpp,CUDA,RTX 5090,32,pp2048,617.26,1.77,2026-10-25
+Ornith 1.5 122B-A10B,MoE (10B active; experts of 24 layers in RAM),124.64,UD-IQ3_XXS,46.1,llama.cpp,CUDA,RTX 5090,32,pp4096,606.64,3.35,2026-10-25
+Ornith 1.5 122B-A10B,MoE (10B active; experts of 24 layers in RAM),124.64,UD-IQ3_XXS,46.1,llama.cpp,CUDA,RTX 5090,32,pp8192,601.37,3.97,2026-10-25
+Ornith 1.5 122B-A10B,MoE (10B active; experts of 24 layers in RAM),124.64,UD-IQ3_XXS,46.1,llama.cpp,CUDA,RTX 5090,32,pp16384,595.14,0.12,2026-10-25
+Ornith 1.5 122B-A10B,MoE (10B active; experts of 24 layers in RAM),124.64,UD-IQ3_XXS,46.1,llama.cpp,CUDA,RTX 5090,32,tg128,47.63,0.11,2026-10-25
