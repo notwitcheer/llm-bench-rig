@@ -7,7 +7,7 @@ what counts: sampling (temp / top-p / top-k / min-p / penalties), output or reas
 ## Qwen3.8-27B Q6_K (series reference, Donald)
 - source: GGUF general.sampling keys (temp 1.0, top_p 0.95, top_k 20), read 2026-10-22 from ~/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf; card not re-read for this table
 - flags: none needed (keys apply as llama.cpp defaults); min-p 0.05 (llama.cpp default); RB 16384 + budget message
-- runs: msm-v1 66w, msm-v2 66x
+- runs: msm-v1 66w, msm-v2 66x (h1 harness); h2 harness: 66zz1 + 67e1 + 67e2 (msm-v2 repeats, HARDENING L30), 66zz2 (msm-v3), 67f (msm-v3b)
 
 ## Muse Glimmer 30B Q4_K_M
 - source: https://huggingface.co/meta-models/Muse-Glimmer-30B-GGUF README, fetched 2026-10-22: "--temp 1.0 --top-p 0.95 --top-k 64", "Sampling defaults. temperature 1.0, top_p 0.95, top_k 64"; reasoning cannot be switched off, strength via `reasoning_strength` (low / medium / high / xhigh, default high; card: "Use high or xhigh for complex problem solving, coding, and agentic tasks"); "To hard-cap thinking tokens use --reasoning-budget N"; no output budget number
