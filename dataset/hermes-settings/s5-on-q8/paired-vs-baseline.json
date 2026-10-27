@@ -1,0 +1,21 @@
+{
+ "base": "/home/witcheer/benchmark-rig/results/toolcall-v1/qwen3-8-27b-q6-k-s5-on",
+ "other": "/home/witcheer/benchmark-rig/results/hermes-settings/s5-on-q8",
+ "slices": [
+  {
+   "slice": "S5 multi_turn_base",
+   "paired": 100,
+   "only_in_base": 0,
+   "only_in_other": 0,
+   "base_correct": 81,
+   "other_correct": 78,
+   "base_only_correct": 6,
+   "other_only_correct": 3,
+   "mcnemar_exact_p": 0.5078,
+   "identical_outputs": 6,
+   "identical_pct": 6.0,
+   "base_completion_tokens_mean": 1962.5,
+   "other_completion_tokens_mean": 1912.7
+  }
+ ]
+}

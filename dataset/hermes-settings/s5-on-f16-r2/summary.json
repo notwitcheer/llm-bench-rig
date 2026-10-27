@@ -1,0 +1,2187 @@
+{
+ "label": "hset-s5-on-f16-r2",
+ "server_bin": "ggml-org/llama.cpp mainline b10371 (5d16e81dd); KV cache K=f16 V=f16; flash-attn auto",
+ "think": "on",
+ "max_tokens": 16384,
+ "ctx": 40960,
+ "parser_version": "toolcall-v1-parser-2",
+ "regime": "raw /completion, official Qwen3.8 template client-side, think-on, max_tokens 16384, ctx 40960, greedy (temperature 0), preserve_thinking default (undefined = keep)",
+ "props": {
+  "total_slots": 4,
+  "build_info": "b10371-5d16e81dd",
+  "model_path": "/home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf"
+ },
+ "n_ctx": 40960,
+ "embedded_template_sha256": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce",
+ "tokenize_parity": {
+  "prompts": 1998,
+  "mismatches_vs_hf": 0,
+  "seconds": 3.6
+ },
+ "single_turn": {
+  "S1": {},
+  "S2": {},
+  "S3": {},
+  "S4": {}
+ },
+ "single_turn_pace": {
+  "n": 0,
+  "wall_s_total": 0,
+  "completion_tokens_mean": null,
+  "decode_tok_s_median": null,
+  "prompt_tokens_server_eq_hf": 0,
+  "capped": 0,
+  "python_bool_replies": 0
+ },
+ "multi_turn": [
+  {
+   "id": "multi_turn_base_0",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 28,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10117,
+   "max_prompt_plus_gen": 10580,
+   "wall_s": 53.9,
+   "completion_tokens": 2996,
+   "step_buckets": {
+    "ok": 24,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_4",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10589,
+   "max_prompt_plus_gen": 10715,
+   "wall_s": 61.4,
+   "completion_tokens": 3662,
+   "step_buckets": {
+    "ok": 9,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for TwitterAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_7",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 8,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7422,
+   "max_prompt_plus_gen": 7506,
+   "wall_s": 11.2,
+   "completion_tokens": 631,
+   "step_buckets": {
+    "ok": 5,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_8",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 13,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9451,
+   "max_prompt_plus_gen": 9526,
+   "wall_s": 38.9,
+   "completion_tokens": 2284,
+   "step_buckets": {
+    "ok": 9,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_9",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7221,
+   "max_prompt_plus_gen": 7452,
+   "wall_s": 54.3,
+   "completion_tokens": 3152,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model response execution results so far does not contain all the ground truth response execution results for turn 0.",
+    "error_type": "multi_turn:execution_response_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_11",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7499,
+   "max_prompt_plus_gen": 7603,
+   "wall_s": 13.6,
+   "completion_tokens": 759,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_13",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 8,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7475,
+   "max_prompt_plus_gen": 7669,
+   "wall_s": 13.6,
+   "completion_tokens": 764,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_14",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7824,
+   "max_prompt_plus_gen": 8006,
+   "wall_s": 34.3,
+   "completion_tokens": 1907,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_15",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8399,
+   "max_prompt_plus_gen": 8518,
+   "wall_s": 24.4,
+   "completion_tokens": 1328,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_16",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 24,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10974,
+   "max_prompt_plus_gen": 11103,
+   "wall_s": 111.2,
+   "completion_tokens": 6565,
+   "step_buckets": {
+    "ok": 21,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for GorillaFileSystem does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_18",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8894,
+   "max_prompt_plus_gen": 9156,
+   "wall_s": 34.4,
+   "completion_tokens": 1872,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for TwitterAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_19",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6881,
+   "max_prompt_plus_gen": 6933,
+   "wall_s": 20.4,
+   "completion_tokens": 1152,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_20",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7641,
+   "max_prompt_plus_gen": 7751,
+   "wall_s": 15.4,
+   "completion_tokens": 774,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_21",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7962,
+   "max_prompt_plus_gen": 8063,
+   "wall_s": 17.9,
+   "completion_tokens": 1006,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_22",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 16,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8639,
+   "max_prompt_plus_gen": 8779,
+   "wall_s": 26.6,
+   "completion_tokens": 1493,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_25",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 17,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5918,
+   "max_prompt_plus_gen": 6014,
+   "wall_s": 32.2,
+   "completion_tokens": 1737,
+   "step_buckets": {
+    "ok": 13,
+    "no_call": 4
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for GorillaFileSystem does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_28",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8321,
+   "max_prompt_plus_gen": 8493,
+   "wall_s": 25.9,
+   "completion_tokens": 1412,
+   "step_buckets": {
+    "ok": 9,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model response execution results so far does not contain all the ground truth response execution results for turn 2.",
+    "error_type": "multi_turn:execution_response_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_29",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 4663,
+   "max_prompt_plus_gen": 4724,
+   "wall_s": 11.7,
+   "completion_tokens": 629,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_30",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8052,
+   "max_prompt_plus_gen": 8261,
+   "wall_s": 21.1,
+   "completion_tokens": 1131,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 2
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for TwitterAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_31",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8112,
+   "max_prompt_plus_gen": 8214,
+   "wall_s": 22.4,
+   "completion_tokens": 1133,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_32",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7934,
+   "max_prompt_plus_gen": 8101,
+   "wall_s": 20.2,
+   "completion_tokens": 1092,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 2
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for GorillaFileSystem does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_33",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 13,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6728,
+   "max_prompt_plus_gen": 6934,
+   "wall_s": 18.0,
+   "completion_tokens": 995,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_34",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8253,
+   "max_prompt_plus_gen": 8510,
+   "wall_s": 25.9,
+   "completion_tokens": 1347,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_38",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 13,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5026,
+   "max_prompt_plus_gen": 5072,
+   "wall_s": 17.0,
+   "completion_tokens": 948,
+   "step_buckets": {
+    "ok": 11,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_41",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6570,
+   "max_prompt_plus_gen": 6632,
+   "wall_s": 14.8,
+   "completion_tokens": 819,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_43",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6698,
+   "max_prompt_plus_gen": 6818,
+   "wall_s": 17.1,
+   "completion_tokens": 966,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_44",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 13,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8253,
+   "max_prompt_plus_gen": 8321,
+   "wall_s": 24.3,
+   "completion_tokens": 1237,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_47",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 7,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7526,
+   "max_prompt_plus_gen": 7588,
+   "wall_s": 12.6,
+   "completion_tokens": 648,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_50",
+   "turns_gt": 1,
+   "turns_done": 1,
+   "steps": 2,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5564,
+   "max_prompt_plus_gen": 5720,
+   "wall_s": 9.0,
+   "completion_tokens": 425,
+   "step_buckets": {
+    "ok": 1,
+    "no_call": 1
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_51",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 17,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9084,
+   "max_prompt_plus_gen": 9198,
+   "wall_s": 31.6,
+   "completion_tokens": 1680,
+   "step_buckets": {
+    "ok": 13,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_54",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10142,
+   "max_prompt_plus_gen": 10212,
+   "wall_s": 31.8,
+   "completion_tokens": 1700,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_55",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 17,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9507,
+   "max_prompt_plus_gen": 9530,
+   "wall_s": 33.3,
+   "completion_tokens": 1785,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 5
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for VehicleControlAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_56",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7262,
+   "max_prompt_plus_gen": 7457,
+   "wall_s": 31.4,
+   "completion_tokens": 1779,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_58",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10243,
+   "max_prompt_plus_gen": 10315,
+   "wall_s": 31.6,
+   "completion_tokens": 1707,
+   "step_buckets": {
+    "ok": 11,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_59",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 17,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10758,
+   "max_prompt_plus_gen": 10999,
+   "wall_s": 43.2,
+   "completion_tokens": 2345,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_65",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10724,
+   "max_prompt_plus_gen": 10833,
+   "wall_s": 41.1,
+   "completion_tokens": 2249,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_66",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 14,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7827,
+   "max_prompt_plus_gen": 7882,
+   "wall_s": 37.5,
+   "completion_tokens": 2025,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 4
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for VehicleControlAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_67",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8916,
+   "max_prompt_plus_gen": 9134,
+   "wall_s": 32.6,
+   "completion_tokens": 1875,
+   "step_buckets": {
+    "ok": 11,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_68",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 17,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 11024,
+   "max_prompt_plus_gen": 11146,
+   "wall_s": 44.5,
+   "completion_tokens": 2433,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_70",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7056,
+   "max_prompt_plus_gen": 7420,
+   "wall_s": 29.6,
+   "completion_tokens": 1702,
+   "step_buckets": {
+    "ok": 9,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_77",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 8,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9061,
+   "max_prompt_plus_gen": 9140,
+   "wall_s": 16.5,
+   "completion_tokens": 827,
+   "step_buckets": {
+    "ok": 5,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_78",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8907,
+   "max_prompt_plus_gen": 9017,
+   "wall_s": 12.0,
+   "completion_tokens": 667,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_83",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6547,
+   "max_prompt_plus_gen": 6832,
+   "wall_s": 21.8,
+   "completion_tokens": 1185,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_85",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6739,
+   "max_prompt_plus_gen": 6851,
+   "wall_s": 22.8,
+   "completion_tokens": 1309,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 2
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for VehicleControlAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_87",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6977,
+   "max_prompt_plus_gen": 7195,
+   "wall_s": 24.9,
+   "completion_tokens": 1435,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_89",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 14,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7572,
+   "max_prompt_plus_gen": 7789,
+   "wall_s": 33.6,
+   "completion_tokens": 1955,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 4
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for VehicleControlAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_90",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 19,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 11068,
+   "max_prompt_plus_gen": 11189,
+   "wall_s": 45.0,
+   "completion_tokens": 2481,
+   "step_buckets": {
+    "ok": 15,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_91",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 5,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7602,
+   "max_prompt_plus_gen": 7959,
+   "wall_s": 16.0,
+   "completion_tokens": 829,
+   "step_buckets": {
+    "ok": 3,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_94",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 13,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7324,
+   "max_prompt_plus_gen": 7628,
+   "wall_s": 34.0,
+   "completion_tokens": 1897,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_95",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 16,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9294,
+   "max_prompt_plus_gen": 9459,
+   "wall_s": 36.4,
+   "completion_tokens": 2014,
+   "step_buckets": {
+    "ok": 11,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_97",
+   "turns_gt": 6,
+   "turns_done": 6,
+   "steps": 21,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9297,
+   "max_prompt_plus_gen": 9449,
+   "wall_s": 32.5,
+   "completion_tokens": 1821,
+   "step_buckets": {
+    "ok": 15,
+    "no_call": 6
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_98",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10278,
+   "max_prompt_plus_gen": 10484,
+   "wall_s": 35.0,
+   "completion_tokens": 1862,
+   "step_buckets": {
+    "ok": 12,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_101",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 7,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6400,
+   "max_prompt_plus_gen": 6529,
+   "wall_s": 13.7,
+   "completion_tokens": 682,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_102",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7609,
+   "max_prompt_plus_gen": 7747,
+   "wall_s": 28.7,
+   "completion_tokens": 1559,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_103",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 14,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7587,
+   "max_prompt_plus_gen": 7731,
+   "wall_s": 28.8,
+   "completion_tokens": 1637,
+   "step_buckets": {
+    "ok": 9,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_105",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 4656,
+   "max_prompt_plus_gen": 4823,
+   "wall_s": 14.1,
+   "completion_tokens": 689,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_107",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5851,
+   "max_prompt_plus_gen": 6039,
+   "wall_s": 28.3,
+   "completion_tokens": 1660,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_108",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7845,
+   "max_prompt_plus_gen": 8135,
+   "wall_s": 37.8,
+   "completion_tokens": 2181,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_111",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7064,
+   "max_prompt_plus_gen": 8854,
+   "wall_s": 47.7,
+   "completion_tokens": 2802,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_113",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6244,
+   "max_prompt_plus_gen": 6472,
+   "wall_s": 11.7,
+   "completion_tokens": 660,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_114",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6967,
+   "max_prompt_plus_gen": 7362,
+   "wall_s": 24.7,
+   "completion_tokens": 1414,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_116",
+   "turns_gt": 6,
+   "turns_done": 6,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5304,
+   "max_prompt_plus_gen": 5460,
+   "wall_s": 19.9,
+   "completion_tokens": 1128,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 6
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_118",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5429,
+   "max_prompt_plus_gen": 5532,
+   "wall_s": 20.8,
+   "completion_tokens": 1205,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_122",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5503,
+   "max_prompt_plus_gen": 5630,
+   "wall_s": 23.9,
+   "completion_tokens": 1392,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_128",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5406,
+   "max_prompt_plus_gen": 5533,
+   "wall_s": 19.1,
+   "completion_tokens": 1101,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_131",
+   "turns_gt": 7,
+   "turns_done": 7,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7879,
+   "max_prompt_plus_gen": 7964,
+   "wall_s": 33.2,
+   "completion_tokens": 1841,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 7
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_132",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5099,
+   "max_prompt_plus_gen": 5975,
+   "wall_s": 31.0,
+   "completion_tokens": 1764,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_134",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9663,
+   "max_prompt_plus_gen": 9892,
+   "wall_s": 48.8,
+   "completion_tokens": 2801,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_135",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5306,
+   "max_prompt_plus_gen": 5449,
+   "wall_s": 21.0,
+   "completion_tokens": 1188,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_136",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8263,
+   "max_prompt_plus_gen": 8377,
+   "wall_s": 22.2,
+   "completion_tokens": 1214,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_138",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 13,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8723,
+   "max_prompt_plus_gen": 8859,
+   "wall_s": 48.7,
+   "completion_tokens": 2755,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_140",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8347,
+   "max_prompt_plus_gen": 8434,
+   "wall_s": 38.7,
+   "completion_tokens": 2097,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 4
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for TicketAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_142",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5104,
+   "max_prompt_plus_gen": 5199,
+   "wall_s": 17.4,
+   "completion_tokens": 953,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_145",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 16,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9601,
+   "max_prompt_plus_gen": 9833,
+   "wall_s": 62.5,
+   "completion_tokens": 3598,
+   "step_buckets": {
+    "ok": 11,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_146",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 4907,
+   "max_prompt_plus_gen": 5077,
+   "wall_s": 16.2,
+   "completion_tokens": 864,
+   "step_buckets": {
+    "ok": 5,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_150",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 5634,
+   "max_prompt_plus_gen": 5725,
+   "wall_s": 14.2,
+   "completion_tokens": 735,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_151",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9336,
+   "max_prompt_plus_gen": 9433,
+   "wall_s": 27.4,
+   "completion_tokens": 1454,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_153",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7073,
+   "max_prompt_plus_gen": 7314,
+   "wall_s": 34.4,
+   "completion_tokens": 1983,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_154",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9451,
+   "max_prompt_plus_gen": 9794,
+   "wall_s": 50.4,
+   "completion_tokens": 2857,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_155",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 5,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6270,
+   "max_prompt_plus_gen": 6504,
+   "wall_s": 27.8,
+   "completion_tokens": 1593,
+   "step_buckets": {
+    "ok": 3,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_158",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 14805,
+   "max_prompt_plus_gen": 14937,
+   "wall_s": 168.8,
+   "completion_tokens": 9898,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model response execution results so far does not contain all the ground truth response execution results for turn 0.",
+    "error_type": "multi_turn:execution_response_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_161",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8604,
+   "max_prompt_plus_gen": 8746,
+   "wall_s": 16.2,
+   "completion_tokens": 787,
+   "step_buckets": {
+    "ok": 3,
+    "no_call": 3
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_163",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 6,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6296,
+   "max_prompt_plus_gen": 6437,
+   "wall_s": 25.1,
+   "completion_tokens": 1406,
+   "step_buckets": {
+    "ok": 4,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_164",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 6806,
+   "max_prompt_plus_gen": 6993,
+   "wall_s": 30.8,
+   "completion_tokens": 1745,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_165",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10191,
+   "max_prompt_plus_gen": 10440,
+   "wall_s": 58.5,
+   "completion_tokens": 3333,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_167",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 7909,
+   "max_prompt_plus_gen": 8386,
+   "wall_s": 52.0,
+   "completion_tokens": 2994,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_169",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 7,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8193,
+   "max_prompt_plus_gen": 8378,
+   "wall_s": 29.4,
+   "completion_tokens": 1632,
+   "step_buckets": {
+    "ok": 5,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_170",
+   "turns_gt": 6,
+   "turns_done": 6,
+   "steps": 15,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10914,
+   "max_prompt_plus_gen": 10988,
+   "wall_s": 48.4,
+   "completion_tokens": 2714,
+   "step_buckets": {
+    "ok": 9,
+    "no_call": 6
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_171",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 14653,
+   "max_prompt_plus_gen": 14951,
+   "wall_s": 138.1,
+   "completion_tokens": 7985,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for TravelAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_174",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 16,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 11851,
+   "max_prompt_plus_gen": 11934,
+   "wall_s": 66.9,
+   "completion_tokens": 3701,
+   "step_buckets": {
+    "ok": 11,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_175",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 9,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10678,
+   "max_prompt_plus_gen": 10907,
+   "wall_s": 50.4,
+   "completion_tokens": 2866,
+   "step_buckets": {
+    "ok": 7,
+    "no_call": 2
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_176",
+   "turns_gt": 2,
+   "turns_done": 2,
+   "steps": 5,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8927,
+   "max_prompt_plus_gen": 9166,
+   "wall_s": 41.1,
+   "completion_tokens": 2346,
+   "step_buckets": {
+    "ok": 3,
+    "no_call": 2
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model instance for TicketAPI does not match the state with ground truth instance.",
+    "error_type": "multi_turn:instance_state_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_179",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 12,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9441,
+   "max_prompt_plus_gen": 9697,
+   "wall_s": 74.8,
+   "completion_tokens": 4298,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_183",
+   "turns_gt": 6,
+   "turns_done": 6,
+   "steps": 16,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 12314,
+   "max_prompt_plus_gen": 12445,
+   "wall_s": 72.6,
+   "completion_tokens": 4106,
+   "step_buckets": {
+    "ok": 10,
+    "no_call": 6
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_185",
+   "turns_gt": 3,
+   "turns_done": 3,
+   "steps": 8,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9109,
+   "max_prompt_plus_gen": 9690,
+   "wall_s": 49.8,
+   "completion_tokens": 2718,
+   "step_buckets": {
+    "ok": 5,
+    "no_call": 3
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model response execution results so far does not contain all the ground truth response execution results for turn 0.",
+    "error_type": "multi_turn:execution_response_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_186",
+   "turns_gt": 6,
+   "turns_done": 6,
+   "steps": 14,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10332,
+   "max_prompt_plus_gen": 10476,
+   "wall_s": 38.7,
+   "completion_tokens": 2210,
+   "step_buckets": {
+    "ok": 8,
+    "no_call": 6
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_193",
+   "turns_gt": 4,
+   "turns_done": 4,
+   "steps": 10,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 8968,
+   "max_prompt_plus_gen": 9193,
+   "wall_s": 38.0,
+   "completion_tokens": 2101,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 4
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_196",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 16,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10019,
+   "max_prompt_plus_gen": 10104,
+   "wall_s": 51.6,
+   "completion_tokens": 2953,
+   "step_buckets": {
+    "ok": 11,
+    "no_call": 5
+   },
+   "outcome": "correct",
+   "check": {
+    "valid": true
+   }
+  },
+  {
+   "id": "multi_turn_base_198",
+   "turns_gt": 1,
+   "turns_done": 1,
+   "steps": 3,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 9271,
+   "max_prompt_plus_gen": 9614,
+   "wall_s": 32.1,
+   "completion_tokens": 1758,
+   "step_buckets": {
+    "ok": 2,
+    "no_call": 1
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model response execution results so far does not contain all the ground truth response execution results for turn 0.",
+    "error_type": "multi_turn:execution_response_mismatch"
+   }
+  },
+  {
+   "id": "multi_turn_base_199",
+   "turns_gt": 5,
+   "turns_done": 5,
+   "steps": 11,
+   "force_quit": false,
+   "budget_abort": false,
+   "ctx_limited": false,
+   "max_prompt_tokens": 10436,
+   "max_prompt_plus_gen": 11356,
+   "wall_s": 78.4,
+   "completion_tokens": 4469,
+   "step_buckets": {
+    "ok": 6,
+    "no_call": 5
+   },
+   "outcome": "wrong",
+   "check": {
+    "valid": false,
+    "error_message": "Model response list is empty for turn 2",
+    "error_type": "multi_turn:empty_turn_model_response"
+   }
+  }
+ ],
+ "multi_turn_outcomes": {
+  "correct": 81,
+  "wrong": 19
+ },
+ "transport_errors_this_session": [],
+ "wall_s_this_session": 3508.9,
+ "progress": {
+  "done": 100,
+  "expected": 100,
+  "aborted_this_session": 0
+ }
+}

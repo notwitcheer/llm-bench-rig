@@ -1,0 +1,59 @@
+{
+ "label": "hset-st-on-q8",
+ "server_bin": "ggml-org/llama.cpp mainline b10371 (5d16e81dd); KV cache K=q8_0 V=q8_0; flash-attn auto",
+ "think": "on",
+ "max_tokens": 16384,
+ "ctx": 24576,
+ "parser_version": "toolcall-v1-parser-2",
+ "regime": "raw /completion, official Qwen3.8 template client-side, think-on, max_tokens 16384, ctx 24576, greedy (temperature 0), preserve_thinking default (undefined = keep)",
+ "props": {
+  "total_slots": 4,
+  "build_info": "b10371-5d16e81dd",
+  "model_path": "/home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf"
+ },
+ "n_ctx": 24576,
+ "embedded_template_sha256": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce",
+ "tokenize_parity": {
+  "prompts": 1998,
+  "mismatches_vs_hf": 0,
+  "seconds": null
+ },
+ "single_turn": {
+  "S1": {
+   "correct": 383,
+   "wrong_call": 54,
+   "no_call": 2
+  },
+  "S2": {
+   "correct": 55,
+   "wrong_call": 12
+  },
+  "S3": {
+   "correct": 280,
+   "wrong_call": 19,
+   "no_call": 1
+  },
+  "S4": {
+   "correct": 78,
+   "called_when_should_not": 22
+  }
+ },
+ "single_turn_pace": {
+  "n": 899,
+  "wall_s_total": 4384.6,
+  "completion_tokens_mean": 283.0,
+  "decode_tok_s_median": 61.98066114191565,
+  "prompt_tokens_server_eq_hf": 899,
+  "capped": 0,
+  "python_bool_replies": 80
+ },
+ "multi_turn": [],
+ "multi_turn_outcomes": {},
+ "transport_errors_this_session": [],
+ "wall_s_this_session": 2878.9,
+ "progress": {
+  "done": 899,
+  "expected": 899,
+  "aborted_this_session": 0
+ }
+}

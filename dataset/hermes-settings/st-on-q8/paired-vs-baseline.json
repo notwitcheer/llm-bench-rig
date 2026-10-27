@@ -1,0 +1,21 @@
+{
+ "base": "/home/witcheer/benchmark-rig/results/toolcall-v1/qwen3-8-27b-q6-k-st-on",
+ "other": "/home/witcheer/benchmark-rig/results/hermes-settings/st-on-q8",
+ "slices": [
+  {
+   "slice": "single-turn S1..S4 (unique requests)",
+   "paired": 899,
+   "only_in_base": 0,
+   "only_in_other": 0,
+   "base_correct": 794,
+   "other_correct": 792,
+   "base_only_correct": 10,
+   "other_only_correct": 8,
+   "mcnemar_exact_p": 0.8145,
+   "identical_outputs": 416,
+   "identical_pct": 46.3,
+   "base_completion_tokens_mean": 302.1,
+   "other_completion_tokens_mean": 283.0
+  }
+ ]
+}

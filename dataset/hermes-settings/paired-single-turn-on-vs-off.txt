@@ -1,0 +1,3 @@
+# single-turn thinking on vs off, Qwen3.8-27B Q6_K, f16 KV, 899 unique requests; base = st-on, other = st-off (toolcall-v1 baseline legs, 2026-10-24)
+# produced by: python3 toolcall/hermes_settings_paired.py <st-on dir> <st-off dir>
+{"slice": "single-turn S1..S4 (unique requests)", "paired": 899, "only_in_base": 0, "only_in_other": 0, "base_correct": 794, "other_correct": 779, "base_only_correct": 54, "other_only_correct": 39, "mcnemar_exact_p": 0.1462, "identical_outputs": 0, "identical_pct": 0.0, "base_completion_tokens_mean": 302.1, "other_completion_tokens_mean": 113.1}

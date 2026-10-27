@@ -1,0 +1,25 @@
+# hermes-settings paired readout, 2026-10-27T15:33:06Z; each line: base = second dir, other = first dir
+### s5-on-f16-r2 vs qwen3-8-27b-q6-k-s5-on
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 81, "base_only_correct": 0, "other_only_correct": 0, "mcnemar_exact_p": 1.0, "identical_outputs": 100, "identical_pct": 100.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 1962.5}
+### s5-on-q8 vs qwen3-8-27b-q6-k-s5-on
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 78, "base_only_correct": 6, "other_only_correct": 3, "mcnemar_exact_p": 0.5078, "identical_outputs": 6, "identical_pct": 6.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 1912.7}
+### s5-on-q8 vs s5-on-f16-r2
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 78, "base_only_correct": 6, "other_only_correct": 3, "mcnemar_exact_p": 0.5078, "identical_outputs": 6, "identical_pct": 6.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 1912.7}
+### s5-off-f16 vs qwen3-8-27b-q6-k-s5-on
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 80, "base_only_correct": 8, "other_only_correct": 7, "mcnemar_exact_p": 1.0, "identical_outputs": 0, "identical_pct": 0.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 758.3}
+### st-on-f16-r2 vs qwen3-8-27b-q6-k-st-on
+{"slice": "single-turn S1..S4 (unique requests)", "paired": 899, "only_in_base": 0, "only_in_other": 0, "base_correct": 794, "other_correct": 794, "base_only_correct": 0, "other_only_correct": 0, "mcnemar_exact_p": 1.0, "identical_outputs": 899, "identical_pct": 100.0, "base_completion_tokens_mean": 302.1, "other_completion_tokens_mean": 302.1}
+### st-on-q8 vs qwen3-8-27b-q6-k-st-on
+{"slice": "single-turn S1..S4 (unique requests)", "paired": 899, "only_in_base": 0, "only_in_other": 0, "base_correct": 794, "other_correct": 792, "base_only_correct": 10, "other_only_correct": 8, "mcnemar_exact_p": 0.8145, "identical_outputs": 416, "identical_pct": 46.3, "base_completion_tokens_mean": 302.1, "other_completion_tokens_mean": 283.0}
+### st-on-q8 vs st-on-f16-r2
+{"slice": "single-turn S1..S4 (unique requests)", "paired": 899, "only_in_base": 0, "only_in_other": 0, "base_correct": 794, "other_correct": 792, "base_only_correct": 10, "other_only_correct": 8, "mcnemar_exact_p": 0.8145, "identical_outputs": 416, "identical_pct": 46.3, "base_completion_tokens_mean": 302.1, "other_completion_tokens_mean": 283.0}
+### s5-on-f16-c32k vs qwen3-8-27b-q6-k-s5-on
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 81, "base_only_correct": 0, "other_only_correct": 0, "mcnemar_exact_p": 1.0, "identical_outputs": 100, "identical_pct": 100.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 1962.5}
+### s5-on-f16-c64k vs qwen3-8-27b-q6-k-s5-on
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 81, "base_only_correct": 0, "other_only_correct": 0, "mcnemar_exact_p": 1.0, "identical_outputs": 84, "identical_pct": 84.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 1984.2}
+### s5-on-f16-c128k vs qwen3-8-27b-q6-k-s5-on
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 81, "base_only_correct": 0, "other_only_correct": 0, "mcnemar_exact_p": 1.0, "identical_outputs": 100, "identical_pct": 100.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 1962.5}
+### s5-on-q4 vs qwen3-8-27b-q6-k-s5-on
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 81, "other_correct": 79, "base_only_correct": 4, "other_only_correct": 2, "mcnemar_exact_p": 0.6875, "identical_outputs": 0, "identical_pct": 0.0, "base_completion_tokens_mean": 1962.5, "other_completion_tokens_mean": 1953.0}
+### s5-on-q4 vs s5-on-q8
+{"slice": "S5 multi_turn_base", "paired": 100, "only_in_base": 0, "only_in_other": 0, "base_correct": 78, "other_correct": 79, "base_only_correct": 3, "other_only_correct": 4, "mcnemar_exact_p": 1.0, "identical_outputs": 1, "identical_pct": 1.0, "base_completion_tokens_mean": 1912.7, "other_completion_tokens_mean": 1953.0}
