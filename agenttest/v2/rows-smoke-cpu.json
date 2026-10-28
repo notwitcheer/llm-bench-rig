@@ -1,0 +1,24 @@
+{
+ "version": "smoke",
+ "note": "CPU tiny-model smoke row; never part of the C1 run",
+ "ctx": 65536,
+ "rows": [
+  {
+   "slug": "smoke-tiny-cpu",
+   "label": "Qwen2.5-0.5B Q4_K_M (CPU smoke)",
+   "family": "smoke",
+   "path": "tiny-probe/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+   "bytes": 491400032,
+   "arch": "qwen2",
+   "est_min": 5,
+   "tier_hyp": 8,
+   "temp": 0.7,
+   "top_p": 0.8,
+   "top_k": 20,
+   "min_p": 0.0,
+   "moe_ladder": "-",
+   "sampling_source": "smoke only",
+   "why_here": "plumbing"
+  }
+ ]
+}

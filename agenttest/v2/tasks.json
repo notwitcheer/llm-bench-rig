@@ -1,0 +1,307 @@
+{
+ "version": "agenttest-v2",
+ "n": 30,
+ "work_placeholder": "{T}",
+ "tasks": [
+  {
+   "id": "t01",
+   "name": "exact three-line file",
+   "cat": "files",
+   "diff": "A",
+   "budget_s": 240,
+   "prompt": "Create the folder {T}/out and, inside it, the file notes.txt containing exactly these three lines (the second line starts with two spaces, keep them):\nrelease: v2.4.1\n  indented by two spaces\nquotes 'single' and \"double\" stay as typed\nThen read the file back to confirm and tell me it is done.",
+   "prompt_sha256": "59534d1c7efae6825569cf5442eebbd6a5282dcf864720fc87b762f94bd5d5f9",
+   "seed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "id": "t02",
+   "name": "csv filtered total",
+   "cat": "files",
+   "diff": "A",
+   "budget_s": 300,
+   "prompt": "The file {T}/sales.csv has a header row (id,region,status,amount,date). Compute the total of the amount column over the rows whose region is exactly north AND whose status is exactly paid (lowercase, no surrounding spaces; rows like Paid or 'paid ' do not count). Write just that number with two decimals (no other text) to {T}/total.txt.",
+   "prompt_sha256": "826aee9dce276c1b38d0d29f8d62a5fe96809c73c53f96c2bd4b0e1379e9d9bd",
+   "seed_sha256": "3e4c8cc52e842039c1524dbe86d7862ccee15ccb78a10a65cff87adb22987626"
+  },
+  {
+   "id": "t03",
+   "name": "find a marker line in a tree",
+   "cat": "files",
+   "diff": "A",
+   "budget_s": 300,
+   "prompt": "Under {T}/tree there are 42 text files in nested folders. Exactly one of them contains a line with the exact marker TODO(rotate-key) (singular; TODO(rotate-keys) and plain 'rotate-key' are decoys). Write to {T}/answer.txt one line of the form <path relative to {T}/tree>:<line number, counting from 1>, for example docs/x/file_01.txt:12.",
+   "prompt_sha256": "4473bd09e7a94b3a8d2f5f246e5af3c039765dd5c6bed04fd5caca41a9afeec9",
+   "seed_sha256": "76d5b427c5d1c2907c783c6b7a12af792e4b15579789cd267475473196fa1ef5"
+  },
+  {
+   "id": "t04",
+   "name": "log analysis: noisy clients",
+   "cat": "files",
+   "diff": "B",
+   "budget_s": 420,
+   "prompt": "{T}/access.log is a web server access log (client ip first, HTTP status code right after the quoted request). List every client IP address that received at least 3 responses with a 5xx status (500-599). Write the IPs to {T}/ips.txt, one per line, sorted in plain text order (as `sort` with LC_ALL=C would), nothing else in the file. Careful: other numbers like 500 can appear in paths and sizes.",
+   "prompt_sha256": "66fa32dae5bd83e2bb21d3eb6181772cbc990dfa41ae8767dc6715b3b18ba06a",
+   "seed_sha256": "b1ea1a6b34656b461482dcff27a35e6544243f46ea5b478f3ea6cef5a5c87e79"
+  },
+  {
+   "id": "t05",
+   "name": "bulk JSON edit with rules",
+   "cat": "files",
+   "diff": "B",
+   "budget_s": 420,
+   "prompt": "Edit {T}/services.json in place, keeping it valid JSON and keeping every other key and value unchanged: (1) for every service whose tier is gold, raise replicas to at least 3 (never lower it) and add the key \"monitored\" with the value true; (2) remove the key \"deprecated\" from every service, whatever its tier.",
+   "prompt_sha256": "d2bc29caf9b2f969ebe0fca80c34baf2626de69db2026b095197d5b3ae5d9699",
+   "seed_sha256": "b6d8517e85c0b1c5a9cbff532f2dfd3286da5ca1eeb115820fe32e101eb0877e"
+  },
+  {
+   "id": "t06",
+   "name": "40 notes to 3 bullets",
+   "cat": "files",
+   "diff": "A",
+   "budget_s": 300,
+   "prompt": "Read {T}/notes.txt (40 lines of meeting notes). Write a summary to {T}/summary.txt that is exactly 3 lines, each line a bullet starting with \"- \", no blank lines and nothing else in the file. The summary must mention the launch date, the approved budget figure for this quarter, and the owner of the database migration.",
+   "prompt_sha256": "86a7db7955423799b54bf48c6b1706b52a9ee90b5681faacdd3a0dbc43d42dea",
+   "seed_sha256": "a8cafe3488822b5070361792b176cb66313cee29c9f75a3a9218ae96bde84ca6"
+  },
+  {
+   "id": "t07",
+   "name": "fix an off-by-one module",
+   "cat": "code",
+   "diff": "A",
+   "budget_s": 420,
+   "prompt": "In {T} there is a small Python module window.py and a test script test.py. Running python3 test.py in that folder currently fails. Fix the bugs in window.py (do not edit test.py) so that python3 test.py passes, and run it to confirm.",
+   "prompt_sha256": "6d1686254bc6c2f9d1ab9cc4bb819f92c523cb8a1062cd0113058f47c1834c55",
+   "seed_sha256": "2c4c737bed7fce06ab3db00856b511a6a7f09acf88c8ffd891cc75803c95bba8"
+  },
+  {
+   "id": "t08",
+   "name": "fix three bugs in a money module",
+   "cat": "code",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "In {T} there is invoice.py (the rules are in its docstring) and test_invoice.py. Run python3 -m unittest in that folder: several tests fail. Fix invoice.py so that it follows the docstring rules exactly and all tests pass; do not edit test_invoice.py. Hidden extra cases will be checked too.",
+   "prompt_sha256": "79ffe567db6bf48400ccd8fe7515ca6c75ab67bac96739b1fcf5ef0b7687b956",
+   "seed_sha256": "a57ca48b2cad9cc9504aafa5b4c4264eba60ece4a1cb193521460d9a2e1a4532"
+  },
+  {
+   "id": "t09",
+   "name": "implement slugify from a spec",
+   "cat": "code",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "In {T}/text.py the function slugify is a stub whose docstring lists seven rules. Implement it to follow every rule (python3 standard library only). {T}/test.py has a few visible cases; run it with python3 test.py. A larger hidden case list will be checked.",
+   "prompt_sha256": "d5df6d22c611387928c8e0f266e055d82c71f6326319edd17ab66a6fafdcccda",
+   "seed_sha256": "b6aed132c9e996bb0c76cdb00c5ed40a5ccc85c184fe45c52b7965aeb91cf616"
+  },
+  {
+   "id": "t10",
+   "name": "write a small CLI from a spec",
+   "cat": "code",
+   "diff": "B",
+   "budget_s": 720,
+   "prompt": "Write {T}/minicount.py, a command line tool (python3 standard library only). Usage: python3 minicount.py [-l] [-w] [-c] [--longest] [FILE ...]. It counts lines (number of newline characters), words (whitespace separated), characters (decoded as UTF-8, not bytes) and the length in characters of the longest line (without its newline). Flags choose which counts are printed; with no flag it prints lines, words and characters. The order is ALWAYS lines, words, characters, longest, whatever the flag order. One output line per file: the selected counts separated by single spaces, then a space and the file name, e.g. `4 6 29 11 a.txt`. With two or more readable files print a final line with the sums (longest = the maximum) and the name `total`. With no FILE (or the name -) read standard input and show the name - . A file that cannot be opened prints `minicount: NAME: No such file` to standard error, is skipped (not in the total), and makes the exit code 1 at the end. Sample input files are in {T}/samples.",
+   "prompt_sha256": "baf55915927407905de9a4a657e163b87a0c1d2988a800bc6b47756b5e51378f",
+   "seed_sha256": "23b529f65d8c6fa40d26b857f35f8f514fcc01c291dd43d46c3ee3bdc464c308"
+  },
+  {
+   "id": "t11",
+   "name": "port a python2 script to python3",
+   "cat": "code",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "{T}/report.py is a Python 2 script. {T}/data.csv is its input and {T}/expected_output.txt is exactly what it printed under Python 2. Port report.py in place so that python3 report.py data.csv prints exactly the same text (the average must keep Python 2's integer division result). It will also be run on other csv files, so do not hard code the output.",
+   "prompt_sha256": "5172793bf71db2aa205af305f80c4af5c6f70b66866b2436bd1b1f0d4d7ddf39",
+   "seed_sha256": "e2e97a5a05a06c93e64690b55f3eab97641ed83e9d2e78e46d65ca301e56578a"
+  },
+  {
+   "id": "t12",
+   "name": "rename a function across a package",
+   "cat": "refactor",
+   "diff": "B",
+   "budget_s": 720,
+   "prompt": "The project in {T} is a small package (shop/, tests/, README.md). Rename the function calc_total to compute_invoice_total everywhere: its definition, every import and call (including aliased imports), the name string used for dispatch by name, comments and docs, and the tests. When you are done no occurrence of calc_total may remain in any .py or .md file, and python3 -m unittest discover -s tests -t . (run from {T}) must still pass. Do not delete or weaken any test.",
+   "prompt_sha256": "86bdf6b6774fb3a8aab8677d94e8ba603fee663c297dc7c6243e919829b31949",
+   "seed_sha256": "f61026820a2f16d948d217b71f8441772167adea3daf40e15d88414a24cf5c61"
+  },
+  {
+   "id": "t13",
+   "name": "split a module in two, keep the old imports working",
+   "cat": "refactor",
+   "diff": "C",
+   "budget_s": 900,
+   "prompt": "{T}/utils.py mixes string helpers and number helpers. Split it: move title_case_words, truncate, count_vowels and is_palindrome into a new strutil.py, and clamp, mean, percent and gcd_many into a new numutil.py (the functions must be DEFINED in the new modules). Keep utils.py working for old code: it must still expose all eight names (import them from the new modules, do not copy the code). {T}/test_utils.py must keep passing unchanged (python3 -m unittest in {T}).",
+   "prompt_sha256": "baf4cf1caa3655866756fa7d90741ad91369b370edb07ea031cc2ed4d3a45053",
+   "seed_sha256": "2126bde0e3ad0e358403952c4fb3df4e086431e077661c8033d1e7c40d376314"
+  },
+  {
+   "id": "t14",
+   "name": "add a required parameter to nine call sites",
+   "cat": "refactor",
+   "diff": "C",
+   "budget_s": 900,
+   "prompt": "In {T}, money.fmt_money(amount) always prints EUR. Change it to fmt_money(amount, currency): both parameters required (no default), output \"<amount with 2 decimals> <currency>\". Then update every caller so each passes the currency that belongs to its context (the order's currency, the report's REPORT_CURRENCY, the invoice's cur, the CLI's --currency). python3 demo.py (run in {T}) must then print exactly the lines in {T}/expected_demo.txt.",
+   "prompt_sha256": "61c2611490c9cbe6a317351978aeaa2d9306698b9647615866a7885cb8b0260f",
+   "seed_sha256": "a8d9289186ef2e8e8bf9e586ab5539f7c298490c59bacb9447f030310c13ea49"
+  },
+  {
+   "id": "t15",
+   "name": "write tests that catch five hidden bugs",
+   "cat": "refactor",
+   "diff": "C",
+   "budget_s": 900,
+   "prompt": "{T}/cart.py is a small shopping cart (read its code; prices are integer cents). Write {T}/test_cart.py using the standard unittest module with at least 6 test methods that pass on the current cart.py and are strong enough to catch subtle bugs. Hidden mutated copies of cart.py (an off-by-one in a comparison, a wrong discount, a missing validation, ...) will be run against your tests: a mutant counts as caught only if your tests fail on it. Do not edit cart.py. Run your tests (python3 -m unittest in {T}) before you finish.",
+   "prompt_sha256": "5740f6b690e2b1d451062acba74f25a3a11f79a60dda24863341281c9f7fa627",
+   "seed_sha256": "cdd290c53f8dd5c96b2b0854d2809526df896e65a2156d16427bf8de653d8551"
+  },
+  {
+   "id": "t16",
+   "name": "fix broken imports in a package",
+   "cat": "refactor",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "In {T} the package inventory does not run: python3 -m inventory.main (from {T}) crashes with import errors. Fix the package (the code in inventory/) so that the command prints the three item rows sorted by sku followed by the totals line, using data.json. It will also be run with another data file as argument. Do not change data.json.",
+   "prompt_sha256": "34d765ab4e4b4dfac18c9c72a2db8cf1e2a07dc4b408ad568ef00f3f96829807",
+   "seed_sha256": "c7a4255c62203f9c24ce33cd93560f173f3a70402e3c31d7ec7e945da9e0d673"
+  },
+  {
+   "id": "t17",
+   "name": "recover from two environment faults",
+   "cat": "recovery",
+   "diff": "B",
+   "budget_s": 480,
+   "prompt": "Run the script {T}/run_report.sh with bash. If it fails, work out why, fix the environment (do NOT edit the script itself) and run it again until it succeeds. It should produce {T}/out/report.txt.",
+   "prompt_sha256": "70e09f1011e06c7d48d320a538ed199e747ba933c9659c23a07abac753f0e5fd",
+   "seed_sha256": "7932d810087ced8ed41d77f0243f93d183037516cdb091c709a108dae2b681e6"
+  },
+  {
+   "id": "t18",
+   "name": "build blocked by a stale lock and a missing config",
+   "cat": "recovery",
+   "diff": "C",
+   "budget_s": 720,
+   "prompt": "In {T}, running bash build.sh fails. Get the build to succeed so that dist/app.txt is produced, by fixing the situation the error messages describe: do NOT edit build.sh or gen_config.sh, and do not fake the output file. (Generated files and stale lock files are fair game.)",
+   "prompt_sha256": "bfe6e2a6a7dd5ec44956a51959d3c27742d97076cb457c2ccb30497732243175",
+   "seed_sha256": "49fcfb3fc3265e50ae5a50f01d7532139b542b554fd4af90bada965aa3a78cbf"
+  },
+  {
+   "id": "t19",
+   "name": "resolve a real git merge conflict",
+   "cat": "recovery",
+   "diff": "C",
+   "budget_s": 900,
+   "prompt": "{T}/repo is a git repository on branch main with a second branch called feature. Merge feature into main. The merge conflicts: resolve it so that config.ini keeps main's timeout value and feature's retries value (and main's log level), and calc.py keeps main's version of price plus BOTH new functions (price_rounded from main and price_with_tax from feature); README.md keeps feature's addition. Finish with a normal merge commit (a git identity is already configured inside the repo), leave the working tree clean, and make sure python3 test_calc.py passes in the repo.",
+   "prompt_sha256": "93829a0b3c63c1b6113fc9aaa932a0c46cec29454655ef7fc3d8be139a32613f",
+   "seed_sha256": "e8f5a142a1ad215441d0370666921b7e18ef4e0021c78f9a00831b2e0a8f8ae0"
+  },
+  {
+   "id": "t20",
+   "name": "make a migration survive bad rows",
+   "cat": "recovery",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "{T}/migrate.py converts a csv: python3 migrate.py IN OUT REJECTS. On {T}/orders_in.csv it crashes. Change migrate.py so that it never crashes on a bad row: good rows go to OUT exactly as now (price_cents = price in euros times 100, rounded to a whole number), and each bad row goes to REJECTS, a csv with header id,name,qty,price,reason holding the ORIGINAL four values and a reason. A row is bad when: id is not an integer (reason bad_id), else name is empty after trimming (empty_name), else qty is not an integer (bad_qty), else price is not a number (bad_price). Row order is kept in both files. Exit code 0. Run it on orders_in.csv to produce {T}/out.csv and {T}/rejects.csv. It will also be run on another input file.",
+   "prompt_sha256": "f03ad83f54a58d88e73b0f68ce79e11799b566d4c7d04047f47aca120fbba5b2",
+   "seed_sha256": "4b72d54e5ea663271ba2f2366ef8a8a64ae6217cd1059677676aa088d735facf"
+  },
+  {
+   "id": "t21",
+   "name": "build a git history with a branch and an annotated tag",
+   "cat": "shell",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "Create a new git repository in {T}/proj (default branch main). Make exactly three commits, in this order, each adding one file with exactly this message: (1) message `add a`, file a.txt containing the text one; (2) message `add b`, file b.txt containing two; (3) message `add c`, file c.txt containing three. Then create a branch named hotfix that points at the FIRST commit (stay on main), and an annotated tag v0.1 on the last commit with the tag message `first release`. No git identity is configured on this machine: use agenttest <agenttest@example.invalid> (set it in the repo or pass it via git -c / environment variables).",
+   "prompt_sha256": "ca5adfe6c3d85fdee242b4e436857766b47f8b0b53ae469d05fac675a20db4a6",
+   "seed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "id": "t22",
+   "name": "find the commit that broke a check",
+   "cat": "shell",
+   "diff": "C",
+   "budget_s": 720,
+   "prompt": "{T}/repo is a git repository with 14 commits. The script check.sh (bash check.sh in the repo) passed in the early history and fails at HEAD. Find the FIRST commit at which it fails, and write its full 40-character commit hash, alone on one line, to {T}/answer.txt. Do not rewrite history.",
+   "prompt_sha256": "d94226740f2b18a4d7f775f1e347907d8e3051fd3396fe90bdcd7b06fda72654",
+   "seed_sha256": "539cd169215e6e9f3cc78a68a34ace1973ecc30d330970d1a9e97730d3a89909"
+  },
+  {
+   "id": "t23",
+   "name": "write a shell filter from a spec",
+   "cat": "shell",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "Write {T}/topcat.sh, a bash script that reads CSV from standard input (header line category,amount; blank lines may appear and must be ignored) and prints the three categories with the largest total amount, one per line as `<category> <total with exactly two decimals>`, largest first, ties broken alphabetically by category; if there are fewer than three categories print what exists. Example: bash topcat.sh < {T}/sample.csv must print exactly the lines of {T}/sample_expected.txt. It will be run on other inputs too. Standard tools (awk, sort, python3) are fine.",
+   "prompt_sha256": "051028469988ddab7547dc87bdf542606624a50a9bfb110a52f3dd8b839341b7",
+   "seed_sha256": "d86c765b04b07b9b54ac5a9a57587dda4c7c883071fa85e02b07445e35dc096f"
+  },
+  {
+   "id": "t24",
+   "name": "answer four questions from a sqlite database",
+   "cat": "data",
+   "diff": "B",
+   "budget_s": 600,
+   "prompt": "{T}/shop.db is a sqlite3 database (tables customers, products, orders, items; amounts in cents, an item's revenue is qty * unit_cents). Only the python3 sqlite3 module may be available (no sqlite3 command). Answer, and write them as one JSON object with exactly the keys q1..q4 to {T}/answers.json: q1 = number of distinct customers from country FR that have at least one order with status shipped (integer); q2 = total revenue in cents of shipped orders placed in March 2026, placed_on starts with 2026-03 (integer); q3 = name of the customer with the highest total revenue over shipped orders (string); q4 = list of product skus that appear in no non-cancelled order (orders with status cancelled do not count, a product never ordered at all counts), sorted ascending.",
+   "prompt_sha256": "b2edd6b979d62725f830cbf16e76781b9f5ae541a5fb73702c2ffb65c2991c4e",
+   "seed_sha256": "24a82cc5e4b5cedc9065dfb96d0c74fbfcb02d72d6c733b55dd161c8488e4d9b"
+  },
+  {
+   "id": "t25",
+   "name": "join two csv files with rules",
+   "cat": "data",
+   "diff": "B",
+   "budget_s": 720,
+   "prompt": "{T}/orders.csv (order_id,customer_id,amount,status) and {T}/customers.csv (customer_id,name) are given. Write {T}/totals.csv with header name,total: one row per customer name with the sum of amount over their orders, skipping orders whose status is cancelled. Rules: ignore spaces around customer ids when matching; if customers.csv lists an id twice, the LAST row wins; orders whose customer is not in customers.csv are grouped under the name UNKNOWN; totals have exactly two decimals; sort by total descending, then name ascending.",
+   "prompt_sha256": "e100ca04e367e338a863a16621b62a48ff503c5dafdc19c58969c771c2d45bed",
+   "seed_sha256": "64bf84eab2640d3ae291187c155a7ca7339f6bf6b6b3ead0b69eabdf1b2abf7f"
+  },
+  {
+   "id": "t26",
+   "name": "convert ini to typed json with interpolation",
+   "cat": "data",
+   "diff": "B",
+   "budget_s": 720,
+   "prompt": "Write {T}/ini2json.py (python3 standard library; usage: python3 ini2json.py IN.ini OUT.json) converting an ini file to JSON, and run it on {T}/app.ini to produce {T}/app.json. Rules: each section becomes an object; blank lines and lines starting with ; or # are ignored; a value that is an integer (optional minus sign, digits, NO leading zero unless it is exactly 0) becomes a JSON integer; a decimal like 0.75 or -0.5 becomes a float; yes/true/on and no/false/off in any letter case become true/false; keys whose name ends in _list become a list of trimmed strings (empty items dropped); everything else stays a string (so 02134 stays a string); ${section.key} inside a value is replaced by that other value (which may itself contain references). It will be run on other ini files too.",
+   "prompt_sha256": "1a73df0228413d54ff2d27f04d7bbc87ba22f2b7734451d56ef5a01b292bd96d",
+   "seed_sha256": "5d3f4c79b1b290aede0cc47f19a302e4fec158be8e5493accb46aeb8c28b164b"
+  },
+  {
+   "id": "t27",
+   "name": "build a small CLI package from a README spec",
+   "cat": "long",
+   "diff": "C",
+   "budget_s": 1200,
+   "prompt": "Read {T}/README.md: it specifies a small inventory tool, the python package inv. Build it completely in {T} as specified (package, command line behaviour, error handling, and your own unit tests), run your tests, and also try the commands by hand against a scratch store file. A hidden scenario will be run against your implementation.",
+   "prompt_sha256": "aa8614a3c87df95e612fd8eef147b4ce150e661e02234c3ea6780e023ecbd480",
+   "seed_sha256": "15f1ee05a10a523bacc63cbfdb531fdf533f193473cc57f88c4d03da2ad22768"
+  },
+  {
+   "id": "t28",
+   "name": "merge twelve inbox files in three formats",
+   "cat": "long",
+   "diff": "C",
+   "budget_s": 1200,
+   "prompt": "Follow the spec in {T}/SPEC.md: merge the twelve order files in {T}/inbox (csv, jsonl and tsv) into {T}/merged.csv. Check your result against the rules (duplicates, currencies, dropped rows, sort order) before you finish.",
+   "prompt_sha256": "3678db005bd2367197ee563ae1fcbc29c5a962e71194225a243611ce92065bb4",
+   "seed_sha256": "4554c7f7b28ccd264129fefa72d45bca4096717b0bcf997c33bea7383ae03107"
+  },
+  {
+   "id": "t29",
+   "name": "answer five questions about a 23-file codebase",
+   "cat": "long",
+   "diff": "B",
+   "budget_s": 720,
+   "prompt": "{T}/svc is a small python package (23 files). Without changing any code, answer these questions and write them as one JSON object with exactly the keys q1..q5 to {T}/answers.json: q1 = the path (relative to {T}) of the one file that READS the environment variable SVC_RETRY_LIMIT (exactly that name); q2 = the default value of the timeout parameter of the function client.fetch (integer); q3 = the number of CALL sites of normalize_id( in the package, not counting its definition and not counting comments; q4 = the name of the function that raises QuotaExceeded; q5 = the sorted list of module names (file name without .py) that import legacy_codec (a real import statement, not a comment).",
+   "prompt_sha256": "2a7683e58be01b62bfb950e3b00107eb0ac108d1b6227f10d4f9d58ab2f53648",
+   "seed_sha256": "c898f0fd8f192144921e2cc542d666b81c019e70aadc7ce18b9c7cffc69f1258"
+  },
+  {
+   "id": "t30",
+   "name": "repair five bugs behind a 40-test suite",
+   "cat": "long",
+   "diff": "C",
+   "budget_s": 1200,
+   "prompt": "{T} holds a small library (lib/) with a test suite (tests/, 5 files, 40 tests). Run python3 -m unittest discover -s tests -t . from {T}: many tests fail because of bugs in lib/. Find and fix the bugs in lib/ so that all 40 tests pass. Do not edit anything under tests/. Hidden extra checks will also be run.",
+   "prompt_sha256": "eec260a6e28f307a94c347f65f15a309e931bcd9b45df9b1a4dc01c462b17f80",
+   "seed_sha256": "791b49e8727614e5a3702750bf3f6aaf8841c768303aaea058768aa46f645530"
+  }
+ ]
+}
