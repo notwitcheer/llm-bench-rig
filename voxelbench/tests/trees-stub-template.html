@@ -4,7 +4,7 @@
 <body><canvas id="c"></canvas><div id="hud"></div>
 <script>
 // STUB for dry-running gate_trees.py / growth_clip.py. Not a tree model: a toy seeded branching process.
-// MODE is replaced by sed: pass | wronglambda | nondet | nohook
+// MODE is replaced by sed: pass | wronglambda | nondet | nohook | nogrow (hooks fine, metamer count never rises) | hang (infinite loop from season 2, like the Ornith page) | slow (one 4 s block at season 3, then fine)
 const MODE = "__MODE__";
 const P = new URLSearchParams(location.search);
 const SEED = parseInt(P.get("seed") || "1"), LAMBDA = parseFloat(P.get("lambda") || "0.5");
@@ -16,6 +16,9 @@ function restart(){ rnd = MODE === "nondet" ? Math.random : mulberry32(SEED * 79
 function norm(v){const l=Math.hypot(v[0],v[1],v[2])||1;return[v[0]/l,v[1]/l,v[2]/l]}
 function grow1(){
   season++;
+  if (MODE === "nogrow" && season > 1) return;
+  if (MODE === "hang" && season >= 2) { for (;;) {} }
+  if (MODE === "slow" && season === 3) { const t = Date.now(); while (Date.now() - t < 4000) {} }
   const ang = (MODE === "wronglambda" ? 0.35 + 2.4*(LAMBDA-0.46) : 1.15 - 2.4*(LAMBDA-0.46));
   const nt = [];
   for (const t of tips) {

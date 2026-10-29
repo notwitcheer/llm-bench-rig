@@ -166,10 +166,24 @@ PY
 fi
 say "goal registered: $ST $TU/$MT"
 END=""
+# stall nudge (HARDENING L37, 2026-10-29; opt-in VX_STALL_NUDGE=1, part of harness h3): when Hermes stops a looping response and goes
+# back to its prompt with the goal still active, nothing continues (72a: 32 of 60 minutes idle). vx_stall.py = newest state.db message
+# older than VX_STALL_SECS (default 720) AND the model server not processing. at most VX_STALL_MAX (3) nudges, >= 120 s apart, typed with
+# type_line like any user line; count written to driver.json. fail-safe: a detector error prints `unknown` and nothing happens.
+HERE=$(cd "$(dirname "$0")" && pwd); NUDGES=0; LAST_NUDGE=0
+NUDGE_TEXT="Your previous response was cut off and discarded. Continue the goal from where you stopped: re-read your index.html, fix whatever the quality gate or your own tests reported, and finish."
 while :; do
   sleep 30
   NOW=$(date +%s); EL=$(( (NOW - T0) / 60 ))
   read -r ST TU MT NG <<< "$(state)"
+  if [ "${VX_STALL_NUDGE:-0}" = "1" ] && [ "$ST" = active ]; then
+    SV=$(python3 "$HERE/vx_stall.py" "$H/state.db" "${PORT:-8090}" "${VX_STALL_SECS:-720}" 2>/dev/null || echo "unknown detector-failed")
+    case "$SV" in
+      stall*) if [ "$NUDGES" -lt "${VX_STALL_MAX:-3}" ] && [ $(( NOW - LAST_NUDGE )) -gt 120 ]; then
+                NUDGES=$(( NUDGES + 1 )); LAST_NUDGE=$NOW; say "STALL ($SV): nudge $NUDGES typed"; type_line "$NUDGE_TEXT"
+              fi;;
+    esac
+  fi
   if tmux capture-pane -t "=$S:" -p -S -400 | grep -qE "Goal achieved"; then END="done"; fi
   if tmux capture-pane -t "=$S:" -p -S -400 | grep -qE "Goal paused|judged unachievable"; then END="paused"; fi
   case "$ST" in done|achieved) END="done";; paused|blocked|cleared) END="${END:-$ST}";; esac
@@ -184,4 +198,4 @@ say "end=$END after ${WALL_S}s"
 tmux capture-pane -t "=$S:" -p -S -2000 > "$B/pane-final.txt" 2>/dev/null
 tmux send-keys -t "=$S:" -l "/exit"; tmux send-keys -t "=$S:" Enter; sleep 8
 tmux kill-session -t "=$S" 2>/dev/null
-echo "{\"profile\":\"$P\",\"slug\":\"$SLUG\",\"model\":\"$MODEL\",\"ctx\":$CTX,\"end\":\"$END\",\"wall_s\":$WALL_S}" > "$B/driver.json"
+echo "{\"profile\":\"$P\",\"slug\":\"$SLUG\",\"model\":\"$MODEL\",\"ctx\":$CTX,\"end\":\"$END\",\"wall_s\":$WALL_S,\"stall_nudges\":$NUDGES}" > "$B/driver.json"
