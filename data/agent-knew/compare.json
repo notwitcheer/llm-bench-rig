@@ -1,0 +1,131 @@
+{
+ "dev_fit": {
+  "paper": {
+   "actor": "gptoss20b",
+   "n": {
+    "x-other": 6000,
+    "x+crit": 2748,
+    "viol": 967
+   },
+   "tau": 1.0984158754348756,
+   "oof_auroc_viol_vs_xother": 0.9431,
+   "oof_auroc_viol_vs_xpluscrit": 0.8631,
+   "oof_fire_rate": {
+    "viol": 0.785,
+    "x-other": 0.035,
+    "x+crit": 0.1
+   }
+  },
+  "ours": {
+   "actor": "gptoss20b",
+   "n": {
+    "x-other": 6000,
+    "x+crit": 2736,
+    "viol": 954
+   },
+   "tau": 1.0900593996047974,
+   "oof_auroc_viol_vs_xother": 0.9449,
+   "oof_auroc_viol_vs_xpluscrit": 0.86,
+   "oof_fire_rate": {
+    "viol": 0.789,
+    "x-other": 0.032,
+    "x+crit": 0.1
+   }
+  }
+ },
+ "conf_per_model_gptoss20b": {
+  "paper": {
+   "all": {
+    "I": 0.8841,
+    "T_sup": 0.8942,
+    "M_cot": 0.8901
+   },
+   "vs_XPLUS": {
+    "I": 0.8733,
+    "T_sup": 0.8856,
+    "M_cot": 0.8955
+   },
+   "vs_XOTHER": {
+    "I": 0.9267,
+    "T_sup": 0.9279,
+    "M_cot": 0.8734
+   }
+  },
+  "ours": {
+   "all": {
+    "I": 0.8855,
+    "T_sup": 0.8994,
+    "M_cot": 0.896
+   },
+   "vs_XPLUS": {
+    "I": 0.8737,
+    "T_sup": 0.8909,
+    "M_cot": 0.8948
+   },
+   "vs_XOTHER": {
+    "I": 0.9326,
+    "T_sup": 0.9331,
+    "M_cot": 0.8997
+   }
+  }
+ },
+ "conf_n": {
+  "paper": {
+   "XPLUS": 4818,
+   "XOTHER": 2923,
+   "VIOL": 714
+  },
+  "ours": {
+   "XPLUS": 4804,
+   "XOTHER": 2902,
+   "VIOL": 710
+  }
+ },
+ "fire_rate": {
+  "paper": {
+   "VIOL": 0.84,
+   "XOTHER": 0.029,
+   "XPLUS": 0.123
+  },
+  "ours": {
+   "VIOL": 0.838,
+   "XOTHER": 0.031,
+   "XPLUS": 0.125
+  }
+ },
+ "ours_obfuscate_gptoss": {
+  "I": 0.8666,
+  "T_sup": 0.8988,
+  "M_cot": 0.8582
+ },
+ "paper_obfuscate_gptoss_only": {
+  "I": 0.8556,
+  "T_sup": 0.8922,
+  "M_cot": 0.8582
+ },
+ "unit_overlap": 8416,
+ "spearman_I_ours_vs_paper": 0.9845361494316817,
+ "E1": {
+  "vs_XPLUS": {
+   "diff": 0.3737,
+   "ci95": [
+    0.3539,
+    0.3923
+   ],
+   "p_one_sided": 0.0004997501249375312,
+   "n": 5514,
+   "violators": 710
+  },
+  "vs_XOTHER": {
+   "diff": 0.4326,
+   "ci95": [
+    0.4007,
+    0.4574
+   ],
+   "p_one_sided": 0.0004997501249375312,
+   "n": 3612,
+   "violators": 710
+  },
+  "passes": true
+ }
+}
