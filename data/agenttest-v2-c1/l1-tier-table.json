@@ -1,0 +1,1715 @@
+{
+ "rows": [
+  {
+   "slug": "spark-x26-4b-q4km",
+   "label": "Spark-X2.6-4B Q4_K_M",
+   "family": "Spark",
+   "file_gb": 3.54,
+   "tier_hyp": 8,
+   "passed": 25,
+   "n": 30,
+   "mean_frac": 0.8927,
+   "by_group": {
+    "cat:code": "4/5",
+    "cat:data": "2/3",
+    "cat:files": "5/6",
+    "cat:long": "3/4",
+    "cat:recovery": "4/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "2/3",
+    "diff:A": "5/5",
+    "diff:B": "12/16",
+    "diff:C": "8/9"
+   },
+   "tool_errors_other": 42,
+   "approval_blocks": 35,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 640,
+   "wall_s_total": 2410.4,
+   "wall_s_median": 23.2,
+   "first_turn_cold_s": 2.93,
+   "first_turn_median_s": 0.675,
+   "vram_peak_mib": 6116,
+   "vram_loaded_mib": 6040,
+   "tier": 8,
+   "n_cpu_moe": null,
+   "effort": "high",
+   "decode_tok_s_p50": 215.1,
+   "first_big_prefill_s": 0.6,
+   "fit_q8_peak_mib": 5128,
+   "fit_q8_tier": 8,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     0,
+     0.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     1,
+     1.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     0,
+     0.909
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     1,
+     1.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     0,
+     0.0
+    ],
+    "t27": [
+     0,
+     0.871
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 1.0,
+    "top_p": 0.949999988079071,
+    "top_k": 0,
+    "min_p": 0.05000000074505806,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "ornith15-9b-q4km",
+   "label": "Ornith 1.5 9B Q4_K_M",
+   "family": "Ornith",
+   "file_gb": 5.63,
+   "tier_hyp": 8,
+   "passed": 27,
+   "n": 30,
+   "mean_frac": 0.9,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "5/6",
+    "cat:long": "4/4",
+    "cat:recovery": "3/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "2/3",
+    "diff:A": "4/5",
+    "diff:B": "15/16",
+    "diff:C": "8/9"
+   },
+   "tool_errors_other": 29,
+   "approval_blocks": 41,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 514,
+   "wall_s_total": 2033.9,
+   "wall_s_median": 17.9,
+   "first_turn_cold_s": 2.22,
+   "first_turn_median_s": 0.865,
+   "vram_peak_mib": 7844,
+   "vram_loaded_mib": 7816,
+   "tier": 12,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 196.0,
+   "first_big_prefill_s": 1.0,
+   "fit_q8_peak_mib": 7092,
+   "fit_q8_tier": 8,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     0,
+     0.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     0,
+     0.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 0.6000000238418579,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "qwen38-27b-ud-q4km",
+   "label": "Qwen3.8-27B UD-Q4_K_M",
+   "family": "Qwen",
+   "file_gb": 16.46,
+   "tier_hyp": 24,
+   "passed": 29,
+   "n": 30,
+   "mean_frac": 0.9667,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "6/6",
+    "cat:long": "4/4",
+    "cat:recovery": "4/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "2/3",
+    "diff:A": "5/5",
+    "diff:B": "15/16",
+    "diff:C": "9/9"
+   },
+   "tool_errors_other": 11,
+   "approval_blocks": 22,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 257,
+   "wall_s_total": 1718.4,
+   "wall_s_median": 35.0,
+   "first_turn_cold_s": 6.58,
+   "first_turn_median_s": 2.2649999999999997,
+   "vram_peak_mib": 23121,
+   "vram_loaded_mib": 20164,
+   "tier": 24,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 75.0,
+   "first_big_prefill_s": 3.3,
+   "fit_q8_peak_mib": 18482,
+   "fit_q8_tier": 24,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     1,
+     1.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     1,
+     1.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 1.0,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "qwen38-27b-ud-iq3xxs",
+   "label": "Qwen3.8-27B UD-IQ3_XXS",
+   "family": "Qwen",
+   "file_gb": 11.91,
+   "tier_hyp": 24,
+   "passed": 28,
+   "n": 30,
+   "mean_frac": 0.9333,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "5/6",
+    "cat:long": "4/4",
+    "cat:recovery": "4/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "2/3",
+    "diff:A": "4/5",
+    "diff:B": "15/16",
+    "diff:C": "9/9"
+   },
+   "tool_errors_other": 7,
+   "approval_blocks": 22,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 260,
+   "wall_s_total": 1723.4,
+   "wall_s_median": 44.1,
+   "first_turn_cold_s": 7.97,
+   "first_turn_median_s": 2.04,
+   "vram_peak_mib": 16322,
+   "vram_loaded_mib": 16248,
+   "tier": 24,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 88.6,
+   "first_big_prefill_s": 3.3,
+   "fit_q8_peak_mib": 14606,
+   "fit_q8_tier": 16,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     0,
+     0.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     1,
+     1.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 1.0,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "ornith15-35b-a3b-q4km",
+   "label": "Ornith 1.5 35B-A3B Q4_K_M",
+   "family": "Ornith",
+   "file_gb": 21.71,
+   "tier_hyp": 24,
+   "passed": 26,
+   "n": 30,
+   "mean_frac": 0.8931,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "5/6",
+    "cat:long": "3/4",
+    "cat:recovery": "4/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "1/3",
+    "diff:A": "4/5",
+    "diff:B": "14/16",
+    "diff:C": "8/9"
+   },
+   "tool_errors_other": 10,
+   "approval_blocks": 18,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 285,
+   "wall_s_total": 585.2,
+   "wall_s_median": 9.1,
+   "first_turn_cold_s": 2.53,
+   "first_turn_median_s": 0.725,
+   "vram_peak_mib": 22266,
+   "vram_loaded_mib": 22192,
+   "tier": 24,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 274.4,
+   "first_big_prefill_s": 1.5,
+   "fit_q8_peak_mib": 21732,
+   "fit_q8_tier": 24,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     0,
+     0.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     1,
+     1.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     0,
+     0.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     0,
+     0.792
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 0.6000000238418579,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.05000000074505806,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "gsq-rco-27b-iq2xs",
+   "label": "Qwen3.8-27B GSQ-RCO IQ2_XS",
+   "family": "Qwen",
+   "file_gb": 8.42,
+   "tier_hyp": 16,
+   "passed": 27,
+   "n": 30,
+   "mean_frac": 0.9324,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "6/6",
+    "cat:long": "3/4",
+    "cat:recovery": "3/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "2/3",
+    "diff:A": "5/5",
+    "diff:B": "15/16",
+    "diff:C": "7/9"
+   },
+   "tool_errors_other": 9,
+   "approval_blocks": 19,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 239,
+   "wall_s_total": 1145.8,
+   "wall_s_median": 23.6,
+   "first_turn_cold_s": 5.38,
+   "first_turn_median_s": 1.66,
+   "vram_peak_mib": 13498,
+   "vram_loaded_mib": 13246,
+   "tier": 16,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 106.2,
+   "first_big_prefill_s": 3.4,
+   "fit_q8_peak_mib": 11778,
+   "fit_q8_tier": 16,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     1,
+     1.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     0,
+     0.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     0,
+     0.973
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 1.0,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "gemma4-31b-qat-q4_0",
+   "label": "Gemma 4 31B QAT Q4_0",
+   "family": "Gemma",
+   "file_gb": 17.65,
+   "tier_hyp": 24,
+   "passed": 27,
+   "n": 30,
+   "mean_frac": 0.9264,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "6/6",
+    "cat:long": "4/4",
+    "cat:recovery": "3/4",
+    "cat:refactor": "4/5",
+    "cat:shell": "2/3",
+    "diff:A": "5/5",
+    "diff:B": "15/16",
+    "diff:C": "7/9"
+   },
+   "tool_errors_other": 20,
+   "approval_blocks": 19,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 244,
+   "wall_s_total": 1505.4,
+   "wall_s_median": 46.5,
+   "first_turn_cold_s": 6.39,
+   "first_turn_median_s": 8.705,
+   "vram_peak_mib": 26386,
+   "vram_loaded_mib": 26360,
+   "tier": 32,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 61.4,
+   "first_big_prefill_s": 3.8,
+   "fit_q8_peak_mib": 22744,
+   "fit_q8_tier": 24,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     1,
+     1.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     0,
+     0.792
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     0,
+     0.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 1.0,
+    "top_p": 0.949999988079071,
+    "top_k": 64,
+    "min_p": 0.05000000074505806,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "qwen38-27b-q6k",
+   "label": "Qwen3.8-27B Q6_K",
+   "family": "Qwen",
+   "file_gb": 22.88,
+   "tier_hyp": 32,
+   "passed": 30,
+   "n": 30,
+   "mean_frac": 1.0,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "6/6",
+    "cat:long": "4/4",
+    "cat:recovery": "4/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "3/3",
+    "diff:A": "5/5",
+    "diff:B": "16/16",
+    "diff:C": "9/9"
+   },
+   "tool_errors_other": 18,
+   "approval_blocks": 18,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 253,
+   "wall_s_total": 2575.5,
+   "wall_s_median": 58.2,
+   "first_turn_cold_s": 17.8,
+   "first_turn_median_s": 2.5949999999999998,
+   "vram_peak_mib": 26034,
+   "vram_loaded_mib": 25964,
+   "tier": 32,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 60.0,
+   "first_big_prefill_s": 4.0,
+   "fit_q8_peak_mib": 24322,
+   "fit_q8_tier": 32,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     1,
+     1.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     1,
+     1.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     1,
+     1.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 1.0,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "ornith15-9b-q6k",
+   "label": "Ornith 1.5 9B Q6_K",
+   "family": "Ornith",
+   "file_gb": 7.36,
+   "tier_hyp": 12,
+   "passed": 26,
+   "n": 30,
+   "mean_frac": 0.8917,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "5/6",
+    "cat:long": "3/4",
+    "cat:recovery": "3/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "2/3",
+    "diff:A": "4/5",
+    "diff:B": "15/16",
+    "diff:C": "7/9"
+   },
+   "tool_errors_other": 20,
+   "approval_blocks": 32,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 347,
+   "wall_s_total": 1720.2,
+   "wall_s_median": 27.1,
+   "first_turn_cold_s": 2.53,
+   "first_turn_median_s": 0.985,
+   "vram_peak_mib": 9242,
+   "vram_loaded_mib": 9216,
+   "tier": 12,
+   "n_cpu_moe": null,
+   "effort": "unset",
+   "decode_tok_s_p50": 169.2,
+   "first_big_prefill_s": 1.2,
+   "fit_q8_peak_mib": 8492,
+   "fit_q8_tier": 12,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     0,
+     0.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     0,
+     0.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     0,
+     0.751
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 0.6000000238418579,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  },
+  {
+   "slug": "ornith15-122b-ud-iq3xxs",
+   "label": "Ornith 1.5 122B UD-IQ3_XXS (expert offload)",
+   "family": "Ornith",
+   "file_gb": 49.52,
+   "tier_hyp": 32,
+   "passed": 29,
+   "n": 30,
+   "mean_frac": 0.9667,
+   "by_group": {
+    "cat:code": "5/5",
+    "cat:data": "3/3",
+    "cat:files": "6/6",
+    "cat:long": "4/4",
+    "cat:recovery": "4/4",
+    "cat:refactor": "5/5",
+    "cat:shell": "2/3",
+    "diff:A": "5/5",
+    "diff:B": "15/16",
+    "diff:C": "9/9"
+   },
+   "tool_errors_other": 12,
+   "approval_blocks": 17,
+   "malformed_calls": 0,
+   "timeouts": 0,
+   "tool_calls": 236,
+   "wall_s_total": 3102.0,
+   "wall_s_median": 69.1,
+   "first_turn_cold_s": 78.39,
+   "first_turn_median_s": 5.18,
+   "vram_peak_mib": 30026,
+   "vram_loaded_mib": 29938,
+   "tier": 32,
+   "n_cpu_moe": 24,
+   "effort": "unset",
+   "decode_tok_s_p50": 44.8,
+   "first_big_prefill_s": 73.1,
+   "fit_q8_peak_mib": 29286,
+   "fit_q8_tier": 32,
+   "per_task": {
+    "t01": [
+     1,
+     1.0
+    ],
+    "t02": [
+     1,
+     1.0
+    ],
+    "t03": [
+     1,
+     1.0
+    ],
+    "t04": [
+     1,
+     1.0
+    ],
+    "t05": [
+     1,
+     1.0
+    ],
+    "t06": [
+     1,
+     1.0
+    ],
+    "t07": [
+     1,
+     1.0
+    ],
+    "t08": [
+     1,
+     1.0
+    ],
+    "t09": [
+     1,
+     1.0
+    ],
+    "t10": [
+     1,
+     1.0
+    ],
+    "t11": [
+     1,
+     1.0
+    ],
+    "t12": [
+     1,
+     1.0
+    ],
+    "t13": [
+     1,
+     1.0
+    ],
+    "t14": [
+     1,
+     1.0
+    ],
+    "t15": [
+     1,
+     1.0
+    ],
+    "t16": [
+     1,
+     1.0
+    ],
+    "t17": [
+     1,
+     1.0
+    ],
+    "t18": [
+     1,
+     1.0
+    ],
+    "t19": [
+     1,
+     1.0
+    ],
+    "t20": [
+     1,
+     1.0
+    ],
+    "t21": [
+     1,
+     1.0
+    ],
+    "t22": [
+     1,
+     1.0
+    ],
+    "t23": [
+     0,
+     0.0
+    ],
+    "t24": [
+     1,
+     1.0
+    ],
+    "t25": [
+     1,
+     1.0
+    ],
+    "t26": [
+     1,
+     1.0
+    ],
+    "t27": [
+     1,
+     1.0
+    ],
+    "t28": [
+     1,
+     1.0
+    ],
+    "t29": [
+     1,
+     1.0
+    ],
+    "t30": [
+     1,
+     1.0
+    ]
+   },
+   "sampling_applied": {
+    "temperature": 0.6000000238418579,
+    "top_p": 0.949999988079071,
+    "top_k": 20,
+    "min_p": 0.05000000074505806,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "n_predict": -1
+   }
+  }
+ ],
+ "pending": []
+}

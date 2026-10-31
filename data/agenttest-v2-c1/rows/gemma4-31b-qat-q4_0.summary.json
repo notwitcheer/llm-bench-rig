@@ -1,0 +1,183 @@
+{
+ "row": "gemma4-31b-qat-q4_0",
+ "n": 30,
+ "passed": 27,
+ "mean_frac": 0.9264,
+ "tool_calls": 244,
+ "tool_errors_other": 20,
+ "approval_blocks": 19,
+ "malformed_calls": 0,
+ "timeouts": 0,
+ "wall_s_total": 1505.4,
+ "wall_s_median": 46.5,
+ "first_assistant_s_cold": 6.39,
+ "first_assistant_s_median": 8.705,
+ "by_group": {
+  "cat:code": "5/5",
+  "cat:data": "3/3",
+  "cat:files": "6/6",
+  "cat:long": "4/4",
+  "cat:recovery": "3/4",
+  "cat:refactor": "4/5",
+  "cat:shell": "2/3",
+  "diff:A": "5/5",
+  "diff:B": "15/16",
+  "diff:C": "7/9"
+ },
+ "per_task": {
+  "t01": [
+   1,
+   1.0
+  ],
+  "t02": [
+   1,
+   1.0
+  ],
+  "t03": [
+   1,
+   1.0
+  ],
+  "t04": [
+   1,
+   1.0
+  ],
+  "t05": [
+   1,
+   1.0
+  ],
+  "t06": [
+   1,
+   1.0
+  ],
+  "t07": [
+   1,
+   1.0
+  ],
+  "t08": [
+   1,
+   1.0
+  ],
+  "t09": [
+   1,
+   1.0
+  ],
+  "t10": [
+   1,
+   1.0
+  ],
+  "t11": [
+   1,
+   1.0
+  ],
+  "t12": [
+   1,
+   1.0
+  ],
+  "t13": [
+   1,
+   1.0
+  ],
+  "t14": [
+   1,
+   1.0
+  ],
+  "t15": [
+   0,
+   0.792
+  ],
+  "t16": [
+   1,
+   1.0
+  ],
+  "t17": [
+   1,
+   1.0
+  ],
+  "t18": [
+   1,
+   1.0
+  ],
+  "t19": [
+   0,
+   0.0
+  ],
+  "t20": [
+   1,
+   1.0
+  ],
+  "t21": [
+   1,
+   1.0
+  ],
+  "t22": [
+   1,
+   1.0
+  ],
+  "t23": [
+   0,
+   0.0
+  ],
+  "t24": [
+   1,
+   1.0
+  ],
+  "t25": [
+   1,
+   1.0
+  ],
+  "t26": [
+   1,
+   1.0
+  ],
+  "t27": [
+   1,
+   1.0
+  ],
+  "t28": [
+   1,
+   1.0
+  ],
+  "t29": [
+   1,
+   1.0
+  ],
+  "t30": [
+   1,
+   1.0
+  ]
+ },
+ "meta": {
+  "row": "gemma4-31b-qat-q4_0",
+  "label": "Gemma 4 31B QAT Q4_0",
+  "path": "gemma4-qat-q4/gemma-4-31B_q4_0-it.gguf",
+  "bytes": 17650999456,
+  "ctx": 65536,
+  "total_slots": 4,
+  "sampling_flags": {
+   "temperature": 1.0,
+   "top_p": 0.95,
+   "top_k": 64,
+   "min_p": 0.05
+  },
+  "sampling_applied": {
+   "temperature": 1.0,
+   "top_p": 0.949999988079071,
+   "top_k": 64,
+   "min_p": 0.05000000074505806,
+   "presence_penalty": 0.0,
+   "repeat_penalty": 1.0,
+   "n_predict": -1
+  },
+  "sampling_match": true,
+  "n_cpu_moe_used": null,
+  "effort": "unset",
+  "vram_loaded_mib": 26360,
+  "llama_build": "version: 0.6.0-dev (build 11668, commit cd0a5b6a1)",
+  "hermes_version": "Hermes Agent v0.22.2+2756.g9bda188 (2026.9.24) \u00b7 stable \u00b7 local 9bda1888bb61",
+  "hermes_pin": "9bda188",
+  "template_mentions_reasoning_effort": false
+ },
+ "vram_peak_mib": 26386,
+ "vram_samples": 754,
+ "finished_utc": "2026-10-29T04:32:22Z"
+}

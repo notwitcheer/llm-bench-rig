@@ -1,0 +1,11 @@
+slug,label,passed,n,tool_errors_other,approval_blocks,malformed_calls,timeouts,wall_s_total,first_turn_cold_s,first_big_prefill_s,decode_tok_s_p50,vram_peak_mib,tier,fit_q8_peak_mib,fit_q8_tier,file_gb
+spark-x26-4b-q4km,Spark-X2.6-4B Q4_K_M,25,30,42,35,0,0,2410.4,2.93,0.6,215.1,6116,8,5128,8,3.54
+ornith15-9b-q4km,Ornith 1.5 9B Q4_K_M,27,30,29,41,0,0,2033.9,2.22,1.0,196.0,7844,12,7092,8,5.63
+qwen38-27b-ud-q4km,Qwen3.8-27B UD-Q4_K_M,29,30,11,22,0,0,1718.4,6.58,3.3,75.0,23121,24,18482,24,16.46
+qwen38-27b-ud-iq3xxs,Qwen3.8-27B UD-IQ3_XXS,28,30,7,22,0,0,1723.4,7.97,3.3,88.6,16322,24,14606,16,11.91
+ornith15-35b-a3b-q4km,Ornith 1.5 35B-A3B Q4_K_M,26,30,10,18,0,0,585.2,2.53,1.5,274.4,22266,24,21732,24,21.71
+gsq-rco-27b-iq2xs,Qwen3.8-27B GSQ-RCO IQ2_XS,27,30,9,19,0,0,1145.8,5.38,3.4,106.2,13498,16,11778,16,8.42
+gemma4-31b-qat-q4_0,Gemma 4 31B QAT Q4_0,27,30,20,19,0,0,1505.4,6.39,3.8,61.4,26386,32,22744,24,17.65
+qwen38-27b-q6k,Qwen3.8-27B Q6_K,30,30,18,18,0,0,2575.5,17.8,4.0,60.0,26034,32,24322,32,22.88
+ornith15-9b-q6k,Ornith 1.5 9B Q6_K,26,30,20,32,0,0,1720.2,2.53,1.2,169.2,9242,12,8492,12,7.36
+ornith15-122b-ud-iq3xxs,Ornith 1.5 122B UD-IQ3_XXS (expert offload),29,30,12,17,0,0,3102.0,78.39,73.1,44.8,30026,32,29286,32,49.52
