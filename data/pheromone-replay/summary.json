@@ -1,0 +1,344 @@
+[
+ {
+  "cell": "me-cv4",
+  "strategy": "conversation",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 8,
+  "n": 20,
+  "rate": 0.4,
+  "ci95": [
+   0.2188,
+   0.6134
+  ],
+  "mean_ticks": 38.9,
+  "mean_tokens": 108367,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "me-cvM",
+  "strategy": "conversation",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 9,
+  "n": 20,
+  "rate": 0.45,
+  "ci95": [
+   0.2582,
+   0.6579
+  ],
+  "mean_ticks": 54.1,
+  "mean_tokens": 159715,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "me-decay:full",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 3,
+  "n": 20,
+  "rate": 0.15,
+  "ci95": [
+   0.0524,
+   0.3604
+  ],
+  "mean_ticks": 43.7,
+  "mean_tokens": 506293,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "me-decay:no_decay",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 2,
+  "n": 20,
+  "rate": 0.1,
+  "ci95": [
+   0.0279,
+   0.301
+  ],
+  "mean_ticks": 47.8,
+  "mean_tokens": 565864,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "me-pf1",
+  "strategy": "pressure_field",
+  "agents": 1,
+  "meetings": 20,
+  "solved": 3,
+  "n": 20,
+  "rate": 0.15,
+  "ci95": [
+   0.0524,
+   0.3604
+  ],
+  "mean_ticks": 45.9,
+  "mean_tokens": 541096,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "me-pf4",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 7,
+  "n": 20,
+  "rate": 0.35,
+  "ci95": [
+   0.1812,
+   0.5671
+  ],
+  "mean_ticks": 38.4,
+  "mean_tokens": 473070,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "mm-cv4",
+  "strategy": "conversation",
+  "agents": 4,
+  "meetings": 40,
+  "solved": 0,
+  "n": 12,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.2425
+  ],
+  "mean_ticks": 50.0,
+  "mean_tokens": 247932,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "mm-cvM",
+  "strategy": "conversation",
+  "agents": 4,
+  "meetings": 40,
+  "solved": 0,
+  "n": 12,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.2425
+  ],
+  "mean_ticks": 91.0,
+  "mean_tokens": 417642,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "mm-pf4",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 40,
+  "solved": 1,
+  "n": 12,
+  "rate": 0.0833,
+  "ci95": [
+   0.0149,
+   0.3539
+  ],
+  "mean_ticks": 46.2,
+  "mean_tokens": 1385998,
+  "final_models": [
+   "ornith-moe"
+  ]
+ },
+ {
+  "cell": "pe-cv4",
+  "strategy": "conversation",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 13,
+  "n": 30,
+  "rate": 0.4333,
+  "ci95": [
+   0.2738,
+   0.608
+  ],
+  "mean_ticks": 39.6,
+  "mean_tokens": 111100,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "pe-decay:full",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 24,
+  "n": 30,
+  "rate": 0.8,
+  "ci95": [
+   0.6269,
+   0.905
+  ],
+  "mean_ticks": 20.8,
+  "mean_tokens": 290924,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "pe-decay:no_decay",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 29,
+  "n": 30,
+  "rate": 0.9667,
+  "ci95": [
+   0.8333,
+   0.9941
+  ],
+  "mean_ticks": 16.7,
+  "mean_tokens": 228109,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "pe-pf1",
+  "strategy": "pressure_field",
+  "agents": 1,
+  "meetings": 20,
+  "solved": 25,
+  "n": 30,
+  "rate": 0.8333,
+  "ci95": [
+   0.6644,
+   0.9266
+  ],
+  "mean_ticks": 21.8,
+  "mean_tokens": 307171,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "pe-pf4",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 20,
+  "solved": 26,
+  "n": 30,
+  "rate": 0.8667,
+  "ci95": [
+   0.7032,
+   0.9469
+  ],
+  "mean_ticks": 19.7,
+  "mean_tokens": 272620,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "ph-cv4",
+  "strategy": "conversation",
+  "agents": 4,
+  "meetings": 60,
+  "solved": 0,
+  "n": 20,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.1611
+  ],
+  "mean_ticks": 50.0,
+  "mean_tokens": 244906,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "ph-pf4",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 60,
+  "solved": 1,
+  "n": 20,
+  "rate": 0.05,
+  "ci95": [
+   0.0089,
+   0.2361
+  ],
+  "mean_ticks": 47.9,
+  "mean_tokens": 1623433,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "pm-cv4",
+  "strategy": "conversation",
+  "agents": 4,
+  "meetings": 40,
+  "solved": 0,
+  "n": 20,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.1611
+  ],
+  "mean_ticks": 50.0,
+  "mean_tokens": 201171,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ },
+ {
+  "cell": "pm-pf4",
+  "strategy": "pressure_field",
+  "agents": 4,
+  "meetings": 40,
+  "solved": 9,
+  "n": 20,
+  "rate": 0.45,
+  "ci95": [
+   0.2582,
+   0.6579
+  ],
+  "mean_ticks": 36.6,
+  "mean_tokens": 1054750,
+  "final_models": [
+   "qwen2.5:0.5b",
+   "qwen2.5:1.5b",
+   "qwen2.5:3b"
+  ]
+ }
+]

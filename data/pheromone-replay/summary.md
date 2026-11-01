@@ -1,0 +1,19 @@
+cell | strategy | agents | solved/N | rate | 95% CI | mean ticks | mean tokens
+me-cv4 | conversation | 4 | 8/20 | 40.0% | 21.9-61.3% | 38.9 | 108367
+me-cvM | conversation | 4 | 9/20 | 45.0% | 25.8-65.8% | 54.1 | 159715
+me-decay:full | pressure_field | 4 | 3/20 | 15.0% | 5.2-36.0% | 43.7 | 506293
+me-decay:no_decay | pressure_field | 4 | 2/20 | 10.0% | 2.8-30.1% | 47.8 | 565864
+me-pf1 | pressure_field | 1 | 3/20 | 15.0% | 5.2-36.0% | 45.9 | 541096
+me-pf4 | pressure_field | 4 | 7/20 | 35.0% | 18.1-56.7% | 38.4 | 473070
+mm-cv4 | conversation | 4 | 0/12 | 0.0% | 0.0-24.2% | 50.0 | 247932
+mm-cvM | conversation | 4 | 0/12 | 0.0% | 0.0-24.2% | 91.0 | 417642
+mm-pf4 | pressure_field | 4 | 1/12 | 8.3% | 1.5-35.4% | 46.2 | 1385998
+pe-cv4 | conversation | 4 | 13/30 | 43.3% | 27.4-60.8% | 39.6 | 111100
+pe-decay:full | pressure_field | 4 | 24/30 | 80.0% | 62.7-90.5% | 20.8 | 290924
+pe-decay:no_decay | pressure_field | 4 | 29/30 | 96.7% | 83.3-99.4% | 16.7 | 228109
+pe-pf1 | pressure_field | 1 | 25/30 | 83.3% | 66.4-92.7% | 21.8 | 307171
+pe-pf4 | pressure_field | 4 | 26/30 | 86.7% | 70.3-94.7% | 19.7 | 272620
+ph-cv4 | conversation | 4 | 0/20 | 0.0% | 0.0-16.1% | 50.0 | 244906
+ph-pf4 | pressure_field | 4 | 1/20 | 5.0% | 0.9-23.6% | 47.9 | 1623433
+pm-cv4 | conversation | 4 | 0/20 | 0.0% | 0.0-16.1% | 50.0 | 201171
+pm-pf4 | pressure_field | 4 | 9/20 | 45.0% | 25.8-65.8% | 36.6 | 1054750

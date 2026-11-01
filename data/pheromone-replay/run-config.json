@@ -1,0 +1,14 @@
+{
+ "starts": [
+  {
+   "at": "2026-10-30T23:27:30Z",
+   "ollama": "{\"version\":\"0.24.0\"}",
+   "llama_cpp": "version: 0.6.0-dev (build 11668, commit cd0a5b6a1)",
+   "harness": "Govcraft/pressure-field-experiment@d3b0d5b",
+   "ablate2_diff": " 1 file changed, 7 deletions(-)",
+   "paper_chain": "qwen2.5:0.5b,qwen2.5:1.5b,qwen2.5:3b (Ollama library tags, default quant)",
+   "moe": "Ornith-1.5-35B-Q4_K_M.gguf, llama-server -c 32768 --parallel 4 --jinja --reasoning-budget 0 -fa on, harness-sent temperature/top_p (sampling bands), server defaults otherwise",
+   "gpu": "NVIDIA GeForce RTX 5090, 595.71.05"
+  }
+ ]
+}

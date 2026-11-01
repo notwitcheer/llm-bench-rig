@@ -1,0 +1,254 @@
+{
+ "me-cv4": {
+  "ours": {
+   "solved": 8,
+   "n": 20,
+   "rate": 0.4,
+   "ci95": [
+    0.2188,
+    0.6134
+   ],
+   "mean_ticks": 38.9,
+   "mean_tokens": 108367
+  },
+  "paper": null
+ },
+ "me-cvM": {
+  "ours": {
+   "solved": 9,
+   "n": 20,
+   "rate": 0.45,
+   "ci95": [
+    0.2582,
+    0.6579
+   ],
+   "mean_ticks": 54.1,
+   "mean_tokens": 159715
+  },
+  "paper": null
+ },
+ "me-decay:full": {
+  "ours": {
+   "solved": 3,
+   "n": 20,
+   "rate": 0.15,
+   "ci95": [
+    0.0524,
+    0.3604
+   ],
+   "mean_ticks": 43.7,
+   "mean_tokens": 506293
+  },
+  "paper": null
+ },
+ "me-decay:no_decay": {
+  "ours": {
+   "solved": 2,
+   "n": 20,
+   "rate": 0.1,
+   "ci95": [
+    0.0279,
+    0.301
+   ],
+   "mean_ticks": 47.8,
+   "mean_tokens": 565864
+  },
+  "paper": null
+ },
+ "me-pf1": {
+  "ours": {
+   "solved": 3,
+   "n": 20,
+   "rate": 0.15,
+   "ci95": [
+    0.0524,
+    0.3604
+   ],
+   "mean_ticks": 45.9,
+   "mean_tokens": 541096
+  },
+  "paper": null
+ },
+ "me-pf4": {
+  "ours": {
+   "solved": 7,
+   "n": 20,
+   "rate": 0.35,
+   "ci95": [
+    0.1812,
+    0.5671
+   ],
+   "mean_ticks": 38.4,
+   "mean_tokens": 473070
+  },
+  "paper": null
+ },
+ "mm-cv4": {
+  "ours": {
+   "solved": 0,
+   "n": 12,
+   "rate": 0.0,
+   "ci95": [
+    0.0,
+    0.2425
+   ],
+   "mean_ticks": 50.0,
+   "mean_tokens": 247932
+  },
+  "paper": null
+ },
+ "mm-cvM": {
+  "ours": {
+   "solved": 0,
+   "n": 12,
+   "rate": 0.0,
+   "ci95": [
+    0.0,
+    0.2425
+   ],
+   "mean_ticks": 91.0,
+   "mean_tokens": 417642
+  },
+  "paper": null
+ },
+ "mm-pf4": {
+  "ours": {
+   "solved": 1,
+   "n": 12,
+   "rate": 0.0833,
+   "ci95": [
+    0.0149,
+    0.3539
+   ],
+   "mean_ticks": 46.2,
+   "mean_tokens": 1385998
+  },
+  "paper": null
+ },
+ "pe-cv4": {
+  "ours": {
+   "solved": 13,
+   "n": 30,
+   "rate": 0.4333,
+   "ci95": [
+    0.2738,
+    0.608
+   ],
+   "mean_ticks": 39.6,
+   "mean_tokens": 111100
+  },
+  "paper": "30/90 (33.3%), table 8, pooled 1/2/4 agents"
+ },
+ "pe-decay:full": {
+  "ours": {
+   "solved": 24,
+   "n": 30,
+   "rate": 0.8,
+   "ci95": [
+    0.6269,
+    0.905
+   ],
+   "mean_ticks": 20.8,
+   "mean_tokens": 290924
+  },
+  "paper": "29/30 (96.7%), table 4, agent count not stated"
+ },
+ "pe-decay:no_decay": {
+  "ours": {
+   "solved": 29,
+   "n": 30,
+   "rate": 0.9667,
+   "ci95": [
+    0.8333,
+    0.9941
+   ],
+   "mean_ticks": 16.7,
+   "mean_tokens": 228109
+  },
+  "paper": "26/30 (86.7%), table 4"
+ },
+ "pe-pf1": {
+  "ours": {
+   "solved": 25,
+   "n": 30,
+   "rate": 0.8333,
+   "ci95": [
+    0.6644,
+    0.9266
+   ],
+   "mean_ticks": 21.8,
+   "mean_tokens": 307171
+  },
+  "paper": "25/30 (83.3%), table 6"
+ },
+ "pe-pf4": {
+  "ours": {
+   "solved": 26,
+   "n": 30,
+   "rate": 0.8667,
+   "ci95": [
+    0.7032,
+    0.9469
+   ],
+   "mean_ticks": 19.7,
+   "mean_tokens": 272620
+  },
+  "paper": "25/30 (83.3%), table 6"
+ },
+ "ph-cv4": {
+  "ours": {
+   "solved": 0,
+   "n": 20,
+   "rate": 0.0,
+   "ci95": [
+    0.0,
+    0.1611
+   ],
+   "mean_ticks": 50.0,
+   "mean_tokens": 244906
+  },
+  "paper": "0/90, table 8, pooled"
+ },
+ "ph-pf4": {
+  "ours": {
+   "solved": 1,
+   "n": 20,
+   "rate": 0.05,
+   "ci95": [
+    0.0089,
+    0.2361
+   ],
+   "mean_ticks": 47.9,
+   "mean_tokens": 1623433
+  },
+  "paper": "14/90 (15.6%), table 8, pooled"
+ },
+ "pm-cv4": {
+  "ours": {
+   "solved": 0,
+   "n": 20,
+   "rate": 0.0,
+   "ci95": [
+    0.0,
+    0.1611
+   ],
+   "mean_ticks": 50.0,
+   "mean_tokens": 201171
+  },
+  "paper": "0/90, table 8, pooled"
+ },
+ "pm-pf4": {
+  "ours": {
+   "solved": 9,
+   "n": 20,
+   "rate": 0.45,
+   "ci95": [
+    0.2582,
+    0.6579
+   ],
+   "mean_ticks": 36.6,
+   "mean_tokens": 1054750
+  },
+  "paper": "39/90 (43.3%), table 8, pooled"
+ }
+}
