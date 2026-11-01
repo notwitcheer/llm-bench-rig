@@ -1,0 +1,23 @@
+{
+ "sampling_flags": {
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 20,
+  "min_p": 0.0
+ },
+ "sampling_applied": {
+  "temperature": 1.0,
+  "top_p": 0.949999988079071,
+  "top_k": 20,
+  "min_p": 0.0,
+  "presence_penalty": 0.0,
+  "repeat_penalty": 1.0
+ },
+ "sampling_match": true,
+ "effort": "unset",
+ "vram_loaded_mib": 20164,
+ "image_id": "sha256:7a69201726bc64db2072a1371557137c23312d29705cda2b8ea2a0214a50a4cf",
+ "hermes_version": "Hermes Agent v0.22.4 (2026.9.24) \u00b7 upstream 4d043038",
+ "llama_build": "version: 0.6.0-dev (build 11668, commit cd0a5b6a1)",
+ "template_mentions_reasoning_effort": true
+}

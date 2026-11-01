@@ -1,0 +1,24 @@
+ISOLATION PROOF (pre) verdict PASS 2026-11-01T01:43:07Z
+
+L1 docker inspect offhermes-main
+  NetworkMode=none Networks=['none'] Ports={} PortBindings={} IPs=['']
+  user=1000:1000 cap_drop=['ALL'] security_opt=['no-new-privileges'] pids_limit=512 image=sha256:7a69201726bc
+  mount ~/offline-hermes/results/main/home -> /hermes-home rw=True
+  mount ~/offline-hermes/results/main/work -> /opt/data/tmp/sparkagent/work rw=True
+  mount ~/offline-hermes/results/main/bridge -> /bridge rw=False
+  mount ~/offline-hermes/code/offline/bridge_ctr.py -> /opt/offline/bridge_ctr.py rw=False
+
+L2 failing probes inside the container (every one must fail)
+  [FAILED as required] curl https://example.com: rc=6 '000curl: (6) Could not resolve host: example.com'
+  [FAILED as required] curl bare IP 1.1.1.1 (no DNS needed): rc=7 '000curl: (7) Failed to connect to 1.1.1.1 port 80 after 0 ms: Could not connect to server'
+  [FAILED as required] curl docker0 gateway :8090 (Donald): rc=7 '000curl: (7) Failed to connect to 172.17.0.1 port 8090 after 0 ms: Could not connect to server'
+  [FAILED as required] getent hosts example.com: rc=2 ''
+  [FAILED as required] python socket connect 1.1.1.1:443: rc=1 'connect failed errno 101 ENETUNREACH Network is unreachable'
+  [FAILED as required] cat /proc/net/route: rc=0 'Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT'
+
+L3 /sys/class/net/*/statistics inside, after the probes
+  interfaces: ['lo']  non-loopback interfaces: []  non-loopback packets: 0
+  lo: rx_bytes=0 rx_packets=0 rx_errors=0 rx_dropped=0 tx_bytes=0 tx_packets=0 tx_errors=0 tx_dropped=0
+
+C0 control (same image + flags, no bridge, idle + probes): interfaces ['lo'] all counters zero: True
+C1 positive control (same curl, default bridge network): {'rc': 0, 'http': 'http=200', 'interfaces': ['eth0', 'lo'], 'non_lo_packets': 29, 'ok': True, 'available': True}

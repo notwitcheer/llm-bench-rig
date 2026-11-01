@@ -1,0 +1,32 @@
+{
+ "id": "t09",
+ "label": "recover from a failing script",
+ "checker_pass": true,
+ "pass": true,
+ "check_reason": "report produced, script unchanged",
+ "rc": 0,
+ "timed_out": false,
+ "wall_s": 9.3,
+ "cold_start": false,
+ "started_epoch": 1793497633,
+ "session_id": "local-8d9e51169a0be2100651f4bf5d460b72748cc75a0110c5f98bd9ee28b936af21",
+ "tool_calls": 4,
+ "tool_names": [
+  "read_file",
+  "terminal",
+  "terminal",
+  "terminal"
+ ],
+ "tool_errors_other": 0,
+ "approval_blocks": 0,
+ "malformed_calls": 0,
+ "error_detail": [],
+ "api_calls": 4,
+ "input_tokens": 683,
+ "output_tokens": 510,
+ "cache_read_tokens": 54313,
+ "reasoning_chars": 1188,
+ "end_reason": null,
+ "first_assistant_s": 1.84,
+ "final_text": "Done. The first run failed because the script expects `/opt/data/tmp/sparkagent/work/t09/out` to already exist (it only errors out if the dir is missing, doesn't create it). Fix: `mkdir -p` on the `out` directory \u2014 no changes to the script.\n\nSecond run succeeded (exit 0) and produced `/opt/data/tmp/sparkagent/work/t09/out/report.txt` containing:\n\n```\nreport ok 42\n```"
+}

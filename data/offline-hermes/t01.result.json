@@ -1,0 +1,30 @@
+{
+ "id": "t01",
+ "label": "create a file",
+ "checker_pass": true,
+ "pass": true,
+ "check_reason": "exact single line",
+ "rc": 0,
+ "timed_out": false,
+ "wall_s": 14.2,
+ "cold_start": true,
+ "started_epoch": 1793497399,
+ "session_id": "local-64b5578251d91925d0e06ae0c63b3e98c68eef20b6bafd4800a86171b83430d0",
+ "tool_calls": 2,
+ "tool_names": [
+  "write_file",
+  "read_file"
+ ],
+ "tool_errors_other": 0,
+ "approval_blocks": 0,
+ "malformed_calls": 0,
+ "error_detail": [],
+ "api_calls": 3,
+ "input_tokens": 13471,
+ "output_tokens": 253,
+ "cache_read_tokens": 26650,
+ "reasoning_chars": 822,
+ "end_reason": null,
+ "first_assistant_s": 5.46,
+ "final_text": "Done. The file /opt/data/tmp/sparkagent/work/t01/hello.txt exists and reads back as exactly the single line: muse glimmer was here (22 bytes, 1 line, verified on read)."
+}

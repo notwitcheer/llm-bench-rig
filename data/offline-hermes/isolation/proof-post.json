@@ -1,0 +1,30 @@
+{
+ "stamp_utc": "2026-11-01T01:47:47Z",
+ "counters": {
+  "lo": {
+   "rx_bytes": 10861521,
+   "rx_packets": 34776,
+   "rx_errors": 0,
+   "rx_dropped": 0,
+   "tx_bytes": 10861521,
+   "tx_packets": 34776,
+   "tx_errors": 0,
+   "tx_dropped": 0
+  }
+ },
+ "non_loopback": {
+  "interfaces": [],
+  "packets": 0,
+  "bytes": 0
+ },
+ "network_mode_still_none": true,
+ "bridge_ctr_stats": {
+  "connections": 81,
+  "bytes_up": 4003902,
+  "bytes_down": 4788967,
+  "failed_connects": 0,
+  "started_epoch": 1793497385,
+  "updated_epoch": 1793497665
+ },
+ "verdict": "PASS"
+}

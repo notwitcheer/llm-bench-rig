@@ -1,0 +1,32 @@
+{
+ "id": "t05",
+ "label": "folder + 3 files + index",
+ "checker_pass": true,
+ "pass": true,
+ "check_reason": "3 files + sorted index",
+ "rc": 0,
+ "timed_out": false,
+ "wall_s": 6.7,
+ "cold_start": false,
+ "started_epoch": 1793497459,
+ "session_id": "local-976b19ac7e537977f438b04c3283e2410334a72025bfcc2cd2b9d128634daca6",
+ "tool_calls": 4,
+ "tool_names": [
+  "write_file",
+  "write_file",
+  "write_file",
+  "write_file"
+ ],
+ "tool_errors_other": 0,
+ "approval_blocks": 0,
+ "malformed_calls": 0,
+ "error_detail": [],
+ "api_calls": 2,
+ "input_tokens": 707,
+ "output_tokens": 337,
+ "cache_read_tokens": 26383,
+ "reasoning_chars": 618,
+ "end_reason": null,
+ "first_assistant_s": 3.84,
+ "final_text": "Done. Created /opt/data/tmp/sparkagent/work/t05/project/ with a.txt (alpha), b.txt (beta), c.txt (gamma), and index.txt listing a.txt, b.txt, c.txt \u2014 all writes verified on disk."
+}

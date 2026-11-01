@@ -1,0 +1,32 @@
+{
+ "id": "t10",
+ "label": "40 lines to 3 bullets",
+ "checker_pass": true,
+ "pass": true,
+ "check_reason": "3 bullets with date, budget, owner",
+ "rc": 0,
+ "timed_out": false,
+ "wall_s": 20.5,
+ "cold_start": false,
+ "started_epoch": 1793497643,
+ "session_id": "local-ecef5f9342ea8b898efbaf342827c465073885cfc43905fb9a5c8bd0d46bafa6",
+ "tool_calls": 4,
+ "tool_names": [
+  "read_file",
+  "write_file",
+  "terminal",
+  "terminal"
+ ],
+ "tool_errors_other": 0,
+ "approval_blocks": 0,
+ "malformed_calls": 0,
+ "error_detail": [],
+ "api_calls": 5,
+ "input_tokens": 1149,
+ "output_tokens": 1350,
+ "cache_read_tokens": 69762,
+ "reasoning_chars": 6334,
+ "end_reason": null,
+ "first_assistant_s": 1.16,
+ "final_text": "Done. `/opt/data/tmp/sparkagent/work/t10/summary.txt` now contains exactly 3 lines, each a \"- \" bullet, no blank lines:\n\n- The launch date is set for 14 November.\n- The approved quarterly budget is 48,000 euros.\n- Priya owns the database migration to the new cluster.\n\nVerified: `wc -l` = 3, all lines start with \"- \", all three required facts (launch date, budget, migration owner) are present."
+}

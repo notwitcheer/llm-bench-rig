@@ -1,0 +1,196 @@
+{
+ "phase": "pre",
+ "verdict": "PASS",
+ "legs": {
+  "L1_inspect_none": true,
+  "L2_probes_all_failed": true,
+  "L3_no_nonloopback_egress": true,
+  "C0_control_all_counters_zero": true,
+  "C1_positive_control_ok": true
+ },
+ "inspect": {
+  "network_mode": "none",
+  "networks": [
+   "none"
+  ],
+  "ports": {},
+  "port_bindings": {},
+  "publish_all": false,
+  "image": "sha256:7a69201726bc64db2072a1371557137c23312d29705cda2b8ea2a0214a50a4cf",
+  "user": "1000:1000",
+  "cap_drop": [
+   "ALL"
+  ],
+  "security_opt": [
+   "no-new-privileges"
+  ],
+  "pids_limit": 512,
+  "mounts": [
+   {
+    "src": "~/offline-hermes/results/main/home",
+    "dst": "/hermes-home",
+    "rw": true
+   },
+   {
+    "src": "~/offline-hermes/results/main/work",
+    "dst": "/opt/data/tmp/sparkagent/work",
+    "rw": true
+   },
+   {
+    "src": "~/offline-hermes/results/main/bridge",
+    "dst": "/bridge",
+    "rw": false
+   },
+   {
+    "src": "~/offline-hermes/code/offline/bridge_ctr.py",
+    "dst": "/opt/offline/bridge_ctr.py",
+    "rw": false
+   }
+  ],
+  "entrypoint": [
+   "/opt/hermes/.venv/bin/python3"
+  ],
+  "cmd": [
+   "/opt/offline/bridge_ctr.py",
+   "--listen",
+   "127.0.0.1:18080",
+   "--sock",
+   "/bridge/model.sock"
+  ],
+  "dns": null,
+  "extra_hosts": null,
+  "ip_addresses": [
+   ""
+  ]
+ },
+ "probes": [
+  {
+   "probe": "curl https://example.com",
+   "argv": [
+    "curl",
+    "-sS",
+    "-m",
+    "6",
+    "-o",
+    "/dev/null",
+    "-w",
+    "%{http_code}",
+    "https://example.com"
+   ],
+   "rc": 6,
+   "output": "000curl: (6) Could not resolve host: example.com"
+  },
+  {
+   "probe": "curl bare IP 1.1.1.1 (no DNS needed)",
+   "argv": [
+    "curl",
+    "-sS",
+    "-m",
+    "6",
+    "--noproxy",
+    "*",
+    "-o",
+    "/dev/null",
+    "-w",
+    "%{http_code}",
+    "http://1.1.1.1/"
+   ],
+   "rc": 7,
+   "output": "000curl: (7) Failed to connect to 1.1.1.1 port 80 after 0 ms: Could not connect to server"
+  },
+  {
+   "probe": "curl docker0 gateway :8090 (Donald)",
+   "argv": [
+    "curl",
+    "-sS",
+    "-m",
+    "6",
+    "-o",
+    "/dev/null",
+    "-w",
+    "%{http_code}",
+    "http://172.17.0.1:8090/health"
+   ],
+   "rc": 7,
+   "output": "000curl: (7) Failed to connect to 172.17.0.1 port 8090 after 0 ms: Could not connect to server"
+  },
+  {
+   "probe": "getent hosts example.com",
+   "argv": [
+    "getent",
+    "hosts",
+    "example.com"
+   ],
+   "rc": 2,
+   "output": ""
+  },
+  {
+   "probe": "python socket connect 1.1.1.1:443",
+   "argv": [
+    "python3",
+    "-c",
+    "<socket connect 1.1.1.1:443>"
+   ],
+   "rc": 1,
+   "output": "connect failed errno 101 ENETUNREACH Network is unreachable"
+  },
+  {
+   "probe": "cat /proc/net/route",
+   "argv": [
+    "cat",
+    "/proc/net/route"
+   ],
+   "rc": 0,
+   "output": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT"
+  }
+ ],
+ "counters_after_probes": {
+  "lo": {
+   "rx_bytes": 0,
+   "rx_packets": 0,
+   "rx_errors": 0,
+   "rx_dropped": 0,
+   "tx_bytes": 0,
+   "tx_packets": 0,
+   "tx_errors": 0,
+   "tx_dropped": 0
+  }
+ },
+ "non_loopback": {
+  "interfaces": [],
+  "packets": 0,
+  "bytes": 0
+ },
+ "control_zero": {
+  "rc": 0,
+  "counters": {
+   "lo": {
+    "rx_bytes": 0,
+    "rx_packets": 0,
+    "rx_errors": 0,
+    "rx_dropped": 0,
+    "tx_bytes": 0,
+    "tx_packets": 0,
+    "tx_errors": 0,
+    "tx_dropped": 0
+   }
+  },
+  "all_zero": true,
+  "interfaces": [
+   "lo"
+  ]
+ },
+ "control_positive_default_network": {
+  "rc": 0,
+  "http": "http=200",
+  "interfaces": [
+   "eth0",
+   "lo"
+  ],
+  "non_lo_packets": 29,
+  "ok": true,
+  "available": true
+ },
+ "elapsed_s": 0.6,
+ "stamp_utc": "2026-11-01T01:43:07Z"
+}

@@ -1,0 +1,4 @@
+ISOLATION COUNTERS (post, after the tasks) verdict PASS
+interfaces: ['lo']  non-loopback interfaces: []  non-loopback packets: 0  bytes: 0
+  lo: rx_bytes=10861521 rx_packets=34776 rx_errors=0 rx_dropped=0 tx_bytes=10861521 tx_packets=34776 tx_errors=0 tx_dropped=0
+lo = Hermes -> in-container relay -> unix socket; the relay forwarded 4003902 B up / 4788967 B down over 81 connections (not egress)
