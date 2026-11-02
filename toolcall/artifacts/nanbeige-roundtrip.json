@@ -1,0 +1,150 @@
+{
+ "parser_version": "toolcall-v1-parser-2",
+ "items_tested": 799,
+ "roundtrip_failures": 0,
+ "failures": [],
+ "negative_controls": [
+  {
+   "case": "well-formed",
+   "want": "ok",
+   "got": "ok",
+   "detail": "",
+   "pass": true
+  },
+  {
+   "case": "two calls",
+   "want": "ok",
+   "got": "ok",
+   "detail": "",
+   "pass": true
+  },
+  {
+   "case": "text before call allowed",
+   "want": "ok",
+   "got": "ok",
+   "detail": "",
+   "pass": true
+  },
+  {
+   "case": "capped think",
+   "want": "capped",
+   "got": "capped",
+   "detail": "no </think> in generated text",
+   "pass": true
+  },
+  {
+   "case": "unterminated think, eos",
+   "want": "malformed_structure",
+   "got": "malformed_structure",
+   "detail": "no </think> in generated text (stop_type=eos)",
+   "pass": true
+  },
+  {
+   "case": "unclosed parameter",
+   "want": "malformed_structure",
+   "got": "malformed_structure",
+   "detail": "unclosed <parameter=s>",
+   "pass": true
+  },
+  {
+   "case": "duplicate </parameter>",
+   "want": "malformed_structure",
+   "got": "malformed_structure",
+   "detail": "stray text inside block: '</parameter>\\n'",
+   "pass": true
+  },
+  {
+   "case": "missing wrapper",
+   "want": "malformed_structure",
+   "got": "malformed_structure",
+   "detail": "<function=...>/<parameter=...> outside <tool_call> (missing wrapper)",
+   "pass": true
+  },
+  {
+   "case": "unclosed tool_call",
+   "want": "malformed_structure",
+   "got": "malformed_structure",
+   "detail": "unclosed <tool_call>",
+   "pass": true
+  },
+  {
+   "case": "stray text in block",
+   "want": "malformed_structure",
+   "got": "malformed_structure",
+   "detail": "stray text inside block: 'let me see\\n<parameter=s>\\nhi\\n</parameter>\\n'",
+   "pass": true
+  },
+  {
+   "case": "bad int value",
+   "want": "malformed_value",
+   "got": "malformed_value",
+   "detail": "f.n:integer='three'",
+   "pass": true
+  },
+  {
+   "case": "bad array value",
+   "want": "malformed_value",
+   "got": "malformed_value",
+   "detail": "f.xs:array='[1, 2,'",
+   "pass": true
+  },
+  {
+   "case": "python bool (parser-2: accepted, flagged)",
+   "want": "ok",
+   "got": "ok",
+   "detail": "",
+   "pass": true
+  },
+  {
+   "case": "bool written TRUE",
+   "want": "malformed_value",
+   "got": "malformed_value",
+   "detail": "f.b:boolean='TRUE'",
+   "pass": true
+  },
+  {
+   "case": "bool written yes",
+   "want": "malformed_value",
+   "got": "malformed_value",
+   "detail": "f.b:boolean='yes'",
+   "pass": true
+  },
+  {
+   "case": "json call leaked as text",
+   "want": "leaked",
+   "got": "leaked",
+   "detail": "json_call_in_text",
+   "pass": true
+  },
+  {
+   "case": "python call leaked as text",
+   "want": "leaked",
+   "got": "leaked",
+   "detail": "pycall_in_text:f",
+   "pass": true
+  },
+  {
+   "case": "call only in reasoning",
+   "want": "leaked",
+   "got": "leaked",
+   "detail": "call_only_in_reasoning",
+   "pass": true
+  },
+  {
+   "case": "plain answer",
+   "want": "no_call",
+   "got": "no_call",
+   "detail": "",
+   "pass": true
+  },
+  {
+   "case": "python bool -> True + flag",
+   "pass": true
+  },
+  {
+   "case": "json path carries no python_bool flag",
+   "pass": true
+  }
+ ],
+ "negative_controls_pass": true
+}

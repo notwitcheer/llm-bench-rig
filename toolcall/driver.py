@@ -56,10 +56,18 @@ def get(server, path):
         return json.loads(r.read())
 
 
+PROMPT_AS_TOKENS = None  # --prompt-tokens: the HF tokenizer object; the rendered prompt is encoded CLIENT-side (add_special_tokens False) and sent as a
+                         # token-id array. Why (Nanbeige4.3, 2026-10-30): its GGUF has add_bos_token=true (BOS = <|im_start|>, a raw text prompt gets a
+                         # second one) AND tokenizer.ggml.add_space_prefix=true, so llama.cpp's SPM path inserts a "▁" after every special token
+                         # (<|im_start|>▁user, <|im_end|>▁\n) where the HF tokenizer does not: server /tokenize != HF ids on every prompt.
+
+
 def complete(server, prompt, n_predict, timeout, cache_prompt=False):
     """single-turn: cache_prompt False (every item prefilled from scratch); multi-turn steps: True
     (the next step's prompt extends the previous one)."""
     t0 = time.time()
+    if PROMPT_AS_TOKENS is not None:
+        prompt = PROMPT_AS_TOKENS.encode(prompt, add_special_tokens=False)
     r = post(server, "/completion", {"prompt": prompt, "n_predict": n_predict, "temperature": 0.0, "seed": 0,
                                      "cache_prompt": cache_prompt, "stream": False}, timeout)
     r["_wall_s"] = time.time() - t0
@@ -187,13 +195,17 @@ def main():
     ap.add_argument("--ctx", type=int, default=24576)
     ap.add_argument("--budget-s", type=int, default=900)
     ap.add_argument("--tokenize-all", action="store_true")
+    ap.add_argument("--prompt-tokens", action="store_true", help="send prompts as token-id arrays (no BOS added by the server)")
+    ap.add_argument("--template-label", default="official Qwen3.8 template", help="regime string only")
     a = ap.parse_args()
+    global PROMPT_AS_TOKENS
     t_start = time.time()
     deadline = t_start + a.budget_s
     think = a.think == "on"
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     tok = AutoTokenizer.from_pretrained(a.tokenizer)
+    PROMPT_AS_TOKENS = tok if a.prompt_tokens else None
     man = {d["id"]: d for d in json.loads(Path(a.manifest).read_text())["items"]}
     if a.ids:
         probe = json.loads(Path(a.ids).read_text())
@@ -212,7 +224,7 @@ def main():
     (out / "props.json").write_text(json.dumps(props, indent=1))
     tpl = props.get("chat_template", "")
     summary = {"label": a.label, "server_bin": a.server_bin, "think": a.think, "max_tokens": a.max_tokens, "ctx": a.ctx,
-               "parser_version": X.PARSER_VERSION, "regime": f"raw /completion, official Qwen3.8 template client-side, think-{a.think}, max_tokens {a.max_tokens}, ctx {a.ctx}, greedy (temperature 0), preserve_thinking default (undefined = keep)",
+               "parser_version": X.PARSER_VERSION, "regime": f"raw /completion{' (token-id prompt)' if a.prompt_tokens else ''}, {a.template_label} client-side, think-{a.think}, max_tokens {a.max_tokens}, ctx {a.ctx}, greedy (temperature 0), preserve_thinking default (undefined = keep)",
                "props": {k: props.get(k) for k in ("total_slots", "build_info", "model_path")},
                "n_ctx": (props.get("default_generation_settings") or {}).get("n_ctx"),
                "embedded_template_sha256": hashlib.sha256(tpl.encode()).hexdigest() if tpl else None}
