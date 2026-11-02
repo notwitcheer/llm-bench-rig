@@ -10,6 +10,9 @@ what it checks, in order (the task text names every hook below):
   3. the page's main thread keeps answering (a page that freezes the tab for > 30 s cannot autoplay)
   4. window.treeStats() answers with finite numbers and the requested season (?seed=1&lambda=0.46&seasons=5&instant=1)
   5. the tree is growing: the same load with seasons=15 holds clearly more metamers than at seasons=5, and more than 50
+  6. (h4, trees-v2) the paper's lambda effect, as the task text states it: seed 1, 30 seasons, loaded at lambda 0.46 and at
+     lambda 0.56. both loads must finish without crashing or freezing the tab, both trees must hold 100..25,000 live metamers,
+     and crownWidth/height at lambda 0.46 must be larger than at lambda 0.56 (0.46 wide and decurrent, 0.56 tall and narrow)
 exit codes and messages are written for the agent: they say what is wrong and which part of the task text to re-read.
 """
 import json, os, sys, time, math
@@ -93,16 +96,16 @@ def stats_img(png):
     return round(ImageStat.Stat(im).stddev[0], 2), im
 
 
-def run_tree(browser, seasons):
+def run_tree(browser, seasons, lam=0.46):
     """fresh page, ?instant=1 load, poll treeStats() until done (or a stable final season). returns a record."""
-    rec = {"seasons": seasons, "errors": [], "console": []}
+    rec = {"seasons": seasons, "lambda": lam, "errors": [], "console": []}
     t0 = time.time()
     ctx = browser.new_context(viewport={"width": 1280, "height": 720})
     pg = ctx.new_page()
     pg.on("pageerror", lambda e: rec["errors"].append(str(e)[:200]))
     pg.on("console", lambda m: rec["console"].append(m.text[:200]) if m.type == "error" else None)
     try:
-        pg.goto(html.as_uri() + f"?seed=1&lambda=0.46&seasons={seasons}&instant=1&orbit=0", wait_until="load", timeout=int(RUN_TO * 1000))
+        pg.goto(html.as_uri() + f"?seed=1&lambda={lam}&seasons={seasons}&instant=1&orbit=0", wait_until="load", timeout=int(RUN_TO * 1000))
         last = None; stable = 0; s = None
         while time.time() - t0 < RUN_TO:
             s = pg.evaluate(POLL_JS)
@@ -122,6 +125,8 @@ def run_tree(browser, seasons):
         rec["exception"] = repr(e)[:240]
         if isinstance(e, PWTimeout) or "Timeout" in repr(e):
             rec["blocked"] = True
+        if "crash" in repr(e).lower():
+            rec["crashed"] = True
     rec["sim_s"] = round(time.time() - t0, 1)
     if not rec.get("blocked"):
         try:
@@ -198,6 +203,12 @@ try:
         res["checks_base"] = dict(checks)
         runs = []
         if not MT["blocked"]:
+            # h4: close the autoplaying default page before the instant loads, so its rendering cannot starve them
+            # (a heavy page at fps 0-1 under SwiftShader made a 5-season load time out on 2026-11-01)
+            try:
+                ctx.close()
+            except Exception:
+                pass
             r5 = run_tree(b, 5); runs.append(r5)
             s5 = r5.get("stats")
             checks["treestats_hook"] = bool(good_stats(s5) and s5.get("season") == 5)
@@ -223,6 +234,34 @@ try:
                 else:
                     checks["growth"] = False
                     hints.append("the seasons=15 load did not return usable treeStats()")
+                if checks.get("growth") and not MT["blocked"]:
+                    LT = {}
+                    for lam in (0.46, 0.56):
+                        r = run_tree(b, 30, lam); runs.append(r); LT[lam] = r
+                    bad = []
+                    for lam, r in LT.items():
+                        st = r.get("stats")
+                        if r.get("crashed"):
+                            bad.append(f"lambda {lam}: the page CRASHED the tab while growing 30 seasons. the usual cause is runaway growth: buds that get light they should not (check what a bud outside the shadow grid receives, and that every bud casts shadow) until the tree has hundreds of thousands of metamers")
+                        elif r.get("blocked"):
+                            MT["blocked"] = True; MT["stage"] = f"?lambda={lam}&seasons=30 load"
+                            bad.append(f"lambda {lam}: loading ?instant=1&seasons=30 never finished (frozen tab or far too slow)")
+                        elif not good_stats(st):
+                            bad.append(f"lambda {lam}: the seasons=30 load did not return usable treeStats()")
+                        elif not (100 <= st["metamers"] <= 25000):
+                            bad.append(f"lambda {lam}: {int(st['metamers'])} live metamers after 30 seasons, outside 100..25,000. far too many means light or resource is not limited (runaway growth); far too few means the tree stalls or sheds itself away")
+                    checks["lambda_stable"] = not bad
+                    if not bad:
+                        a, z = LT[0.46]["stats"], LT[0.56]["stats"]
+                        ra = a["crownWidth"] / max(a["height"], 1e-9); rz = z["crownWidth"] / max(z["height"], 1e-9)
+                        res["lambda_check"] = {"l046": {k: a[k] for k in ("crownWidth", "height", "metamers")} | {"ratio": round(ra, 4)},
+                                               "l056": {k: z[k] for k in ("crownWidth", "height", "metamers")} | {"ratio": round(rz, 4)}}
+                        checks["lambda_effect"] = bool(ra > rz)
+                        if not checks["lambda_effect"]:
+                            hints.append(f"the paper's lambda effect is reversed: crownWidth/height is {ra:.3f} at lambda 0.46 and {rz:.3f} at lambda 0.56 (seed 1, 30 seasons). the task text says lambda above 0.5 must give a taller, narrower crown. re-read requirement 3 and 4 and trace where resource goes at a branching point; do not special-case lambda values")
+                    else:
+                        checks["lambda_effect"] = False
+                        hints.extend(bad)
         res["runs"] = runs
         try:
             b.close()
@@ -230,7 +269,7 @@ try:
             pass
     res["checks"] = checks
     res["pass"] = bool(checks) and all(checks.values())
-    summ = {"pass": res["pass"], "checks": checks, "fps": res.get("fps"), "load_s": res.get("load_s"), "metamers_5_15": res.get("metamers_5_15"),
+    summ = {"pass": res["pass"], "checks": checks, "fps": res.get("fps"), "load_s": res.get("load_s"), "metamers_5_15": res.get("metamers_5_15"), "lambda_check": res.get("lambda_check"),
             "main_thread": MT, "page_errors": res["page_errors"][:3], "console_errors": res["console_errors"][:3],
             "sim_seconds": {f"s{r['seasons']}": r.get("sim_s") for r in runs}}
     if hints:
