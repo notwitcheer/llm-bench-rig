@@ -6,7 +6,7 @@
 
 ![Nanbeige4.3-33B against Qwen3.8-27B card](nanbeige4-3-33b.png)
 
-Status of this page: every number below comes from `nb_readout.py` run 2026-11-02 06:08 CET. **Q6_K AIME 2026: running, added when complete** (14 of 30 problems logged at the readout, not a result).
+Status of this page: every number below comes from `nb_readout.py` run 2026-11-02 06:08 CET. **Q6_K AIME 2026, added 2026-11-02 after the leg finished (15:57 CET, readout rerun): 86.67 (26 / 30), capped 0.1333, against Qwen3.8-27B Q6_K 83.33 (25 / 30), discordant 2 / 1, p = 1.0, a tie.**
 
 ## TL;DR
 
@@ -143,7 +143,7 @@ The card's table (read 2026-10-30) compares Nanbeige4.3-33B with Qwen3.8-27B wit
 
 ## Owed
 
-- Nanbeige Q6_K AIME 2026 at 32k: running (14 of 30 problems logged at the 2026-11-02 06:08 CET readout); added when complete.
+- Nanbeige Q6_K AIME 2026 at 32k: 26 of 30 (86.67), capped 0.1333, vs Qwen3.8-27B Q6_K 25 of 30, discordant 2 / 1, p = 1.0 (a tie); one greedy run, finished 2026-11-02 15:57 CET in the second cheap-electricity block.
 - Optional: the stock-tokenizer comparison leg (no flag) on one-step tool calls.
 
 *Sources: `results/nanbeige-nanbeige4-3-33b-q{4-k-m,6-k}{,-thinkon,-matharena-32k}/` (quality, speed, fit, gpqa, AIME detail), `results/toolcall-v1/nanbeige-nanbeige4-3-33b-q{4-k-m,6-k}-{st-on,s5-on}/` against `results/toolcall-v1/qwen3-8-27b-q6-k-{st-on,s5-on}/`, `agenttest-v2/results/nb43/nanbeige43-33b-q4km-{f16,q8kv}/` against `agenttest-v2/results/c1/qwen38-27b-{ud-q4km,q6k,ud-iq3xxs}/`, `results/qwen3-8-27b-{q4-k-m,q6-k}/{quality,speed}.json`, `results/qwen3-8-27b-q6-k-thinkon-rerun/gpqa.json`, `results/qwen3-8-27b-q6-k-matharena-32k/`, all read through [`scripts/capsule-queue/nb_readout.py`](../scripts/capsule-queue/nb_readout.py) on 2026-11-02 06:08 CET; queue item [`scripts/capsule-queue/77-nanbeige43-33b-fullpass.sh`](../scripts/capsule-queue/77-nanbeige43-33b-fullpass.sh) and its helpers `nb_fit.py`, `nb_speed.py`, `nb_cell.py`, `nb_plan.py`; agenttest row file [`agenttest/v2/rows-nanbeige.json`](../agenttest/v2/rows-nanbeige.json); toolcall artifacts [`toolcall/artifacts/nanbeige-*`](../toolcall/artifacts/); model card [Nanbeige/Nanbeige4.3-33B](https://huggingface.co/Nanbeige/Nanbeige4.3-33B), read 2026-10-30.*
