@@ -1,0 +1,11 @@
+Build an animated isometric voxel lighthouse island at dusk, as one single HTML file I can open in Chrome. Plain HTML, a 2D canvas and JavaScript only: no libraries, no CDN, no network, no extra files.
+It must include:
+1. A small island of cube voxels with a sand rim, grass in the middle and a few grey rocks. Draw every cube isometrically with three shaded faces (light top, mid left, dark right) so the island reads as 3D.
+2. A tall lighthouse on the island, built from voxels, with red and white stripes, a glass lamp room and a dark cap.
+3. A light beam that sweeps a full circle every six seconds, with a soft glow around the lamp.
+4. Sea around the island made of voxel columns whose height ripples in waves, with white foam where the water meets the sand.
+5. A small sailing boat with a sail that circles the island.
+6. A sky that fades from deep blue to orange at the horizon, with twinkling stars, a moon, and two or three clouds drifting across.
+7. Warm glowing windows on the lighthouse and a lit cottage beside it.
+Keep it smooth (about 60 fps), with no console errors. Create index.html on your very first write and make a simple island render at once, then add the features one at a time so a working file always exists. Never split it into several files. You may check it with node --check or a quick script, but do not spend more than a few minutes verifying.
+The working directory is __WORKDIR__. The final file must be exactly __WORKDIR__/index.html (copy this path, never retype it).
