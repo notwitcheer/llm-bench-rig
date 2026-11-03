@@ -1,0 +1,34 @@
+diff --git a/examples/speculative-simple/speculative-simple.cpp b/examples/speculative-simple/speculative-simple.cpp
+index e4a878b82..6ddbf1e09 100644
+--- a/examples/speculative-simple/speculative-simple.cpp
++++ b/examples/speculative-simple/speculative-simple.cpp
+@@ -256,6 +256,29 @@ int main(int argc, char ** argv) {
+         //
+         auto ids = common_sampler_sample_and_accept_n(smpl.get(), ctx_tgt, draft);
+ 
++        // CLOVER_TRACE (local side-build patch, not upstream): one JSON line per verify step =
++        // the block Clover drafted in ONE bidirectional pass vs what its causal pass accepted
++        if (getenv("CLOVER_TRACE")) {
++            static bool replay = false;
++            auto esc = [&](llama_token t) {
++                std::string r;
++                for (char c : common_token_to_piece(ctx_tgt, t)) {
++                    if (c == '"' || c == '\\') { r += '\\'; r += c; }
++                    else if (c == '\n') { r += "\\n"; }
++                    else if ((unsigned char) c < 32) { r += ' '; }
++                    else { r += c; }
++                }
++                return r;
++            };
++            std::string j = "{\"pos\":" + std::to_string(n_past) + ",\"replay\":" + (replay ? "true" : "false") + ",\"draft\":[";
++            for (size_t k = 0; k < draft.size(); ++k) { j += (k ? "," : "") + std::string("\"") + esc(draft[k]) + "\""; }
++            j += "],\"out\":[";
++            for (size_t k = 0; k < ids.size(); ++k) { j += (k ? "," : "") + std::string("\"") + esc(ids[k]) + "\""; }
++            j += "],\"accepted\":" + std::to_string(ids.size() - 1) + ",\"t_us\":" + std::to_string(ggml_time_us()) + "}";
++            fprintf(stderr, "CLOVERTRACE %s\n", j.c_str());
++            replay = (use_ckpt_tgt && ids.size() - 1 < draft.size());
++        }
++
+         //LOG_DBG("ids: %s\n", string_from(ctx_tgt, ids).c_str());
+ 
+         GGML_ASSERT(ids.size() > 0); // there will always be at least one accepted token
