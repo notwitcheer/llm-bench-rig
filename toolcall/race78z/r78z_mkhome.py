@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""r78z_mkhome.py <root> <tag> <proxy-port> <model-alias> <ctx> [--think on|off]
+
+Makes ONE take's private HERMES_HOME under <root>/home-<tag>/ (a directory of its own, NOT a profile of the main install: the main hermes-gateway.service never serves it).
+Same recipe as the item-80 four_mkhome.py (main root's installs/ and tools/ symlinked in; launch with HERMES_DISABLE_LAZY_INSTALLS=1 and the minted launcher), with two
+changes for the race between two FILES:
+* a named custom provider with `extra_body`, so BOTH takes send the identical sampling fields (temperature 1.0, top_p 0.95, top_k 20, min_p 0.05, seed 721: the Qwen3.8
+  generation_config.json values, and the same as llama.cpp's series flags) instead of whatever each engine defaults to. vLLM would otherwise read the NVFP4 repo's
+  generation_config.json, llama.cpp its own defaults. The mock logs what Hermes really sends (R78Z_MOCK_LOG) and the item prints it.
+* `--think off` adds chat_template_kwargs.enable_thinking=false (default is the template default = thinking on, the regime item 78 scored).
+"""
+import os
+import sys
+
+root, tag, port, alias, ctx = sys.argv[1:6]
+think = sys.argv[sys.argv.index("--think") + 1] if "--think" in sys.argv else "on"
+home = os.path.join(root, "home-" + tag)
+os.makedirs(home, exist_ok=True)
+os.chmod(home, 0o700)
+kw = "" if think == "on" else "      chat_template_kwargs:\n        enable_thinking: false\n"
+cfg = """model:
+  provider: race78z
+  default: %(alias)s
+  context_length: %(ctx)s
+providers:
+  race78z:
+    api: http://127.0.0.1:%(port)s/v1
+    default_model: %(alias)s
+    api_key: local-key
+    extra_body:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 20
+      min_p: 0.05
+      seed: 721
+%(kw)stoolsets:
+  - terminal
+  - file
+agent:
+  max_turns: 80
+  clarify_timeout: 20
+approvals:
+  mode: "off"
+memory:
+  memory_enabled: false
+  user_profile_enabled: false
+display:
+  interface: cli
+  compact: true
+  streaming: true
+  show_reasoning: true
+telemetry:
+  shared_metrics:
+    enabled: false
+    send: false
+    offer_version: 2
+""" % {"alias": alias, "port": port, "ctx": ctx, "kw": kw}
+open(os.path.join(home, "config.yaml"), "w").write(cfg)
+main = os.environ.get("FR_MAIN_HOME", os.path.expanduser("~/.hermes"))
+for sub in ("installs", "tools"):
+    dst = os.path.join(home, sub)
+    if not os.path.lexists(dst):
+        os.symlink(os.path.join(main, sub), dst)
+open(os.path.join(home, "SOUL.md"), "w").write("You are a capable autonomous coding agent. Work without asking the user questions: nobody is watching this session.\n")
+print(home)

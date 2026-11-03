@@ -1,0 +1,9 @@
+Build a small animated isometric voxel cottage at dusk, as one single HTML file I can open in Chrome. Plain HTML, a 2D canvas and JavaScript only: no libraries, no CDN, no network, no extra files.
+It must include:
+1. A square grass tile made of cube voxels. Draw every cube isometrically with three shaded faces (light top, mid left, dark right) so it reads as 3D.
+2. A cottage on the tile, built from voxels: stone base, cream walls, a red pitched roof, a chimney, a door and one warm glowing window.
+3. Grey smoke puffs rising from the chimney, drifting sideways and fading out.
+4. One round tree beside the cottage whose leaves sway in the wind.
+5. A sky that fades from deep blue to orange at the horizon, with twinkling stars.
+Keep it smooth, with no console errors. Create index.html on your very first write and make a simple tile and cottage render at once, then add the rest. Never split it into several files. You may check it with node --check, but do not spend more than a minute verifying.
+The working directory is __WORKDIR__. The final file must be exactly __WORKDIR__/index.html (copy this path, never retype it).
