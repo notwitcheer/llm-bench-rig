@@ -1,0 +1,10 @@
+mode           quick    final    failed-checks
+ok             pass     pass     final:[] quick:[]
+hovm_is_svm    FAIL     FAIL     final:[hovm_collapsed,gap_at_22] quick:[claim_direction]
+self_included  FAIL     FAIL     final:[hovm_collapsed,gap_at_22] quick:[claim_direction]
+noise_double   FAIL     FAIL     final:[svm_ordered_low,svm_smooth,hovm_ordered_low,gap_at_22] quick:[claim_direction]
+one_panel      FAIL     FAIL     final:[two_panels] quick:[page_shows_two_panels]
+nohook         FAIL     FAIL     final:[flockrun_hook,flockstats_hook] quick:[hooks]
+throws         FAIL     FAIL     final:[flockrun_hook] quick:[hooks]
+freeze_hot     FAIL     pass     final:[] quick:[main_thread_ok,alive_at_other_noise]
+chromium left over: 0

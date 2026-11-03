@@ -1,0 +1,23 @@
+mode=0 N=1000 alpha=0 seed=11 eta=1.4 start=0 steps=10000 -> 0.8968 0.0047
+mode=0 N=1000 alpha=0 seed=12 eta=1.2 start=0 steps=10000 -> 0.9197 0.0066
+mode=0 N=1000 alpha=0 seed=12 eta=1.0 start=0 steps=10000 -> 0.9187 0.0052
+mode=0 N=1000 alpha=0 seed=11 eta=1.0 start=0 steps=10000 -> 0.9313 0.0030
+mode=0 N=1000 alpha=0 seed=11 eta=1.2 start=0 steps=10000 -> 0.9120 0.0043
+mode=0 N=1000 alpha=0 seed=12 eta=1.5 start=0 steps=10000 -> 0.8719 0.0056
+mode=0 N=1000 alpha=0 seed=12 eta=1.4 start=0 steps=10000 -> 0.8927 0.0045
+mode=0 N=1000 alpha=0 seed=11 eta=1.5 start=0 steps=10000 -> 0.8801 0.0063
+mode=0 N=1000 alpha=0 seed=12 eta=1.6 start=0 steps=10000 -> 0.8478 0.0078
+mode=0 N=1000 alpha=0 seed=11 eta=1.7 start=0 steps=10000 -> 0.8208 0.0102
+mode=0 N=1000 alpha=0 seed=11 eta=1.6 start=0 steps=10000 -> 0.8461 0.0084
+mode=0 N=1000 alpha=0 seed=11 eta=1.8 start=0 steps=10000 -> 0.7692 0.0137
+mode=0 N=1000 alpha=0 seed=12 eta=1.7 start=0 steps=10000 -> 0.8102 0.0113
+mode=0 N=1000 alpha=0 seed=12 eta=1.8 start=0 steps=10000 -> 0.7586 0.0134
+mode=0 N=1000 alpha=0 seed=11 eta=2.0 start=0 steps=10000 -> 0.4381 0.0345
+mode=0 N=1000 alpha=0 seed=12 eta=2.0 start=0 steps=10000 -> 0.4746 0.0340
+mode=0 N=1000 alpha=0 seed=12 eta=2.4 start=0 steps=10000 -> 0.0442 0.0228
+mode=0 N=1000 alpha=0 seed=11 eta=2.4 start=0 steps=10000 -> 0.0437 0.0220
+DONE rnd_p.out
+mode=0 N=1000 alpha=1 seed=11 eta=3.0 start=0 steps=10000 -> 0.6188 0.0244
+mode=0 N=1000 alpha=1 seed=11 eta=2.0 start=0 steps=10000 -> 0.8225 0.0075
+mode=0 N=1000 alpha=1 seed=11 eta=1.0 start=0 steps=10000 -> 0.9540 0.0021
+DONE rnd_p.out

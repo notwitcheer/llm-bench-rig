@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>SVM vs HOVM flocking (reference page)</title>
+<style>html,body{margin:0;height:100%;background:#0b0e14;overflow:hidden}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script>
+// REFERENCE IMPLEMENTATION (passes the pre-registered gates). Written by the harness author from the paper's published curves, not a model output.
+// MODE is replaced by sed for the red-path stubs (tests/test-flock-gates.sh): ok | hovm_is_svm | self_included | noise_double | one_panel | nohook | throws | freeze_hot
+const MODE = 'ok';
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+class Flock{
+  constructor(kind,N,rho,seed,start){
+    this.kind=kind;this.N=N;this.v0=0.03;this.L=Math.sqrt(N/rho);
+    const init=mulberry32(seed*7919+13);this.rng=mulberry32(seed*104729+(kind==='svm'?1:2));
+    this.x=new Float64Array(N);this.y=new Float64Array(N);this.c=new Float64Array(N);this.s=new Float64Array(N);
+    for(let i=0;i<N;i++){this.x[i]=init()*this.L;this.y[i]=init()*this.L;const th=start==='random'?(init()*2-1)*Math.PI:0;this.c[i]=Math.cos(th);this.s[i]=Math.sin(th);}
+    this.cells=Math.max(1,Math.floor(this.L));this.cs=this.L/this.cells;
+    this.head=new Int32Array(this.cells*this.cells);this.next=new Int32Array(N);this.nb=new Int32Array(N*160);this.nn=new Int32Array(N);
+    this.th=new Float64Array(N);
+  }
+  order(){let a=0,b=0;for(let i=0;i<this.N;i++){a+=this.c[i];b+=this.s[i];}return Math.hypot(a,b)/this.N;}
+  build(){
+    const{N,L,cells,cs,head,next,x,y,nb,nn}=this;head.fill(-1);nn.fill(0);
+    for(let i=0;i<N;i++){const cx=Math.min(cells-1,Math.floor(x[i]/cs)),cy=Math.min(cells-1,Math.floor(y[i]/cs));const k=cy*cells+cx;next[i]=head[k];head[k]=i;}
+    for(let i=0;i<N;i++){
+      const cx=Math.min(cells-1,Math.floor(x[i]/cs)),cy=Math.min(cells-1,Math.floor(y[i]/cs));const seen=[];
+      for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){const k=((cy+dy+cells)%cells)*cells+((cx+dx+cells)%cells);if(seen.indexOf(k)>=0)continue;seen.push(k);
+        for(let j=head[k];j>=0;j=next[j]){if(j<=i)continue;let ddx=x[i]-x[j],ddy=y[i]-y[j];ddx-=L*Math.round(ddx/L);ddy-=L*Math.round(ddy/L);
+          if(ddx*ddx+ddy*ddy<1){if(nn[i]<159&&nn[j]<159){nb[i*160+nn[i]++]=j;nb[j*160+nn[j]++]=i;}}}}
+    }
+  }
+  step(eta){
+    const{N,L,c,s,x,y,nb,nn,th}=this;this.build();
+    const hovm=this.kind==='hovm'&&MODE!=='hovm_is_svm';
+    const noiseAmp=MODE==='noise_double'?2*eta:eta;
+    for(let i=0;i<N;i++){
+      const n=nn[i];let ux,uy;
+      if(!hovm){let sx=c[i],sy=s[i];for(let a=0;a<n;a++){const j=nb[i*160+a];sx+=c[j];sy+=s[j];}ux=sx/(n+1);uy=sy/(n+1);}
+      else{
+        // triadic: pairs j<k among the neighbours of i. sum over unordered pairs of [(vj.vi)vk+(vk.vi)vj] = (sum_j vj.vi)(sum_k vk) - sum_j (vj.vi) vj
+        let m=n,Sx=0,Sy=0,Wx=0,Wy=0,D=0,ci=c[i],si=s[i];
+        if(MODE==='self_included'){Sx=ci;Sy=si;Wx=ci;Wy=si;D=1;m=n+1;}
+        for(let a=0;a<n;a++){const j=nb[i*160+a];const d=c[j]*ci+s[j]*si;Sx+=c[j];Sy+=s[j];D+=d;Wx+=d*c[j];Wy+=d*s[j];}
+        if(m<2){ux=0;uy=0;}else{const T=m*(m-1)/2;ux=(D*Sx-Wx)/(2*T);uy=(D*Sy-Wy)/(2*T);}
+      }
+      th[i]=(Math.abs(ux)+Math.abs(uy)<1e-12)?Math.atan2(s[i],c[i]):Math.atan2(uy,ux);
+    }
+    for(let i=0;i<N;i++){const t=th[i]+noiseAmp*(this.rng()-0.5);c[i]=Math.cos(t);s[i]=Math.sin(t);
+      x[i]+=this.v0*c[i];y[i]+=this.v0*s[i];x[i]-=L*Math.floor(x[i]/L);y[i]-=L*Math.floor(y[i]/L);}
+  }
+}
+const q=new URLSearchParams(location.search);
+const P={eta:parseFloat(q.get('eta')||'1.0'),seed:parseInt(q.get('seed')||'1'),N:parseInt(q.get('N')||'1000'),rho:10,start:q.get('start')||'ordered',
+  autoplay:q.get('autoplay')!=='0',spf:parseInt(q.get('spf')||'4')};
+let A,B,step=0,eta=P.eta,paused=!P.autoplay,ramp=false;const hist=[];
+function reset(seed,start,N){P.seed=seed;if(N)P.N=N;P.start=start||P.start;A=new Flock('svm',P.N,P.rho,seed,P.start);B=new Flock('hovm',P.N,P.rho,seed,P.start);step=0;hist.length=0;}
+reset(P.seed,P.start);
+function advance(n){for(let k=0;k<n;k++){A.step(eta);B.step(eta);step++;if(step%5===0){hist.push([A.order(),B.order(),eta]);if(hist.length>400)hist.shift();}}}
+const cv=document.getElementById('c'),g=cv.getContext('2d');
+function layout(){cv.width=innerWidth;cv.height=innerHeight;}layout();addEventListener('resize',layout);
+function hue(th){return 'hsl('+((th*180/Math.PI+360)%360)+',85%,60%)';}
+function panel(F,x0,y0,sz,title,col){
+  g.fillStyle='#10141c';g.fillRect(x0,y0,sz,sz);g.strokeStyle='#2a3140';g.strokeRect(x0+.5,y0+.5,sz-1,sz-1);
+  const k=sz/F.L;
+  if(!(MODE==='one_panel'&&F.kind==='hovm')){
+    for(let i=0;i<F.N;i++){const px=x0+F.x[i]*k,py=y0+F.y[i]*k,th=Math.atan2(F.s[i],F.c[i]);g.fillStyle=hue(th);g.beginPath();
+      g.moveTo(px+Math.cos(th)*7,py+Math.sin(th)*7);g.lineTo(px+Math.cos(th+2.5)*4.5,py+Math.sin(th+2.5)*4.5);g.lineTo(px+Math.cos(th-2.5)*4.5,py+Math.sin(th-2.5)*4.5);g.fill();}
+  }
+  g.fillStyle=col;g.font='bold 20px sans-serif';g.fillText(title,x0+8,y0-10);
+  g.font='18px monospace';g.fillStyle='#e6e9ef';g.fillText('order '+F.order().toFixed(3),x0+8,y0+sz+22);
+}
+function draw(){
+  const W=cv.width,H=cv.height;g.fillStyle='#0b0e14';g.fillRect(0,0,W,H);
+  const sz=Math.min(W/2-30,H-250);const x0=(W-2*sz-20)/2,y0=40;
+  panel(A,x0,y0,sz,'SVM (pairwise alignment)','#7fd1ff');panel(B,x0+sz+20,y0,sz,'HOVM (triadic alignment)','#ffb86b');
+  g.fillStyle='#e6e9ef';g.font='18px monospace';g.fillText('noise eta '+eta.toFixed(2)+'   N '+P.N+'  rho '+P.rho+'  step '+step+'  seed '+P.seed,x0,H-14);
+  const cy=y0+sz+40,ch=Math.max(40,H-cy-34);g.strokeStyle='#2a3140';g.strokeRect(x0+.5,cy+.5,2*sz+19,ch);g.fillStyle='#8892a6';g.font='14px monospace';g.fillText('1.0',x0+4,cy+14);g.fillText('0',x0+4,cy+ch-4);g.fillText('order vs time',x0+2*sz-110,cy+14);
+  for(const[ci,col]of[[0,'#7fd1ff'],[1,'#ffb86b']]){g.strokeStyle=col;g.beginPath();hist.forEach((h,i)=>{const px=x0+i*(2*sz+19)/400,py=cy+ch-h[ci]*ch;i?g.lineTo(px,py):g.moveTo(px,py);});g.stroke();}
+}
+function frame(){if(!paused){if(ramp)eta=Math.min(3.0,eta+0.0008*P.spf);advance(P.spf);}draw();requestAnimationFrame(frame);}
+addEventListener('keydown',e=>{if(e.key==='ArrowUp')eta=Math.min(5,eta+0.1);if(e.key==='ArrowDown')eta=Math.max(0,eta-0.1);if(e.key===' ')paused=!paused;if(e.key==='r'||e.key==='R')reset(P.seed,P.start);if(e.key==='s'||e.key==='S')ramp=!ramp;});
+if(MODE!=='nohook'){
+  window.setEta=x=>{eta=x;draw();};
+  window.flockStep=n=>{advance(n);draw();};
+  window.flockReset=(seed,start)=>{reset(seed===undefined?P.seed:seed,start);draw();};
+  window.flockStats=()=>({step,eta,N:P.N,L:A.L,seed:P.seed,svm:A.order(),hovm:B.order()});
+  window.flockRun=(e,steps,avg,seed,start)=>{
+    if(MODE==='throws')throw new Error('flockRun is not implemented');
+    if(MODE==='freeze_hot'&&e>=3){for(;;){}}
+    eta=e;reset(seed===undefined?P.seed:seed,start||'ordered');let sa=0,sb=0,n=0;
+    for(let t=0;t<steps;t++){A.step(e);B.step(e);step++;if(t>=steps-avg){sa+=A.order();sb+=B.order();n++;}}
+    draw();return{svm:sa/n,hovm:sb/n,eta:e,steps,avg,seed:P.seed,N:P.N};};
+}
+frame();
+</script></body></html>
