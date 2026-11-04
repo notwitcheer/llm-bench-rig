@@ -1,0 +1,60 @@
+{
+ "source": "https://www.chessprogramming.org/Perft_Results",
+ "fetched": "2026-11-03",
+ "page_sha256_clean_text": "bb6ac07a1f0310545b0a5e0d0a548e1d863e0e11ec9cc4ce21031d1ca58b157a",
+ "note": "node counts copied by hand from the page tables at staging (leaf nodes), frozen here; the gate reads only this file, never the web. start position depths 1-5 gate; the other positions are coverage extras, reported not gating.",
+ "gating": {
+  "name": "startpos",
+  "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "depths": {
+   "1": 20,
+   "2": 400,
+   "3": 8902,
+   "4": 197281,
+   "5": 4865609
+  }
+ },
+ "extras": [
+  {
+   "name": "kiwipete",
+   "covers": "castling, en passant, promotion-free captures",
+   "fen": "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1",
+   "depths": {
+    "1": 48,
+    "2": 2039,
+    "3": 97862
+   }
+  },
+  {
+   "name": "position3",
+   "covers": "en passant, pins, check evasion",
+   "fen": "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1",
+   "depths": {
+    "1": 14,
+    "2": 191,
+    "3": 2812,
+    "4": 43238
+   }
+  },
+  {
+   "name": "position4",
+   "covers": "promotion, castling out of check",
+   "fen": "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1",
+   "depths": {
+    "1": 6,
+    "2": 264,
+    "3": 9467
+   }
+  },
+  {
+   "name": "position5",
+   "covers": "promotion with check, castling rights",
+   "fen": "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8",
+   "depths": {
+    "1": 44,
+    "2": 1486,
+    "3": 62379
+   }
+  }
+ ]
+}
