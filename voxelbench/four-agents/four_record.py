@@ -14,6 +14,7 @@ Same recorder idea as the 2026-10-27 two-way race (pty + pyte, events with times
 * the process is mirrored to our own stdout, so a tmux session running this script shows the live pane (`tmux attach -t f80-<agent>`).
 * done = the screen minus the status bar row unchanged for --quiet-s AND the agent's proxy inflight count 0 for that long (when --state-url is given).
   wall = --wall-s after Enter: two Ctrl-C, the mark, kill. Exit code 0 done, 3 wall, 4 hermes exited early, 5 setup failed.
+  a quiet pane whose agent's LAST proxy request was not HTTP 200 ends as "server_error" (exit 0, no last_change mark), never "done" (80b).
 * HOME for the agent is a throwaway directory (the clip must not show a username or a home path). The agent runs the install's minted launcher with ITS OWN
   HERMES_HOME (never `-p <profile>`, so the main hermes-gateway.service never serves it). A new data root would otherwise build its own dependency environment
   (measured 2026-11-03: python-olm cmake, minutes, then a failure) and the stale checkout venv lacks modules (snowballstemmer: every tool call died), so four_mkhome.py
@@ -198,6 +199,7 @@ last_sig = body_sig()
 last_change = time.time()
 idle_infl = None
 state_err = 0
+last_status = 200
 while True:
     alive = pump(0.2)
     if not alive:
@@ -212,6 +214,7 @@ while True:
         try:
             st = json.loads(urllib.request.urlopen(a.state_url, timeout=1.5).read())
             infl = st["agents"][a.agent]["inflight"]
+            last_status = st["agents"][a.agent].get("last_status", 200)
             state_err = 0
         except Exception:
             state_err += 1
@@ -223,6 +226,10 @@ while True:
     quiet = now - last_change
     infl_ok = (not a.state_url) or (idle_infl is not None and now - idle_infl >= a.quiet_s) or state_err > 20
     if now - t_enter > 15 and quiet >= a.quiet_s and infl_ok and any("❯" in l for l in scr.display[-8:]):
+        if last_status != 200:
+            # the agent's LAST request was rejected or broke (a server error): the pane going quiet is a stop, not a finish (item 80 counted three of these as "done")
+            mark("server_error_last_request", status=last_status)
+            finish(0, "server_error")
         log({"t": round(last_change, 3), "mark": "last_change"})
         finish(0, "done")
     if now - t_enter > a.wall_s:

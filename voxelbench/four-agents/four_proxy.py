@@ -2,6 +2,7 @@
 """four_proxy.py: per-agent counting proxy + HUD sampler for item 80 (four Hermes agents, one llama-server, --parallel 4).
 
 usage: four_proxy.py <upstream http://127.0.0.1:PORT> <first-listen-port> <outdir> [--agents abcd] [--hz 1.0]
+                     [--pool TOKENS [--reserve-gen 12288] [--reserve-first 26624] [--reserve-summary 4096] [--guard-wait-max 90]]
 
 * listens on first-port .. first-port+3, one port per agent (a b c d). Each agent's Hermes profile points its base_url at its own port, so every
   request is attributed to an agent without touching the request body (llama-server has no notion of a client). The proxy adds `X-Race-Agent`
@@ -11,6 +12,13 @@ usage: four_proxy.py <upstream http://127.0.0.1:PORT> <first-listen-port> <outdi
   `llamacpp:tokens_predicted_total` (/metrics) is the aggregate truth; the sampler logs both so the HUD can say which it shows.
 * sampler thread, every 1/hz s: upstream /metrics + /slots (+ nvidia-smi memory every 5 s) + the per-agent counters -> <outdir>/hud.jsonl
   (cumulative counters; the renderer differentiates). <outdir>/requests.jsonl = one line per finished request.
+* POOL GUARD (80b, off unless --pool is given; item 80 ran without it): the proxy keeps a running estimate of how many KV tokens each agent holds in the shared pool
+  (idle agent = its last finished request's cache_n + prompt_n + predicted_n from the server's own timings; running agent = estimated prompt + max(reserve, tokens streamed so far),
+  reserve = --reserve-first for an agent's first request, --reserve-gen after, --reserve-summary for a request with no tools array = Hermes' summary call)
+  and HOLDS a new request (up to --guard-wait-max s, polling every 0.25 s) while
+  the others' use + this request's estimate + its reserve would exceed --pool. It never holds when no other request is running (no deadlock) and never longer than the cap.
+  Every request line in requests.jsonl carries guard_wait_s (0 = not held) and ctx_end; /_state carries guard_holds + guard_timeouts. Prompt size is estimated from the body
+  bytes with a per-agent bytes-per-token ratio learned from that agent's previous request (3.0 before the first), which over-counts a little on purpose.
 * GET /_state on any listen port returns the newest sampler row (the recorder and the item read it to know how many requests are in flight).
 Stdlib only, so it runs under any capsule python.
 """
@@ -32,11 +40,36 @@ if "--agents" in sys.argv:
     agents = sys.argv[sys.argv.index("--agents") + 1]
 if "--hz" in sys.argv:
     hz = float(sys.argv[sys.argv.index("--hz") + 1])
+
+
+def _opt(name, default, cast=int):
+    return cast(sys.argv[sys.argv.index(name) + 1]) if name in sys.argv else default
+
+
+POOL = _opt("--pool", 0)
+RESERVE_GEN = _opt("--reserve-gen", 12288)
+RESERVE_FIRST = _opt("--reserve-first", 26624)
+RESERVE_SUMMARY = _opt("--reserve-summary", 4096)       # a request without a tools array is Hermes' own summary / title call: short output
+WAIT_MAX = _opt("--guard-wait-max", 90.0, float)
 UP = urlparse(up_url)
 os.makedirs(outdir, exist_ok=True)
 LOCK = threading.Lock()
-C = {a: {"chunks": 0, "inflight": 0, "reqs": 0, "done": 0, "err": 0, "exact_pred": 0, "exact_prompt": 0, "last_start": 0.0, "last_end": 0.0} for a in agents}
+C = {a: {"chunks": 0, "inflight": 0, "reqs": 0, "done": 0, "err": 0, "exact_pred": 0, "exact_prompt": 0, "last_start": 0.0, "last_end": 0.0, "last_status": 200} for a in agents}
 LAST = {}
+G = {a: {"state": "idle", "last_end": 0, "ratio": 3.0, "est_prompt": 0, "n": 0} for a in agents}   # pool-guard bookkeeping (under LOCK)
+GUARD = {"holds": 0, "timeouts": 0, "wait_s": 0.0}
+
+
+def _reserve(g):
+    return RESERVE_SUMMARY if g.get("no_tools") else (RESERVE_FIRST if g["n"] <= 1 else RESERVE_GEN)
+
+
+def _size(o):
+    """KV tokens agent o holds right now (caller holds LOCK)."""
+    g = G[o]
+    if g["state"] == "run":
+        return g["est_prompt"] + max(_reserve(g), C[o]["chunks"] - g.get("chunks0", 0))
+    return g["last_end"]
 REQLOG = open(os.path.join(outdir, "requests.jsonl"), "a", buffering=1)
 HOP = {"host", "content-length", "connection", "transfer-encoding", "keep-alive", "proxy-connection", "te", "trailer", "upgrade"}
 
@@ -70,12 +103,48 @@ class H(BaseHTTPRequestHandler):
         hdr["X-Race-Agent"] = ag
         chat = method == "POST" and self.path.rstrip("/").endswith("/chat/completions")
         t0 = time.time()
+        rec = {"agent": ag, "t0": round(t0, 3), "path": self.path, "status": 0, "chunks": 0}
         if chat:
             with LOCK:
-                C[ag]["inflight"] += 1
+                C[ag]["inflight"] += 1           # a held request counts as in flight (the recorder must not call the agent finished while it waits)
                 C[ag]["reqs"] += 1
                 C[ag]["last_start"] = t0
-        rec = {"agent": ag, "t0": round(t0, 3), "path": self.path, "status": 0, "chunks": 0}
+                g = G[ag]
+                g["n"] += 1
+                g["est_prompt"] = int(len(body or b"") / g["ratio"])
+                try:
+                    g["no_tools"] = not json.loads(body or b"{}").get("tools")
+                except ValueError:
+                    g["no_tools"] = False
+                if g["no_tools"]:
+                    g["n"] -= 1          # a summary/title call is not the agent's "first request"
+            if POOL:
+                held = False
+                while True:
+                    with LOCK:
+                        others = sum(_size(o) for o in agents if o != ag)
+                        running = any(G[o]["state"] == "run" for o in agents if o != ag)
+                        need = G[ag]["est_prompt"] + _reserve(G[ag])
+                        ok = (not running) or others + need <= POOL
+                        if ok or time.time() - t0 >= WAIT_MAX:
+                            if not ok:
+                                GUARD["timeouts"] += 1
+                                rec["guard_timeout"] = True
+                            G[ag]["state"] = "run"
+                            G[ag]["chunks0"] = C[ag]["chunks"]
+                            rec["est_prompt"], rec["others_est"] = G[ag]["est_prompt"], others
+                            break
+                        if not held:
+                            held = True
+                            GUARD["holds"] += 1
+                    time.sleep(0.25)
+                rec["guard_wait_s"] = round(time.time() - t0, 2)
+                with LOCK:
+                    GUARD["wait_s"] += rec["guard_wait_s"]
+            else:
+                with LOCK:
+                    G[ag]["state"] = "run"
+                    G[ag]["chunks0"] = C[ag]["chunks"]
         try:
             cn = upstream_conn()
             cn.request(method, self.path, body=body, headers=hdr)
@@ -122,8 +191,18 @@ class H(BaseHTTPRequestHandler):
                     C[ag]["inflight"] -= 1
                     C[ag]["done"] += 1
                     C[ag]["last_end"] = t1
+                    C[ag]["last_status"] = rec["status"] if not rec.get("error") else 0
+                    g = G[ag]
+                    g["state"] = "idle"
                     if rec["status"] != 200 or rec.get("error"):
                         C[ag]["err"] += 1
+                        g["last_end"] = 0          # a rejected request leaves nothing of its own in the pool
+                    elif rec.get("prompt_n") is not None:
+                        tot = (rec.get("cache_n") or 0) + (rec.get("prompt_n") or 0)
+                        rec["ctx_end"] = tot + (rec.get("predicted_n") or 0)
+                        g["last_end"] = rec["ctx_end"]
+                        if tot > 0 and body:
+                            g["ratio"] = max(0.2, min(8.0, len(body) / tot))
                 REQLOG.write(json.dumps(rec) + "\n")
 
     def _count(self, ag, ev, rec):
@@ -136,6 +215,10 @@ class H(BaseHTTPRequestHandler):
             try:
                 j = json.loads(payload)
             except ValueError:
+                continue
+            if isinstance(j.get("error"), dict):           # an error event inside a 200 stream (a slot dropped mid-decode)
+                rec["sse_error"] = str(j["error"].get("message"))[:100]
+                rec["error"] = rec.get("error") or "sse_error"
                 continue
             ch = (j.get("choices") or [{}])[0].get("delta") or {}
             if ch.get("content") or ch.get("reasoning_content") or ch.get("reasoning") or ch.get("tool_calls"):
@@ -204,6 +287,9 @@ def sampler():
         row["vram_mib"] = vram
         with LOCK:
             row["agents"] = {a: dict(v) for a, v in C.items()}
+            if POOL:
+                row["pool_est"] = {a: _size(a) for a in agents}
+                row["guard"] = dict(GUARD)
         LAST.clear()
         LAST.update(row)
         f.write(json.dumps(row) + "\n")

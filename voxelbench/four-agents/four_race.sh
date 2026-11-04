@@ -2,6 +2,8 @@
 # four_race.sh: run the four-agent race against an ALREADY RUNNING OpenAI-compatible server (item 80 helper; also the CPU mock test).
 # usage: four_race.sh <rundir>        env: UPSTREAM (http://127.0.0.1:PORT, required)  ALIAS (model id, required)  PROMPT (file)  WALL_S (2400)  CTXCFG (65536)
 #        FR_PORT (first proxy port, 8191)  FR_PY (python with pyte, for the recorder)  FR_HBIN (Hermes launcher)  FR_CHECKOUT (Hermes checkout root)  FR_QUIET (20)
+#        FR_COMPACT_TOKENS (80b: per-agent compaction budget, written to each home as compression.threshold_tokens; empty = item-80 v1 homes)
+#        FR_POOL (80b: KV pool size in tokens, switches the proxy's admission guard on; empty = off)  FR_GUARD_RESERVE_GEN / FR_GUARD_RESERVE_FIRST
 #        ARENA (/tmp/arena80: agent work dirs, throwaway HOMEs and HERMES_HOMEs live here, short and free of the account name)
 # what it does: counting proxy (one port per agent) -> four private HERMES_HOMEs -> four tmux sessions f80-<a> each running four_record.py -> barrier
 #   (all four typed and ready) -> GO -> wait for done / wall -> copy the four work dirs + panes out -> stop ONLY what it started. Exit 0 = all four ended (done or wall),
@@ -39,7 +41,9 @@ TS=$(date +%s)
 HOMEROOT=$ARENA/r$TS
 mkdir -p "$HOMEROOT"
 for a in "${AGENTS[@]}"; do [ -e "$ARENA/$a" ] && mv "$ARENA/$a" "$ARENA/$a.old-$TS"; mkdir -p "$ARENA/$a"; done
-python3 "$HERE/four_proxy.py" "$UPSTREAM" "$FR_PORT" "$RUN/hud" > "$RUN/hud/proxy.log" 2>&1 &
+PXARGS=()
+[ -n "${FR_POOL:-}" ] && PXARGS=(--pool "$FR_POOL" --reserve-gen "${FR_GUARD_RESERVE_GEN:-12288}" --reserve-first "${FR_GUARD_RESERVE_FIRST:-26624}")
+python3 "$HERE/four_proxy.py" "$UPSTREAM" "$FR_PORT" "$RUN/hud" "${PXARGS[@]}" > "$RUN/hud/proxy.log" 2>&1 &
 PROXY_PID=$!
 for i in $(seq 1 20); do grep -q "four_proxy up" "$RUN/hud/proxy.log" 2>/dev/null && break; sleep 0.5; done
 grep -q "four_proxy up" "$RUN/hud/proxy.log" || { say "FAIL proxy did not start: $(head -c 300 "$RUN/hud/proxy.log")"; exit 1; }
@@ -47,7 +51,7 @@ say "proxy up (pid $PROXY_PID) ports $FR_PORT..$((FR_PORT+3)) -> $UPSTREAM"
 i=0
 for a in "${AGENTS[@]}"; do
   port=$((FR_PORT+i)); i=$((i+1))
-  python3 "$HERE/four_mkhome.py" "$HOMEROOT" "$a" "$port" "$ALIAS" "$CTXCFG" > /dev/null || { say "FAIL mkhome $a"; exit 1; }
+  FR_COMPACT_TOKENS="${FR_COMPACT_TOKENS:-}" python3 "$HERE/four_mkhome.py" "$HOMEROOT" "$a" "$port" "$ALIAS" "$CTXCFG" > /dev/null || { say "FAIL mkhome $a"; exit 1; }
   sed "s#__WORKDIR__#$ARENA/$a#g" "$PROMPT" > "$RUN/rec/prompt-$a.txt"
   rm -f "$RUN/rec/ready-$a" "$RUN/rec/result-$a.json"
   tmux new-session -d -s "f80-$a" -x "$COLS" -y "$ROWS" \
@@ -76,7 +80,7 @@ for a in "${AGENTS[@]}"; do say "agent $a: $(cat "$RUN/rec/rc-$a" 2>/dev/null ||
 sleep 2
 for a in "${AGENTS[@]}"; do mkdir -p "$RUN/work/$a"; cp -a "$ARENA/$a/." "$RUN/work/$a/" 2>/dev/null; done
 # keep the agents' own session databases next to the recording (messages, tool calls, reasoning chars: the audit trail for 'what did each agent do')
-for a in "${AGENTS[@]}"; do mkdir -p "$RUN/state/$a"; cp -a "$HOMEROOT/home-$a/state.db" "$RUN/state/$a/" 2>/dev/null; done
+for a in "${AGENTS[@]}"; do mkdir -p "$RUN/state/$a"; cp -a "$HOMEROOT/home-$a"/state.db* "$RUN/state/$a/" 2>/dev/null; cp -a "$HOMEROOT/home-$a/home-version.txt" "$HOMEROOT/home-$a/config.yaml" "$RUN/state/$a/" 2>/dev/null; done
 say "work dirs copied to $RUN/work; stopping the proxy and the four sessions"
 cleanup
 exit 0

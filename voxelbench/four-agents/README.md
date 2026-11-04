@@ -15,7 +15,14 @@ one llama-server (`--parallel 4`, pooled KV) serves four Hermes Agent sessions a
 | `four_render.py` | 1920x1080 clip: fixed 2x2 grid, per-pane tok/s + clock, aggregate tok/s + sparkline, timelapse middle, leak mask, result card |
 | `four_results.py` | 2x2 mosaic of the four pages + concat onto the race clip |
 | `four_summary.py` | `summary.json`: fit rows, probe, race, gates, request stats, headline |
-| `four_mock.py` | llama-server-shaped mock for the CPU PASS path (test aid only) |
+| `four_mock.py` | llama-server-shaped mock for the CPU PASS path (test aid only); 80b: realistic token counts, pooled-KV simulation, a longer scripted task |
+| `replay_compress.py` | replays a real transcript prefix (an agent's state.db rows) through the pinned `ContextCompressor` with a stubbed summariser: the numbers behind the compaction cap |
 
 CPU proof (no model): `four_mock.py 8196`, then `FOUR_STUB_UPSTREAM=http://127.0.0.1:8196 FOUR_SMOKE=1 FOUR_WALL_MIN=5 bash ~/voxel-stage/80-four-agents-one-gpu.sh`.
 traps and numbers: vault `99-personal/benchmark-rig/four-agents-80-status.md`, rows L42-L45 in `../HARDENING.md`.
+
+## 80b: the rerun with per-agent compaction (`queue/80b-four-agents-compact.sh`)
+
+item 80 ran the shared 163,840-token KV pool dry with all four agents at 39-41k tokens (Hermes' default trigger on a 65,536 window is 49,152). 80b changes one setting group and keeps everything else: each agent's home gets `compression.threshold_tokens: 34000` and `compression.protect_first_n: 0` (`four_mkhome.py --compact-tokens N` / `FR_COMPACT_TOKENS`, version string in `home-version.txt`; no flag = the item-80 homes), the pool ladder starts at 180,224 (fallbacks 163,840, 131,072; a rung needs 1,200 MiB free), the proxy gets an admission guard (`four_proxy.py --pool`, holds a request while the estimated pool use would pass 92%), the server gets `--predict 32768`, and an agent that stops on a server error ends as `server_error`. the pre-registered success rule and the reasons for each number are in the item header; `summary.json` carries `success_rule`, per-agent peak context, compaction events and guard holds.
+
+CPU proof (no model, ~3 min each): `bash tests/test-80b-stub-e2e.sh compact` (80b config, expect rule PASS and one or more compaction events per agent) and `... control` (item-80 config, expect FAIL: the mock pool runs dry).

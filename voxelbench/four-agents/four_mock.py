@@ -12,9 +12,21 @@ animated canvas page, so the race has a spread and the four result pages differ.
   turn 3+ final text
 
 usage: MOCK_SCALE=1.0 four_mock.py PORT      (MOCK_SCALE < 1 shortens every stream; MOCK_FAIL_AGENT=c makes agent c answer one 500 then recover)
+
+80b additions (all off unless the env is set, so the item-80 stub test behaves as before):
+  MOCK_TOKMULT=10   report token counts as if every ~3.2 bytes of conversation (system prompt excluded: a constant 5,000) were 10 tokens, so a small mock conversation reaches the context
+                    sizes of a real thinking-heavy session (first turn ~24k tokens like the real 24-30k) and Hermes' compaction trigger sees real-sized numbers in usage.prompt_tokens
+  MOCK_TPS=900 MOCK_FIRST_THINK=16000   stream faster than a real card, and make the first turn think 16,000 chunks (the real first turn: 16k thinking + a write_file call) so the first-turn context is ~23k
+  MOCK_TURNS=40 MOCK_CAT=3   length of the scripted task: write_file, then (MOCK_TURNS-1) x `cat index.html` x MOCK_CAT (~3.8k tokens of real tool output per step), then the final answer. Counted per agent
+                    on the server side, so a compaction (which shrinks the message list) does not restart the script
+  MOCK_POOL=163840  simulate llama-server's pooled KV: every agent's context (prompt + tokens decoded so far, or the end of its last request while idle) counts against
+                    one pool; a request whose prompt does not fit gets HTTP 500 "Context size has been exceeded" like the real server did at 14:40 on 2026-11-03
+  llama-server style `timings` (prompt_n = tokens evaluated, cache_n = reused prefix, predicted_n) are added to the final chunk so the proxy's pool guard sees what it sees on a real server
+  a request without tools that mentions "summar" gets a ~1,200 character structured summary back (Hermes' compaction call), anything else keeps "mock title"
 """
 import json
 import os
+import random
 import re
 import sys
 import threading
@@ -22,11 +34,23 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 SCALE = float(os.environ.get("MOCK_SCALE", "1.0"))
+VOCAB = ("light tower beam island water wave sand grass stone voxel cube iso canvas frame shade lamp cloud star moon dusk glow rotate sweep angle depth palette color hue "
+         "draw loop render sin cos offset tile grid height base step plan check fix write read test order face top left right edge gradient sky sea rock path door window "
+         "stripe red white amber blue green dark warm cold soft hard fast slow bright dim smooth pixel row column layer block shadow reflect ripple foam shore cliff mast flag "
+         "rope boat dock cabin roof stair rail lens prism ray cone arc curve circle square line point vector matrix scale shift mix blend alpha clip fill stroke path begin end").split()
 PACE = {"a": 1.0, "b": 0.82, "c": 1.18, "d": 0.64}      # relative tokens/s per agent (the spread the race should show)
-BASE_TPS = 55.0                                         # chunks/s at pace 1.0 when alone
+BASE_TPS = float(os.environ.get("MOCK_TPS", "55.0"))                                        # chunks/s at pace 1.0 when alone
 HUES = {"a": 200, "b": 28, "c": 130, "d": 300}
 LOCK = threading.Lock()
-STATE = {"predicted": 0, "prompt": 0, "pred_seconds": 0.0, "busy": {}, "decoded": {}, "fail_done": False, "requests": 0}
+STATE = {"predicted": 0, "prompt": 0, "pred_seconds": 0.0, "busy": {}, "decoded": {}, "fail_done": False, "requests": 0,
+         "ctx": {}, "turn": {}, "max_ctx": 0, "rejected": 0, "summaries": 0}
+TOKMULT = float(os.environ.get("MOCK_TOKMULT", "0") or 0)       # 0 = item-80 behaviour (constant 3000-token prompt)
+TURNS = int(os.environ.get("MOCK_TURNS", "0") or 0)             # 0 = item-80 script (write, ls, check, answer)
+CATS = int(os.environ.get("MOCK_CAT", "3") or 3)                # grow mode: each step prints the page this many times (a 4 KB page x 3 = ~3.8k tokens of tool output per step)
+POOL = int(os.environ.get("MOCK_POOL", "0") or 0)               # 0 = no pooled-KV simulation
+SUMMARY = ("## Goal\nBuild one animated isometric voxel lighthouse island as a single canvas page at the path in the task.\n\n## Progress\n- wrote index.html with write_file (canvas, iso cubes, "
+           "sweeping beam, waves, stars)\n- re-read the file to check it; the script block parses\n\n## Key decisions\n- plain canvas, no libraries, no network\n- single file, about 1.5 KB of script logic\n\n"
+           "## Next steps\n- confirm the page animates (requestAnimationFrame present), then finish with a short answer\n\n## Critical context\n- the file exists on disk; nothing else is needed\n") * 1
 
 
 def page(agent):
@@ -53,6 +77,11 @@ def script(body, agent):
     msgs = body.get("messages", [])
     n = sum(1 for m in msgs if m.get("role") == "tool")
     if not body.get("tools"):
+        txt = json.dumps(msgs).lower()
+        if TOKMULT and "summar" in txt:
+            with LOCK:
+                STATE["summaries"] += 1
+            return {"text": SUMMARY, "think": 0}
         return {"text": "mock title"}
     cwd = "/tmp"
     for m in msgs:
@@ -61,6 +90,15 @@ def script(body, agent):
             f = re.search(r"exactly (\S+?)/index\.html", c)
             if f:
                 cwd = f.group(1)
+    if TURNS:
+        with LOCK:
+            k = STATE["turn"].get(agent, 0)
+            STATE["turn"][agent] = k + 1
+        if k == 0:
+            return {"tool": "write_file", "args": {"path": cwd + "/index.html", "content": page(agent)}, "think": int(os.environ.get("MOCK_FIRST_THINK", "260"))}
+        if k < TURNS:
+            return {"tool": "terminal", "args": {"command": "cat " + " ".join(["index.html"] * CATS)}, "think": 40}
+        return {"text": "the lighthouse island is written to index.html and re-read %d times: iso voxels, a sweeping beam, waves and stars." % k, "think": 30}
     if n == 0:
         return {"tool": "write_file", "args": {"path": cwd + "/index.html", "content": page(agent)}, "think": 260}
     if n == 1:
@@ -74,8 +112,10 @@ def chunks_for(s):
     """list of (kind, text): reasoning deltas first, then the answer or the tool arguments cut into small pieces"""
     out = []
     think = int(s.get("think", 0) * SCALE)
+    rnd = random.Random(think * 7919 + len(s.get("text", "")) + len(json.dumps(s.get("args", ""))))
     for i in range(think):
-        out.append(("r", "hmm " if i % 7 else "so the beam. "))
+        # varied words: Hermes stops a stream whose reasoning repeats itself (it did on a fixed "hmm hmm" text); a plain vocabulary draw reads as thinking to the detector
+        out.append(("r", (rnd.choice(VOCAB) + (". " if rnd.random() < 0.08 else " ")) if think > 600 else ("hmm " if i % 7 else "so the beam. ")))
     if "tool" in s:
         a = json.dumps(s["args"])
         step = max(4, int(len(a) / max(60, int(220 * SCALE))))
@@ -84,6 +124,14 @@ def chunks_for(s):
         t = s["text"]
         out += [("c", t[i:i + 5]) for i in range(0, len(t), 5)]
     return out
+
+
+def prompt_tokens(body):
+    """tokens the mock claims this request's prompt has: 3000 as in item 80, or (80b) 5000 for system + tools + 1 token per 3.2 bytes of conversation x MOCK_TOKMULT"""
+    if not TOKMULT:
+        return 3000
+    conv = [x for x in body.get("messages", []) if x.get("role") != "system"]     # Hermes' own system prompt is a constant ~5k tokens, counted in the 5000
+    return 5000 + int(len(json.dumps(conv)) / 3.2 * TOKMULT)
 
 
 class H(BaseHTTPRequestHandler):
@@ -106,6 +154,9 @@ class H(BaseHTTPRequestHandler):
             return self._json(200, {"status": "ok"})
         if p.endswith("/models"):
             return self._json(200, {"object": "list", "data": [{"id": "mock-qwen", "object": "model"}]})
+        if p == "/_mock":
+            with LOCK:
+                return self._json(200, {k: STATE[k] for k in ("ctx", "turn", "max_ctx", "rejected", "summaries", "requests")})
         if p == "/props":
             return self._json(200, {"default_generation_settings": {"params": {"temperature": 1.0, "top_k": 20, "top_p": 0.95, "min_p": 0.05}, "n_ctx": 196608}, "total_slots": 4})
         if p == "/metrics":
@@ -113,7 +164,7 @@ class H(BaseHTTPRequestHandler):
                 busy = sum(1 for v in STATE["busy"].values() if v)
                 txt = ("# TYPE llamacpp:tokens_predicted_total counter\nllamacpp:tokens_predicted_total %d\n"
                        "llamacpp:prompt_tokens_total %d\nllamacpp:tokens_predicted_seconds_total %.3f\n"
-                       "llamacpp:requests_processing %d\nllamacpp:requests_deferred 0\n") % (STATE["predicted"], STATE["prompt"], STATE["pred_seconds"], busy)
+                       "llamacpp:requests_processing %d\nllamacpp:requests_deferred 0\nllamacpp:n_tokens_max %d\n") % (STATE["predicted"], STATE["prompt"], STATE["pred_seconds"], busy, STATE["max_ctx"])
             return self._json(200, txt.encode(), "text/plain")
         if p == "/slots":
             with LOCK:
@@ -146,11 +197,25 @@ class H(BaseHTTPRequestHandler):
                 STATE["predicted"] += n_tok
             return self._json(200, {"id": cid, "object": "chat.completion", "choices": [{"index": 0, "message": {"role": "assistant", "content": "mock"}, "finish_reason": "length"}],
                                     "usage": {"prompt_tokens": 40, "completion_tokens": n_tok}, "timings": {"prompt_n": 40, "predicted_n": n_tok, "predicted_per_second": round(rate, 2)}})
+        ptok = prompt_tokens(body)
+        mult = TOKMULT or 1.0
         with LOCK:
-            STATE["busy"][agent] = True
-            STATE["decoded"][agent] = 0
-            STATE["requests"] += 1
-            STATE["prompt"] += 3000
+            prev = STATE["ctx"].get(agent, 0)
+            others = sum(v for k, v in STATE["ctx"].items() if k != agent)
+            reject = bool(POOL) and others + ptok > POOL
+            if reject:
+                STATE["rejected"] += 1
+                STATE["ctx"][agent] = 0
+            else:
+                STATE["busy"][agent] = True
+                STATE["decoded"][agent] = 0
+                STATE["requests"] += 1
+                cache_n = min(prev, ptok) if TOKMULT else 0
+                STATE["prompt"] += ptok - cache_n
+                STATE["ctx"][agent] = ptok
+                STATE["max_ctx"] = max(STATE["max_ctx"], ptok)
+        if reject:
+            return self._json(500, {"error": {"code": 500, "message": "Context size has been exceeded.", "type": "server_error"}})
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Transfer-Encoding", "chunked")
@@ -186,16 +251,26 @@ class H(BaseHTTPRequestHandler):
                 with LOCK:
                     STATE["predicted"] += 1
                     STATE["decoded"][agent] = STATE["decoded"].get(agent, 0) + 1
+                    STATE["ctx"][agent] = ptok + int(STATE["decoded"][agent] * mult)
+                    STATE["max_ctx"] = max(STATE["max_ctx"], STATE["ctx"][agent])
+                    over = bool(POOL) and sum(STATE["ctx"].values()) > POOL and STATE["decoded"][agent] % 16 == 0
+                    if over:
+                        STATE["rejected"] += 1
+                        STATE["ctx"][agent] = 0
+                if over:       # the pool filled while this stream was decoding: the server drops the slot and reports it in the stream
+                    send({"error": {"code": 500, "message": "Context size has been exceeded.", "type": "server_error"}})
+                    raise BrokenPipeError("mock pool exhausted mid-decode")
             el = max(time.time() - t0, 1e-3)
             fin = "tool_calls" if "tool" in s else "stop"
             send({"id": cid, "object": "chat.completion.chunk", "choices": [{"index": 0, "delta": {}, "finish_reason": fin}],
-                  "usage": {"prompt_tokens": 3000, "completion_tokens": len(ch), "total_tokens": 3000 + len(ch)},
-                  "timings": {"prompt_n": 3000, "predicted_n": len(ch), "predicted_per_second": round(len(ch) / el, 2)}})
+                  "usage": {"prompt_tokens": ptok, "completion_tokens": int(len(ch) * mult), "total_tokens": ptok + int(len(ch) * mult)},
+                  "timings": {"prompt_n": ptok - cache_n, "cache_n": cache_n, "predicted_n": int(len(ch) * mult), "predicted_per_second": round(len(ch) / el, 2)}})
             raw = b"data: [DONE]\n\n"
             self.wfile.write(("%x\r\n" % len(raw)).encode() + raw + b"\r\n0\r\n\r\n")
             self.wfile.flush()
             with LOCK:
                 STATE["pred_seconds"] += el
+                STATE["ctx"][agent] = ptok + int(len(ch) * mult)
         except (BrokenPipeError, ConnectionResetError):
             pass
         finally:
