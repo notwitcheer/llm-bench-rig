@@ -388,9 +388,10 @@ class Scene:
             yy += 6
         yy = max(yy + 18, 470)
         tot = sum(c["slip"] for c in self.counts)
-        d.text((x, yy), "slips so far", font=font(FONT_R, 24), fill=(150, 160, 200))
-        d.text((x + 290, yy - 62), str(tot), font=font(FONT_B, 96), fill=RED if tot else (130, 140, 180), stroke_width=2, stroke_fill=(0, 0, 0))
-        yy += 58
+        # the running total sits on its own row under the forms (it used to reach 62 px up into the last form's text)
+        d.text((x, yy + 34), "slips so far", font=font(FONT_R, 24), fill=(150, 160, 200))
+        d.text((x + 200, yy), str(tot), font=font(FONT_B, 80), fill=RED if tot else (130, 140, 180), stroke_width=2, stroke_fill=(0, 0, 0))
+        yy += 96
         for mi, m in enumerate(self.legs):
             if not any(k[2] == mi for k in self.calls):
                 continue

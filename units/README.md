@@ -14,3 +14,5 @@ arXiv 2609.25009 tested numeric representation invariance in model answers. This
 - `queue/88-units-orbit.sh`: the idle-queue item (capsule paths).
 
 Subject: how models convert units into tool arguments. Nothing here says anything about how Hermes behaves.
+
+- post-run render fix (2026-11-06, CPU only, no new numbers): the running "slips so far" total no longer overlaps the last prompt form; CODE.sha256 updated for render_orbit.py. the run itself used the earlier hash.

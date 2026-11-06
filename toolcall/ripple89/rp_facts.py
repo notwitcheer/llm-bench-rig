@@ -48,7 +48,7 @@ rows = [
     ["decode speed, tok/s (server timings)", num(avg("iq3xxs", "decode_tok_s_engine")), num(avg("iq2s", "decode_tok_s_engine")), "llama-server's own predicted_per_second over the take, no speculative decoding"],
     ["GPU power W (mean) / VRAM MiB (peak)", "%s / %s" % (num(avg("iq3xxs", "gpu_w_mean")), num(max([t.get("vram_mib_max") or 0 for t in rows_of("iq3xxs")] or [None]) or None)), "%s / %s" % (num(avg("iq2s", "gpu_w_mean")), num(max([t.get("vram_mib_max") or 0 for t in rows_of("iq2s")] or [None]) or None)), "nvidia-smi at 1 Hz during the take, whole card"],
 ]
-facts = {"title": title, "subtitle": "Hermes Agent driving a dense 65B model on a 32 GB card. community GGUF files, llama.cpp PR #31692 build (not merged), KV q8_0, ctx 65,536.",
+facts = {"title": title, "subtitle": "Hermes Agent driving a dense 65B model on a 32 GB card. community GGUF files, llama.cpp PR #31692 build (merged 5 Nov), KV q8_0, ctx 65,536.",
          "cols": [["IQ3_XXS", "28.0 GB"], ["IQ2_S", "25.3 GB"]], "rows": rows,
          "small": ["tested claim: a self-reported GB10 post (NVFP4 + speculative decoding, 5/5 in 1m 36s, 14 tool calls). other box, file, decoder, repo.",
                    "ours is a same-shape task (4 planted bugs, small Python library), n=%d takes on the main file, one decode regime, no speed multiplier claimed." % n3,

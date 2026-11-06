@@ -8,3 +8,4 @@ Ripple-65B Preview (dense 65B, Apache-2.0) as community GGUF files on a llama.cp
 - the reference fix and the mock model used for the CPU proof are kept out until after the run (the agents have a terminal).
 - results (run 2026-11-06 01:29-01:43 CET): pre-registered verdict REPRODUCED. IQ3_XXS 3/3 takes and IQ2_S 2/2 takes ended with the pristine tests 5 passed and tests/ untouched. per take (finish s / tool calls / decode tok/s / GPU W mean): iq3xxs-1 186.6 / 18 / 41.5 / 570.8, iq3xxs-2 92.2 / 18 / 42.0 / 565.3, iq3xxs-3 95.9 / 19 / 41.9 / 562.2, iq2s-1 53.8 / 15 / 45.1 / 559.4, iq2s-2 53.0 / 15 / 45.1 / 555.9. VRAM peak 29,808 / 27,278 MiB at ctx 65,536, KV q8_0. summary: `data/ripple89/summary.json`.
 - one task and five takes: the smaller file was faster here, which is an observation, not a which-file verdict.
+- post-run card fix (2026-11-06): the end-card subtitle now says the PR merged on 5 Nov.
