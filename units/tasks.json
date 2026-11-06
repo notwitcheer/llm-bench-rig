@@ -1,0 +1,2451 @@
+{
+ "version": "units-v1",
+ "n_tasks": 40,
+ "n_forms": 160,
+ "system": "You are a helpful assistant. Use the provided tool to carry out the user's request.",
+ "roles": [
+  "canonical",
+  "sub",
+  "larger",
+  "words"
+ ],
+ "tools": {
+  "terminal": {
+   "real": true,
+   "schema": {
+    "name": "terminal",
+    "description": "Execute shell commands on the OS, shell and backend named in your environment section. The working directory, files and exported variables persist between calls: activate a virtualenv or export once, not before every command.\n\nUse read_file, search_files, patch and write_file instead of cat/head/tail, grep/find/ls, sed/awk and echo/heredoc. Output is auto-truncated with the full text saved to a file; never pipe through head/tail to shorten it.\n\nForeground (default) returns as soon as the command finishes. To wait a fixed time, run the wait in the foreground; never background a sleep or polling loop. Background is only for commands that must keep running after this call returns; health-check a server in a separate call and manage jobs with process_manage. When a command changes directory, trust the result's \"cwd\" instead of prefixing later commands with cd.\n",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "command": {
+       "type": "string",
+       "description": "The shell command to execute"
+      },
+      "background": {
+       "type": "boolean",
+       "description": "Keep running after this call returns; returns a session_id.",
+       "default": false
+      },
+      "timeout": {
+       "type": "integer",
+       "description": "Max seconds (default 180, foreground max 600). Finishing early returns at once, so set it generously. Above 600s the command runs as a tracked background process with notify_on_complete=true (the result says so; do not re-run it).",
+       "minimum": 1
+      },
+      "workdir": {
+       "type": "string",
+       "description": "Absolute working directory for this command only."
+      },
+      "pty": {
+       "type": "boolean",
+       "description": "With background=true: pseudo-terminal for interactive CLIs (REPLs, coding agents); drive it with process_manage write/submit. Local backend only.",
+       "default": false
+      },
+      "notify": {
+       "description": "With background=true. true: one notification on exit; use it for anything that ends (builds, tests, deploys), or the job runs silently. ['pattern', ...]: notify when a line matches, only for one-shot readiness on processes that never exit; rate-limited. Omit for servers/daemons.",
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "heartbeat": {
+       "type": "integer",
+       "minimum": 0,
+       "default": 0,
+       "description": "With background=true: also notify every N seconds (min 60) with new output; quiet ticks are skipped. For bounded jobs you must react to mid-run, never servers. Implies notify=true; 0 = off."
+      },
+      "persist_on_release": {
+       "type": "boolean",
+       "default": false,
+       "description": "With background=true: survive session end, /new, compression and other cleanup (not host exit). Only for jobs the user explicitly wants to outlive the conversation."
+      }
+     },
+     "required": [
+      "command"
+     ]
+    }
+   },
+   "hermes_pin": "9bda188",
+   "file": "tools/terminal_tool.py",
+   "schema_line": 1554,
+   "arg_line": 1569,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_description": "Max seconds (default 180, foreground max 600). Finishing early returns at once, so set it generously. Above 600s the command runs as a tracked background process with notify_on_complete=true (the result says so; do not re-run it).",
+   "note": "description text is the checkout's own (f-string with FOREGROUND_MAX_TIMEOUT resolved at import)",
+   "schema_sha256": "2f1fc3b3f3852895eeeb51f170f58278c0362b1be998bf780e376d011feac351",
+   "arg_type": "integer"
+  },
+  "process_manage": {
+   "real": true,
+   "schema": {
+    "name": "process_manage",
+    "description": "Poll, wait on, or kill background terminal processes (from terminal(background=true)). Completed results remain retrievable by session_id when resuming their owning conversation (up to 7 days, newest 64 results per profile; rolling output tail). poll: status + new output. log: full output, paged. wait: block until exit or timeout (partial output on timeout). write vs submit: submit appends Enter \u2014 use it to answer prompts; write sends raw bytes, no newline. close: EOF stdin. kill: terminate. handoff (subagents only): transfer a running process you started to your parent agent, which then receives its completion; `data` = one sentence on its purpose. Subagent-owned processes are otherwise killed when the subagent finishes and their notifications never reach the parent.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "action": {
+       "type": "string",
+       "enum": [
+        "list",
+        "poll",
+        "log",
+        "wait",
+        "kill",
+        "write",
+        "submit",
+        "close",
+        "handoff"
+       ]
+      },
+      "session_id": {
+       "type": "string",
+       "description": "From terminal background output; any unique prefix works ('4dae' for proc_4dae56ca81f6). Required except for 'list'."
+      },
+      "data": {
+       "type": "string",
+       "description": "Stdin text for write/submit; purpose sentence for handoff."
+      },
+      "timeout": {
+       "type": "integer",
+       "description": "Max seconds for 'wait'.",
+       "minimum": 1
+      },
+      "offset": {
+       "type": "integer",
+       "description": "Log line offset (default: last 200)."
+      },
+      "limit": {
+       "type": "integer",
+       "description": "Max log lines.",
+       "minimum": 1
+      }
+     },
+     "required": [
+      "action"
+     ]
+    }
+   },
+   "hermes_pin": "9bda188",
+   "file": "tools/process_registry.py",
+   "schema_line": 2582,
+   "arg_line": 2615,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_description": "Max seconds for 'wait'.",
+   "note": "applies to action 'wait'",
+   "schema_sha256": "7305e7caec86aaf14fcd4dd5743dbddb4634899a1c8dd8284270fd91eab345ea",
+   "arg_type": "integer"
+  },
+  "browser_cdp": {
+   "real": true,
+   "schema": {
+    "name": "browser_cdp",
+    "description": "Send a raw Chrome DevTools Protocol (CDP) command. Escape hatch for browser operations not covered by browser_navigate, browser_click, browser_console, etc.\n\n**Requires a reachable CDP endpoint.** Available when the user has run '/browser connect' to attach to a running Chrome, Brave, Chromium, or Edge browser, or when 'browser.cdp_url' is set in config.yaml. Not currently wired up for cloud backends (Browserbase, Browser Use, Firecrawl) \u2014 those expose CDP per session but live-session routing is a follow-up. Camofox is REST-only and will never support CDP. If the tool is in your toolset at all, a CDP endpoint is already reachable.\n\n**CDP method reference:** https://chromedevtools.github.io/devtools-protocol/ \u2014 use an available documentation lookup or extraction tool on a method's URL (e.g. '/tot/Page/#method-handleJavaScriptDialog') to look up parameters and return shape.\n\n**Common patterns:**\n- List tabs: method='Target.getTargets', params={}\n- Handle a native JS dialog: method='Page.handleJavaScriptDialog', params={'accept': true, 'promptText': ''}, target_id=<tabId>\n- Get all cookies: method='Network.getAllCookies', params={}\n- Eval in a specific tab: method='Runtime.evaluate', params={'expression': '...', 'returnByValue': true}, target_id=<tabId>\n- Set viewport for a tab: method='Emulation.setDeviceMetricsOverride', params={'width': 1280, 'height': 720, 'deviceScaleFactor': 1, 'mobile': false}, target_id=<tabId>\n\n**Usage rules:**\n- Browser-level methods (Target.*, Browser.*, Storage.*): omit target_id and frame_id.\n- Page-level methods (Page.*, Runtime.*, DOM.*, Emulation.*, Network.* scoped to a tab): pass target_id from Target.getTargets.\n- **Cross-origin iframe scope** (Runtime.evaluate inside an OOPIF, Page.* targeting a frame target, etc.): pass frame_id from the browser_snapshot frame_tree output. This routes through the CDP supervisor's live connection \u2014 the only reliable way on Browserbase where stateless CDP calls hit signed-URL expiry.\n- Each stateless call (without frame_id) is independent \u2014 sessions and event subscriptions do not persist between calls. For stateful workflows, prefer the dedicated browser tools or use frame_id routing.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "method": {
+       "type": "string",
+       "description": "CDP method name, e.g. 'Target.getTargets', 'Runtime.evaluate', 'Page.handleJavaScriptDialog'."
+      },
+      "params": {
+       "type": "object",
+       "properties": {},
+       "additionalProperties": true,
+       "description": "Method-specific parameters as a JSON object. Omit or pass {} for methods that take no parameters."
+      },
+      "target_id": {
+       "type": "string",
+       "description": "Optional. Target/tab ID from Target.getTargets result (each entry's 'targetId'). Use for page-level methods at the top-level tab scope. Mutually exclusive with frame_id."
+      },
+      "frame_id": {
+       "type": "string",
+       "description": "Optional. Out-of-process iframe (OOPIF) frame_id from browser_snapshot.frame_tree.children[] where is_oopif=true. When set, routes the call through the CDP supervisor's live session for that iframe. Essential for Runtime.evaluate inside cross-origin iframes, especially on Browserbase where fresh per-call CDP connections can't keep up with signed URL rotation. For same-origin iframes, use parent contentWindow/contentDocument from Runtime.evaluate at the top-level page instead."
+      },
+      "timeout": {
+       "type": "number",
+       "default": 30,
+       "description": "Timeout in seconds (default 30, max 300)."
+      }
+     },
+     "required": [
+      "method"
+     ]
+    }
+   },
+   "hermes_pin": "9bda188",
+   "file": "tools/browser_cdp_tool.py",
+   "schema_line": 345,
+   "arg_line": 396,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_description": "Timeout in seconds (default 30, max 300).",
+   "note": "",
+   "schema_sha256": "d1157742a0921834e4b72adbbfd3bdb91fec369ae173ba819a58d1c69539471a",
+   "arg_type": "number"
+  },
+  "browser_exec": {
+   "real": true,
+   "schema": {
+    "name": "browser_exec",
+    "description": "Drive a real web browser via the Browser Use CLI: `code` runs as full Python (stdlib available) with pre-imported browser helpers; stdout comes back in the result. Start `code` with a one-line comment describing the step for the user in plain language, max 60 chars (e.g. `# Searching Amazon for paper towels`) \u2014 the UI shows it as the step label.\n\nSTATE: the browser session and workspace persist across calls; Python variables do NOT (fresh interpreter each call). The workspace dir is $BH_AGENT_WORKSPACE (also `workspace` in every result); functions defined in agent_helpers.py there are auto-imported into every call. For multi-item tasks ('all N products / every entry'), append each batch to a JSON/CSV file in the workspace, then read it back and aggregate in code \u2014 dedupe/count/sort with Python, not in your head \u2014 and verify the collected count against what was asked before answering.\n\nBatch each sub-procedure (navigate, wait, extract, act) into one call \u2014 do not spend a call per action \u2014 but for long extractions prefer several medium calls that append to workspace files over one giant call, so progress survives timeouts.\n\nHELPERS (pre-imported): new_tab(url) opens/navigates (use for the FIRST navigation), goto_url(url) navigates the current tab, wait_for_load() after navigation, page_info() summarizes the current page state, js(expr) evaluates a JS expression and returns its value (js('document.title'); wrap function bodies as js('(() => {...})()') \u2014 a bare '() => {...}' returns the function itself, uncalled), fill_input(selector, text) types into inputs, click_at_xy(x, y) clicks viewport coordinates, capture_screenshot() saves and prints a screenshot path, cdp('Domain.method', **kwargs) is raw CDP \u2014 cdp('Accessibility.getFullAXTree')['nodes'] lists every element's role/name/backendDOMNodeId (filter in Python before printing; it is thousands of nodes), then cdp('DOM.getBoxModel', backendNodeId=n) gives click coordinates. ensure_real_tab() recovers from a stale/internal tab. Login walls: never guess credentials; see the vault note below if present, otherwise stop and ask the user.\n\n(The browser-use CLI is not installed yet. Install it with `hermes tools` (Browser Automation \u2192 Browser Use).)",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "code": {
+       "type": "string",
+       "description": "Python code to execute using the pre-imported browser helpers. Use print(...) for any data you need back."
+      },
+      "session": {
+       "type": "string",
+       "description": "Named isolated browser session \u2014 its own daemon and (on cloud backends) own browser, so concurrent tasks don't share tabs. Reuse the same name on every related call; omit for the shared default session."
+      },
+      "timeout_s": {
+       "type": "integer",
+       "default": 300,
+       "description": "Max seconds to wait for the code to finish (default 300, max 1800)."
+      }
+     },
+     "required": [
+      "code"
+     ]
+    }
+   },
+   "hermes_pin": "9bda188",
+   "file": "tools/browser_use_cli.py",
+   "schema_line": 965,
+   "arg_line": 975,
+   "arg": "timeout_s",
+   "unit": "seconds",
+   "arg_description": "Max seconds to wait for the code to finish (default 300, max 1800).",
+   "note": "STATIC FALLBACK description (the managed CLI is not installed on this checkout); the unit-naming argument description is the live one",
+   "schema_sha256": "9554a019ddd16154d33f6b3120503b6b0d7a8e3f52cf00870e700c73f6c65ed9",
+   "arg_type": "integer"
+  },
+  "computer_use": {
+   "real": true,
+   "schema": {
+    "name": "computer_use",
+    "description": "Drive the desktop via cua-driver \u2014 screenshots, mouse, keyboard, scroll, drag \u2014 on macOS, Windows, and Linux. Input is background-FIRST, not background-only: the default delivery routes to the target window without stealing the user's cursor or focus (works even on hidden/minimized windows), and when a result's `verdict` says to escalate you climb \u2014 pixel coordinates, or delivery_mode='foreground' (briefly fronts the window; separate approval). Each result carries a `verdict` with the next step; follow it \u2014 never repeat confirmed input, and re-capture to verify an unverifiable one before retrying. Workflow: action='capture' (mode='som' gives numbered element overlays), then click by `element` index; re-capture after state-changing actions (or pass capture_after=true). Image captures include a shareable `screenshot_path`; deliver it via the platform's MEDIA syntax when the user asks to see it \u2014 not for captures used only for control.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "action": {
+       "type": "string",
+       "enum": [
+        "capture",
+        "click",
+        "double_click",
+        "right_click",
+        "middle_click",
+        "drag",
+        "scroll",
+        "type",
+        "key",
+        "set_value",
+        "wait",
+        "list_apps",
+        "list_windows",
+        "focus_app"
+       ],
+       "description": "Which action to perform. `capture` is free (no side effects). All other actions require approval unless auto-approved. Use `set_value` for select/popup elements and sliders \u2014 it selects the matching option directly without opening the native menu (no focus steal)."
+      },
+      "mode": {
+       "type": "string",
+       "enum": [
+        "som",
+        "vision",
+        "ax"
+       ],
+       "description": "Capture mode. `som` (default) is a screenshot with numbered overlays on every interactable element plus the AX tree \u2014 best for vision models, lets you click by element index. `vision` is a plain screenshot. `ax` is the accessibility tree only (no image; useful for text-only models)."
+      },
+      "app": {
+       "type": "string",
+       "description": "Optional. Limit capture/action to one app (name e.g. 'Safari', or bundle ID). Omitted = frontmost window. app='screen' = composited full-screen grab (image only, no clickable elements); app='desktop' = the OS desktop/shell surface (wallpaper, icons, taskbar) with its elements."
+      },
+      "pid": {
+       "type": "integer",
+       "description": "Optional exact process target for action='capture'. Pair with window_id when discovery cannot resolve an X11 app."
+      },
+      "window_id": {
+       "type": "integer",
+       "description": "Optional exact native window target for action='capture'. Pair with pid when an external cua-driver list_windows lookup has already identified the window."
+      },
+      "element": {
+       "type": "integer",
+       "description": "The 1-based SOM index returned by the last `capture(mode='som')` call. Strongly preferred over raw coordinates."
+      },
+      "coordinate": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2,
+       "description": "Pixel coordinates [x, y] relative to the captured window screenshot (top-left origin). Only use this if no element index is available."
+      },
+      "button": {
+       "type": "string",
+       "enum": [
+        "left",
+        "right",
+        "middle"
+       ],
+       "description": "Mouse button. Defaults to left."
+      },
+      "modifiers": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "enum": [
+         "cmd",
+         "shift",
+         "option",
+         "alt",
+         "ctrl",
+         "fn",
+         "win",
+         "windows",
+         "super",
+         "meta"
+        ]
+       },
+       "description": "Modifier keys held during the action."
+      },
+      "from_element": {
+       "type": "integer",
+       "description": "Source element index (drag)."
+      },
+      "to_element": {
+       "type": "integer",
+       "description": "Target element index (drag)."
+      },
+      "from_coordinate": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2,
+       "description": "Source [x,y] (drag; use when no element available)."
+      },
+      "to_coordinate": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2,
+       "description": "Target [x,y] (drag; use when no element available)."
+      },
+      "direction": {
+       "type": "string",
+       "enum": [
+        "up",
+        "down",
+        "left",
+        "right"
+       ],
+       "description": "Scroll direction."
+      },
+      "amount": {
+       "type": "integer",
+       "description": "Scroll wheel ticks. Default 3."
+      },
+      "value": {
+       "type": "string",
+       "description": "For action='set_value': the value to set on the element. For AXPopUpButton / select dropdowns, pass the option's display label (e.g. 'Blue'). For sliders and other AXValue-settable elements, pass the numeric or string value."
+      },
+      "text": {
+       "type": "string",
+       "description": "Text to type (respects the current layout)."
+      },
+      "keys": {
+       "type": "string",
+       "description": "Key combo, e.g. 'cmd+s', 'ctrl+alt+t', 'return', 'escape', 'tab'. Use '+' to combine."
+      },
+      "seconds": {
+       "type": "number",
+       "description": "wait: seconds to pause (max 30)."
+      },
+      "raise_window": {
+       "type": "boolean",
+       "description": "Only for action='focus_app'. If true, brings the window to front (DISRUPTS the user). Default false \u2014 input is routed to the app without raising, matching the background co-work model."
+      },
+      "delivery_mode": {
+       "type": "string",
+       "enum": [
+        "background",
+        "foreground"
+       ],
+       "description": "For input actions (click, type, key, drag, scroll). `background` (DEFAULT) delivers without raising the window or stealing focus. `foreground` briefly fronts the window then restores focus \u2014 a visible change needing its own approval; use it only when a result's verdict tells you to escalate there. Each result's `verdict` carries the next step; follow it rather than guessing."
+      },
+      "bring_to_front": {
+       "type": "boolean",
+       "description": "Optional and only valid with delivery_mode='foreground'. Explicitly invokes cua-driver's standalone bring_to_front tool before the input; it is never passed as an input property. This persistent focus change has a separate approval scope. Default false."
+      },
+      "capture_after": {
+       "type": "boolean",
+       "description": "If true, take a follow-up capture after the action and include it in the response. Saves a round-trip when you need to verify an action's effect."
+      }
+     },
+     "required": [
+      "action"
+     ]
+    }
+   },
+   "hermes_pin": "9bda188",
+   "file": "tools/computer_use/schema.py",
+   "schema_line": 188,
+   "arg_line": 150,
+   "arg": "seconds",
+   "unit": "seconds",
+   "arg_description": "wait: seconds to pause (max 30).",
+   "note": "applies to action 'wait'",
+   "schema_sha256": "c804a3ae07a478ed507cb69d94f07013f3d388f05edcbe853493bced21123bbc",
+   "arg_type": "number"
+  },
+  "charge_card": {
+   "real": false,
+   "schema": {
+    "name": "charge_card",
+    "description": "Charge a stored payment card.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "card_label": {
+       "type": "string",
+       "description": "Label of the stored card."
+      },
+      "amount_cents": {
+       "type": "integer",
+       "description": "Amount to charge, in cents.",
+       "minimum": 1
+      }
+     },
+     "required": [
+      "card_label",
+      "amount_cents"
+     ]
+    }
+   },
+   "synthetic": true,
+   "arg": "amount_cents",
+   "unit": "cents",
+   "arg_description": "Amount to charge, in cents.",
+   "schema_sha256": "eb9f89dcafe217c5a87956e6749a574752d73afb6f2632a8167876bc5363bb22",
+   "arg_type": "integer"
+  },
+  "trim_cable": {
+   "real": false,
+   "schema": {
+    "name": "trim_cable",
+    "description": "Cut a length of cable off a spool.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "spool": {
+       "type": "string",
+       "description": "Name of the spool."
+      },
+      "length_m": {
+       "type": "number",
+       "description": "Length to cut, in metres."
+      }
+     },
+     "required": [
+      "spool",
+      "length_m"
+     ]
+    }
+   },
+   "synthetic": true,
+   "arg": "length_m",
+   "unit": "metres",
+   "arg_description": "Length to cut, in metres.",
+   "schema_sha256": "f3eb778373d223a8d14977e9368b8938c145a1469bd4fc71012f951bdef682ce",
+   "arg_type": "number"
+  },
+  "set_delay": {
+   "real": false,
+   "schema": {
+    "name": "set_delay",
+    "description": "Set the delay of a named timer.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "description": "Name of the timer."
+      },
+      "delay_ms": {
+       "type": "integer",
+       "description": "Delay to apply, in milliseconds.",
+       "minimum": 1
+      }
+     },
+     "required": [
+      "name",
+      "delay_ms"
+     ]
+    }
+   },
+   "synthetic": true,
+   "arg": "delay_ms",
+   "unit": "milliseconds",
+   "arg_description": "Delay to apply, in milliseconds.",
+   "schema_sha256": "bc4cac2013558705fedce5c1965e6a4192129b577ac88d09f6c72ac5da3c9d76",
+   "arg_type": "integer"
+  },
+  "weigh_out": {
+   "real": false,
+   "schema": {
+    "name": "weigh_out",
+    "description": "Dispense an ingredient from the scale.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "item": {
+       "type": "string",
+       "description": "Ingredient to dispense."
+      },
+      "mass_g": {
+       "type": "number",
+       "description": "Mass to dispense, in grams."
+      }
+     },
+     "required": [
+      "item",
+      "mass_g"
+     ]
+    }
+   },
+   "synthetic": true,
+   "arg": "mass_g",
+   "unit": "grams",
+   "arg_description": "Mass to dispense, in grams.",
+   "schema_sha256": "6167646207bbfbef63d98e6543bd76c0e36678d5bdfb18a87c46ecbd627cce8e",
+   "arg_type": "number"
+  }
+ },
+ "tasks": [
+  {
+   "id": "t01",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "90",
+   "ask": "a 90-second timeout",
+   "verb": "set",
+   "template": "Run `pytest -x tests/` with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "90",
+     "unit": "s",
+     "text": "90 seconds",
+     "prompt_user": "Run `pytest -x tests/` with a timeout of 90 seconds.",
+     "prompt_sha256": "e0cee4c74b941345fd0ca6f190c2471718f9a64ca20a499cfeaacf40d2b2c961"
+    },
+    {
+     "role": "sub",
+     "num": "90000",
+     "unit": "ms",
+     "text": "90000 milliseconds",
+     "prompt_user": "Run `pytest -x tests/` with a timeout of 90000 milliseconds.",
+     "prompt_sha256": "031deb0ba2449de0298de60798235aab34145d32a254350ac94a8d7d27d1221b"
+    },
+    {
+     "role": "larger",
+     "num": "3/2",
+     "unit": "min",
+     "text": "1.5 minutes",
+     "prompt_user": "Run `pytest -x tests/` with a timeout of 1.5 minutes.",
+     "prompt_sha256": "0e4ba27cac40615b787308aeedbae3bd4f2de1024adb72b372a30512c29f8ce5"
+    },
+    {
+     "role": "words",
+     "num": "3/2",
+     "unit": "min",
+     "text": "a minute and a half",
+     "prompt_user": "Run `pytest -x tests/` with a timeout of a minute and a half.",
+     "prompt_sha256": "fdd29920a2e8e186a9afb1a5bdba53f8b1dbdda79c6c66ef300886c9e6c3d208"
+    }
+   ]
+  },
+  {
+   "id": "t02",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "240",
+   "ask": "a 4-minute timeout",
+   "verb": "set",
+   "template": "Run `npm run build` with the timeout set to {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "240",
+     "unit": "s",
+     "text": "240 seconds",
+     "prompt_user": "Run `npm run build` with the timeout set to 240 seconds.",
+     "prompt_sha256": "408d4ea22511d6bf91904a70bc93b90189726c294c6ee889912214f9f8106b5e"
+    },
+    {
+     "role": "sub",
+     "num": "240000",
+     "unit": "ms",
+     "text": "240000 milliseconds",
+     "prompt_user": "Run `npm run build` with the timeout set to 240000 milliseconds.",
+     "prompt_sha256": "46743b2b6b3e1e7db82e508f32f88b50f2954ac078fe69c8dc9d51a80207b9a4"
+    },
+    {
+     "role": "larger",
+     "num": "4",
+     "unit": "min",
+     "text": "4 minutes",
+     "prompt_user": "Run `npm run build` with the timeout set to 4 minutes.",
+     "prompt_sha256": "ca4a5c36d439341d3ea5d948933cace9fe47a4cea3655c79a7fa794b5995190a"
+    },
+    {
+     "role": "words",
+     "num": "1/15",
+     "unit": "h",
+     "text": "a fifteenth of an hour",
+     "prompt_user": "Run `npm run build` with the timeout set to a fifteenth of an hour.",
+     "prompt_sha256": "668d1f8db1d505fda73334cc0661436b775b1f23ff712a25590074ae98543818"
+    }
+   ]
+  },
+  {
+   "id": "t03",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "600",
+   "ask": "a 10-minute timeout",
+   "verb": "set",
+   "template": "Execute `rsync -a data/ backup/` with a time limit of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "600",
+     "unit": "s",
+     "text": "600 seconds",
+     "prompt_user": "Execute `rsync -a data/ backup/` with a time limit of 600 seconds.",
+     "prompt_sha256": "1a27d899591c8dff3b0be673ac69a8d763a61bc0405ab953233d02a12a5ac0dd"
+    },
+    {
+     "role": "sub",
+     "num": "600000",
+     "unit": "ms",
+     "text": "600000 milliseconds",
+     "prompt_user": "Execute `rsync -a data/ backup/` with a time limit of 600000 milliseconds.",
+     "prompt_sha256": "b60de0be681c0adf0f82e65bb3ec45eeb9e028f684081607a797efe983748a7b"
+    },
+    {
+     "role": "larger",
+     "num": "10",
+     "unit": "min",
+     "text": "10 minutes",
+     "prompt_user": "Execute `rsync -a data/ backup/` with a time limit of 10 minutes.",
+     "prompt_sha256": "c0d850c32049b6a150237ac700a960af076c78e38ca761bb78144d080c430c7a"
+    },
+    {
+     "role": "words",
+     "num": "1/6",
+     "unit": "h",
+     "text": "a sixth of an hour",
+     "prompt_user": "Execute `rsync -a data/ backup/` with a time limit of a sixth of an hour.",
+     "prompt_sha256": "db37f6997f6adf2194ec9b3a4250c27462de732a147e3571a8d0409c3872323a"
+    }
+   ]
+  },
+  {
+   "id": "t04",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "20",
+   "ask": "a 20-second timeout",
+   "verb": "set",
+   "template": "Check `curl -s https://example.org/health` with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "20",
+     "unit": "s",
+     "text": "20 seconds",
+     "prompt_user": "Check `curl -s https://example.org/health` with a timeout of 20 seconds.",
+     "prompt_sha256": "6a54c69b1fc97d20b8280940e29e7b14b39b0c2ecfc209392f03d09b714b9404"
+    },
+    {
+     "role": "sub",
+     "num": "20000",
+     "unit": "ms",
+     "text": "20000 milliseconds",
+     "prompt_user": "Check `curl -s https://example.org/health` with a timeout of 20000 milliseconds.",
+     "prompt_sha256": "f82df9fdfb8369f7822a68a5e28ca4b9b863c2b2cf57b75404ff1d1f430fa3da"
+    },
+    {
+     "role": "larger",
+     "num": "1/3",
+     "unit": "min",
+     "text": "one third of a minute",
+     "prompt_user": "Check `curl -s https://example.org/health` with a timeout of one third of a minute.",
+     "prompt_sha256": "e4ed7b7609d322bb34de0748001a66048a6b9af12ab25731f79a5236b484c1ed"
+    },
+    {
+     "role": "words",
+     "num": "20",
+     "unit": "s",
+     "text": "twenty seconds",
+     "prompt_user": "Check `curl -s https://example.org/health` with a timeout of twenty seconds.",
+     "prompt_sha256": "9bcd8a47fe27994541cb32ef1a2216093fa122c5839f4192efff6333aabfb0bb"
+    }
+   ]
+  },
+  {
+   "id": "t05",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "300",
+   "ask": "a 5-minute timeout",
+   "verb": "set",
+   "template": "Run `make -j4` in the project with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "300",
+     "unit": "s",
+     "text": "300 seconds",
+     "prompt_user": "Run `make -j4` in the project with a timeout of 300 seconds.",
+     "prompt_sha256": "cc2d98186f6c910eed96691784921c2336c010b76af82aee0db91385639a647c"
+    },
+    {
+     "role": "sub",
+     "num": "300000",
+     "unit": "ms",
+     "text": "300000 milliseconds",
+     "prompt_user": "Run `make -j4` in the project with a timeout of 300000 milliseconds.",
+     "prompt_sha256": "6578e7b7f88b6200e53be9f943531938fbb7ca0e5cf1ba69da8496a4cd4058ab"
+    },
+    {
+     "role": "larger",
+     "num": "5",
+     "unit": "min",
+     "text": "5 minutes",
+     "prompt_user": "Run `make -j4` in the project with a timeout of 5 minutes.",
+     "prompt_sha256": "c2aba1ca2c32cd217e1a4af9dd3aba2ed8c13826f396d836dca1f54ffb1b3849"
+    },
+    {
+     "role": "words",
+     "num": "1/12",
+     "unit": "h",
+     "text": "a twelfth of an hour",
+     "prompt_user": "Run `make -j4` in the project with a timeout of a twelfth of an hour.",
+     "prompt_sha256": "1edfe817d1c87150194b440b42244d0d988c50b906e2cd78ff660a944654e82a"
+    }
+   ]
+  },
+  {
+   "id": "t06",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "45",
+   "ask": "a 45-second timeout",
+   "verb": "set",
+   "template": "Run `python train_small.py` with the timeout set to {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "45",
+     "unit": "s",
+     "text": "45 seconds",
+     "prompt_user": "Run `python train_small.py` with the timeout set to 45 seconds.",
+     "prompt_sha256": "6a3a7b94e3f7bed1c6c57ab5608296f4903e20310291bf0a924b3566b7b0ad0e"
+    },
+    {
+     "role": "sub",
+     "num": "45000",
+     "unit": "ms",
+     "text": "45000 milliseconds",
+     "prompt_user": "Run `python train_small.py` with the timeout set to 45000 milliseconds.",
+     "prompt_sha256": "f96c628ac538fb6d3f1ade20f014c3057e9ae1454cd22cfcaefd6a9264e50e0e"
+    },
+    {
+     "role": "larger",
+     "num": "3/4",
+     "unit": "min",
+     "text": "0.75 minutes",
+     "prompt_user": "Run `python train_small.py` with the timeout set to 0.75 minutes.",
+     "prompt_sha256": "f0200133d42f645f29b38790411d6e79d69b21dd6926611155faa4fd13c69d11"
+    },
+    {
+     "role": "words",
+     "num": "3/4",
+     "unit": "min",
+     "text": "three quarters of a minute",
+     "prompt_user": "Run `python train_small.py` with the timeout set to three quarters of a minute.",
+     "prompt_sha256": "a888e69c0458713c6ba4e5662ed7347385669eb3dc0d4cc933b636cbe1696b4d"
+    }
+   ]
+  },
+  {
+   "id": "t07",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "480",
+   "ask": "an 8-minute timeout",
+   "verb": "set",
+   "template": "Please run `docker compose up --build` with a time limit of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "480",
+     "unit": "s",
+     "text": "480 seconds",
+     "prompt_user": "Please run `docker compose up --build` with a time limit of 480 seconds.",
+     "prompt_sha256": "19edd821aa474940d13e90c1fbd636fa03aaa2b0d10fee4926081af82730265c"
+    },
+    {
+     "role": "sub",
+     "num": "480000",
+     "unit": "ms",
+     "text": "480000 milliseconds",
+     "prompt_user": "Please run `docker compose up --build` with a time limit of 480000 milliseconds.",
+     "prompt_sha256": "6d9d79badfe93e6f73b6de59bed9c9734d67fda2b31bd2ff11d1a90f9f9d7c9d"
+    },
+    {
+     "role": "larger",
+     "num": "8",
+     "unit": "min",
+     "text": "8 minutes",
+     "prompt_user": "Please run `docker compose up --build` with a time limit of 8 minutes.",
+     "prompt_sha256": "c3df10386a672a1675ee33d454cd53ae70790c25124ebf77d1d9e85971188039"
+    },
+    {
+     "role": "words",
+     "num": "2/15",
+     "unit": "h",
+     "text": "two fifteenths of an hour",
+     "prompt_user": "Please run `docker compose up --build` with a time limit of two fifteenths of an hour.",
+     "prompt_sha256": "1f6cda0c5a55b55b2dd1c5a84dda889483ea78a646df4964ba3c442d2a8dd4c8"
+    }
+   ]
+  },
+  {
+   "id": "t08",
+   "tool": "terminal",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "150",
+   "ask": "a 2.5-minute timeout",
+   "verb": "set",
+   "template": "Run `git gc` with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "150",
+     "unit": "s",
+     "text": "150 seconds",
+     "prompt_user": "Run `git gc` with a timeout of 150 seconds.",
+     "prompt_sha256": "4c6c97dc800e0dfed7637741038ec6745153e5bb4afa2f7dc5eb501a3dcb721b"
+    },
+    {
+     "role": "sub",
+     "num": "150000",
+     "unit": "ms",
+     "text": "150000 milliseconds",
+     "prompt_user": "Run `git gc` with a timeout of 150000 milliseconds.",
+     "prompt_sha256": "1ae6350390e043f24e3b53adc48edcd2cd487d58ec6b2e66b09cea39b279f63d"
+    },
+    {
+     "role": "larger",
+     "num": "5/2",
+     "unit": "min",
+     "text": "2.5 minutes",
+     "prompt_user": "Run `git gc` with a timeout of 2.5 minutes.",
+     "prompt_sha256": "c16f75c8018ad2b747e1d1af82c3585d8ce3771419be15cdbb8a923070b1c33b"
+    },
+    {
+     "role": "words",
+     "num": "5/2",
+     "unit": "min",
+     "text": "two and a half minutes",
+     "prompt_user": "Run `git gc` with a timeout of two and a half minutes.",
+     "prompt_sha256": "0c6524fbbcd73cf5f0459e4606dee417a1071b5c7d8e3ea6861aaecadc9f3fe6"
+    }
+   ]
+  },
+  {
+   "id": "p01",
+   "tool": "process_manage",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "120",
+   "ask": "a 2-minute timeout",
+   "verb": "set",
+   "template": "Wait on proc_4dae56ca81f6 until it exits, with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "120",
+     "unit": "s",
+     "text": "120 seconds",
+     "prompt_user": "Wait on proc_4dae56ca81f6 until it exits, with a timeout of 120 seconds.",
+     "prompt_sha256": "b10c9d6a7f9c94949c79cfe53a4a3105f90c8192d97ac69f19d7fb2bad246bdd"
+    },
+    {
+     "role": "sub",
+     "num": "120000",
+     "unit": "ms",
+     "text": "120000 milliseconds",
+     "prompt_user": "Wait on proc_4dae56ca81f6 until it exits, with a timeout of 120000 milliseconds.",
+     "prompt_sha256": "500b61c51269a894923dde0c669424cc5580e8dc472f1babfd85e6eeac661d0b"
+    },
+    {
+     "role": "larger",
+     "num": "2",
+     "unit": "min",
+     "text": "2 minutes",
+     "prompt_user": "Wait on proc_4dae56ca81f6 until it exits, with a timeout of 2 minutes.",
+     "prompt_sha256": "707385f8242e57cb448d37bcf3588abc511045b5d0713cfceb90209141b03c5e"
+    },
+    {
+     "role": "words",
+     "num": "1/30",
+     "unit": "h",
+     "text": "a thirtieth of an hour",
+     "prompt_user": "Wait on proc_4dae56ca81f6 until it exits, with a timeout of a thirtieth of an hour.",
+     "prompt_sha256": "352d5f37060c9efa7edf882e430d1040c267a32d534b46370b6fa677f4bb7daf"
+    }
+   ]
+  },
+  {
+   "id": "p02",
+   "tool": "process_manage",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "360",
+   "ask": "a 6-minute timeout",
+   "verb": "set",
+   "template": "Block on proc_9b21c07d33ef until it exits, with the timeout set to {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "360",
+     "unit": "s",
+     "text": "360 seconds",
+     "prompt_user": "Block on proc_9b21c07d33ef until it exits, with the timeout set to 360 seconds.",
+     "prompt_sha256": "eeee909a9bbf67afae352e9856d66ee4314086d85a7f77a284557825aee304ec"
+    },
+    {
+     "role": "sub",
+     "num": "360000",
+     "unit": "ms",
+     "text": "360000 milliseconds",
+     "prompt_user": "Block on proc_9b21c07d33ef until it exits, with the timeout set to 360000 milliseconds.",
+     "prompt_sha256": "eeb37d7ef8638b218da55288f9d90e5f2bbc9775cdcb200edf37a3fa2fc5fcc6"
+    },
+    {
+     "role": "larger",
+     "num": "6",
+     "unit": "min",
+     "text": "6 minutes",
+     "prompt_user": "Block on proc_9b21c07d33ef until it exits, with the timeout set to 6 minutes.",
+     "prompt_sha256": "5f7d932531b2ee42622499a3e863edf590c6b9ae25c4c47b68eeaf4986c4465f"
+    },
+    {
+     "role": "words",
+     "num": "1/10",
+     "unit": "h",
+     "text": "a tenth of an hour",
+     "prompt_user": "Block on proc_9b21c07d33ef until it exits, with the timeout set to a tenth of an hour.",
+     "prompt_sha256": "617bc24218bba998fac35c300629082e1b4cee809d05b514aba9993f1357657c"
+    }
+   ]
+  },
+  {
+   "id": "p03",
+   "tool": "process_manage",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "75",
+   "ask": "a 75-second timeout",
+   "verb": "set",
+   "template": "I started proc_51aa0e7c9d42 earlier; wait on it with a time limit of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "75",
+     "unit": "s",
+     "text": "75 seconds",
+     "prompt_user": "I started proc_51aa0e7c9d42 earlier; wait on it with a time limit of 75 seconds.",
+     "prompt_sha256": "f34a0cfae7195dbf77a03a84d80d56119f7d4d5ca53267d4fcbcd36b4c874065"
+    },
+    {
+     "role": "sub",
+     "num": "75000",
+     "unit": "ms",
+     "text": "75000 milliseconds",
+     "prompt_user": "I started proc_51aa0e7c9d42 earlier; wait on it with a time limit of 75000 milliseconds.",
+     "prompt_sha256": "791c743b1a0fecc2292e3343dd6b87f95401079e1bf6595293ab4e041e53ec2c"
+    },
+    {
+     "role": "larger",
+     "num": "5/4",
+     "unit": "min",
+     "text": "1.25 minutes",
+     "prompt_user": "I started proc_51aa0e7c9d42 earlier; wait on it with a time limit of 1.25 minutes.",
+     "prompt_sha256": "d94d296f5ce10869a36f10572464a1f4aecf76620e2af097d3cf6989f7fd617a"
+    },
+    {
+     "role": "words",
+     "num": "5/4",
+     "unit": "min",
+     "text": "one and a quarter minutes",
+     "prompt_user": "I started proc_51aa0e7c9d42 earlier; wait on it with a time limit of one and a quarter minutes.",
+     "prompt_sha256": "9a9d0379509ccb6c9c9174776a8b274f4beb94c82c4665dfedc716d10c67d633"
+    }
+   ]
+  },
+  {
+   "id": "p04",
+   "tool": "process_manage",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "540",
+   "ask": "a 9-minute timeout",
+   "verb": "set",
+   "template": "Hold on proc_c0de77a1b2f3 until it exits, with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "540",
+     "unit": "s",
+     "text": "540 seconds",
+     "prompt_user": "Hold on proc_c0de77a1b2f3 until it exits, with a timeout of 540 seconds.",
+     "prompt_sha256": "ebd14cf0b06344a5d6478ac2ae3ed9871ed23209dfe73629fc16794fb5d95d35"
+    },
+    {
+     "role": "sub",
+     "num": "540000",
+     "unit": "ms",
+     "text": "540000 milliseconds",
+     "prompt_user": "Hold on proc_c0de77a1b2f3 until it exits, with a timeout of 540000 milliseconds.",
+     "prompt_sha256": "66b488e93c00102f708bf29e9eaef1526104c05f9b035f028b24ebcb6189d9cc"
+    },
+    {
+     "role": "larger",
+     "num": "9",
+     "unit": "min",
+     "text": "9 minutes",
+     "prompt_user": "Hold on proc_c0de77a1b2f3 until it exits, with a timeout of 9 minutes.",
+     "prompt_sha256": "08457f80c0e21c8aaab9658e4161c19ef7c1aac5ad5c42b88ebc715af630d33f"
+    },
+    {
+     "role": "words",
+     "num": "3/20",
+     "unit": "h",
+     "text": "three twentieths of an hour",
+     "prompt_user": "Hold on proc_c0de77a1b2f3 until it exits, with a timeout of three twentieths of an hour.",
+     "prompt_sha256": "998c243e446916c3c80ae3335d80d5654b0ad6efe246daa1f239e9278f7270ef"
+    }
+   ]
+  },
+  {
+   "id": "c01",
+   "tool": "browser_cdp",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {},
+   "expected": "10",
+   "ask": "a 10-second timeout",
+   "verb": "set",
+   "template": "On the open tab call the DevTools method Page.captureScreenshot with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "10",
+     "unit": "s",
+     "text": "10 seconds",
+     "prompt_user": "On the open tab call the DevTools method Page.captureScreenshot with a timeout of 10 seconds.",
+     "prompt_sha256": "a212ad915683aac901379296f2140a18e95ddf4ca3aa31ef290cda163bcf7767"
+    },
+    {
+     "role": "sub",
+     "num": "10000",
+     "unit": "ms",
+     "text": "10000 milliseconds",
+     "prompt_user": "On the open tab call the DevTools method Page.captureScreenshot with a timeout of 10000 milliseconds.",
+     "prompt_sha256": "297984351471ff6e96ee70cf627073c3fda4858bd493326c95ff26e7a22966ad"
+    },
+    {
+     "role": "larger",
+     "num": "1/6",
+     "unit": "min",
+     "text": "one sixth of a minute",
+     "prompt_user": "On the open tab call the DevTools method Page.captureScreenshot with a timeout of one sixth of a minute.",
+     "prompt_sha256": "b79fa1a20dad0fd8cf5b900fd811ada69003c0b57b5393701fb81ccc8c3c7d90"
+    },
+    {
+     "role": "words",
+     "num": "10",
+     "unit": "s",
+     "text": "ten seconds",
+     "prompt_user": "On the open tab call the DevTools method Page.captureScreenshot with a timeout of ten seconds.",
+     "prompt_sha256": "efb0e46c323210c43102e2c38c4ed1df3a8dda0c440480d5e7c5e6e5eb0966c1"
+    }
+   ]
+  },
+  {
+   "id": "c02",
+   "tool": "browser_cdp",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {},
+   "expected": "45",
+   "ask": "a 45-second timeout",
+   "verb": "set",
+   "template": "Send Runtime.evaluate to the current page with the timeout set to {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "45",
+     "unit": "s",
+     "text": "45 seconds",
+     "prompt_user": "Send Runtime.evaluate to the current page with the timeout set to 45 seconds.",
+     "prompt_sha256": "94cca74f5372e586e7d1dfd765cc9b1a983e9dafcbca771df835e20cf62ddbc4"
+    },
+    {
+     "role": "sub",
+     "num": "45000",
+     "unit": "ms",
+     "text": "45000 milliseconds",
+     "prompt_user": "Send Runtime.evaluate to the current page with the timeout set to 45000 milliseconds.",
+     "prompt_sha256": "442a6ca872d90d1ce8f096743c4697f6ffe628845d6abdd4c9082cc91a4dc3f4"
+    },
+    {
+     "role": "larger",
+     "num": "3/4",
+     "unit": "min",
+     "text": "0.75 minutes",
+     "prompt_user": "Send Runtime.evaluate to the current page with the timeout set to 0.75 minutes.",
+     "prompt_sha256": "8c46acdf2ab91e1f1bbb7c38aaf68094aaf90b4826770f9a6bb773436d2bc35f"
+    },
+    {
+     "role": "words",
+     "num": "3/4",
+     "unit": "min",
+     "text": "three quarters of a minute",
+     "prompt_user": "Send Runtime.evaluate to the current page with the timeout set to three quarters of a minute.",
+     "prompt_sha256": "c63b06ba28fbfec95cd4dd3a74029593ab40af10ee0a2ec47c23c355897d693f"
+    }
+   ]
+  },
+  {
+   "id": "c03",
+   "tool": "browser_cdp",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {},
+   "expected": "120",
+   "ask": "a 2-minute timeout",
+   "verb": "set",
+   "template": "Call Page.reload on the active tab with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "120",
+     "unit": "s",
+     "text": "120 seconds",
+     "prompt_user": "Call Page.reload on the active tab with a timeout of 120 seconds.",
+     "prompt_sha256": "80625081bda3417097073c14690e2593672f7504a08ccd70553287b863a912b4"
+    },
+    {
+     "role": "sub",
+     "num": "120000",
+     "unit": "ms",
+     "text": "120000 milliseconds",
+     "prompt_user": "Call Page.reload on the active tab with a timeout of 120000 milliseconds.",
+     "prompt_sha256": "8c91c1aa3c1bdc47fb6d34dd8afefdbada8324e7ab5db09c85d7acae087bfb2b"
+    },
+    {
+     "role": "larger",
+     "num": "2",
+     "unit": "min",
+     "text": "2 minutes",
+     "prompt_user": "Call Page.reload on the active tab with a timeout of 2 minutes.",
+     "prompt_sha256": "478031417419a811b3143cdced378b029c96c7d1e8c326a908cc810e4720d512"
+    },
+    {
+     "role": "words",
+     "num": "1/30",
+     "unit": "h",
+     "text": "a thirtieth of an hour",
+     "prompt_user": "Call Page.reload on the active tab with a timeout of a thirtieth of an hour.",
+     "prompt_sha256": "b0db9eb2a6e2dd762aded3d6450667c90cd4bcfecb89840bc65d858a484e453d"
+    }
+   ]
+  },
+  {
+   "id": "c04",
+   "tool": "browser_cdp",
+   "real": true,
+   "arg": "timeout",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {},
+   "expected": "5/2",
+   "ask": "a 2.5-second timeout",
+   "verb": "set",
+   "template": "Use the Network.getCookies method on the open tab with a time limit of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "5/2",
+     "unit": "s",
+     "text": "2.5 seconds",
+     "prompt_user": "Use the Network.getCookies method on the open tab with a time limit of 2.5 seconds.",
+     "prompt_sha256": "2c86fc2ae884e79b57745d8bd35d88836dfee9b53b508d21bf27170337793ba5"
+    },
+    {
+     "role": "sub",
+     "num": "2500",
+     "unit": "ms",
+     "text": "2500 milliseconds",
+     "prompt_user": "Use the Network.getCookies method on the open tab with a time limit of 2500 milliseconds.",
+     "prompt_sha256": "1ebdc80ce2b4c3281195428b73aae0a53befa05005d638213fe66629de9e5004"
+    },
+    {
+     "role": "larger",
+     "num": "1/24",
+     "unit": "min",
+     "text": "one twenty-fourth of a minute",
+     "prompt_user": "Use the Network.getCookies method on the open tab with a time limit of one twenty-fourth of a minute.",
+     "prompt_sha256": "5f2b8d8f89316ad6de5e287a5e3fc48e703430b7f7c9a391748bb8a8549db531"
+    },
+    {
+     "role": "words",
+     "num": "5/2",
+     "unit": "s",
+     "text": "two and a half seconds",
+     "prompt_user": "Use the Network.getCookies method on the open tab with a time limit of two and a half seconds.",
+     "prompt_sha256": "bba81cd0183e08a558faf0aa3a26d03551cccb7289b34ca77c049f83473a5c2d"
+    }
+   ]
+  },
+  {
+   "id": "e01",
+   "tool": "browser_exec",
+   "real": true,
+   "arg": "timeout_s",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "600",
+   "ask": "a 10-minute timeout",
+   "verb": "set",
+   "template": "In the browser run `print(page_info())` with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "600",
+     "unit": "s",
+     "text": "600 seconds",
+     "prompt_user": "In the browser run `print(page_info())` with a timeout of 600 seconds.",
+     "prompt_sha256": "ec5afad52e463a94b2c66e093190f7ad2a7dd69c87bfd494b3bf6cc882588cde"
+    },
+    {
+     "role": "sub",
+     "num": "600000",
+     "unit": "ms",
+     "text": "600000 milliseconds",
+     "prompt_user": "In the browser run `print(page_info())` with a timeout of 600000 milliseconds.",
+     "prompt_sha256": "315662469f82053b3c8b240c97d21cb358ecb1f8d59e5d4a32bbaab946e81df5"
+    },
+    {
+     "role": "larger",
+     "num": "10",
+     "unit": "min",
+     "text": "10 minutes",
+     "prompt_user": "In the browser run `print(page_info())` with a timeout of 10 minutes.",
+     "prompt_sha256": "ab690007ca67d882b6f7a4af4db34a2504a16fd41f242c7ea73a60734a5348e1"
+    },
+    {
+     "role": "words",
+     "num": "1/6",
+     "unit": "h",
+     "text": "a sixth of an hour",
+     "prompt_user": "In the browser run `print(page_info())` with a timeout of a sixth of an hour.",
+     "prompt_sha256": "df631643664b0498027417c859845b884cf39a511371173b5e285c864e3e90cb"
+    }
+   ]
+  },
+  {
+   "id": "e02",
+   "tool": "browser_exec",
+   "real": true,
+   "arg": "timeout_s",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "30",
+   "ask": "a 30-second timeout",
+   "verb": "set",
+   "template": "Run this browser snippet `print(js('document.title'))` with the timeout set to {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "30",
+     "unit": "s",
+     "text": "30 seconds",
+     "prompt_user": "Run this browser snippet `print(js('document.title'))` with the timeout set to 30 seconds.",
+     "prompt_sha256": "cd49fbf60f277b10968a514afc99dd788b36f788944533c0b1d1098c73ca2155"
+    },
+    {
+     "role": "sub",
+     "num": "30000",
+     "unit": "ms",
+     "text": "30000 milliseconds",
+     "prompt_user": "Run this browser snippet `print(js('document.title'))` with the timeout set to 30000 milliseconds.",
+     "prompt_sha256": "391803ed8c077afd7ad9123e4d6f5c2cc19b78a13e4050a50f22a3e683a5a00b"
+    },
+    {
+     "role": "larger",
+     "num": "1/2",
+     "unit": "min",
+     "text": "0.5 minutes",
+     "prompt_user": "Run this browser snippet `print(js('document.title'))` with the timeout set to 0.5 minutes.",
+     "prompt_sha256": "13f35bc414ad2b821ae2d02cf5701f4b83492b6d814b8d0f2d30efcf4a2995aa"
+    },
+    {
+     "role": "words",
+     "num": "30",
+     "unit": "s",
+     "text": "thirty seconds",
+     "prompt_user": "Run this browser snippet `print(js('document.title'))` with the timeout set to thirty seconds.",
+     "prompt_sha256": "eda88af5a16eed907cf24737dfae8a8ad5d535af3de0e78d6a0ee40deda2e6b7"
+    }
+   ]
+  },
+  {
+   "id": "e03",
+   "tool": "browser_exec",
+   "real": true,
+   "arg": "timeout_s",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "1200",
+   "ask": "a 20-minute timeout",
+   "verb": "set",
+   "template": "In the browser run `print(js('location.href'))` with a time limit of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "1200",
+     "unit": "s",
+     "text": "1200 seconds",
+     "prompt_user": "In the browser run `print(js('location.href'))` with a time limit of 1200 seconds.",
+     "prompt_sha256": "85245c4ea69b4cc8d89b3f4f69c2433c7e86d642728892ddb2deab2527754b34"
+    },
+    {
+     "role": "sub",
+     "num": "1200000",
+     "unit": "ms",
+     "text": "1200000 milliseconds",
+     "prompt_user": "In the browser run `print(js('location.href'))` with a time limit of 1200000 milliseconds.",
+     "prompt_sha256": "52349c3b53ea03e85a54844c4f2d850ef4e1bbe810129ab437ffa2f2b86fc9db"
+    },
+    {
+     "role": "larger",
+     "num": "20",
+     "unit": "min",
+     "text": "20 minutes",
+     "prompt_user": "In the browser run `print(js('location.href'))` with a time limit of 20 minutes.",
+     "prompt_sha256": "2c97acca573987cfb8d6f1781c2128f1edaf398e85035f72dff15a18d240ff6e"
+    },
+    {
+     "role": "words",
+     "num": "1/3",
+     "unit": "h",
+     "text": "a third of an hour",
+     "prompt_user": "In the browser run `print(js('location.href'))` with a time limit of a third of an hour.",
+     "prompt_sha256": "84329329b195ae1356294aad04c0d1ce496c1677dc039587eb30b9a101d8c74e"
+    }
+   ]
+  },
+  {
+   "id": "e04",
+   "tool": "browser_exec",
+   "real": true,
+   "arg": "timeout_s",
+   "unit": "seconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "180",
+   "ask": "a 3-minute timeout",
+   "verb": "set",
+   "template": "Run `goto_url('https://example.org')` in the browser with a timeout of {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "180",
+     "unit": "s",
+     "text": "180 seconds",
+     "prompt_user": "Run `goto_url('https://example.org')` in the browser with a timeout of 180 seconds.",
+     "prompt_sha256": "b12af8897a7c7debea9ab9773d4ef4b884efcf32abc9c1c1e2ac37e3bcc08199"
+    },
+    {
+     "role": "sub",
+     "num": "180000",
+     "unit": "ms",
+     "text": "180000 milliseconds",
+     "prompt_user": "Run `goto_url('https://example.org')` in the browser with a timeout of 180000 milliseconds.",
+     "prompt_sha256": "0dac36fc97c0d2de4cf2965e7e3c997263647874a39d71664dceab52920f3fd1"
+    },
+    {
+     "role": "larger",
+     "num": "3",
+     "unit": "min",
+     "text": "3 minutes",
+     "prompt_user": "Run `goto_url('https://example.org')` in the browser with a timeout of 3 minutes.",
+     "prompt_sha256": "ab05746e1d9dbac167a5e99ab7b09bc38b0872caa84a8119c64515a5ecb71be6"
+    },
+    {
+     "role": "words",
+     "num": "1/20",
+     "unit": "h",
+     "text": "a twentieth of an hour",
+     "prompt_user": "Run `goto_url('https://example.org')` in the browser with a timeout of a twentieth of an hour.",
+     "prompt_sha256": "3f7223ce8fe86663d8dd9299f929c223eb0b3e3ab9c11af6b5b008732c714575"
+    }
+   ]
+  },
+  {
+   "id": "u01",
+   "tool": "computer_use",
+   "real": true,
+   "arg": "seconds",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "5/2",
+   "ask": "a 2.5-second pause",
+   "verb": "set",
+   "template": "Pause for {Q} so the page can finish loading.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "5/2",
+     "unit": "s",
+     "text": "2.5 seconds",
+     "prompt_user": "Pause for 2.5 seconds so the page can finish loading.",
+     "prompt_sha256": "05a7dd3f6c073d0ec5fe3489a7ec74eba5daf5176a950dc55547858e22813cdf"
+    },
+    {
+     "role": "sub",
+     "num": "2500",
+     "unit": "ms",
+     "text": "2500 milliseconds",
+     "prompt_user": "Pause for 2500 milliseconds so the page can finish loading.",
+     "prompt_sha256": "0741b8d7997892c88631e6a08b2f3a1559ef83ee7704e948785c162e40eb7a8a"
+    },
+    {
+     "role": "larger",
+     "num": "1/24",
+     "unit": "min",
+     "text": "one twenty-fourth of a minute",
+     "prompt_user": "Pause for one twenty-fourth of a minute so the page can finish loading.",
+     "prompt_sha256": "66d7dd9c28263aa50b5d7e8979a38d361d41e905d3e54402d917ebf55d82224b"
+    },
+    {
+     "role": "words",
+     "num": "5/2",
+     "unit": "s",
+     "text": "two and a half seconds",
+     "prompt_user": "Pause for two and a half seconds so the page can finish loading.",
+     "prompt_sha256": "f121ad6b567be21f2211ab58053901b702bfa9b4c6a43e5e1c3829c82f54b426"
+    }
+   ]
+  },
+  {
+   "id": "u02",
+   "tool": "computer_use",
+   "real": true,
+   "arg": "seconds",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "12",
+   "ask": "a 12-second wait",
+   "verb": "set",
+   "template": "Wait {Q} before the next click.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "12",
+     "unit": "s",
+     "text": "12 seconds",
+     "prompt_user": "Wait 12 seconds before the next click.",
+     "prompt_sha256": "bea57f563d6af59bbc7d7a9e22b56b15895511d49b97d3ad2551bd1b27e5bf66"
+    },
+    {
+     "role": "sub",
+     "num": "12000",
+     "unit": "ms",
+     "text": "12000 milliseconds",
+     "prompt_user": "Wait 12000 milliseconds before the next click.",
+     "prompt_sha256": "8dc4a9b97e183c95f971a6e766d98c89fc48db7c66727902292e5ec36575544e"
+    },
+    {
+     "role": "larger",
+     "num": "1/5",
+     "unit": "min",
+     "text": "0.2 minutes",
+     "prompt_user": "Wait 0.2 minutes before the next click.",
+     "prompt_sha256": "25999623176ba69e37c344cdca7f038592b99ffa01a9f19e54735e7a26e0bf5c"
+    },
+    {
+     "role": "words",
+     "num": "1/5",
+     "unit": "min",
+     "text": "a fifth of a minute",
+     "prompt_user": "Wait a fifth of a minute before the next click.",
+     "prompt_sha256": "9203de549b36133b830fd2d9b5fe818bb04428e4d3d8da29c639097b492a45ed"
+    }
+   ]
+  },
+  {
+   "id": "u03",
+   "tool": "computer_use",
+   "real": true,
+   "arg": "seconds",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "1/2",
+   "ask": "a half-second wait",
+   "verb": "set",
+   "template": "Just wait {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "1/2",
+     "unit": "s",
+     "text": "0.5 seconds",
+     "prompt_user": "Just wait 0.5 seconds.",
+     "prompt_sha256": "857853bfdffe5f6dee25e8748a451c25605f9424f423e5dad91bff11f2276599"
+    },
+    {
+     "role": "sub",
+     "num": "500",
+     "unit": "ms",
+     "text": "500 milliseconds",
+     "prompt_user": "Just wait 500 milliseconds.",
+     "prompt_sha256": "8341fc2f8d1b7e1994dabcf8b80b2cb3efa0bbd3509fb592b99203292f43a244"
+    },
+    {
+     "role": "larger",
+     "num": "1/120",
+     "unit": "min",
+     "text": "a hundred-and-twentieth of a minute",
+     "prompt_user": "Just wait a hundred-and-twentieth of a minute.",
+     "prompt_sha256": "af45eec3c6c37c49587ed2036c718b2694d81fc08ba76a77f24674b843d81d07"
+    },
+    {
+     "role": "words",
+     "num": "1/2",
+     "unit": "s",
+     "text": "half a second",
+     "prompt_user": "Just wait half a second.",
+     "prompt_sha256": "48b49d5982adbd9d31da9988b8e9ccd923c8ddba3e453738e8bfeec19593a019"
+    }
+   ]
+  },
+  {
+   "id": "u04",
+   "tool": "computer_use",
+   "real": true,
+   "arg": "seconds",
+   "unit": "seconds",
+   "arg_type": "number",
+   "must": {
+    "action": "wait"
+   },
+   "expected": "20",
+   "ask": "a 20-second wait",
+   "verb": "set",
+   "template": "Give the app {Q} to open its window.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "20",
+     "unit": "s",
+     "text": "20 seconds",
+     "prompt_user": "Give the app 20 seconds to open its window.",
+     "prompt_sha256": "77cc1ee75894fbd23e1a5efa1d3c4f0f60d5a6dee9be6fde58b35f28f5e48342"
+    },
+    {
+     "role": "sub",
+     "num": "20000",
+     "unit": "ms",
+     "text": "20000 milliseconds",
+     "prompt_user": "Give the app 20000 milliseconds to open its window.",
+     "prompt_sha256": "a5bb30ebac44759027f3a0a9b635376be91d2e3703e67edfa3c424b8f1238fb6"
+    },
+    {
+     "role": "larger",
+     "num": "1/3",
+     "unit": "min",
+     "text": "one third of a minute",
+     "prompt_user": "Give the app one third of a minute to open its window.",
+     "prompt_sha256": "ca5b17311db4a8133ccac4944f05bd865ddad59286ac663839e2fb716a0a23d8"
+    },
+    {
+     "role": "words",
+     "num": "20",
+     "unit": "s",
+     "text": "twenty seconds",
+     "prompt_user": "Give the app twenty seconds to open its window.",
+     "prompt_sha256": "c6b7b39305c2d1f41dd44369beb0973ae646baec362dc5bb46da86fe1f4a6fec"
+    }
+   ]
+  },
+  {
+   "id": "d01",
+   "tool": "charge_card",
+   "real": false,
+   "arg": "amount_cents",
+   "unit": "cents",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "1250",
+   "ask": "a $12.50 charge",
+   "verb": "charged",
+   "template": "Charge {Q} to the card labelled 'office-visa'.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "1250",
+     "unit": "cents",
+     "text": "1250 cents",
+     "prompt_user": "Charge 1250 cents to the card labelled 'office-visa'.",
+     "prompt_sha256": "5088796e6d7c137e7e3ac48374e5de6769f8dfa9e473377984bac083630cc7dd"
+    },
+    {
+     "role": "sub",
+     "num": "25/2",
+     "unit": "dollars",
+     "text": "12 dollars and 50 cents",
+     "prompt_user": "Charge 12 dollars and 50 cents to the card labelled 'office-visa'.",
+     "prompt_sha256": "56614258c2b58eb40144f40d975bd66a8264694fcdb9fa902106e14bd34deb41"
+    },
+    {
+     "role": "larger",
+     "num": "25/2",
+     "unit": "dollars",
+     "text": "12.50 dollars",
+     "prompt_user": "Charge 12.50 dollars to the card labelled 'office-visa'.",
+     "prompt_sha256": "558a86a02d8cf8014efeca91f39e9f2aba7682facd1a35d1fd32d4d4537bea5a"
+    },
+    {
+     "role": "words",
+     "num": "25/2",
+     "unit": "dollars",
+     "text": "twelve dollars fifty",
+     "prompt_user": "Charge twelve dollars fifty to the card labelled 'office-visa'.",
+     "prompt_sha256": "f98211d62795b657269949e45211ed4c79ababe636dd4912c2cd42f16b7df162"
+    }
+   ]
+  },
+  {
+   "id": "d02",
+   "tool": "charge_card",
+   "real": false,
+   "arg": "amount_cents",
+   "unit": "cents",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "4999",
+   "ask": "a $49.99 charge",
+   "verb": "charged",
+   "template": "Bill {Q} to the card labelled 'team-amex'.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "4999",
+     "unit": "cents",
+     "text": "4999 cents",
+     "prompt_user": "Bill 4999 cents to the card labelled 'team-amex'.",
+     "prompt_sha256": "1a061acfb50371ec28b4da6887a1f85deed4ff38f904153cc6c1ed771ec96ae2"
+    },
+    {
+     "role": "sub",
+     "num": "4999/100",
+     "unit": "dollars",
+     "text": "49 dollars and 99 cents",
+     "prompt_user": "Bill 49 dollars and 99 cents to the card labelled 'team-amex'.",
+     "prompt_sha256": "ef627590b962b3d3b06af6daaf391a5338ba2a3e132d9a4fda66a7d8995ced9a"
+    },
+    {
+     "role": "larger",
+     "num": "4999/100",
+     "unit": "dollars",
+     "text": "49.99 dollars",
+     "prompt_user": "Bill 49.99 dollars to the card labelled 'team-amex'.",
+     "prompt_sha256": "6bf515594bff6cc0916236900220271e408c1cdfd78a8e6175c466a4015123d4"
+    },
+    {
+     "role": "words",
+     "num": "4999/100",
+     "unit": "dollars",
+     "text": "forty-nine dollars ninety-nine",
+     "prompt_user": "Bill forty-nine dollars ninety-nine to the card labelled 'team-amex'.",
+     "prompt_sha256": "62d5b298ab4f2950203e64f7f09c9c73985709329bb26d297cdaa6339514284f"
+    }
+   ]
+  },
+  {
+   "id": "d03",
+   "tool": "charge_card",
+   "real": false,
+   "arg": "amount_cents",
+   "unit": "cents",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "120000",
+   "ask": "a $1,200 charge",
+   "verb": "charged",
+   "template": "Take {Q} from the 'travel' card.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "120000",
+     "unit": "cents",
+     "text": "120000 cents",
+     "prompt_user": "Take 120000 cents from the 'travel' card.",
+     "prompt_sha256": "5e063fad23d3f62fd01689bf968a7e9b153bebdce5dc4ebb84afcfad99ad8f16"
+    },
+    {
+     "role": "sub",
+     "num": "1200",
+     "unit": "dollars",
+     "text": "1200 dollars",
+     "prompt_user": "Take 1200 dollars from the 'travel' card.",
+     "prompt_sha256": "b1be35e633be84d4423db479be0dbc4c11cbbfe7be0674ca7dcfa1753c86c665"
+    },
+    {
+     "role": "larger",
+     "num": "6/5",
+     "unit": "kdollars",
+     "text": "1.2 thousand dollars",
+     "prompt_user": "Take 1.2 thousand dollars from the 'travel' card.",
+     "prompt_sha256": "446256e55feea23cbcccd6dadd5db24d291ccb7cf932e67e83a6856348b23195"
+    },
+    {
+     "role": "words",
+     "num": "1200",
+     "unit": "dollars",
+     "text": "twelve hundred dollars",
+     "prompt_user": "Take twelve hundred dollars from the 'travel' card.",
+     "prompt_sha256": "97fb1b115a6220d98f5c1282249f8b94d347915bfb45cf24a679157099a8e1f0"
+    }
+   ]
+  },
+  {
+   "id": "d04",
+   "tool": "charge_card",
+   "real": false,
+   "arg": "amount_cents",
+   "unit": "cents",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "75",
+   "ask": "a 75-cent charge",
+   "verb": "charged",
+   "template": "Charge {Q} to the 'lab' card.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "75",
+     "unit": "cents",
+     "text": "75 cents",
+     "prompt_user": "Charge 75 cents to the 'lab' card.",
+     "prompt_sha256": "afe92d3cef68f2d505b0e06104d80feb18fd4dfbded5fe57098cfc230f9e7b7b"
+    },
+    {
+     "role": "sub",
+     "num": "3/4",
+     "unit": "dollars",
+     "text": "three quarters of a dollar",
+     "prompt_user": "Charge three quarters of a dollar to the 'lab' card.",
+     "prompt_sha256": "d6d0a5c6c94ab5984805a5ea7aecb626a262112339886afac0a31e21e753d2f0"
+    },
+    {
+     "role": "larger",
+     "num": "3/4",
+     "unit": "dollars",
+     "text": "0.75 dollars",
+     "prompt_user": "Charge 0.75 dollars to the 'lab' card.",
+     "prompt_sha256": "6a110bbaf8e0455a4d453668aac798b17ae19b0cef2ac3e7d1c4211774d0f240"
+    },
+    {
+     "role": "words",
+     "num": "75",
+     "unit": "cents",
+     "text": "seventy-five cents",
+     "prompt_user": "Charge seventy-five cents to the 'lab' card.",
+     "prompt_sha256": "49b151512f6139239de7410868faceb895e807cc27d227cf6f70260f02093a72"
+    }
+   ]
+  },
+  {
+   "id": "m01",
+   "tool": "trim_cable",
+   "real": false,
+   "arg": "length_m",
+   "unit": "metres",
+   "arg_type": "number",
+   "must": {},
+   "expected": "7/2",
+   "ask": "a 3.5-metre cut",
+   "verb": "cut",
+   "template": "Cut {Q} off the spool 'cat6-blue'.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "7/2",
+     "unit": "m",
+     "text": "3.5 metres",
+     "prompt_user": "Cut 3.5 metres off the spool 'cat6-blue'.",
+     "prompt_sha256": "473fe7797d2c0a9283d147761816e2bdd6f839596901611c2147a516f6f02d92"
+    },
+    {
+     "role": "sub",
+     "num": "350",
+     "unit": "cm",
+     "text": "350 centimetres",
+     "prompt_user": "Cut 350 centimetres off the spool 'cat6-blue'.",
+     "prompt_sha256": "34f868f7f8b9139940b24fa7025771fe2bf7efe3ff5ddb2a20b63e1ebb558708"
+    },
+    {
+     "role": "larger",
+     "num": "7/2000",
+     "unit": "km",
+     "text": "0.0035 kilometres",
+     "prompt_user": "Cut 0.0035 kilometres off the spool 'cat6-blue'.",
+     "prompt_sha256": "202e2d5d173685a8fa9db44958f2cc682e58b853985d7a87fd6c1af0f53aff36"
+    },
+    {
+     "role": "words",
+     "num": "7/2",
+     "unit": "m",
+     "text": "three and a half metres",
+     "prompt_user": "Cut three and a half metres off the spool 'cat6-blue'.",
+     "prompt_sha256": "e5626a032727e784084ff05842c7ec289b914e1494daf3b6f714c183dbb0a6e4"
+    }
+   ]
+  },
+  {
+   "id": "m02",
+   "tool": "trim_cable",
+   "real": false,
+   "arg": "length_m",
+   "unit": "metres",
+   "arg_type": "number",
+   "must": {},
+   "expected": "1/4",
+   "ask": "a 25-centimetre cut",
+   "verb": "cut",
+   "template": "Trim {Q} from spool 'power-red'.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "1/4",
+     "unit": "m",
+     "text": "0.25 metres",
+     "prompt_user": "Trim 0.25 metres from spool 'power-red'.",
+     "prompt_sha256": "41a9af1ee64e2475860f7be8bf623e80b747b8011f2b8c2bedd4ead88c08cb41"
+    },
+    {
+     "role": "sub",
+     "num": "25",
+     "unit": "cm",
+     "text": "25 centimetres",
+     "prompt_user": "Trim 25 centimetres from spool 'power-red'.",
+     "prompt_sha256": "31d8819cb8e9aa462e9df4e3c3a330ed6a634bf047bb802df026205d1b8cdd45"
+    },
+    {
+     "role": "larger",
+     "num": "1/4000",
+     "unit": "km",
+     "text": "0.00025 kilometres",
+     "prompt_user": "Trim 0.00025 kilometres from spool 'power-red'.",
+     "prompt_sha256": "bb978c53bb90c1e9f33ffecf5ad910cdb254e22ef60c48c48a4a6ca552cdb02c"
+    },
+    {
+     "role": "words",
+     "num": "1/4",
+     "unit": "m",
+     "text": "a quarter of a metre",
+     "prompt_user": "Trim a quarter of a metre from spool 'power-red'.",
+     "prompt_sha256": "411ded4e974b4bb0519d707de98fcc0c74eae9035d442e6e3d30d0fda7aa4dc4"
+    }
+   ]
+  },
+  {
+   "id": "m03",
+   "tool": "trim_cable",
+   "real": false,
+   "arg": "length_m",
+   "unit": "metres",
+   "arg_type": "number",
+   "must": {},
+   "expected": "1200",
+   "ask": "a 1.2-kilometre cut",
+   "verb": "cut",
+   "template": "Cut a length of {Q} from spool 'fibre-9'.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "1200",
+     "unit": "m",
+     "text": "1200 metres",
+     "prompt_user": "Cut a length of 1200 metres from spool 'fibre-9'.",
+     "prompt_sha256": "cbfe47371b5c946d4a8d3b7944c78b4481e267b4bb431705cfb38970cb409d61"
+    },
+    {
+     "role": "sub",
+     "num": "120000",
+     "unit": "cm",
+     "text": "120000 centimetres",
+     "prompt_user": "Cut a length of 120000 centimetres from spool 'fibre-9'.",
+     "prompt_sha256": "3e9f14ffa5bbd1dda95eb4402871b6a5ca306e6097043c527ceb8c51c42c05a4"
+    },
+    {
+     "role": "larger",
+     "num": "6/5",
+     "unit": "km",
+     "text": "1.2 kilometres",
+     "prompt_user": "Cut a length of 1.2 kilometres from spool 'fibre-9'.",
+     "prompt_sha256": "cdba4c03b395d4ecbbb34e3bebaa495cc2d06b460d52f12ef4e65024b7be9727"
+    },
+    {
+     "role": "words",
+     "num": "6/5",
+     "unit": "km",
+     "text": "one and a fifth kilometres",
+     "prompt_user": "Cut a length of one and a fifth kilometres from spool 'fibre-9'.",
+     "prompt_sha256": "1661a1e91e84f1af8ccff87d63a81310ac257ca6fb49fab13b6874adeae14bf2"
+    }
+   ]
+  },
+  {
+   "id": "m04",
+   "tool": "trim_cable",
+   "real": false,
+   "arg": "length_m",
+   "unit": "metres",
+   "arg_type": "number",
+   "must": {},
+   "expected": "45",
+   "ask": "a 45-metre cut",
+   "verb": "cut",
+   "template": "Cut {Q} from spool 'cord-3'.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "45",
+     "unit": "m",
+     "text": "45 metres",
+     "prompt_user": "Cut 45 metres from spool 'cord-3'.",
+     "prompt_sha256": "422f442073ed01d0b2c6a6eca18bce6c3c8f559eaed6854f126697a2fb6c76e0"
+    },
+    {
+     "role": "sub",
+     "num": "45000",
+     "unit": "mm",
+     "text": "45000 millimetres",
+     "prompt_user": "Cut 45000 millimetres from spool 'cord-3'.",
+     "prompt_sha256": "5834226b22c7857e72d4cb0d8eaf00e446b055be2d9e915d41fdb960e280ff7e"
+    },
+    {
+     "role": "larger",
+     "num": "9/200",
+     "unit": "km",
+     "text": "0.045 kilometres",
+     "prompt_user": "Cut 0.045 kilometres from spool 'cord-3'.",
+     "prompt_sha256": "6267de5a0af559e8f1cacf8017f6b7cf630d0fe8e5d839b5d06c213d391ba347"
+    },
+    {
+     "role": "words",
+     "num": "45",
+     "unit": "m",
+     "text": "forty-five metres",
+     "prompt_user": "Cut forty-five metres from spool 'cord-3'.",
+     "prompt_sha256": "95314449c88b01849739d1fa8f7f16571b70626f7a0144de6095f211101aa69b"
+    }
+   ]
+  },
+  {
+   "id": "y01",
+   "tool": "set_delay",
+   "real": false,
+   "arg": "delay_ms",
+   "unit": "milliseconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "2500",
+   "ask": "a 2.5-second delay",
+   "verb": "set",
+   "template": "Set the retry delay for 'uploader' to {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "2500",
+     "unit": "ms",
+     "text": "2500 milliseconds",
+     "prompt_user": "Set the retry delay for 'uploader' to 2500 milliseconds.",
+     "prompt_sha256": "40132349259279c4f6103e11c14ca3224ef01a7435a061c48230f601f9348d3e"
+    },
+    {
+     "role": "sub",
+     "num": "2500000",
+     "unit": "us",
+     "text": "2500000 microseconds",
+     "prompt_user": "Set the retry delay for 'uploader' to 2500000 microseconds.",
+     "prompt_sha256": "f90db10707f0a62897322499294e5d7acc69d4e1b63713df33864acbc7d3b7ed"
+    },
+    {
+     "role": "larger",
+     "num": "5/2",
+     "unit": "s",
+     "text": "2.5 seconds",
+     "prompt_user": "Set the retry delay for 'uploader' to 2.5 seconds.",
+     "prompt_sha256": "63c918405f5fcfc7e1e5fedf7d8675b36450b456aced311c1e728c893fb7ab33"
+    },
+    {
+     "role": "words",
+     "num": "5/2",
+     "unit": "s",
+     "text": "two and a half seconds",
+     "prompt_user": "Set the retry delay for 'uploader' to two and a half seconds.",
+     "prompt_sha256": "89178e9bba09d1046449c0f15bb30020c56947ffc5db094776e955868e8f4264"
+    }
+   ]
+  },
+  {
+   "id": "y02",
+   "tool": "set_delay",
+   "real": false,
+   "arg": "delay_ms",
+   "unit": "milliseconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "60000",
+   "ask": "a 1-minute delay",
+   "verb": "set",
+   "template": "Configure the 'poller' to wait {Q} between checks.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "60000",
+     "unit": "ms",
+     "text": "60000 milliseconds",
+     "prompt_user": "Configure the 'poller' to wait 60000 milliseconds between checks.",
+     "prompt_sha256": "17e591137ac8fcc29614b7c5dc3dd489c2ca753cf7f42b1b85f4c46df8a144fd"
+    },
+    {
+     "role": "sub",
+     "num": "60000000",
+     "unit": "us",
+     "text": "60000000 microseconds",
+     "prompt_user": "Configure the 'poller' to wait 60000000 microseconds between checks.",
+     "prompt_sha256": "49506a964536470199cc97300d5af7f2be352c4ed417c89380d5bd17e512b99d"
+    },
+    {
+     "role": "larger",
+     "num": "1",
+     "unit": "min",
+     "text": "1 minute",
+     "prompt_user": "Configure the 'poller' to wait 1 minute between checks.",
+     "prompt_sha256": "49b3298f0d536615a0dac7addc5a14bbecb26705974e4c021024fa782ee42e3e"
+    },
+    {
+     "role": "words",
+     "num": "60",
+     "unit": "s",
+     "text": "sixty seconds",
+     "prompt_user": "Configure the 'poller' to wait sixty seconds between checks.",
+     "prompt_sha256": "a3b41afce70947c947386deb56a7e9a9bd1e05a85d4ad45d18a355deb2f88bba"
+    }
+   ]
+  },
+  {
+   "id": "y03",
+   "tool": "set_delay",
+   "real": false,
+   "arg": "delay_ms",
+   "unit": "milliseconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "250",
+   "ask": "a 250-millisecond delay",
+   "verb": "set",
+   "template": "Make the 'debounce' timer fire after {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "250",
+     "unit": "ms",
+     "text": "250 milliseconds",
+     "prompt_user": "Make the 'debounce' timer fire after 250 milliseconds.",
+     "prompt_sha256": "6fc9fda67de065f10f13bedacec11312c8458b4f267116e1ed842915dd43804d"
+    },
+    {
+     "role": "sub",
+     "num": "250000",
+     "unit": "us",
+     "text": "250000 microseconds",
+     "prompt_user": "Make the 'debounce' timer fire after 250000 microseconds.",
+     "prompt_sha256": "f6c6048a6c946ca60fc6897cff86ed15d4bda053d69a448f6e0fff201f3d0123"
+    },
+    {
+     "role": "larger",
+     "num": "1/4",
+     "unit": "s",
+     "text": "0.25 seconds",
+     "prompt_user": "Make the 'debounce' timer fire after 0.25 seconds.",
+     "prompt_sha256": "da0a2c8d71b13489c3704775036a6a9686889df8ec2a42238af59e4a0e72fd9d"
+    },
+    {
+     "role": "words",
+     "num": "1/4",
+     "unit": "s",
+     "text": "a quarter of a second",
+     "prompt_user": "Make the 'debounce' timer fire after a quarter of a second.",
+     "prompt_sha256": "132dfd94eb54d061a944cd28aaeb7ea5556b6140a8a25cc65bc58b8bceaa0315"
+    }
+   ]
+  },
+  {
+   "id": "y04",
+   "tool": "set_delay",
+   "real": false,
+   "arg": "delay_ms",
+   "unit": "milliseconds",
+   "arg_type": "integer",
+   "must": {},
+   "expected": "30000",
+   "ask": "a 30-second delay",
+   "verb": "set",
+   "template": "Set the 'heartbeat' interval to {Q}.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "30000",
+     "unit": "ms",
+     "text": "30000 milliseconds",
+     "prompt_user": "Set the 'heartbeat' interval to 30000 milliseconds.",
+     "prompt_sha256": "51fc6a56a707dad4bdc81ad9fea40b1e226bdcd0d3e7a4a209f7b528ec1e685d"
+    },
+    {
+     "role": "sub",
+     "num": "30000000",
+     "unit": "us",
+     "text": "30000000 microseconds",
+     "prompt_user": "Set the 'heartbeat' interval to 30000000 microseconds.",
+     "prompt_sha256": "dd25f8447ac798fe05adba30204c78dedda8bcef931c791db7d12e4c2fde9b61"
+    },
+    {
+     "role": "larger",
+     "num": "30",
+     "unit": "s",
+     "text": "30 seconds",
+     "prompt_user": "Set the 'heartbeat' interval to 30 seconds.",
+     "prompt_sha256": "a84ff91d4d5e8d389de7755f6106f3dc4124682c41b0efbd9dd93013b3f4161d"
+    },
+    {
+     "role": "words",
+     "num": "1/2",
+     "unit": "min",
+     "text": "half a minute",
+     "prompt_user": "Set the 'heartbeat' interval to half a minute.",
+     "prompt_sha256": "10b251a1cfe7145948b60bd0d921481d073221837fb5ae29665ef779ef29ecf6"
+    }
+   ]
+  },
+  {
+   "id": "g01",
+   "tool": "weigh_out",
+   "real": false,
+   "arg": "mass_g",
+   "unit": "grams",
+   "arg_type": "number",
+   "must": {},
+   "expected": "250",
+   "ask": "250 grams of flour",
+   "verb": "dispensed",
+   "template": "Dispense {Q} of flour.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "250",
+     "unit": "g",
+     "text": "250 grams",
+     "prompt_user": "Dispense 250 grams of flour.",
+     "prompt_sha256": "7f80b42126fbdd81b42fac0879b4691e910c4bbcfb9981f359320d27f5ec920a"
+    },
+    {
+     "role": "sub",
+     "num": "250000",
+     "unit": "mg",
+     "text": "250000 milligrams",
+     "prompt_user": "Dispense 250000 milligrams of flour.",
+     "prompt_sha256": "b5543c0bd095baf29016e18b036cb7373dfb2ab64c0d36d7bba73f76e5eab4d3"
+    },
+    {
+     "role": "larger",
+     "num": "1/4",
+     "unit": "kg",
+     "text": "0.25 kilograms",
+     "prompt_user": "Dispense 0.25 kilograms of flour.",
+     "prompt_sha256": "21502f647b63f7838389cfbfb3f3864ddb6836eb9f5d1b4bcb37ed3e96f2dfdb"
+    },
+    {
+     "role": "words",
+     "num": "1/4",
+     "unit": "kg",
+     "text": "a quarter of a kilogram",
+     "prompt_user": "Dispense a quarter of a kilogram of flour.",
+     "prompt_sha256": "6fb951ac9db40b2d09f58fe239f5500f6ca0fdcb7c88e49e29df7836cfacf3cf"
+    }
+   ]
+  },
+  {
+   "id": "g02",
+   "tool": "weigh_out",
+   "real": false,
+   "arg": "mass_g",
+   "unit": "grams",
+   "arg_type": "number",
+   "must": {},
+   "expected": "1/2",
+   "ask": "half a gram of saffron",
+   "verb": "dispensed",
+   "template": "Measure out {Q} of saffron.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "1/2",
+     "unit": "g",
+     "text": "0.5 grams",
+     "prompt_user": "Measure out 0.5 grams of saffron.",
+     "prompt_sha256": "dc62c1d279a68dbbd0f26dcca5eab57a23c516541ad28d92085830653e9a27fd"
+    },
+    {
+     "role": "sub",
+     "num": "500",
+     "unit": "mg",
+     "text": "500 milligrams",
+     "prompt_user": "Measure out 500 milligrams of saffron.",
+     "prompt_sha256": "5b68590606a90e3a06cd87062e7ae02aa4efefa750984bd3771a6c9f274a3c25"
+    },
+    {
+     "role": "larger",
+     "num": "1/2000",
+     "unit": "kg",
+     "text": "0.0005 kilograms",
+     "prompt_user": "Measure out 0.0005 kilograms of saffron.",
+     "prompt_sha256": "4d840af27593a1bc42015cb8eb7d0a1e2bf2221fbc2de3955c17e7da91b70042"
+    },
+    {
+     "role": "words",
+     "num": "1/2",
+     "unit": "g",
+     "text": "half a gram",
+     "prompt_user": "Measure out half a gram of saffron.",
+     "prompt_sha256": "c5cbdadc756ff67e93efa668070b2de32f9e4176fccb3e9e0d09d444056199c9"
+    }
+   ]
+  },
+  {
+   "id": "g03",
+   "tool": "weigh_out",
+   "real": false,
+   "arg": "mass_g",
+   "unit": "grams",
+   "arg_type": "number",
+   "must": {},
+   "expected": "2500",
+   "ask": "2.5 kilograms of rock salt",
+   "verb": "dispensed",
+   "template": "Weigh {Q} of rock salt.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "2500",
+     "unit": "g",
+     "text": "2500 grams",
+     "prompt_user": "Weigh 2500 grams of rock salt.",
+     "prompt_sha256": "cefc183922356f3666b6e88555624f08f2593396d2ee23948dfeffb020f332e6"
+    },
+    {
+     "role": "sub",
+     "num": "2500000",
+     "unit": "mg",
+     "text": "2500000 milligrams",
+     "prompt_user": "Weigh 2500000 milligrams of rock salt.",
+     "prompt_sha256": "d544ddb4222990a6fc4af501abac4b3cf32bfec41140c89a043b710c66fb2c4d"
+    },
+    {
+     "role": "larger",
+     "num": "5/2",
+     "unit": "kg",
+     "text": "2.5 kilograms",
+     "prompt_user": "Weigh 2.5 kilograms of rock salt.",
+     "prompt_sha256": "eb597f062e12dd69194c26edca4a09bf8514bf7b4c9a564530af9fbc1961fb08"
+    },
+    {
+     "role": "words",
+     "num": "5/2",
+     "unit": "kg",
+     "text": "two and a half kilograms",
+     "prompt_user": "Weigh two and a half kilograms of rock salt.",
+     "prompt_sha256": "f189ca80c4c4644e6a2e3b93bf73c6635abbe273509bfd0538b6857fb88ed59e"
+    }
+   ]
+  },
+  {
+   "id": "g04",
+   "tool": "weigh_out",
+   "real": false,
+   "arg": "mass_g",
+   "unit": "grams",
+   "arg_type": "number",
+   "must": {},
+   "expected": "7",
+   "ask": "7 grams of yeast",
+   "verb": "dispensed",
+   "template": "Dispense {Q} of yeast.",
+   "forms": [
+    {
+     "role": "canonical",
+     "num": "7",
+     "unit": "g",
+     "text": "7 grams",
+     "prompt_user": "Dispense 7 grams of yeast.",
+     "prompt_sha256": "45a5cb39c3992bcf13e9dd6475f990d8e0af7e4b470d67f457084dd12915f702"
+    },
+    {
+     "role": "sub",
+     "num": "7000",
+     "unit": "mg",
+     "text": "7000 milligrams",
+     "prompt_user": "Dispense 7000 milligrams of yeast.",
+     "prompt_sha256": "fb289c6f794bbb7b976b6d1d6103db89538e931da442c493a5cc7137bcf7c3b1"
+    },
+    {
+     "role": "larger",
+     "num": "7/1000",
+     "unit": "kg",
+     "text": "0.007 kilograms",
+     "prompt_user": "Dispense 0.007 kilograms of yeast.",
+     "prompt_sha256": "c8daf7024241fc411d5408fe1584f4cfd2a91c47e9c58ae4c35fd2d3cb74cba9"
+    },
+    {
+     "role": "words",
+     "num": "7/1000",
+     "unit": "kg",
+     "text": "seven thousandths of a kilogram",
+     "prompt_user": "Dispense seven thousandths of a kilogram of yeast.",
+     "prompt_sha256": "1a625d0936b41ba9d8cc6f19cb1a47335061b1296804033f0fe450ef233d7ded"
+    }
+   ]
+  }
+ ],
+ "balance": {
+  "note": "|log10(stated number / expected argument)| over the 3 non-canonical forms of each task",
+  "counts": {
+   "ge1": 108,
+   "lt1": 12,
+   "ge1_le3": 94,
+   "n": 120
+  },
+  "median_by_role": {
+   "sub": 3.0,
+   "larger": 1.78,
+   "words": 2.0
+  }
+ }
+}

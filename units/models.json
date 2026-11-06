@@ -1,0 +1,25 @@
+{
+  "version": "units-models-v1",
+  "port": 8198,
+  "legs": [
+    {"key": "qwen38-27b-q6k", "label": "Qwen3.8-27B Q6_K", "leg": 1, "file": "/home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf", "bytes": 22884408288,
+     "sha256": "562fbf760503008f118e5df38de5b3e97992d1f693f475815631198547486727", "source": "house model file on capsule (unsloth Q6_K, the toolcall-v1 row file)",
+     "alias": "qwen38-27b-q6k", "chat_template_kwargs": {"enable_thinking": false}, "thinking": "off (chat_template_kwargs enable_thinking=false)", "max_tokens": 512},
+    {"key": "ornith15-35b-q4km", "label": "Ornith-1.5-35B Q4_K_M", "leg": 2, "file": "/home/witcheer/models/ornith-15-35b/Ornith-1.5-35B-Q4_K_M.gguf", "bytes": 21713462848,
+     "sha256": "ca6ea26329c88b78ffd90a85163be2e746c2fafd1024f56db47e499f117f9a7f", "source": "file on capsule since 2026-08-19 (arch qwen35moe)",
+     "alias": "ornith15-35b-q4km", "chat_template_kwargs": {"enable_thinking": false}, "thinking": "off (chat_template_kwargs enable_thinking=false)", "max_tokens": 512},
+    {"key": "gpt-oss-20b-mxfp4", "label": "gpt-oss-20b MXFP4", "leg": 3, "file": "/home/witcheer/models/gpt-oss-20b-gguf/gpt-oss-20b-MXFP4.gguf", "bytes": 12109566624,
+     "sha256": "27cd6c432c7672cb812a92f611cf3ba7bbc35928262bb1e1253ff4ee6ae35901", "source": "ggml-org/gpt-oss-20b-GGUF @ c9a07b972b8979719fd97b8ff2c10dc79ebf5d26 (the revision the paper's manifest records), downloaded 2026-11-05",
+     "alias": "gpt-oss-20b-mxfp4", "chat_template_kwargs": {"reasoning_effort": "low"}, "thinking": "gpt-oss has no off switch: reasoning_effort=low (LABEL: low effort, not off)", "max_tokens": 1024},
+    {"key": "qwen35-9b-q4km", "label": "Qwen3.5-9B Q4_K_M", "leg": 4, "file": "/home/witcheer/models/qwen35-9b-gguf/Qwen3.5-9B-Q4_K_M.gguf", "bytes": 5680522464,
+     "sha256": "03b74727a860a56338e042c4420bb3f04b2fec5734175f4cb9fa853daf52b7e8", "source": "unsloth/Qwen3.5-9B-GGUF @ 3885219b6810b007914f3a7950a8d1b469d598a5 (the paper's exact file; sha256 equals model_hashes.json)",
+     "alias": "qwen35-9b-q4km", "chat_template_kwargs": {"enable_thinking": false}, "thinking": "off (chat_template_kwargs enable_thinking=false)", "max_tokens": 512},
+    {"key": "qwen35-9b-q8_0", "label": "Qwen3.5-9B Q8_0", "leg": 5, "file": "/home/witcheer/models/qwen35-9b-gguf/Qwen3.5-9B-Q8_0.gguf", "bytes": 9527502048,
+     "sha256": "809626574d0cb43d4becfa56169980da2bb448f2299270f7be443cb89d0a6ae4", "source": "unsloth/Qwen3.5-9B-GGUF @ 3885219b6810b007914f3a7950a8d1b469d598a5 (the paper's exact file; sha256 equals model_hashes.json)",
+     "alias": "qwen35-9b-q8_0", "chat_template_kwargs": {"enable_thinking": false}, "thinking": "off (chat_template_kwargs enable_thinking=false)", "max_tokens": 512}
+  ],
+  "pair": ["qwen35-9b-q4km", "qwen35-9b-q8_0"],
+  "server_flags": "--host 127.0.0.1 --port 8198 --jinja --parallel 1 --n-gpu-layers 99 --ctx-size 8192 --flash-attn on (f16 KV, llama.cpp default)",
+  "llama_cpp": "839a572a4 (build 11777), ~/llama.cpp-donald/build/bin/llama-server, the popper item's binary",
+  "sampling": {"temperature": 0, "top_k": 1, "top_p": 1, "min_p": 0, "seed": 20260725}
+}

@@ -1,0 +1,77 @@
+{
+ "system": "qwen35-9b-q4",
+ "per_view": {
+  "unit": {
+   "n": 100,
+   "same_parsed_value": 100,
+   "same_category": 100,
+   "both_correct": 100
+  },
+  "fraction": {
+   "n": 100,
+   "same_parsed_value": 96,
+   "same_category": 96,
+   "both_correct": 91
+  }
+ },
+ "n_diff": 4,
+ "diffs": [
+  {
+   "key": [
+    "fraction_of_capacity_0857",
+    "fraction"
+   ],
+   "ours": [
+    "value_error",
+    "39/8"
+   ],
+   "paper": [
+    "correct",
+    "191/8"
+   ]
+  },
+  {
+   "key": [
+    "difference_distance_0124",
+    "fraction"
+   ],
+   "ours": [
+    "value_error",
+    "-6/5"
+   ],
+   "paper": [
+    "truncation_error",
+    null
+   ]
+  },
+  {
+   "key": [
+    "rate_speed_0128",
+    "fraction"
+   ],
+   "ours": [
+    "truncation_error",
+    null
+   ],
+   "paper": [
+    "correct",
+    "162/25"
+   ]
+  },
+  {
+   "key": [
+    "fraction_of_capacity_0180",
+    "fraction"
+   ],
+   "ours": [
+    "value_error",
+    "29/4"
+   ],
+   "paper": [
+    "correct",
+    "361/20"
+   ]
+  }
+ ],
+ "note": "runtime-parity check against the paper's eval.jsonl (llama.cpp b10107 on an H100); not a result about tool arguments"
+}

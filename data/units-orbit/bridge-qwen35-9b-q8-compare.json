@@ -1,0 +1,20 @@
+{
+ "system": "qwen35-9b-q8",
+ "per_view": {
+  "unit": {
+   "n": 100,
+   "same_parsed_value": 100,
+   "same_category": 100,
+   "both_correct": 100
+  },
+  "fraction": {
+   "n": 100,
+   "same_parsed_value": 100,
+   "same_category": 100,
+   "both_correct": 89
+  }
+ },
+ "n_diff": 0,
+ "diffs": [],
+ "note": "runtime-parity check against the paper's eval.jsonl (llama.cpp b10107 on an H100); not a result about tool arguments"
+}

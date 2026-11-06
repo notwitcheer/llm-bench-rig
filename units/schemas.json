@@ -1,0 +1,475 @@
+{
+ "pin": "9bda188",
+ "tools": {
+  "terminal": {
+   "schema": {
+    "name": "terminal",
+    "description": "Execute shell commands on the OS, shell and backend named in your environment section. The working directory, files and exported variables persist between calls: activate a virtualenv or export once, not before every command.\n\nUse read_file, search_files, patch and write_file instead of cat/head/tail, grep/find/ls, sed/awk and echo/heredoc. Output is auto-truncated with the full text saved to a file; never pipe through head/tail to shorten it.\n\nForeground (default) returns as soon as the command finishes. To wait a fixed time, run the wait in the foreground; never background a sleep or polling loop. Background is only for commands that must keep running after this call returns; health-check a server in a separate call and manage jobs with process_manage. When a command changes directory, trust the result's \"cwd\" instead of prefixing later commands with cd.\n",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "command": {
+       "type": "string",
+       "description": "The shell command to execute"
+      },
+      "background": {
+       "type": "boolean",
+       "description": "Keep running after this call returns; returns a session_id.",
+       "default": false
+      },
+      "timeout": {
+       "type": "integer",
+       "description": "Max seconds (default 180, foreground max 600). Finishing early returns at once, so set it generously. Above 600s the command runs as a tracked background process with notify_on_complete=true (the result says so; do not re-run it).",
+       "minimum": 1
+      },
+      "workdir": {
+       "type": "string",
+       "description": "Absolute working directory for this command only."
+      },
+      "pty": {
+       "type": "boolean",
+       "description": "With background=true: pseudo-terminal for interactive CLIs (REPLs, coding agents); drive it with process_manage write/submit. Local backend only.",
+       "default": false
+      },
+      "notify": {
+       "description": "With background=true. true: one notification on exit; use it for anything that ends (builds, tests, deploys), or the job runs silently. ['pattern', ...]: notify when a line matches, only for one-shot readiness on processes that never exit; rate-limited. Omit for servers/daemons.",
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "heartbeat": {
+       "type": "integer",
+       "minimum": 0,
+       "default": 0,
+       "description": "With background=true: also notify every N seconds (min 60) with new output; quiet ticks are skipped. For bounded jobs you must react to mid-run, never servers. Implies notify=true; 0 = off."
+      },
+      "persist_on_release": {
+       "type": "boolean",
+       "default": false,
+       "description": "With background=true: survive session end, /new, compression and other cleanup (not host exit). Only for jobs the user explicitly wants to outlive the conversation."
+      }
+     },
+     "required": [
+      "command"
+     ]
+    }
+   },
+   "file": "tools/terminal_tool.py",
+   "schema_line": 1554,
+   "arg": "timeout",
+   "arg_line": 1569,
+   "unit": "seconds",
+   "note": "description text is the checkout's own (f-string with FOREGROUND_MAX_TIMEOUT resolved at import)"
+  },
+  "process": {
+   "schema": {
+    "name": "process_manage",
+    "description": "Poll, wait on, or kill background terminal processes (from terminal(background=true)). Completed results remain retrievable by session_id when resuming their owning conversation (up to 7 days, newest 64 results per profile; rolling output tail). poll: status + new output. log: full output, paged. wait: block until exit or timeout (partial output on timeout). write vs submit: submit appends Enter \u2014 use it to answer prompts; write sends raw bytes, no newline. close: EOF stdin. kill: terminate. handoff (subagents only): transfer a running process you started to your parent agent, which then receives its completion; `data` = one sentence on its purpose. Subagent-owned processes are otherwise killed when the subagent finishes and their notifications never reach the parent.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "action": {
+       "type": "string",
+       "enum": [
+        "list",
+        "poll",
+        "log",
+        "wait",
+        "kill",
+        "write",
+        "submit",
+        "close",
+        "handoff"
+       ]
+      },
+      "session_id": {
+       "type": "string",
+       "description": "From terminal background output; any unique prefix works ('4dae' for proc_4dae56ca81f6). Required except for 'list'."
+      },
+      "data": {
+       "type": "string",
+       "description": "Stdin text for write/submit; purpose sentence for handoff."
+      },
+      "timeout": {
+       "type": "integer",
+       "description": "Max seconds for 'wait'.",
+       "minimum": 1
+      },
+      "offset": {
+       "type": "integer",
+       "description": "Log line offset (default: last 200)."
+      },
+      "limit": {
+       "type": "integer",
+       "description": "Max log lines.",
+       "minimum": 1
+      }
+     },
+     "required": [
+      "action"
+     ]
+    }
+   },
+   "file": "tools/process_registry.py",
+   "schema_line": 2582,
+   "arg": "timeout",
+   "arg_line": 2615,
+   "unit": "seconds",
+   "note": "applies to action 'wait'"
+  },
+  "browser_cdp": {
+   "schema": {
+    "name": "browser_cdp",
+    "description": "Send a raw Chrome DevTools Protocol (CDP) command. Escape hatch for browser operations not covered by browser_navigate, browser_click, browser_console, etc.\n\n**Requires a reachable CDP endpoint.** Available when the user has run '/browser connect' to attach to a running Chrome, Brave, Chromium, or Edge browser, or when 'browser.cdp_url' is set in config.yaml. Not currently wired up for cloud backends (Browserbase, Browser Use, Firecrawl) \u2014 those expose CDP per session but live-session routing is a follow-up. Camofox is REST-only and will never support CDP. If the tool is in your toolset at all, a CDP endpoint is already reachable.\n\n**CDP method reference:** https://chromedevtools.github.io/devtools-protocol/ \u2014 use an available documentation lookup or extraction tool on a method's URL (e.g. '/tot/Page/#method-handleJavaScriptDialog') to look up parameters and return shape.\n\n**Common patterns:**\n- List tabs: method='Target.getTargets', params={}\n- Handle a native JS dialog: method='Page.handleJavaScriptDialog', params={'accept': true, 'promptText': ''}, target_id=<tabId>\n- Get all cookies: method='Network.getAllCookies', params={}\n- Eval in a specific tab: method='Runtime.evaluate', params={'expression': '...', 'returnByValue': true}, target_id=<tabId>\n- Set viewport for a tab: method='Emulation.setDeviceMetricsOverride', params={'width': 1280, 'height': 720, 'deviceScaleFactor': 1, 'mobile': false}, target_id=<tabId>\n\n**Usage rules:**\n- Browser-level methods (Target.*, Browser.*, Storage.*): omit target_id and frame_id.\n- Page-level methods (Page.*, Runtime.*, DOM.*, Emulation.*, Network.* scoped to a tab): pass target_id from Target.getTargets.\n- **Cross-origin iframe scope** (Runtime.evaluate inside an OOPIF, Page.* targeting a frame target, etc.): pass frame_id from the browser_snapshot frame_tree output. This routes through the CDP supervisor's live connection \u2014 the only reliable way on Browserbase where stateless CDP calls hit signed-URL expiry.\n- Each stateless call (without frame_id) is independent \u2014 sessions and event subscriptions do not persist between calls. For stateful workflows, prefer the dedicated browser tools or use frame_id routing.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "method": {
+       "type": "string",
+       "description": "CDP method name, e.g. 'Target.getTargets', 'Runtime.evaluate', 'Page.handleJavaScriptDialog'."
+      },
+      "params": {
+       "type": "object",
+       "properties": {},
+       "additionalProperties": true,
+       "description": "Method-specific parameters as a JSON object. Omit or pass {} for methods that take no parameters."
+      },
+      "target_id": {
+       "type": "string",
+       "description": "Optional. Target/tab ID from Target.getTargets result (each entry's 'targetId'). Use for page-level methods at the top-level tab scope. Mutually exclusive with frame_id."
+      },
+      "frame_id": {
+       "type": "string",
+       "description": "Optional. Out-of-process iframe (OOPIF) frame_id from browser_snapshot.frame_tree.children[] where is_oopif=true. When set, routes the call through the CDP supervisor's live session for that iframe. Essential for Runtime.evaluate inside cross-origin iframes, especially on Browserbase where fresh per-call CDP connections can't keep up with signed URL rotation. For same-origin iframes, use parent contentWindow/contentDocument from Runtime.evaluate at the top-level page instead."
+      },
+      "timeout": {
+       "type": "number",
+       "default": 30,
+       "description": "Timeout in seconds (default 30, max 300)."
+      }
+     },
+     "required": [
+      "method"
+     ]
+    }
+   },
+   "file": "tools/browser_cdp_tool.py",
+   "schema_line": 345,
+   "arg": "timeout",
+   "arg_line": 396,
+   "unit": "seconds",
+   "note": ""
+  },
+  "browser_exec": {
+   "schema": {
+    "name": "browser_exec",
+    "description": "Drive a real web browser via the Browser Use CLI: `code` runs as full Python (stdlib available) with pre-imported browser helpers; stdout comes back in the result. Start `code` with a one-line comment describing the step for the user in plain language, max 60 chars (e.g. `# Searching Amazon for paper towels`) \u2014 the UI shows it as the step label.\n\nSTATE: the browser session and workspace persist across calls; Python variables do NOT (fresh interpreter each call). The workspace dir is $BH_AGENT_WORKSPACE (also `workspace` in every result); functions defined in agent_helpers.py there are auto-imported into every call. For multi-item tasks ('all N products / every entry'), append each batch to a JSON/CSV file in the workspace, then read it back and aggregate in code \u2014 dedupe/count/sort with Python, not in your head \u2014 and verify the collected count against what was asked before answering.\n\nBatch each sub-procedure (navigate, wait, extract, act) into one call \u2014 do not spend a call per action \u2014 but for long extractions prefer several medium calls that append to workspace files over one giant call, so progress survives timeouts.\n\nHELPERS (pre-imported): new_tab(url) opens/navigates (use for the FIRST navigation), goto_url(url) navigates the current tab, wait_for_load() after navigation, page_info() summarizes the current page state, js(expr) evaluates a JS expression and returns its value (js('document.title'); wrap function bodies as js('(() => {...})()') \u2014 a bare '() => {...}' returns the function itself, uncalled), fill_input(selector, text) types into inputs, click_at_xy(x, y) clicks viewport coordinates, capture_screenshot() saves and prints a screenshot path, cdp('Domain.method', **kwargs) is raw CDP \u2014 cdp('Accessibility.getFullAXTree')['nodes'] lists every element's role/name/backendDOMNodeId (filter in Python before printing; it is thousands of nodes), then cdp('DOM.getBoxModel', backendNodeId=n) gives click coordinates. ensure_real_tab() recovers from a stale/internal tab. Login walls: never guess credentials; see the vault note below if present, otherwise stop and ask the user.\n\n(The browser-use CLI is not installed yet. Install it with `hermes tools` (Browser Automation \u2192 Browser Use).)",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "code": {
+       "type": "string",
+       "description": "Python code to execute using the pre-imported browser helpers. Use print(...) for any data you need back."
+      },
+      "session": {
+       "type": "string",
+       "description": "Named isolated browser session \u2014 its own daemon and (on cloud backends) own browser, so concurrent tasks don't share tabs. Reuse the same name on every related call; omit for the shared default session."
+      },
+      "timeout_s": {
+       "type": "integer",
+       "default": 300,
+       "description": "Max seconds to wait for the code to finish (default 300, max 1800)."
+      }
+     },
+     "required": [
+      "code"
+     ]
+    }
+   },
+   "file": "tools/browser_use_cli.py",
+   "schema_line": 965,
+   "arg": "timeout_s",
+   "arg_line": 975,
+   "unit": "seconds",
+   "note": "STATIC FALLBACK description (the managed CLI is not installed on this checkout); the unit-naming argument description is the live one"
+  },
+  "computer_use": {
+   "schema": {
+    "name": "computer_use",
+    "description": "Drive the desktop via cua-driver \u2014 screenshots, mouse, keyboard, scroll, drag \u2014 on macOS, Windows, and Linux. Input is background-FIRST, not background-only: the default delivery routes to the target window without stealing the user's cursor or focus (works even on hidden/minimized windows), and when a result's `verdict` says to escalate you climb \u2014 pixel coordinates, or delivery_mode='foreground' (briefly fronts the window; separate approval). Each result carries a `verdict` with the next step; follow it \u2014 never repeat confirmed input, and re-capture to verify an unverifiable one before retrying. Workflow: action='capture' (mode='som' gives numbered element overlays), then click by `element` index; re-capture after state-changing actions (or pass capture_after=true). Image captures include a shareable `screenshot_path`; deliver it via the platform's MEDIA syntax when the user asks to see it \u2014 not for captures used only for control.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "action": {
+       "type": "string",
+       "enum": [
+        "capture",
+        "click",
+        "double_click",
+        "right_click",
+        "middle_click",
+        "drag",
+        "scroll",
+        "type",
+        "key",
+        "set_value",
+        "wait",
+        "list_apps",
+        "list_windows",
+        "focus_app"
+       ],
+       "description": "Which action to perform. `capture` is free (no side effects). All other actions require approval unless auto-approved. Use `set_value` for select/popup elements and sliders \u2014 it selects the matching option directly without opening the native menu (no focus steal)."
+      },
+      "mode": {
+       "type": "string",
+       "enum": [
+        "som",
+        "vision",
+        "ax"
+       ],
+       "description": "Capture mode. `som` (default) is a screenshot with numbered overlays on every interactable element plus the AX tree \u2014 best for vision models, lets you click by element index. `vision` is a plain screenshot. `ax` is the accessibility tree only (no image; useful for text-only models)."
+      },
+      "app": {
+       "type": "string",
+       "description": "Optional. Limit capture/action to one app (name e.g. 'Safari', or bundle ID). Omitted = frontmost window. app='screen' = composited full-screen grab (image only, no clickable elements); app='desktop' = the OS desktop/shell surface (wallpaper, icons, taskbar) with its elements."
+      },
+      "pid": {
+       "type": "integer",
+       "description": "Optional exact process target for action='capture'. Pair with window_id when discovery cannot resolve an X11 app."
+      },
+      "window_id": {
+       "type": "integer",
+       "description": "Optional exact native window target for action='capture'. Pair with pid when an external cua-driver list_windows lookup has already identified the window."
+      },
+      "element": {
+       "type": "integer",
+       "description": "The 1-based SOM index returned by the last `capture(mode='som')` call. Strongly preferred over raw coordinates."
+      },
+      "coordinate": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2,
+       "description": "Pixel coordinates [x, y] relative to the captured window screenshot (top-left origin). Only use this if no element index is available."
+      },
+      "button": {
+       "type": "string",
+       "enum": [
+        "left",
+        "right",
+        "middle"
+       ],
+       "description": "Mouse button. Defaults to left."
+      },
+      "modifiers": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "enum": [
+         "cmd",
+         "shift",
+         "option",
+         "alt",
+         "ctrl",
+         "fn",
+         "win",
+         "windows",
+         "super",
+         "meta"
+        ]
+       },
+       "description": "Modifier keys held during the action."
+      },
+      "from_element": {
+       "type": "integer",
+       "description": "Source element index (drag)."
+      },
+      "to_element": {
+       "type": "integer",
+       "description": "Target element index (drag)."
+      },
+      "from_coordinate": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2,
+       "description": "Source [x,y] (drag; use when no element available)."
+      },
+      "to_coordinate": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2,
+       "description": "Target [x,y] (drag; use when no element available)."
+      },
+      "direction": {
+       "type": "string",
+       "enum": [
+        "up",
+        "down",
+        "left",
+        "right"
+       ],
+       "description": "Scroll direction."
+      },
+      "amount": {
+       "type": "integer",
+       "description": "Scroll wheel ticks. Default 3."
+      },
+      "value": {
+       "type": "string",
+       "description": "For action='set_value': the value to set on the element. For AXPopUpButton / select dropdowns, pass the option's display label (e.g. 'Blue'). For sliders and other AXValue-settable elements, pass the numeric or string value."
+      },
+      "text": {
+       "type": "string",
+       "description": "Text to type (respects the current layout)."
+      },
+      "keys": {
+       "type": "string",
+       "description": "Key combo, e.g. 'cmd+s', 'ctrl+alt+t', 'return', 'escape', 'tab'. Use '+' to combine."
+      },
+      "seconds": {
+       "type": "number",
+       "description": "wait: seconds to pause (max 30)."
+      },
+      "raise_window": {
+       "type": "boolean",
+       "description": "Only for action='focus_app'. If true, brings the window to front (DISRUPTS the user). Default false \u2014 input is routed to the app without raising, matching the background co-work model."
+      },
+      "delivery_mode": {
+       "type": "string",
+       "enum": [
+        "background",
+        "foreground"
+       ],
+       "description": "For input actions (click, type, key, drag, scroll). `background` (DEFAULT) delivers without raising the window or stealing focus. `foreground` briefly fronts the window then restores focus \u2014 a visible change needing its own approval; use it only when a result's verdict tells you to escalate there. Each result's `verdict` carries the next step; follow it rather than guessing."
+      },
+      "bring_to_front": {
+       "type": "boolean",
+       "description": "Optional and only valid with delivery_mode='foreground'. Explicitly invokes cua-driver's standalone bring_to_front tool before the input; it is never passed as an input property. This persistent focus change has a separate approval scope. Default false."
+      },
+      "capture_after": {
+       "type": "boolean",
+       "description": "If true, take a follow-up capture after the action and include it in the response. Saves a round-trip when you need to verify an action's effect."
+      }
+     },
+     "required": [
+      "action"
+     ]
+    }
+   },
+   "file": "tools/computer_use/schema.py",
+   "schema_line": 188,
+   "arg": "seconds",
+   "arg_line": 150,
+   "unit": "seconds",
+   "note": "applies to action 'wait'"
+  },
+  "discord": {
+   "schema": {
+    "name": "discord",
+    "description": "Read and participate in a Discord server.\n\nAvailable actions:\n  list_guilds()  \u2014 list servers the bot is in\n  server_info(guild_id)  \u2014 server details + member counts\n  list_channels(guild_id)  \u2014 all channels grouped by category\n  channel_info(channel_id)  \u2014 single channel details\n  list_roles(guild_id)  \u2014 roles sorted by position\n  member_info(guild_id, user_id)  \u2014 lookup a specific member\n  search_members(guild_id, query)  \u2014 find members by name prefix\n  fetch_messages(channel_id)  \u2014 recent messages; optional before/after snowflakes\n  list_pins(channel_id)  \u2014 pinned messages in a channel\n  pin_message(channel_id, message_id)  \u2014 pin a message\n  unpin_message(channel_id, message_id)  \u2014 unpin a message\n  delete_message(channel_id, message_id)  \u2014 delete a message\n  create_thread(channel_id, name)  \u2014 create a public thread; optional message_id anchor\n  add_role(guild_id, user_id, role_id)  \u2014 assign a role\n  remove_role(guild_id, user_id, role_id)  \u2014 remove a role\n\nUse the channel_id from the current conversation context. Use search_members to look up user IDs by name prefix.",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "action": {
+       "type": "string",
+       "enum": [
+        "list_guilds",
+        "server_info",
+        "list_channels",
+        "channel_info",
+        "list_roles",
+        "member_info",
+        "search_members",
+        "fetch_messages",
+        "list_pins",
+        "pin_message",
+        "unpin_message",
+        "delete_message",
+        "create_thread",
+        "add_role",
+        "remove_role"
+       ]
+      },
+      "guild_id": {
+       "type": "string",
+       "description": "Discord server (guild) ID."
+      },
+      "channel_id": {
+       "type": "string",
+       "description": "Discord channel ID."
+      },
+      "user_id": {
+       "type": "string",
+       "description": "Discord user ID."
+      },
+      "role_id": {
+       "type": "string",
+       "description": "Discord role ID."
+      },
+      "message_id": {
+       "type": "string",
+       "description": "Discord message ID."
+      },
+      "query": {
+       "type": "string",
+       "description": "Member name prefix to search for (search_members)."
+      },
+      "name": {
+       "type": "string",
+       "description": "New thread name (create_thread)."
+      },
+      "limit": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100,
+       "description": "Max results (default 50). Applies to fetch_messages, search_members."
+      },
+      "before": {
+       "type": "string",
+       "description": "Snowflake ID for reverse pagination (fetch_messages)."
+      },
+      "after": {
+       "type": "string",
+       "description": "Snowflake ID for forward pagination (fetch_messages)."
+      },
+      "auto_archive_duration": {
+       "type": "integer",
+       "enum": [
+        60,
+        1440,
+        4320,
+        10080
+       ],
+       "description": "Thread archive duration in minutes (create_thread, default 1440)."
+      }
+     },
+     "required": [
+      "action"
+     ]
+    }
+   },
+   "file": "tools/discord_tool.py",
+   "schema_line": 507,
+   "arg": "auto_archive_duration",
+   "arg_line": 491,
+   "unit": "minutes",
+   "note": "built by the checkout's own _build_schema over every action in _ACTION_MANIFEST with empty capabilities; applies to create_thread"
+  }
+ }
+}

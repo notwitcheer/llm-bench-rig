@@ -1,0 +1,90 @@
+{
+ "arms": {
+  "base": {
+   "n": 32,
+   "mean": 26809.3125,
+   "median": 26254.0,
+   "q1": 23115.0,
+   "q3": 31380.0,
+   "min": 15542.0,
+   "max": 39244.0,
+   "under5k": 0,
+   "capped": 0,
+   "complete": 32,
+   "complete_pct": 100.0,
+   "wall_median_s": 753.7,
+   "tps_median": 38.359877092778376
+  },
+  "edited": {
+   "n": 32,
+   "mean": 14509.34375,
+   "median": 16930.0,
+   "q1": 2613.75,
+   "q3": 23483.25,
+   "min": 151.0,
+   "max": 35672.0,
+   "under5k": 10,
+   "capped": 0,
+   "complete": 31,
+   "complete_pct": 96.9,
+   "wall_median_s": 529.7,
+   "tps_median": 39.51307387848031
+  }
+ },
+ "fit": {
+  "base": {
+   "loaded": true,
+   "start_s": 4,
+   "vram_mib": 26186,
+   "ctx": 262144,
+   "slots": 4,
+   "kv": "q8_0",
+   "smoke": "SMOKE OK prompt_tokens xhigh 65 low 53 think_chars 93 slots 4 n_ctx/slot 65536"
+  },
+  "edited": {
+   "loaded": true,
+   "start_s": 2,
+   "vram_mib": 26186,
+   "ctx": 262144,
+   "slots": 4,
+   "kv": "q8_0",
+   "smoke": "SMOKE OK prompt_tokens xhigh 65 low 53 think_chars 93 slots 4 n_ctx/slot 65536"
+  }
+ },
+ "n_want": 32,
+ "provisional": false,
+ "mannwhitney_p": 7.536119170877044e-06,
+ "rank_biserial_edited_vs_base": -0.65234375,
+ "median_change_pct": -35.5,
+ "mean_change_pct": -45.9,
+ "mean_change_ci95_pct": [
+  -60.3,
+  -31.4
+ ],
+ "median_change_ci95_pct": [
+  -74.5,
+  -10.4
+ ],
+ "completeness_fisher_p": 1.0,
+ "completeness_drop_pts": 3.1,
+ "verdict": "REPRODUCED",
+ "why": [
+  "median thinking tokens -35.5%, p=0.0000"
+ ],
+ "maths_reported_only": {
+  "base": {
+   "n": 24,
+   "correct": 22,
+   "think_mean": 2196.9583333333335,
+   "think_median": 792.5,
+   "capped": 0
+  },
+  "edited": {
+   "n": 24,
+   "correct": 22,
+   "think_mean": 2198.0416666666665,
+   "think_median": 706.5,
+   "capped": 0
+  }
+ }
+}

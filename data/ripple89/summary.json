@@ -1,0 +1,251 @@
+{
+ "slug": "ripple89-ripple65b-hermes-repo",
+ "regime": "Ripple-65B Preview AD-IQ3_XXS (3 takes) and AD-IQ2_S (2 takes), llama.cpp PR #31692 build 8a5f7b069, --jinja, ctx 65536, -ngl 99, flash-attn on, KV q8_0, one slot, no speculative decoding; Hermes terminal+file toolsets, approvals off, memory off, thinking on; sampling temp 0.6 / top-p 0.95 / min-p 0.05 / seed 721 via extra_body (ours, not a vendor setting); same-shape task (4 planted bugs, 5 tests), pass = pristine tests 5/5 and tests/ untouched",
+ "verdict": "REPRODUCED",
+ "provisional": false,
+ "files": {
+  "iq3xxs": {
+   "takes_run": 3,
+   "clean": 3,
+   "pass": 3,
+   "broken": false
+  },
+  "iq2s": {
+   "takes_run": 2,
+   "clean": 2,
+   "pass": 2,
+   "broken": false
+  }
+ },
+ "files_loaded": {
+  "iq3xxs": {
+   "loaded": true,
+   "start_s": 12,
+   "vram_mib": 29794,
+   "ctx": 65536,
+   "kv": "q8_0",
+   "smoke": "SMOKE OK tool_calls=1 reasoning_chars=93 completion_tokens=52 decode=45.3 1.3s {name: g"
+  },
+  "iq2s": {
+   "loaded": true,
+   "start_s": 12,
+   "vram_mib": 27264,
+   "ctx": 65536,
+   "kv": "q8_0",
+   "smoke": "SMOKE OK tool_calls=1 reasoning_chars=81 completion_tokens=50 decode=48.5 1.3s {name: g"
+  }
+ },
+ "takes": {
+  "iq2s-1": {
+   "dir": "iq2s-1",
+   "tag": "iq2s",
+   "end": "done",
+   "finish_s": 53.8,
+   "requests": 6,
+   "request_errors": 0,
+   "tokens_server": 2028,
+   "tokens_exact_from_usage": 2028,
+   "vram_mib_max": 27278,
+   "decode_tok_s_engine": 45.1,
+   "prompt_tok_s_engine": 1426.4,
+   "prompt_tokens_total": 10067,
+   "gpu_w_mean": 559.4,
+   "gpu_w_max": 575.6,
+   "tool_calls": 15,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "iq2s-2": {
+   "dir": "iq2s-2",
+   "tag": "iq2s",
+   "end": "done",
+   "finish_s": 53.0,
+   "requests": 6,
+   "request_errors": 0,
+   "tokens_server": 1998,
+   "tokens_exact_from_usage": 1998,
+   "vram_mib_max": 27278,
+   "decode_tok_s_engine": 45.1,
+   "prompt_tok_s_engine": 1434.5,
+   "prompt_tokens_total": 9991,
+   "gpu_w_mean": 555.9,
+   "gpu_w_max": 580.5,
+   "tool_calls": 15,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "iq3xxs-1": {
+   "dir": "iq3xxs-1",
+   "tag": "iq3xxs",
+   "end": "done",
+   "finish_s": 186.6,
+   "requests": 9,
+   "request_errors": 0,
+   "tokens_server": 7377,
+   "tokens_exact_from_usage": 7377,
+   "vram_mib_max": 29808,
+   "decode_tok_s_engine": 41.5,
+   "prompt_tok_s_engine": 1523.9,
+   "prompt_tokens_total": 10190,
+   "gpu_w_mean": 570.8,
+   "gpu_w_max": 581.1,
+   "tool_calls": 18,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.01s\\n M shopcart/cart.py\\n M shopcart/paging.py\\n M shopcart/pricing.py\\n M shopcart/text.py",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "iq3xxs-2": {
+   "dir": "iq3xxs-2",
+   "tag": "iq3xxs",
+   "end": "done",
+   "finish_s": 92.2,
+   "requests": 9,
+   "request_errors": 0,
+   "tokens_server": 3487,
+   "tokens_exact_from_usage": 3487,
+   "vram_mib_max": 29808,
+   "decode_tok_s_engine": 42.0,
+   "prompt_tok_s_engine": 1549.7,
+   "prompt_tokens_total": 11165,
+   "gpu_w_mean": 565.3,
+   "gpu_w_max": 587.5,
+   "tool_calls": 18,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "iq3xxs-3": {
+   "dir": "iq3xxs-3",
+   "tag": "iq3xxs",
+   "end": "done",
+   "finish_s": 95.9,
+   "requests": 10,
+   "request_errors": 0,
+   "tokens_server": 3655,
+   "tokens_exact_from_usage": 3655,
+   "vram_mib_max": 29808,
+   "decode_tok_s_engine": 41.9,
+   "prompt_tok_s_engine": 1536.1,
+   "prompt_tokens_total": 10104,
+   "gpu_w_mean": 562.2,
+   "gpu_w_max": 584.0,
+   "tool_calls": 19,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  }
+ },
+ "clip_pair": {
+  "left": "/home/witcheer/voxelbench/runs/ripple89-ripple65b-hermes-repo/takes/iq3xxs-1",
+  "right": "/home/witcheer/voxelbench/runs/ripple89-ripple65b-hermes-repo/takes/iq2s-1",
+  "why": {
+   "iq3xxs": "take 1",
+   "iq2s": "take 1"
+  }
+ },
+ "race": {
+  "clip": "/home/witcheer/voxelbench/runs/ripple89-ripple65b-hermes-repo/out/race.mp4",
+  "frames": 4827,
+  "seconds": 193.1,
+  "race_s": 186.6,
+  "segments": [
+   [
+    -4.0,
+    186.6,
+    1.0
+   ]
+  ],
+  "left": {
+   "finish_s": 186.6,
+   "end": "done",
+   "tokens_server": 7377,
+   "tokens_stream_deltas": 6975,
+   "tokens_exact_from_usage": 7377,
+   "tok_s_mean_while_generating": 39.8,
+   "tok_s_peak_6s": 50.2,
+   "tok_s_mean_over_take": 39.5,
+   "engine": "llama",
+   "vram_mib_max": 29808,
+   "requests": 9,
+   "request_errors": 0,
+   "leak_masked_states": 0,
+   "counter_vs_usage_pct": 0.0
+  },
+  "right": {
+   "finish_s": 53.8,
+   "end": "done",
+   "tokens_server": 2024,
+   "tokens_stream_deltas": 1731,
+   "tokens_exact_from_usage": 2028,
+   "tok_s_mean_while_generating": 38.2,
+   "tok_s_peak_6s": 59.5,
+   "tok_s_mean_over_take": 37.6,
+   "engine": "llama",
+   "vram_mib_max": 27278,
+   "requests": 6,
+   "request_errors": 0,
+   "leak_masked_states": 0,
+   "counter_vs_usage_pct": -0.2
+  },
+  "ffmpeg_rc": 0
+ },
+ "final_clip": true,
+ "line1": "Ripple-65B Preview (IQ3_XXS GGUF, llama.cpp PR build) driving Hermes Agent on one RTX 5090, every token local: 3 of 3 takes ended with 5/5 tests passing and the tests untouched, first take 3:06, 18 tool calls, 570.8 W mean GPU power"
+}

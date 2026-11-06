@@ -1,0 +1,3918 @@
+{
+ "version": "units-score-v1",
+ "parser": "units-parse-v1",
+ "overall": "SLIPS FOUND",
+ "provisional": false,
+ "expected_calls_per_model": 160,
+ "line1": "asked for a 30-second timeout, Qwen3.8-27B Q6_K set 500 minutes. (the prompt said \"30000 milliseconds\"; tool browser_exec, argument unit named in the schema; 40 magnitude slips in 800 calls across the models that ran.)",
+ "worst_slip": {
+  "model_key": "qwen38-27b-q6k",
+  "model": "Qwen3.8-27B Q6_K",
+  "task": "e02",
+  "tool": "browser_exec",
+  "real": true,
+  "k": -3,
+  "ask": "a 30-second timeout",
+  "set": "500 minutes",
+  "ratio": "1000",
+  "prompt_said": "30000 milliseconds",
+  "form_role": "sub"
+ },
+ "models": {
+  "qwen38-27b-q6k": {
+   "n": 160,
+   "counts": {
+    "ok": 143,
+    "magnitude_slip": 2,
+    "other_value": 6,
+    "no_call": 0,
+    "wrong_tool": 0,
+    "malformed": 9
+   },
+   "slips": [
+    {
+     "task": "e02",
+     "role": "sub",
+     "k": -3,
+     "value": "30000",
+     "expected": "30",
+     "stated": "30000 ms",
+     "form_text": "30000 milliseconds"
+    },
+    {
+     "task": "e04",
+     "role": "words",
+     "k": -1,
+     "value": "1800",
+     "expected": "180",
+     "stated": "1/20 h",
+     "form_text": "a twentieth of an hour"
+    }
+   ],
+   "slip_k": {
+    "-3": 1,
+    "-1": 1
+   },
+   "bad_fraction": 0.05625,
+   "n_invariant_tasks": 31,
+   "n_correct_tasks": 31,
+   "n_tasks_scored": 40,
+   "per_task": {
+    "t01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "other_value",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "90",
+      "180",
+      "90",
+      "90"
+     ]
+    },
+    "t02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "240",
+      "240",
+      "240",
+      "240"
+     ]
+    },
+    "t03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "600"
+     ]
+    },
+    "t04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "other_value",
+      "other_value",
+      "malformed",
+      "other_value"
+     ],
+     "values": [
+      "30",
+      "30",
+      null,
+      "30"
+     ]
+    },
+    "t05": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "300",
+      "300",
+      "300",
+      "300"
+     ]
+    },
+    "t06": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "t07": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "480",
+      "480",
+      "480",
+      "1200"
+     ]
+    },
+    "t08": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "150",
+      "150",
+      "150",
+      "150"
+     ]
+    },
+    "p01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120",
+      "120",
+      "120",
+      "120"
+     ]
+    },
+    "p02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "360",
+      "360",
+      "360",
+      "360"
+     ]
+    },
+    "p03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "p04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "540",
+      "540",
+      "540",
+      "540"
+     ]
+    },
+    "c01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      null,
+      null,
+      "10",
+      "10"
+     ]
+    },
+    "c02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "c03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "malformed",
+      "ok"
+     ],
+     "values": [
+      null,
+      null,
+      null,
+      "120"
+     ]
+    },
+    "c04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "malformed",
+      "ok"
+     ],
+     "values": [
+      null,
+      null,
+      null,
+      "5/2"
+     ]
+    },
+    "e01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "600"
+     ]
+    },
+    "e02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30",
+      "30000",
+      "30",
+      "30"
+     ]
+    },
+    "e03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1200"
+     ]
+    },
+    "e04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "magnitude_slip"
+     ],
+     "values": [
+      "180",
+      "180",
+      "180",
+      "1800"
+     ]
+    },
+    "u01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "5/2",
+      "5/2",
+      "5/2",
+      "5/2"
+     ]
+    },
+    "u02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "12",
+      "12",
+      "12",
+      "12"
+     ]
+    },
+    "u03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "other_value",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "3/5",
+      "1/2"
+     ]
+    },
+    "u04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "20",
+      "20",
+      "20",
+      "20"
+     ]
+    },
+    "d01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1250",
+      "1250",
+      "1250",
+      "1250"
+     ]
+    },
+    "d02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "4999",
+      "4999",
+      "4999",
+      "4999"
+     ]
+    },
+    "d03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120000",
+      "120000",
+      "120000",
+      "120000"
+     ]
+    },
+    "d04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "m01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7/2",
+      "7/2",
+      "7/2",
+      "7/2"
+     ]
+    },
+    "m02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/4",
+      "1/4",
+      "1/4",
+      "1/4"
+     ]
+    },
+    "m03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1200"
+     ]
+    },
+    "m04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "y01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "y02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "60000",
+      "60000",
+      "60000",
+      "60000"
+     ]
+    },
+    "y03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "y04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30000",
+      "30000",
+      "30000",
+      "30000"
+     ]
+    },
+    "g01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "g02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "1/2",
+      "1/2"
+     ]
+    },
+    "g03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "g04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7",
+      "7",
+      "7",
+      "7"
+     ]
+    }
+   },
+   "by_role": {
+    "canonical": {
+     "n": 40,
+     "ok": 36,
+     "slips": 0
+    },
+    "sub": {
+     "n": 40,
+     "ok": 34,
+     "slips": 1
+    },
+    "larger": {
+     "n": 40,
+     "ok": 36,
+     "slips": 0
+    },
+    "words": {
+     "n": 40,
+     "ok": 37,
+     "slips": 1
+    }
+   },
+   "by_real": {
+    "real": {
+     "n": 96,
+     "ok": 79,
+     "slips": 2
+    },
+    "synthetic": {
+     "n": 64,
+     "ok": 64,
+     "slips": 0
+    }
+   },
+   "copied_stated": 1,
+   "rows_with_reasoning": 0,
+   "verdict": "CLEAN",
+   "label": "Qwen3.8-27B Q6_K",
+   "thinking": "off (chat_template_kwargs enable_thinking=false)",
+   "complete": true
+  },
+  "ornith15-35b-q4km": {
+   "n": 160,
+   "counts": {
+    "ok": 118,
+    "magnitude_slip": 7,
+    "other_value": 12,
+    "no_call": 0,
+    "wrong_tool": 2,
+    "malformed": 21
+   },
+   "slips": [
+    {
+     "task": "t01",
+     "role": "sub",
+     "k": -3,
+     "value": "90000",
+     "expected": "90",
+     "stated": "90000 ms",
+     "form_text": "90000 milliseconds"
+    },
+    {
+     "task": "t02",
+     "role": "sub",
+     "k": -3,
+     "value": "240000",
+     "expected": "240",
+     "stated": "240000 ms",
+     "form_text": "240000 milliseconds"
+    },
+    {
+     "task": "t05",
+     "role": "sub",
+     "k": -3,
+     "value": "300000",
+     "expected": "300",
+     "stated": "300000 ms",
+     "form_text": "300000 milliseconds"
+    },
+    {
+     "task": "t06",
+     "role": "sub",
+     "k": -3,
+     "value": "45000",
+     "expected": "45",
+     "stated": "45000 ms",
+     "form_text": "45000 milliseconds"
+    },
+    {
+     "task": "t07",
+     "role": "sub",
+     "k": -3,
+     "value": "480000",
+     "expected": "480",
+     "stated": "480000 ms",
+     "form_text": "480000 milliseconds"
+    },
+    {
+     "task": "c01",
+     "role": "sub",
+     "k": -3,
+     "value": "10000",
+     "expected": "10",
+     "stated": "10000 ms",
+     "form_text": "10000 milliseconds"
+    },
+    {
+     "task": "e03",
+     "role": "sub",
+     "k": -3,
+     "value": "1200000",
+     "expected": "1200",
+     "stated": "1200000 ms",
+     "form_text": "1200000 milliseconds"
+    }
+   ],
+   "slip_k": {
+    "-3": 7
+   },
+   "bad_fraction": 0.13125,
+   "n_invariant_tasks": 20,
+   "n_correct_tasks": 20,
+   "n_tasks_scored": 40,
+   "per_task": {
+    "t01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "90",
+      "90000",
+      "90",
+      "90"
+     ]
+    },
+    "t02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "240",
+      "240000",
+      "240",
+      "7200"
+     ]
+    },
+    "t03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      "600",
+      "600",
+      null,
+      null
+     ]
+    },
+    "t04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "other_value",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      null,
+      "25000",
+      null,
+      null
+     ]
+    },
+    "t05": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "300",
+      "300000",
+      "300",
+      "3600"
+     ]
+    },
+    "t06": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "magnitude_slip",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      null,
+      "45000",
+      null,
+      null
+     ]
+    },
+    "t07": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "480",
+      "480000",
+      "480",
+      "1440"
+     ]
+    },
+    "t08": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "p01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120",
+      "120",
+      "120",
+      "120"
+     ]
+    },
+    "p02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "360",
+      "360",
+      "360",
+      "720"
+     ]
+    },
+    "p03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "p04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "540",
+      "540",
+      "540",
+      "540"
+     ]
+    },
+    "c01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "malformed"
+     ],
+     "values": [
+      "10",
+      "10000",
+      "10",
+      null
+     ]
+    },
+    "c02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "other_value",
+      "malformed"
+     ],
+     "values": [
+      null,
+      null,
+      "30",
+      null
+     ]
+    },
+    "c03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      "120",
+      null,
+      null,
+      null
+     ]
+    },
+    "c04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "other_value",
+      "malformed",
+      "malformed",
+      "ok"
+     ],
+     "values": [
+      "5",
+      null,
+      null,
+      "5/2"
+     ]
+    },
+    "e01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "1200"
+     ]
+    },
+    "e02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30",
+      "30",
+      "30",
+      "30"
+     ]
+    },
+    "e03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "1200",
+      "1200000",
+      "1200",
+      "180"
+     ]
+    },
+    "e04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "180",
+      "180",
+      "180",
+      "360"
+     ]
+    },
+    "u01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "other_value",
+      "ok"
+     ],
+     "values": [
+      "5/2",
+      "5/2",
+      "417/1000",
+      "5/2"
+     ]
+    },
+    "u02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "wrong_tool"
+     ],
+     "values": [
+      "12",
+      "12",
+      "12",
+      null
+     ]
+    },
+    "u03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "other_value",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "120",
+      "1/2"
+     ]
+    },
+    "u04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "wrong_tool",
+      "ok"
+     ],
+     "values": [
+      "20",
+      "20",
+      null,
+      "20"
+     ]
+    },
+    "d01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1250",
+      "1250",
+      "1250",
+      "1250"
+     ]
+    },
+    "d02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "4999",
+      "4999",
+      "4999",
+      "4999"
+     ]
+    },
+    "d03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120000",
+      "120000",
+      "120000",
+      "120000"
+     ]
+    },
+    "d04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "m01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7/2",
+      "7/2",
+      "7/2",
+      "7/2"
+     ]
+    },
+    "m02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/4",
+      "1/4",
+      "1/4",
+      "1/4"
+     ]
+    },
+    "m03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1200"
+     ]
+    },
+    "m04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "y01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "y02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "60000",
+      "60000",
+      "60000",
+      "60000"
+     ]
+    },
+    "y03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "y04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30000",
+      "30000",
+      "30000",
+      "30000"
+     ]
+    },
+    "g01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "g02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "1/2",
+      "1/2"
+     ]
+    },
+    "g03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "g04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7",
+      "7",
+      "7",
+      "7"
+     ]
+    }
+   },
+   "by_role": {
+    "canonical": {
+     "n": 40,
+     "ok": 35,
+     "slips": 0
+    },
+    "sub": {
+     "n": 40,
+     "ok": 28,
+     "slips": 7
+    },
+    "larger": {
+     "n": 40,
+     "ok": 30,
+     "slips": 0
+    },
+    "words": {
+     "n": 40,
+     "ok": 25,
+     "slips": 0
+    }
+   },
+   "by_real": {
+    "real": {
+     "n": 96,
+     "ok": 54,
+     "slips": 7
+    },
+    "synthetic": {
+     "n": 64,
+     "ok": 64,
+     "slips": 0
+    }
+   },
+   "copied_stated": 7,
+   "rows_with_reasoning": 0,
+   "verdict": "SLIPS FOUND",
+   "label": "Ornith-1.5-35B Q4_K_M",
+   "thinking": "off (chat_template_kwargs enable_thinking=false)",
+   "complete": true
+  },
+  "gpt-oss-20b-mxfp4": {
+   "n": 160,
+   "counts": {
+    "ok": 127,
+    "magnitude_slip": 14,
+    "other_value": 10,
+    "no_call": 0,
+    "wrong_tool": 0,
+    "malformed": 9
+   },
+   "slips": [
+    {
+     "task": "t01",
+     "role": "sub",
+     "k": -3,
+     "value": "90000",
+     "expected": "90",
+     "stated": "90000 ms",
+     "form_text": "90000 milliseconds"
+    },
+    {
+     "task": "t02",
+     "role": "sub",
+     "k": -3,
+     "value": "240000",
+     "expected": "240",
+     "stated": "240000 ms",
+     "form_text": "240000 milliseconds"
+    },
+    {
+     "task": "t03",
+     "role": "sub",
+     "k": -3,
+     "value": "600000",
+     "expected": "600",
+     "stated": "600000 ms",
+     "form_text": "600000 milliseconds"
+    },
+    {
+     "task": "t04",
+     "role": "sub",
+     "k": -3,
+     "value": "20000",
+     "expected": "20",
+     "stated": "20000 ms",
+     "form_text": "20000 milliseconds"
+    },
+    {
+     "task": "t05",
+     "role": "sub",
+     "k": -3,
+     "value": "300000",
+     "expected": "300",
+     "stated": "300000 ms",
+     "form_text": "300000 milliseconds"
+    },
+    {
+     "task": "t06",
+     "role": "sub",
+     "k": -3,
+     "value": "45000",
+     "expected": "45",
+     "stated": "45000 ms",
+     "form_text": "45000 milliseconds"
+    },
+    {
+     "task": "t07",
+     "role": "sub",
+     "k": -3,
+     "value": "480000",
+     "expected": "480",
+     "stated": "480000 ms",
+     "form_text": "480000 milliseconds"
+    },
+    {
+     "task": "t08",
+     "role": "sub",
+     "k": -3,
+     "value": "150000",
+     "expected": "150",
+     "stated": "150000 ms",
+     "form_text": "150000 milliseconds"
+    },
+    {
+     "task": "p01",
+     "role": "sub",
+     "k": -3,
+     "value": "120000",
+     "expected": "120",
+     "stated": "120000 ms",
+     "form_text": "120000 milliseconds"
+    },
+    {
+     "task": "p02",
+     "role": "sub",
+     "k": -3,
+     "value": "360000",
+     "expected": "360",
+     "stated": "360000 ms",
+     "form_text": "360000 milliseconds"
+    },
+    {
+     "task": "p03",
+     "role": "sub",
+     "k": -3,
+     "value": "75000",
+     "expected": "75",
+     "stated": "75000 ms",
+     "form_text": "75000 milliseconds"
+    },
+    {
+     "task": "p04",
+     "role": "sub",
+     "k": -3,
+     "value": "540000",
+     "expected": "540",
+     "stated": "540000 ms",
+     "form_text": "540000 milliseconds"
+    },
+    {
+     "task": "e03",
+     "role": "sub",
+     "k": -3,
+     "value": "1200000",
+     "expected": "1200",
+     "stated": "1200000 ms",
+     "form_text": "1200000 milliseconds"
+    },
+    {
+     "task": "e04",
+     "role": "words",
+     "k": -1,
+     "value": "1800",
+     "expected": "180",
+     "stated": "1/20 h",
+     "form_text": "a twentieth of an hour"
+    }
+   ],
+   "slip_k": {
+    "-3": 13,
+    "-1": 1
+   },
+   "bad_fraction": 0.05625,
+   "n_invariant_tasks": 19,
+   "n_correct_tasks": 19,
+   "n_tasks_scored": 40,
+   "per_task": {
+    "t01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "90",
+      "90000",
+      "90",
+      "90"
+     ]
+    },
+    "t02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "240",
+      "240000",
+      "240",
+      "240"
+     ]
+    },
+    "t03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "600",
+      "600000",
+      "600",
+      "600"
+     ]
+    },
+    "t04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "magnitude_slip",
+      "ok",
+      "malformed"
+     ],
+     "values": [
+      null,
+      "20000",
+      "20",
+      null
+     ]
+    },
+    "t05": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "300",
+      "300000",
+      "300",
+      "300"
+     ]
+    },
+    "t06": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45000",
+      "45",
+      "45"
+     ]
+    },
+    "t07": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "480",
+      "480000",
+      "480",
+      "480"
+     ]
+    },
+    "t08": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "150",
+      "150000",
+      "150",
+      "150"
+     ]
+    },
+    "p01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120",
+      "120000",
+      "120",
+      "120"
+     ]
+    },
+    "p02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "360",
+      "360000",
+      "360",
+      "600"
+     ]
+    },
+    "p03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75000",
+      "75",
+      "75"
+     ]
+    },
+    "p04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "540",
+      "540000",
+      "540",
+      "540"
+     ]
+    },
+    "c01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "c02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "other_value",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "c03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "other_value",
+      "other_value",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      "30",
+      "30",
+      null,
+      null
+     ]
+    },
+    "c04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "malformed",
+      "other_value",
+      "other_value"
+     ],
+     "values": [
+      "5/2",
+      null,
+      "30",
+      "30"
+     ]
+    },
+    "e01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "600"
+     ]
+    },
+    "e02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30",
+      "30",
+      "30",
+      "30"
+     ]
+    },
+    "e03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "1200",
+      "1200000",
+      "1200",
+      "900"
+     ]
+    },
+    "e04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "magnitude_slip"
+     ],
+     "values": [
+      "180",
+      "180",
+      "180",
+      "1800"
+     ]
+    },
+    "u01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "5/2",
+      "5/2",
+      "5/2",
+      "5/2"
+     ]
+    },
+    "u02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "12",
+      "12",
+      "12",
+      "5"
+     ]
+    },
+    "u03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "other_value",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "120",
+      "1/2"
+     ]
+    },
+    "u04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "20",
+      "20",
+      "20",
+      "20"
+     ]
+    },
+    "d01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1250",
+      "1250",
+      "1250",
+      "1250"
+     ]
+    },
+    "d02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "4999",
+      "4999",
+      "4999",
+      "4999"
+     ]
+    },
+    "d03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120000",
+      "120000",
+      "120000",
+      "120000"
+     ]
+    },
+    "d04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "m01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7/2",
+      "7/2",
+      "7/2",
+      "7/2"
+     ]
+    },
+    "m02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/4",
+      "1/4",
+      "1/4",
+      "1/4"
+     ]
+    },
+    "m03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1500"
+     ]
+    },
+    "m04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "y01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "y02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "60000",
+      "60000",
+      "60000",
+      "60000"
+     ]
+    },
+    "y03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "y04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30000",
+      "30000",
+      "30000",
+      "30000"
+     ]
+    },
+    "g01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "g02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "1/2",
+      "1/2"
+     ]
+    },
+    "g03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "g04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7",
+      "7",
+      "7",
+      "7"
+     ]
+    }
+   },
+   "by_role": {
+    "canonical": {
+     "n": 40,
+     "ok": 36,
+     "slips": 0
+    },
+    "sub": {
+     "n": 40,
+     "ok": 24,
+     "slips": 13
+    },
+    "larger": {
+     "n": 40,
+     "ok": 36,
+     "slips": 0
+    },
+    "words": {
+     "n": 40,
+     "ok": 31,
+     "slips": 1
+    }
+   },
+   "by_real": {
+    "real": {
+     "n": 96,
+     "ok": 64,
+     "slips": 14
+    },
+    "synthetic": {
+     "n": 64,
+     "ok": 63,
+     "slips": 0
+    }
+   },
+   "copied_stated": 13,
+   "rows_with_reasoning": 160,
+   "verdict": "SLIPS FOUND",
+   "label": "gpt-oss-20b MXFP4",
+   "thinking": "gpt-oss has no off switch: reasoning_effort=low (LABEL: low effort, not off)",
+   "complete": true
+  },
+  "qwen35-9b-q4km": {
+   "n": 160,
+   "counts": {
+    "ok": 129,
+    "magnitude_slip": 8,
+    "other_value": 11,
+    "no_call": 0,
+    "wrong_tool": 0,
+    "malformed": 12
+   },
+   "slips": [
+    {
+     "task": "t01",
+     "role": "sub",
+     "k": -3,
+     "value": "90000",
+     "expected": "90",
+     "stated": "90000 ms",
+     "form_text": "90000 milliseconds"
+    },
+    {
+     "task": "t02",
+     "role": "sub",
+     "k": -3,
+     "value": "240000",
+     "expected": "240",
+     "stated": "240000 ms",
+     "form_text": "240000 milliseconds"
+    },
+    {
+     "task": "t05",
+     "role": "sub",
+     "k": -3,
+     "value": "300000",
+     "expected": "300",
+     "stated": "300000 ms",
+     "form_text": "300000 milliseconds"
+    },
+    {
+     "task": "t06",
+     "role": "sub",
+     "k": -3,
+     "value": "45000",
+     "expected": "45",
+     "stated": "45000 ms",
+     "form_text": "45000 milliseconds"
+    },
+    {
+     "task": "t07",
+     "role": "sub",
+     "k": -3,
+     "value": "480000",
+     "expected": "480",
+     "stated": "480000 ms",
+     "form_text": "480000 milliseconds"
+    },
+    {
+     "task": "t08",
+     "role": "sub",
+     "k": -3,
+     "value": "150000",
+     "expected": "150",
+     "stated": "150000 ms",
+     "form_text": "150000 milliseconds"
+    },
+    {
+     "task": "p01",
+     "role": "sub",
+     "k": -3,
+     "value": "120000",
+     "expected": "120",
+     "stated": "120000 ms",
+     "form_text": "120000 milliseconds"
+    },
+    {
+     "task": "c01",
+     "role": "sub",
+     "k": -3,
+     "value": "10000",
+     "expected": "10",
+     "stated": "10000 ms",
+     "form_text": "10000 milliseconds"
+    }
+   ],
+   "slip_k": {
+    "-3": 8
+   },
+   "bad_fraction": 0.075,
+   "n_invariant_tasks": 21,
+   "n_correct_tasks": 21,
+   "n_tasks_scored": 40,
+   "per_task": {
+    "t01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "90",
+      "90000",
+      "90",
+      "90"
+     ]
+    },
+    "t02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "240",
+      "240000",
+      "240",
+      "540"
+     ]
+    },
+    "t03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "360"
+     ]
+    },
+    "t04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "t05": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "300",
+      "300000",
+      "300",
+      "420"
+     ]
+    },
+    "t06": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45000",
+      "45",
+      "45"
+     ]
+    },
+    "t07": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "480",
+      "480000",
+      "480",
+      "480"
+     ]
+    },
+    "t08": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "150",
+      "150000",
+      "150",
+      "150"
+     ]
+    },
+    "p01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "120",
+      "120000",
+      "120",
+      "180"
+     ]
+    },
+    "p02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "360",
+      "360",
+      "360",
+      "600"
+     ]
+    },
+    "p03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "p04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "540",
+      "540",
+      "540",
+      "180"
+     ]
+    },
+    "c01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "10",
+      "10000",
+      "10",
+      "10"
+     ]
+    },
+    "c02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "c03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "c04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "malformed",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "e01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "3600"
+     ]
+    },
+    "e02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30",
+      "30",
+      "30",
+      "30"
+     ]
+    },
+    "e03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1800"
+     ]
+    },
+    "e04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "180",
+      "180",
+      "180",
+      "720"
+     ]
+    },
+    "u01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "other_value",
+      "ok"
+     ],
+     "values": [
+      "5/2",
+      "5/2",
+      "3/2",
+      "5/2"
+     ]
+    },
+    "u02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "12",
+      "12",
+      "12",
+      "12"
+     ]
+    },
+    "u03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "1/2",
+      "1/2"
+     ]
+    },
+    "u04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "20",
+      "20",
+      "20",
+      "20"
+     ]
+    },
+    "d01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1250",
+      "1250",
+      "1250",
+      "1250"
+     ]
+    },
+    "d02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "4999",
+      "4999",
+      "4999",
+      "4999"
+     ]
+    },
+    "d03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120000",
+      "120000",
+      "120000",
+      "120000"
+     ]
+    },
+    "d04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "m01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7/2",
+      "7/2",
+      "7/2",
+      "7/2"
+     ]
+    },
+    "m02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/4",
+      "1/4",
+      "1/4",
+      "1/4"
+     ]
+    },
+    "m03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1050"
+     ]
+    },
+    "m04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "y01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "y02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "60000",
+      "60000",
+      "60000",
+      "60000"
+     ]
+    },
+    "y03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "y04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30000",
+      "30000",
+      "30000",
+      "30000"
+     ]
+    },
+    "g01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "g02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "1/2",
+      "1/2"
+     ]
+    },
+    "g03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "g04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7",
+      "7",
+      "7",
+      "7"
+     ]
+    }
+   },
+   "by_role": {
+    "canonical": {
+     "n": 40,
+     "ok": 37,
+     "slips": 0
+    },
+    "sub": {
+     "n": 40,
+     "ok": 29,
+     "slips": 8
+    },
+    "larger": {
+     "n": 40,
+     "ok": 36,
+     "slips": 0
+    },
+    "words": {
+     "n": 40,
+     "ok": 27,
+     "slips": 0
+    }
+   },
+   "by_real": {
+    "real": {
+     "n": 96,
+     "ok": 66,
+     "slips": 8
+    },
+    "synthetic": {
+     "n": 64,
+     "ok": 63,
+     "slips": 0
+    }
+   },
+   "copied_stated": 8,
+   "rows_with_reasoning": 0,
+   "verdict": "SLIPS FOUND",
+   "label": "Qwen3.5-9B Q4_K_M",
+   "thinking": "off (chat_template_kwargs enable_thinking=false)",
+   "complete": true
+  },
+  "qwen35-9b-q8_0": {
+   "n": 160,
+   "counts": {
+    "ok": 132,
+    "magnitude_slip": 9,
+    "other_value": 13,
+    "no_call": 0,
+    "wrong_tool": 0,
+    "malformed": 6
+   },
+   "slips": [
+    {
+     "task": "t01",
+     "role": "sub",
+     "k": -3,
+     "value": "90000",
+     "expected": "90",
+     "stated": "90000 ms",
+     "form_text": "90000 milliseconds"
+    },
+    {
+     "task": "t02",
+     "role": "sub",
+     "k": -3,
+     "value": "240000",
+     "expected": "240",
+     "stated": "240000 ms",
+     "form_text": "240000 milliseconds"
+    },
+    {
+     "task": "t05",
+     "role": "sub",
+     "k": -3,
+     "value": "300000",
+     "expected": "300",
+     "stated": "300000 ms",
+     "form_text": "300000 milliseconds"
+    },
+    {
+     "task": "t07",
+     "role": "sub",
+     "k": -3,
+     "value": "480000",
+     "expected": "480",
+     "stated": "480000 ms",
+     "form_text": "480000 milliseconds"
+    },
+    {
+     "task": "t08",
+     "role": "sub",
+     "k": -3,
+     "value": "150000",
+     "expected": "150",
+     "stated": "150000 ms",
+     "form_text": "150000 milliseconds"
+    },
+    {
+     "task": "p01",
+     "role": "sub",
+     "k": -3,
+     "value": "120000",
+     "expected": "120",
+     "stated": "120000 ms",
+     "form_text": "120000 milliseconds"
+    },
+    {
+     "task": "c01",
+     "role": "sub",
+     "k": -3,
+     "value": "10000",
+     "expected": "10",
+     "stated": "10000 ms",
+     "form_text": "10000 milliseconds"
+    },
+    {
+     "task": "c03",
+     "role": "sub",
+     "k": -3,
+     "value": "120000",
+     "expected": "120",
+     "stated": "120000 ms",
+     "form_text": "120000 milliseconds"
+    },
+    {
+     "task": "c03",
+     "role": "words",
+     "k": -1,
+     "value": "1200",
+     "expected": "120",
+     "stated": "1/30 h",
+     "form_text": "a thirtieth of an hour"
+    }
+   ],
+   "slip_k": {
+    "-3": 8,
+    "-1": 1
+   },
+   "bad_fraction": 0.0375,
+   "n_invariant_tasks": 22,
+   "n_correct_tasks": 22,
+   "n_tasks_scored": 40,
+   "per_task": {
+    "t01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "90",
+      "90000",
+      "90",
+      "90"
+     ]
+    },
+    "t02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "240",
+      "240000",
+      "240",
+      "540"
+     ]
+    },
+    "t03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "360"
+     ]
+    },
+    "t04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "other_value",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      "30",
+      null,
+      null,
+      null
+     ]
+    },
+    "t05": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "300",
+      "300000",
+      "300",
+      "420"
+     ]
+    },
+    "t06": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "t07": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "480",
+      "480000",
+      "480",
+      "8"
+     ]
+    },
+    "t08": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "150",
+      "150000",
+      "150",
+      "150"
+     ]
+    },
+    "p01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "120",
+      "120000",
+      "120",
+      "360"
+     ]
+    },
+    "p02": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "360",
+      "360",
+      "360",
+      "600"
+     ]
+    },
+    "p03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "p04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "540",
+      "540",
+      "540",
+      "180"
+     ]
+    },
+    "c01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "10",
+      "10000",
+      "10",
+      "10"
+     ]
+    },
+    "c02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "c03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "magnitude_slip",
+      "ok",
+      "magnitude_slip"
+     ],
+     "values": [
+      "120",
+      "120000",
+      "120",
+      "1200"
+     ]
+    },
+    "c04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "malformed",
+      "malformed",
+      "malformed"
+     ],
+     "values": [
+      "5/2",
+      null,
+      null,
+      null
+     ]
+    },
+    "e01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "600",
+      "600",
+      "600",
+      "2100"
+     ]
+    },
+    "e02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30",
+      "30",
+      "30",
+      "30"
+     ]
+    },
+    "e03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1200"
+     ]
+    },
+    "e04": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "180",
+      "180",
+      "180",
+      "720"
+     ]
+    },
+    "u01": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "other_value",
+      "ok"
+     ],
+     "values": [
+      "5/2",
+      "5/2",
+      "3/2",
+      "5/2"
+     ]
+    },
+    "u02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "12",
+      "12",
+      "12",
+      "12"
+     ]
+    },
+    "u03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "other_value",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "16666666666666667/10000000000000000",
+      "1/2"
+     ]
+    },
+    "u04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "20",
+      "20",
+      "20",
+      "20"
+     ]
+    },
+    "d01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1250",
+      "1250",
+      "1250",
+      "1250"
+     ]
+    },
+    "d02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "4999",
+      "4999",
+      "4999",
+      "4999"
+     ]
+    },
+    "d03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "120000",
+      "120000",
+      "120000",
+      "120000"
+     ]
+    },
+    "d04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "75",
+      "75",
+      "75",
+      "75"
+     ]
+    },
+    "m01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7/2",
+      "7/2",
+      "7/2",
+      "7/2"
+     ]
+    },
+    "m02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/4",
+      "1/4",
+      "1/4",
+      "1/4"
+     ]
+    },
+    "m03": {
+     "invariant": false,
+     "correct": false,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "other_value"
+     ],
+     "values": [
+      "1200",
+      "1200",
+      "1200",
+      "1100"
+     ]
+    },
+    "m04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "45",
+      "45",
+      "45",
+      "45"
+     ]
+    },
+    "y01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "y02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "60000",
+      "60000",
+      "60000",
+      "60000"
+     ]
+    },
+    "y03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "y04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "30000",
+      "30000",
+      "30000",
+      "30000"
+     ]
+    },
+    "g01": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "250",
+      "250",
+      "250",
+      "250"
+     ]
+    },
+    "g02": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "1/2",
+      "1/2",
+      "1/2",
+      "1/2"
+     ]
+    },
+    "g03": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "2500",
+      "2500",
+      "2500",
+      "2500"
+     ]
+    },
+    "g04": {
+     "invariant": true,
+     "correct": true,
+     "cats": [
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ],
+     "values": [
+      "7",
+      "7",
+      "7",
+      "7"
+     ]
+    }
+   },
+   "by_role": {
+    "canonical": {
+     "n": 40,
+     "ok": 39,
+     "slips": 0
+    },
+    "sub": {
+     "n": 40,
+     "ok": 30,
+     "slips": 8
+    },
+    "larger": {
+     "n": 40,
+     "ok": 36,
+     "slips": 0
+    },
+    "words": {
+     "n": 40,
+     "ok": 27,
+     "slips": 1
+    }
+   },
+   "by_real": {
+    "real": {
+     "n": 96,
+     "ok": 69,
+     "slips": 9
+    },
+    "synthetic": {
+     "n": 64,
+     "ok": 63,
+     "slips": 0
+    }
+   },
+   "copied_stated": 8,
+   "rows_with_reasoning": 0,
+   "verdict": "SLIPS FOUND",
+   "label": "Qwen3.5-9B Q8_0",
+   "thinking": "off (chat_template_kwargs enable_thinking=false)",
+   "complete": true
+  }
+ },
+ "pair_q4_q8": {
+  "a": "qwen35-9b-q4km",
+  "b": "qwen35-9b-q8_0",
+  "n_pairs": 160,
+  "both_ok": 127,
+  "only_a_ok": 2,
+  "only_b_ok": 5,
+  "neither_ok": 26,
+  "mcnemar_exact_p": 0.453125,
+  "note": "descriptive only: one checkpoint pair, no direction pre-registered"
+ },
+ "legs_run": [
+  "qwen38-27b-q6k",
+  "ornith15-35b-q4km",
+  "gpt-oss-20b-mxfp4",
+  "qwen35-9b-q4km",
+  "qwen35-9b-q8_0"
+ ],
+ "thresholds": {
+  "slips_found_at": 3,
+  "broken_above_bad_fraction": 0.2
+ }
+}
