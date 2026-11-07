@@ -1,0 +1,126 @@
+{
+ "verdict": "EDITOR COULD NOT MATCH THE SCRIPT",
+ "detail": "the scripted edit lowers the loop rate significantly, the editor's does not",
+ "extra": {
+  "editor_cured": false,
+  "script_cured": true,
+  "editor_sig_lower_than_script": false,
+  "script_sig_lower_than_editor": true
+ },
+ "held": {
+  "base": {
+   "n": 40,
+   "loops": 33,
+   "loop_rate": 0.825,
+   "closed": 7,
+   "correct": 6,
+   "mean_tokens": 14506.4,
+   "set": "held",
+   "tag": "base",
+   "gguf": "base-bf16.gguf",
+   "cap": 16384,
+   "load_s": 1.0,
+   "gen_s": 691.4,
+   "seed": 1
+  },
+  "published": {
+   "n": 40,
+   "loops": 16,
+   "loop_rate": 0.4,
+   "closed": 24,
+   "correct": 17,
+   "mean_tokens": 12243.0,
+   "set": "held",
+   "tag": "published",
+   "gguf": "published.gguf",
+   "cap": 16384,
+   "load_s": 1.0,
+   "gen_s": 695.1,
+   "seed": 1
+  },
+  "scripted": {
+   "n": 40,
+   "loops": 16,
+   "loop_rate": 0.4,
+   "closed": 24,
+   "correct": 16,
+   "mean_tokens": 13505.8,
+   "set": "held",
+   "tag": "scripted",
+   "gguf": "scripted.gguf",
+   "cap": 16384,
+   "load_s": 1.0,
+   "gen_s": 687.9,
+   "seed": 1
+  },
+  "editor": {
+   "n": 40,
+   "loops": 34,
+   "loop_rate": 0.85,
+   "closed": 6,
+   "correct": 6,
+   "mean_tokens": 14779.7,
+   "set": "held",
+   "tag": "editor",
+   "gguf": "editor-best.gguf",
+   "cap": 16384,
+   "load_s": 1.0,
+   "gen_s": 692.1,
+   "seed": 1
+  }
+ },
+ "dev": {
+  "base": {
+   "n": 20,
+   "loops": 16,
+   "loop_rate": 0.8,
+   "closed": 4,
+   "correct": 4,
+   "mean_tokens": 13995.6,
+   "set": "dev",
+   "tag": "base",
+   "gguf": "base-bf16.gguf",
+   "cap": 16384,
+   "load_s": 1.0,
+   "gen_s": 349.5,
+   "seed": 1
+  },
+  "published": null,
+  "scripted": null,
+  "editor": null
+ },
+ "gate": {
+  "scored": 2,
+  "best": "c2",
+  "best_gguf": "take/state/cand/c2.gguf",
+  "flags": [],
+  "calls": {
+   "info": 2,
+   "transcripts": 2,
+   "acts": 17,
+   "weights": 2,
+   "apply": 2,
+   "eval": 2,
+   "eval_done": 2
+  },
+  "why": "",
+  "best_loop_rate": 0.85,
+  "scored_list": [
+   {
+    "name": "c1",
+    "loop_rate": 0.95,
+    "loops": 19,
+    "n": 20
+   },
+   {
+    "name": "c2",
+    "loop_rate": 0.85,
+    "loops": 17,
+    "n": 20
+   }
+  ],
+  "minutes": 33.0,
+  "agent_tool_calls": 54
+ },
+ "line1": "a local Qwen3.8-27B in Hermes Agent edited a 0.8B model's weights to stop its thinking loops: held-out loops 33/40 base -> 34/40 after the editor's edit; the scripted pipeline: 16/40, the published edit: 16/40"
+}
