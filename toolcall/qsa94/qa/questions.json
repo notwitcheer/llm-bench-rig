@@ -1,0 +1,122 @@
+[
+ {
+  "id": "Q01",
+  "depth": 0.241,
+  "q": "In the Hermes Agent documentation above, what is the default value of `backup_keep`? Answer with the number only."
+ },
+ {
+  "id": "Q02",
+  "depth": 0.298,
+  "q": "In the Hermes Agent documentation above, what is the default value of `mcp_result_size_chars`? Answer with the number only."
+ },
+ {
+  "id": "Q03",
+  "depth": 0.341,
+  "q": "In the Hermes Agent documentation above, what is the default value of `max_verify_nudges`? Answer with the number only."
+ },
+ {
+  "id": "Q04",
+  "depth": 0.376,
+  "q": "In the Hermes Agent documentation above, what is the default value of `vision.embed_target_bytes`? Answer with the number only."
+ },
+ {
+  "id": "Q05",
+  "depth": 0.376,
+  "q": "In the Hermes Agent documentation above, what is the default value of `vision.replay_recent_images`? Answer with the number only."
+ },
+ {
+  "id": "Q06",
+  "depth": 0.405,
+  "q": "In the Hermes Agent documentation above, what is the default value of `max_web_searches`? Answer with the number only."
+ },
+ {
+  "id": "Q07",
+  "depth": 0.411,
+  "q": "In the Hermes Agent documentation above, what is the default value of `timeout_s`? Answer with the number only."
+ },
+ {
+  "id": "Q08",
+  "depth": 0.412,
+  "q": "In the Hermes Agent documentation above, what is the default value of `keep_warm_seconds`? Answer with the number only."
+ },
+ {
+  "id": "Q09",
+  "depth": 0.412,
+  "q": "In the Hermes Agent documentation above, what is the default value of `pcm_sample_rate`? Answer with the number only."
+ },
+ {
+  "id": "Q10",
+  "depth": 0.413,
+  "q": "In the Hermes Agent documentation above, what is the default value of `bit_rate`? Answer with the number only."
+ },
+ {
+  "id": "Q11",
+  "depth": 0.436,
+  "q": "In the Hermes Agent documentation above, what is the default value of `no_speech_prob_threshold`? Answer with the number only."
+ },
+ {
+  "id": "Q12",
+  "depth": 0.448,
+  "q": "In the Hermes Agent documentation above, what is the default value of `edit_interval`? Answer with the number only."
+ },
+ {
+  "id": "Q13",
+  "depth": 0.448,
+  "q": "In the Hermes Agent documentation above, what is the default value of `buffer_threshold`? Answer with the number only."
+ },
+ {
+  "id": "Q14",
+  "depth": 0.458,
+  "q": "In the Hermes Agent documentation above, what is the default value of `max_tool_calls`? Answer with the number only."
+ },
+ {
+  "id": "Q15",
+  "depth": 0.463,
+  "q": "In the Hermes Agent documentation above, what is the default value of `inactivity_timeout`? Answer with the number only."
+ },
+ {
+  "id": "Q16",
+  "depth": 0.463,
+  "q": "In the Hermes Agent documentation above, what is the default value of `command_timeout`? Answer with the number only."
+ },
+ {
+  "id": "Q17",
+  "depth": 0.473,
+  "q": "In the Hermes Agent documentation above, what is the default value of `approvals.denial_breaker_threshold`? Answer with the number only."
+ },
+ {
+  "id": "Q18",
+  "depth": 0.497,
+  "q": "In the Hermes Agent documentation above, what is the default value of `session_ttl_seconds`? Answer with the number only."
+ },
+ {
+  "id": "Q19",
+  "depth": 0.497,
+  "q": "In the Hermes Agent documentation above, what is the default value of `min_secret_chars`? Answer with the number only."
+ },
+ {
+  "id": "Q20",
+  "depth": 0.597,
+  "q": "In the Hermes Agent documentation above, what is the default value of `sessions.min_vacuum_interval_days`? Answer with the number only."
+ },
+ {
+  "id": "Q21",
+  "depth": 0.598,
+  "q": "In the Hermes Agent documentation above, what is the default value of `sessions.min_interval_hours`? Answer with the number only."
+ },
+ {
+  "id": "Q22",
+  "depth": 0.641,
+  "q": "In the Hermes Agent documentation above, what is the default value of `install_state_retention_days`? Answer with the number only."
+ },
+ {
+  "id": "Q23",
+  "depth": 0.884,
+  "q": "In the Hermes Agent documentation above, what is the default value of `curator.backup.keep`? Answer with the number only."
+ },
+ {
+  "id": "Q24",
+  "depth": 0.888,
+  "q": "In the Hermes Agent documentation above, what is the default value of `archive_ttl_days`? Answer with the number only."
+ }
+]

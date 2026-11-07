@@ -1,0 +1,146 @@
+{
+ "Q01": {
+  "key": "backup_keep",
+  "value": "5",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 237535
+ },
+ "Q02": {
+  "key": "mcp_result_size_chars",
+  "value": "50000",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 293900
+ },
+ "Q03": {
+  "key": "max_verify_nudges",
+  "value": "3",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 336099
+ },
+ "Q04": {
+  "key": "vision.embed_target_bytes",
+  "value": "262144",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 370314
+ },
+ "Q05": {
+  "key": "vision.replay_recent_images",
+  "value": "3",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 370575
+ },
+ "Q06": {
+  "key": "max_web_searches",
+  "value": "50",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 398744
+ },
+ "Q07": {
+  "key": "timeout_s",
+  "value": "600.0",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 404489
+ },
+ "Q08": {
+  "key": "keep_warm_seconds",
+  "value": "60",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 405456
+ },
+ "Q09": {
+  "key": "pcm_sample_rate",
+  "value": "24000",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 406130
+ },
+ "Q10": {
+  "key": "bit_rate",
+  "value": "128000",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 406992
+ },
+ "Q11": {
+  "key": "no_speech_prob_threshold",
+  "value": "0.6",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 429317
+ },
+ "Q12": {
+  "key": "edit_interval",
+  "value": "0.8",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 441075
+ },
+ "Q13": {
+  "key": "buffer_threshold",
+  "value": "24",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 441148
+ },
+ "Q14": {
+  "key": "max_tool_calls",
+  "value": "50",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 451202
+ },
+ "Q15": {
+  "key": "inactivity_timeout",
+  "value": "120",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 455820
+ },
+ "Q16": {
+  "key": "command_timeout",
+  "value": "30",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 455896
+ },
+ "Q17": {
+  "key": "approvals.denial_breaker_threshold",
+  "value": "3",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 466195
+ },
+ "Q18": {
+  "key": "session_ttl_seconds",
+  "value": "0",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 489329
+ },
+ "Q19": {
+  "key": "min_secret_chars",
+  "value": "43",
+  "source": "website/docs/user-guide/configuration.md",
+  "pos": 489561
+ },
+ "Q20": {
+  "key": "sessions.min_vacuum_interval_days",
+  "value": "30",
+  "source": "website/docs/user-guide/sessions.md",
+  "pos": 588400
+ },
+ "Q21": {
+  "key": "sessions.min_interval_hours",
+  "value": "24",
+  "source": "website/docs/user-guide/sessions.md",
+  "pos": 588745
+ },
+ "Q22": {
+  "key": "install_state_retention_days",
+  "value": "14",
+  "source": "website/docs/user-guide/git-worktrees.md",
+  "pos": 631473
+ },
+ "Q23": {
+  "key": "curator.backup.keep",
+  "value": "2",
+  "source": "website/docs/user-guide/features/curator.md",
+  "pos": 871054
+ },
+ "Q24": {
+  "key": "archive_ttl_days",
+  "value": "180",
+  "source": "website/docs/user-guide/features/curator.md",
+  "pos": 874715
+ }
+}
