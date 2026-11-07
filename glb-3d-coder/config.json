@@ -1,0 +1,85 @@
+{
+ "version": 3,
+ "seeds": [
+  20261105,
+  20261106
+ ],
+ "sampler": {
+  "temperature": 0.8,
+  "top_k": 40,
+  "top_p": 0.95,
+  "min_p": 0.0,
+  "repeat_penalty": 1.0
+ },
+ "max_tokens": 32768,
+ "thinking": "glb4b-q8: template default = thinking on (the card's recorded evaluation). comparators: thinking OFF via chat_template_kwargs enable_thinking=false (v2 change: with thinking on and the 20,480-token cap, both comparators spent the whole budget thinking and returned no page in the pre-freeze smoke; see PREREG changelog)",
+ "server": {
+  "parallel": 4,
+  "ctx_per_slot": 34816,
+  "flash_attn": "on",
+  "kv": "f16",
+  "jinja": true,
+  "port": 8196
+ },
+ "models": [
+  {
+   "key": "glb4b-q8",
+   "file": "/home/witcheer/models/glb-3d-coder/Qwen3.5-4B-GLB-3D-Coder-Q8_0.gguf",
+   "bytes": 4482402848,
+   "sha256": "68a66e251d96afdf120d7e8886964317b3f628abef5aad85e564b25b44da2a20",
+   "label": "GLB-3D-Coder 4B Q8_0",
+   "size": "4B",
+   "role": "subject",
+   "chat_template_kwargs": {}
+  },
+  {
+   "key": "qwen38-27b-q4km",
+   "file": "/home/witcheer/models/qwen38-27b/Qwen3.8-27B-UD-Q4_K_M.gguf",
+   "bytes": 16464440224,
+   "sha256": "322e194ff79741c7baa497c240f677f54b201b0efab44ca8e50f122b39123482",
+   "label": "Qwen3.8-27B UD-Q4_K_M",
+   "size": "27B",
+   "role": "comparator",
+   "chat_template_kwargs": {
+    "enable_thinking": false
+   }
+  },
+  {
+   "key": "ornith15-35b-q4km",
+   "file": "/home/witcheer/models/ornith-15-35b/Ornith-1.5-35B-Q4_K_M.gguf",
+   "bytes": 21713462848,
+   "sha256": "ca6ea26329c88b78ffd90a85163be2e746c2fafd1024f56db47e499f117f9a7f",
+   "label": "Ornith-1.5-35B Q4_K_M",
+   "size": "35B",
+   "role": "comparator",
+   "chat_template_kwargs": {
+    "enable_thinking": false
+   }
+  }
+ ],
+ "checks": {
+  "viewport": [
+   960,
+   540
+  ],
+  "settle_ms": 4000,
+  "page_timeout_s": 60,
+  "export_wait_s": 20,
+  "js_error": "any uncaught pageerror, or a console message of type error whose text is not 'Failed to load resource' (failed requests are logged separately)",
+  "nonempty": {
+   "gray_std_min": 5.0,
+   "fg_frac_min": 0.02,
+   "fg_diff": 24,
+   "bg": "median colour of four 16x16 corner patches"
+  },
+  "glb": "magic glTF, version 2, header length == file size, JSON chunk parses, asset.version 2.0, >=1 mesh with >=1 primitive, POSITION accessor count>0, every bufferView inside the BIN chunk, POSITION min/max finite and bounding box extent > 0 on >=2 axes"
+ },
+ "verdict": {
+  "ahead_margin_cells": 3,
+  "cells_per_model": 24
+ },
+ "cdn_note": "every http(s) GET the page makes is fetched from the real network once and cached on disk keyed by url; later cells replay the cache (same bytes for every model and seed). nothing is blocked. the page is served from a fake origin http://glb.local/page.html",
+ "export_click": "first visible element whose text, value, title, aria-label or id matches /export.*glb|glb.*export|download.*glb|save.*glb/i (then, if none, /glb|export|download/i); the download event must fire within export_wait_s",
+ "cell_order": "seed-major: every prompt of seed 1 for a model, then seed 2; legs run seed pass 1 for the three models (4B, 27B, 35B), then seed pass 2",
+ "system_prompt_source": "verbatim from the model card system prompt block (https://huggingface.co/ccore/Qwen3.5-4B-GLB-3D-Coder/raw/main/README.md, fetched 2026-11-05); the same string goes to all three models"
+}

@@ -1,0 +1,65 @@
+{
+ "version": 1,
+ "prompts": [
+  {
+   "id": "lighthouse-keeper",
+   "text": "Create a coral-armored lighthouse keeper.",
+   "note": "card's own showcase prompt, replayed on purpose"
+  },
+  {
+   "id": "teapot-tower",
+   "text": "Create a wizard's tower that is also a giant teapot, with a spout balcony and a tiny round door.",
+   "note": ""
+  },
+  {
+   "id": "pancake-ship",
+   "text": "Create a pirate ship made entirely of stacked pancakes, with a syrup-barrel cannon and a waffle sail.",
+   "note": ""
+  },
+  {
+   "id": "toaster-knight",
+   "text": "Create a cheerful toaster knight with a bread-slice shield and a butter-knife sword.",
+   "note": ""
+  },
+  {
+   "id": "snail-bakery",
+   "text": "Create a snail-shaped mobile bakery with a chimney on its shell and a serving window.",
+   "note": ""
+  },
+  {
+   "id": "duck-submarine",
+   "text": "Create a rubber duck submarine with a periscope and a small propeller.",
+   "note": ""
+  },
+  {
+   "id": "haunted-vending",
+   "text": "Create a haunted vending machine with glowing eyes behind the glass and a tentacle coming out of the coin slot.",
+   "note": ""
+  },
+  {
+   "id": "cactus-sombrero",
+   "text": "Create a cactus wearing a sombrero and sunglasses, holding a tiny cup of tea.",
+   "note": ""
+  },
+  {
+   "id": "robot-grandma",
+   "text": "Create a robot grandmother knitting an endless scarf that coils around her armchair.",
+   "note": ""
+  },
+  {
+   "id": "whale-island",
+   "text": "Create a floating island shaped like a sleeping whale, with a tiny village on its back.",
+   "note": ""
+  },
+  {
+   "id": "cone-dragon",
+   "text": "Create a dragon made of traffic cones and road signs, wearing a hard hat.",
+   "note": ""
+  },
+  {
+   "id": "spatula-windmill",
+   "text": "Create a windmill whose blades are giant spatulas, with the blades turning.",
+   "note": "the only prompt that asks for animation"
+  }
+ ]
+}

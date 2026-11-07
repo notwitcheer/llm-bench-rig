@@ -1,0 +1,228 @@
+{
+ "models": {
+  "glb4b-q8": {
+   "label": "GLB-3D-Coder 4B Q8_0",
+   "size": "4B",
+   "n_generated": 24,
+   "n_scored": 24,
+   "html": 20,
+   "load_ok": 12,
+   "nonempty": 17,
+   "page_valid": 12,
+   "glb_valid": 9,
+   "full_pass": 9,
+   "harness_faults": 0,
+   "truncated": 4,
+   "tokens_median": 19601,
+   "tokens_total": 482505,
+   "per_prompt": {
+    "lighthouse-keeper": [
+     0,
+     0
+    ],
+    "teapot-tower": [
+     0,
+     0
+    ],
+    "pancake-ship": [
+     0,
+     1
+    ],
+    "toaster-knight": [
+     1,
+     1
+    ],
+    "snail-bakery": [
+     0,
+     0
+    ],
+    "duck-submarine": [
+     1,
+     0
+    ],
+    "haunted-vending": [
+     1,
+     0
+    ],
+    "cactus-sombrero": [
+     0,
+     0
+    ],
+    "robot-grandma": [
+     0,
+     0
+    ],
+    "whale-island": [
+     0,
+     1
+    ],
+    "cone-dragon": [
+     1,
+     0
+    ],
+    "spatula-windmill": [
+     1,
+     1
+    ]
+   },
+   "fail_reasons": {
+    "page error": 8,
+    "no download: Timeout 20000ms exceeded while waiting for event \"download\"": 3,
+    "no page extracted": 4
+   }
+  },
+  "qwen38-27b-q4km": {
+   "label": "Qwen3.8-27B UD-Q4_K_M",
+   "size": "27B",
+   "n_generated": 24,
+   "n_scored": 24,
+   "html": 24,
+   "load_ok": 17,
+   "nonempty": 20,
+   "page_valid": 17,
+   "glb_valid": 10,
+   "full_pass": 10,
+   "harness_faults": 0,
+   "truncated": 0,
+   "tokens_median": 10178,
+   "tokens_total": 249307,
+   "per_prompt": {
+    "lighthouse-keeper": [
+     0,
+     0
+    ],
+    "teapot-tower": [
+     0,
+     0
+    ],
+    "pancake-ship": [
+     0,
+     1
+    ],
+    "toaster-knight": [
+     1,
+     1
+    ],
+    "snail-bakery": [
+     0,
+     0
+    ],
+    "duck-submarine": [
+     1,
+     1
+    ],
+    "haunted-vending": [
+     1,
+     0
+    ],
+    "cactus-sombrero": [
+     1,
+     0
+    ],
+    "robot-grandma": [
+     0,
+     0
+    ],
+    "whale-island": [
+     0,
+     1
+    ],
+    "cone-dragon": [
+     1,
+     1
+    ],
+    "spatula-windmill": [
+     0,
+     0
+    ]
+   },
+   "fail_reasons": {
+    "no download: Timeout 20000ms exceeded while waiting for event \"download\"": 6,
+    "page error": 7,
+    "glb invalid: too short": 1
+   }
+  },
+  "ornith15-35b-q4km": {
+   "label": "Ornith-1.5-35B Q4_K_M",
+   "size": "35B",
+   "n_generated": 24,
+   "n_scored": 24,
+   "html": 24,
+   "load_ok": 12,
+   "nonempty": 10,
+   "page_valid": 8,
+   "glb_valid": 1,
+   "full_pass": 1,
+   "harness_faults": 0,
+   "truncated": 2,
+   "tokens_median": 9029,
+   "tokens_total": 313498,
+   "per_prompt": {
+    "lighthouse-keeper": [
+     0,
+     0
+    ],
+    "teapot-tower": [
+     0,
+     0
+    ],
+    "pancake-ship": [
+     0,
+     0
+    ],
+    "toaster-knight": [
+     0,
+     0
+    ],
+    "snail-bakery": [
+     0,
+     0
+    ],
+    "duck-submarine": [
+     0,
+     0
+    ],
+    "haunted-vending": [
+     0,
+     0
+    ],
+    "cactus-sombrero": [
+     0,
+     0
+    ],
+    "robot-grandma": [
+     0,
+     0
+    ],
+    "whale-island": [
+     0,
+     0
+    ],
+    "cone-dragon": [
+     0,
+     0
+    ],
+    "spatula-windmill": [
+     1,
+     0
+    ]
+   },
+   "fail_reasons": {
+    "page error": 12,
+    "glb invalid: bad magic": 1,
+    "empty scene": 4,
+    "no download: Timeout 20000ms exceeded while waiting for event \"download\"": 5,
+    "glb invalid: too short": 1
+   }
+  }
+ },
+ "n_cells_planned": 24,
+ "per_comparator": {
+  "qwen38-27b-q4km": "LEVEL",
+  "ornith15-35b-q4km": "4B AHEAD"
+ },
+ "overall": "MIXED",
+ "why": "qwen38-27b-q4km: LEVEL (d=-1); ornith15-35b-q4km: 4B AHEAD (d=+8)",
+ "provisional": false,
+ "line1": "on 12 absurd prompts a 4B model's Three.js page loaded, drew a scene and exported a valid GLB in 9/24 tries; Qwen3.8-27B 10/24, Ornith-1.5-35B 1/24 (same system prompt, script checks only)."
+}
