@@ -1,0 +1,10 @@
+{
+  "name": "Qwen3.8-27B",
+  "filename": "Qwen3.8-27B-Q4_K_M.gguf",
+  "slug": "qwen3-8-27b-q4-k-m",
+  "engine": "llama.cpp",
+  "quant": "Q4_K_M",
+  "size_gib": 15.93,
+  "path": "/home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q4_K_M.gguf",
+  "think": false
+}

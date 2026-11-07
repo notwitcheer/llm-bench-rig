@@ -1,0 +1,122 @@
+{
+ "analysis": {
+  "passes": {
+   "new-q6k": {
+    "gpqa": {
+     "task": "gpqa",
+     "n": 198,
+     "n_expected": 198,
+     "complete": true,
+     "c": 98,
+     "score": 49.494949494949495,
+     "d0_c": 97,
+     "d0_n": 198,
+     "d0_score": 48.98989898989899,
+     "d0_lo": 42.11266754394731,
+     "d0_hi": 55.90557904257116,
+     "lo": 42.6070701759557,
+     "hi": 56.402053117303566,
+     "outside": false,
+     "direction": "",
+     "paired": true,
+     "b": 2,
+     "c_only": 3,
+     "p": 1.0,
+     "both_right": 95,
+     "both_wrong": 98,
+     "same_answer": 190,
+     "moved": false
+    },
+    "he": {
+     "task": "he",
+     "n": 164,
+     "n_expected": 164,
+     "complete": true,
+     "c": 154,
+     "score": 93.90243902439025,
+     "d0_c": 155,
+     "d0_n": 164,
+     "d0_score": 94.51219512195122,
+     "d0_lo": 89.90054569513507,
+     "d0_hi": 97.08630548325733,
+     "lo": 89.14070660983012,
+     "hi": 96.65454386748841,
+     "outside": false,
+     "direction": "",
+     "paired": true,
+     "b": 1,
+     "c_only": 0,
+     "p": 1.0,
+     "both_right": 154,
+     "both_wrong": 9,
+     "same_answer": 163,
+     "moved": false
+    },
+    "arc": {
+     "task": "arc",
+     "n": 1172,
+     "n_expected": 1172,
+     "complete": true,
+     "c": 1132,
+     "score": 96.58703071672355,
+     "d0_c": 1133,
+     "d0_n": 1172,
+     "d0_score": 96.67235494880546,
+     "d0_lo": 95.48343556158703,
+     "d0_hi": 97.55631837745365,
+     "lo": 95.38596438227344,
+     "hi": 97.48369859892621,
+     "outside": false,
+     "direction": "",
+     "paired": false,
+     "p": 0.9088778718582917,
+     "moved": false
+    },
+    "mmlu": {
+     "task": "mmlu",
+     "n": 2614,
+     "n_expected": 2614,
+     "complete": true,
+     "c": 2192,
+     "score": 83.85615914307574,
+     "d0_c": 2191,
+     "d0_n": 2614,
+     "d0_score": 83.81790359602142,
+     "d0_lo": 82.35661672536632,
+     "d0_hi": 85.17994069459533,
+     "lo": 82.39616037890714,
+     "hi": 85.21679586166533,
+     "outside": false,
+     "direction": "",
+     "paired": false,
+     "p": 0.9700296650453922,
+     "moved": false
+    }
+   }
+  },
+  "agreement": {},
+  "facts": {
+   "oid_aug14_q6k": "562fbf760503008f118e5df38de5b3e97992d1f693f475815631198547486727",
+   "oid_aug14_q4km": "7e78da5d7e3ae28d178121f58646953305f3e5bd3cb46f4a75584e8b6c6fe169",
+   "gguf_rev": "f1bfb127c64f7072bdd2cad55f258b9c8b2910fe",
+   "oid_source": "HF tree API at f1bfb127, read live",
+   "hf_weight_files_total": 18,
+   "hf_weight_files_changed": 0,
+   "hf_weight_source": "HF tree API live: main vs 72a217af",
+   "sha_q6k": "562fbf760503008f118e5df38de5b3e97992d1f693f475815631198547486727",
+   "sha_q4km": "7e78da5d7e3ae28d178121f58646953305f3e5bd3cb46f4a75584e8b6c6fe169",
+   "hash_ok": {
+    "q6k": true,
+    "q4km": true
+   },
+   "build_old": "version: 10371 (5d16e81dd)",
+   "build_new": "version: 0.7.0-dev (build 11777, commit 839a572a4)"
+  }
+ },
+ "decision": {
+  "verdict": "SAME FILE, SAME SCORES",
+  "detail": "all four tasks inside the day-0 band",
+  "secondary": {}
+ },
+ "line1": "Qwen3.8-27B was not nerfed: the Q6_K file is byte-identical to August and the same board gives the same scores (GPQA 98/198 vs 97/198 on day 0, HumanEval 154/164 vs 155/164)."
+}

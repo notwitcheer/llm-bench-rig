@@ -1,0 +1,11 @@
+{
+  "score": 48.99,
+  "metric": "acc",
+  "correct": 97,
+  "total": 198,
+  "parse_failures": 0,
+  "n_shot": 0,
+  "shuffle_seed": 42,
+  "completion_tokens_mean": null,
+  "caveat": "198-item set: one item ~ 0.5 pts; gaps under ~3 pts are noise"
+}

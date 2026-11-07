@@ -1,0 +1,45 @@
+{
+  "score": 94.51,
+  "metric": "pass@1",
+  "passed": 155,
+  "total": 164,
+  "errors": [
+    {
+      "task_id": "HumanEval/59",
+      "error": "  File \"/tmp/tmpam3lnz7i.py\", line 11\n    largest = None\n    ^^^^^^^\nIndentationError: expected an indented block after function definition on line 10\n"
+    },
+    {
+      "task_id": "HumanEval/83",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpi1p3cltw.py\", line 29, in <module>\n    check(starts_one_ends)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpi1p3cltw.py\", line 20, in check\n    assert candidate(2) == 18\n           ^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/91",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp9fkc4cts.py\", line 37, in <module>\n    check(is_bored)\n    ~~~~~^^^^^^^^^^\n  File \"/tmp/tmp9fkc4cts.py\", line 27, in check\n    assert candidate(\"Is the sky blue?\") == 0, \"Test 2\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Test 2\n"
+    },
+    {
+      "task_id": "HumanEval/93",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmphj077aeb.py\", line 50, in <module>\n    check(encode)\n    ~~~~~^^^^^^^^\n  File \"/tmp/tmphj077aeb.py\", line 41, in check\n    assert candidate('TEST') == 'tgst', \"This prints if this assert fails 1 (good for debugging!)\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: This prints if this assert fails 1 (good for debugging!)\n"
+    },
+    {
+      "task_id": "HumanEval/101",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpjgq7c3le.py\", line 29, in <module>\n    check(words_string)\n    ~~~~~^^^^^^^^^^^^^^\n  File \"/tmp/tmpjgq7c3le.py\", line 21, in check\n    assert candidate(\"One,, two, three, four, five, six,\") == [\"One\", \"two\", \"three\", \"four\", \"five\", \"six\"]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/115",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpryg1wh_0.py\", line 55, in <module>\n    check(max_fill)\n    ~~~~~^^^^^^^^^^\n  File \"/tmp/tmpryg1wh_0.py\", line 52, in check\n    assert candidate([[1,1,1,1], [1,1,1,1]], 9) == 2, \"Error\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Error\n"
+    },
+    {
+      "task_id": "HumanEval/120",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp4feaofiy.py\", line 47, in <module>\n    check(maximum)\n    ~~~~~^^^^^^^^^\n  File \"/tmp/tmp4feaofiy.py\", line 32, in check\n    assert candidate([-3, -4, 5], 3) == [-4, -3, 5]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/132",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp00fgyc8q.py\", line 48, in <module>\n    check(is_nested)\n    ~~~~~^^^^^^^^^^^\n  File \"/tmp/tmp00fgyc8q.py\", line 37, in check\n    assert candidate('[[]') == False\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "task_id": "HumanEval/145",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpzwtoww6s.py\", line 32, in <module>\n    check(order_by_points)\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpzwtoww6s.py\", line 21, in check\n    assert candidate([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    }
+  ],
+  "elapsed_s": 254.8
+}

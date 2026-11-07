@@ -1,0 +1,17 @@
+{
+ "oid_aug14_q6k": "562fbf760503008f118e5df38de5b3e97992d1f693f475815631198547486727",
+ "oid_aug14_q4km": "7e78da5d7e3ae28d178121f58646953305f3e5bd3cb46f4a75584e8b6c6fe169",
+ "gguf_rev": "f1bfb127c64f7072bdd2cad55f258b9c8b2910fe",
+ "oid_source": "HF tree API at f1bfb127, read live",
+ "hf_weight_files_total": 18,
+ "hf_weight_files_changed": 0,
+ "hf_weight_source": "HF tree API live: main vs 72a217af",
+ "sha_q6k": "562fbf760503008f118e5df38de5b3e97992d1f693f475815631198547486727",
+ "sha_q4km": "7e78da5d7e3ae28d178121f58646953305f3e5bd3cb46f4a75584e8b6c6fe169",
+ "hash_ok": {
+  "q6k": true,
+  "q4km": true
+ },
+ "build_old": "version: 10371 (5d16e81dd)",
+ "build_new": "version: 0.7.0-dev (build 11777, commit 839a572a4)"
+}
