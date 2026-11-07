@@ -15,3 +15,5 @@ Pre-registered verdict: **SAME FILE, SAME SCORES** (`run/summary.json`).
 - Q6_K on today's llama.cpp build, same 4,148 items, greedy, think-off: GPQA-diamond 98/198 (August 97/198), HumanEval 154/164 (155/164), ARC-Challenge 1,132/1,172 (1,133), MMLU 19-subject slice 2,192/2,614 (2,191). all four inside the August Wilson 95% band; paired McNemar p = 1.0 on GPQA and HumanEval. per-item records: `run/results/new-q6k/*.jsonl`; August records: `day0/`.
 - what ran and what did not: only the headline pass (new build, Q6_K) ran. the item treated the run as complete once that pass wrote `summary.json`, so the three secondary passes (old build Q6_K, both builds Q4_K_M) never started; the secondary block in the summary is empty. this is a harness bug in the item, not a result.
 - one run, one rig. hosted APIs are out of scope: there is no file to hash.
+
+- the clip: `code/render_nerf.py` was edited after the run (CPU re-render from the saved artefacts, no new numbers): two card strings now say only today's build was re-run and drop the Q4_K_M ring from the legend. the run itself used the version in the previous commit; render_nerf.py is not in FROZEN.sha256.

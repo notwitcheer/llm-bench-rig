@@ -132,7 +132,7 @@ def card():
         y += 122
     d.rectangle([x_lab - 20, y - 14, W - 60, y - 12], fill=GRID)
     small = ["claim tested: 'they nerfed the open Qwen3.8-27B file'. hosted-API nerf claims are out of scope: no file to hash.",
-             "Q6_K, greedy, think-off, August harness unchanged. today's runtime build differs from August's; both builds were run.",
+             "Q6_K, greedy, think-off, August harness unchanged. today's runtime build differs from August's; only today's build was re-run.",
              "n = 198 and 164 items: a few points of gap is noise, which is why the band is shown, not only the score."]
     for i, line in enumerate(small):
         d.text((x_lab, y + 2 + 31 * i), safe(line), font=F(23), fill="#9aa8bd")
@@ -255,7 +255,7 @@ def scene_bands(frames):
     x0, x1 = 520, 1760
     for f in range(n):
         im, d = new()
-        header(d, "step 3: where does today land on August's band?", "grey = 95% band of August, gold tick = August, dot = today, ring = Q4_K_M")
+        header(d, "step 3: where does today land on August's band?", "grey = 95% band of August, gold tick = August, dot = today")
         y = 190
         for ti, (t, lab) in enumerate(tasks):
             s = head[t]
