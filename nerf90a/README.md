@@ -12,7 +12,7 @@ Queue item `90a-qwen38-nerf-audit.sh` (staged 2026-11-06, ran Fri 2026-11-06 16:
 Pre-registered verdict: **SAME FILE, SAME SCORES** (`run/summary.json`).
 
 - sha256 of both GGUFs on the rig equals the LFS oids Hugging Face lists for the August files (`run/facts.json`: Q6_K `562fbf76...6727`, Q4_K_M `7e78da5d...e169`, GGUF repo rev `f1bfb127`); 0 of the 18 weight shards in `Qwen/Qwen3.8-27B` changed between the upload commit and `main`.
-- Q6_K on today's llama.cpp build, same 4,148 items, greedy, think-off: GPQA-diamond 98/198 (August 97/198), HumanEval 154/164 (155/164), ARC-Challenge 1,132/1,172 (1,133), MMLU 19-subject slice 2,192/2,614 (2,191). all four inside the August Wilson 95% band; paired McNemar p = 1.0 on GPQA and HumanEval. per-item records: `run/results/new-q6k/*.jsonl`; August records: `day0/`.
+- Q6_K on today's llama.cpp build, same 4,148 items, greedy, think-off: GPQA-diamond 98/198 (August 97/198), HumanEval 154/164 (155/164), ARC-Challenge 1,132/1,172 (1,133), MMLU 19-subject slice 2,192/2,614 (2,191). all four inside the August Wilson 95% band; paired McNemar p = 1.0 on GPQA and HumanEval. per-item records: `run/items-new-q6k/*.jsonl` (the item writes them to `results/new-q6k/`; renamed here because the repo ignores `results/`); August records: `day0/`.
 - what ran and what did not: only the headline pass (new build, Q6_K) ran. the item treated the run as complete once that pass wrote `summary.json`, so the three secondary passes (old build Q6_K, both builds Q4_K_M) never started; the secondary block in the summary is empty. this is a harness bug in the item, not a result.
 - one run, one rig. hosted APIs are out of scope: there is no file to hash.
 
