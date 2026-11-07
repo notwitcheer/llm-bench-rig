@@ -51,6 +51,8 @@ ap.add_argument("--qsa-series", default=None)
 ap.add_argument("--stock-series", default=None)
 ap.add_argument("--chew-seconds", type=float, default=24.0)
 ap.add_argument("--chew-title", default="")
+ap.add_argument("--final-q", default="")
+ap.add_argument("--final-k", default="")
 ap.add_argument("--spark-max", type=float, default=100.0)
 ap.add_argument("--title", default="Basalt v0.3.0 and llama.cpp run the same Hermes Agent task, one RTX 5090")
 ap.add_argument("--subtitle", default="real Hermes Agent sessions, same prompt, same sampling, same Qwen3.8-Flash-Next Q2_0 weights. two engines, run back to back (start synced).")
@@ -213,11 +215,14 @@ if a.mode == "chew":
             dr.rectangle([72, y0 + 112, 72 + int(1176 * prog), y0 + 148], fill=col)
             dr.text((1270, y0 + 106), "%3d%%" % round(prog * 100), font=F(44, True, True), fill=TEXT)
             dr.text((70, y0 + 170), "prefill", font=F(24), fill=MUTE)
+            FIN = dict(zip(("pre", "dec"), [float(x) for x in (a.final_q if key == "Q" else a.final_k).split(",")])) if (a.final_q if key == "Q" else a.final_k) else {}
             pre = pre_rate(rows, t) if prog < 1.0 else 0.0
-            dr.text((70, y0 + 205), ("%s" % format(int(pre), ",")) if prog < 1.0 else "done", font=F(84, True, True), fill=TEXT if prog < 1.0 else MUTE)
+            dr.text((70, y0 + 205), ("%s" % format(int(pre), ",")) if prog < 1.0 else (format(int(FIN["pre"]), ",") if FIN else "done"), font=F(84, True, True), fill=TEXT if prog < 1.0 else (col if FIN else MUTE))
             dr.text((560, y0 + 250), "tok/s", font=F(26, True), fill=MUTE)
             dr.text((900, y0 + 170), "then decoding", font=F(24), fill=MUTE)
             dr_ = dec_rate(rows, t)
+            if done and FIN:
+                dr_ = FIN["dec"]
             dr.text((900, y0 + 205), ("%d" % round(dr_)) if dr_ > 0 else "-", font=F(84, True, True), fill=col if dr_ > 0 else MUTE)
             dr.text((1300, y0 + 250), "tok/s", font=F(26, True), fill=MUTE)
             dr.text((1560, y0 + 30), "%s" % fmt(min(t, END[key])), font=F(54, True, True), fill=col if done else TEXT)
