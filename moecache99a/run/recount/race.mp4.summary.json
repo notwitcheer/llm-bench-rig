@@ -1,0 +1,56 @@
+{
+ "clip": "out/race.mp4",
+ "frames": 1437,
+ "seconds": 57.5,
+ "race_s": 99.5,
+ "segments": [
+  [
+   -3.0,
+   10.0,
+   1.0
+  ],
+  [
+   10.0,
+   87.5,
+   2.6
+  ],
+  [
+   87.5,
+   99.5,
+   1.0
+  ]
+ ],
+ "left": {
+  "finish_s": 118.5,
+  "end": "done",
+  "tokens_server": 4014,
+  "tokens_stream_deltas": 3523,
+  "tokens_exact_from_usage": 4043,
+  "tok_s_mean_while_generating": 36.5,
+  "tok_s_peak_6s": 62.7,
+  "tok_s_mean_over_take": 33.9,
+  "engine": "llama",
+  "vram_mib_max": 28850,
+  "requests": 7,
+  "request_errors": 0,
+  "leak_masked_states": 391,
+  "counter_vs_usage_pct": -0.72
+ },
+ "right": {
+  "finish_s": 91.5,
+  "end": "done",
+  "tokens_server": 4742,
+  "tokens_stream_deltas": 4210,
+  "tokens_exact_from_usage": 4742,
+  "tok_s_mean_while_generating": 56.8,
+  "tok_s_peak_6s": 86.7,
+  "tok_s_mean_over_take": 51.9,
+  "engine": "llama",
+  "vram_mib_max": 31752,
+  "requests": 9,
+  "request_errors": 0,
+  "leak_masked_states": 343,
+  "counter_vs_usage_pct": 0.0
+ },
+ "ffmpeg_rc": 0
+}

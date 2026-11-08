@@ -1,0 +1,25 @@
+{
+ "take": "plain-2",
+ "engine": "llama",
+ "recorded_hud_final": 4658,
+ "new_series_final": 4658,
+ "exact_sum_predicted_n": 4658,
+ "requests": [
+  {
+   "t0_s": 20.7,
+   "dur_s": 72.2,
+   "predicted_n": 2896,
+   "recount_tok_s": 41.0,
+   "engine_tok_s": 42.1,
+   "how": "median of 2 s windows vs timings.predicted_per_second",
+   "diff_pct": -2.7
+  }
+ ],
+ "ended_with_request_in_flight": false,
+ "aborted_requests": 0,
+ "total_ok": true,
+ "rate_ok": true,
+ "pass": true,
+ "hud_vs_recount_pct": 0.0,
+ "hud_ok": true
+}

@@ -1,0 +1,30 @@
+1/6 4160 MiB, share 0: 25.5 t/s
+2/6 4160 MiB, share 0.5: 34.5 t/s
+3/6 4160 MiB, share 0.95: 40.7 t/s
+4/6 11904 MiB, share 0: 48.3 t/s
+5/6 11904 MiB, share 0.5: 54.6 t/s
+6/6 11904 MiB, share 0.95: 55.2 t/s
+Ornith-1.5-122B-UD-IQ3_XXS.gguf: 39702 MiB of experts, CUDA0 31603 MiB free, cache up to 24912 MiB
+
+  cache MiB  share   t/s  hits
+       4160      0  25.5   50%
+       4160    0.5  34.5   54%
+       4160   0.95  40.7   48%
+      11904      0  48.3   78%
+      11904    0.5  54.6   77%
+      11904   0.95  55.2   71%
+
+machine: uploads 18.0 GiB/s, CPU 41.3 GiB/s, CPU part 1.66 ms, overlap -4.9 ms/GiB, rest 6.93 ms per token, fit within 2.1%
+
+predicted t/s, warm cache:
+  cache MiB      0   0.5    0.8    0.9  0.95  0.98
+       1984   21.7  27.7   31.9  33.3*  34.0  34.1
+       3968   28.1  34.0   38.7  40.4*  41.0  41.1
+       4160   28.6  34.5   39.3  41.0*  41.6  41.6
+       7936   39.5  45.5  50.5*   52.1  52.5  52.1
+      11904   51.1  56.2  61.2*   62.5  62.6  61.7
+      15872   63.4  66.2  70.7*   71.7  71.7  70.6
+      19840   76.4  75.9  79.7*   80.6  80.4  79.2
+      24896  94.6*  88.2   91.1   91.8  91.6  90.9
+
+recommended: --moe-cache-mib 24896 --moe-cache-cpu-share 0 (94.6 t/s)

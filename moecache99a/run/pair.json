@@ -1,0 +1,8 @@
+{
+ "left": "takes/plain-1",
+ "right": "takes/cache-1",
+ "why": {
+  "plain": "take 1",
+  "cache": "take 1"
+ }
+}

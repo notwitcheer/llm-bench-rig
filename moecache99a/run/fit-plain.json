@@ -1,0 +1,9 @@
+{
+ "loaded": true,
+ "start_s": 25,
+ "vram_mib": 28836,
+ "n_cpu_moe": 24,
+ "ctx": 65536,
+ "kv": "q8_0",
+ "smoke": "SMOKE OK tool_calls=1 reasoning_chars=165 completion_tokens=70 decode=38.7 5.5s {name: "
+}

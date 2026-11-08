@@ -1,0 +1,10 @@
+{
+ "loaded": true,
+ "start_s": 4,
+ "vram_mib": 31728,
+ "moe_cache_mib": 24896,
+ "moe_cache_cpu_share": 0,
+ "ctx": 65536,
+ "kv": "q8_0",
+ "smoke": "SMOKE OK tool_calls=1 reasoning_chars=141 completion_tokens=65 decode=54.4 3.2s {name: "
+}

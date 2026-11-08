@@ -1,0 +1,51 @@
+{
+ "title": "llama.cpp's new MoE cache made a 122B model 1.61x faster on one RTX 5090",
+ "subtitle": "Hermes Agent driving Ornith-1.5-122B (UD-IQ3_XXS, 46 GB) on a 32 GB card with 59 GB RAM. llama.cpp master of 8 Nov 2026, KV q8_0, ctx 65,536.",
+ "cols": [
+  [
+   "no cache",
+   "--n-cpu-moe 24"
+  ],
+  [
+   "MoE cache",
+   "cache 24896 MiB, share 0"
+  ]
+ ],
+ "rows": [
+  [
+   "decode speed, tok/s (server timings)",
+   "42.53",
+   "68.7",
+   "llama-server's own timings, weighted by tokens"
+  ],
+  [
+   "fixed-prompt probe, tok/s (temp 0)",
+   "45.39",
+   "95.47",
+   "same prompt, 256 tokens, no agent, 2nd run"
+  ],
+  [
+   "first take: time to done, tool calls",
+   "1:58, 15",
+   "1:31, 17",
+   "clock from prompt submit, real Hermes runs"
+  ],
+  [
+   "takes at 5/5 tests, tests untouched",
+   "3 of 3",
+   "3 of 3",
+   "reported only, not in the verdict"
+  ],
+  [
+   "GPU power W (mean) / VRAM MiB (peak)",
+   "174.1 / 28850",
+   "250.2 / 31752",
+   "nvidia-smi at 1 Hz, whole card"
+  ]
+ ],
+ "small": [
+  "tested claim: the cache PR's own tuner example (a 92 GB card, a different model) predicts a large gain. other box, model and file.",
+  "ours: one 5090, one file, n=3 + 3 Hermes takes, pass line is a 1.10x / 0.90x band on token-weighted decode. no claim for other cards or models.",
+  "same model file and build for both arms. sampling per the Ornith model card (temp 0.6, top-k 20, top-p 0.95), seed 721 is ours."
+ ]
+}

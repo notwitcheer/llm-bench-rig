@@ -1,0 +1,15 @@
+{
+ "runs": [
+  {
+   "decode_tok_s": 43.49,
+   "predicted_n": 256,
+   "prompt_tok_s": 109.4
+  },
+  {
+   "decode_tok_s": 45.39,
+   "predicted_n": 256,
+   "prompt_tok_s": 118.1
+  }
+ ],
+ "decode_tok_s": 45.39
+}

@@ -1,0 +1,348 @@
+{
+ "slug": "moecache99a-moecache-race",
+ "regime": "Ornith-1.5-122B UD-IQ3_XXS (one file), llama.cpp master a2b301831 (b12201), --jinja, -ngl 99, flash-attn on, KV q8_0, ctx 65536, one slot, 6 threads, thinking on with --reasoning-budget 8192; plain = --n-cpu-moe 24 (ladder 24/26/28 on a load failure), cache = -cmoe + --moe-cache-mib/--moe-cache-cpu-share from the PR's tuner (fallback 16384 / 0); Hermes terminal+file toolsets, approvals off, memory off; sampling temp 0.6 / top-p 0.95 / top-k 20 (Ornith card) + seed 721 (ours); same task as item 89 (4 planted bugs, 5 tests), 3 takes per arm; verdict = token-weighted decode ratio, FASTER >= 1.10, SLOWER <= 0.90",
+ "verdict": "FASTER",
+ "ratio_cache_over_plain": 1.615,
+ "provisional": false,
+ "arms": {
+  "plain": {
+   "takes_run": 3,
+   "clean": 3,
+   "pass": 3,
+   "broken": false,
+   "decode_tok_s": 42.53
+  },
+  "cache": {
+   "takes_run": 3,
+   "clean": 3,
+   "pass": 3,
+   "broken": false,
+   "decode_tok_s": 68.7
+  }
+ },
+ "files_loaded": {
+  "plain": {
+   "loaded": true,
+   "start_s": 25,
+   "vram_mib": 28836,
+   "n_cpu_moe": 24,
+   "ctx": 65536,
+   "kv": "q8_0",
+   "smoke": "SMOKE OK tool_calls=1 reasoning_chars=165 completion_tokens=70 decode=38.7 5.5s {name: "
+  },
+  "cache": {
+   "loaded": true,
+   "start_s": 4,
+   "vram_mib": 31728,
+   "moe_cache_mib": 24896,
+   "moe_cache_cpu_share": 0,
+   "ctx": 65536,
+   "kv": "q8_0",
+   "smoke": "SMOKE OK tool_calls=1 reasoning_chars=141 completion_tokens=65 decode=54.4 3.2s {name: "
+  }
+ },
+ "takes": {
+  "cache-1": {
+   "dir": "cache-1",
+   "tag": "cache",
+   "end": "done",
+   "finish_s": 91.5,
+   "requests": 9,
+   "request_errors": 0,
+   "tokens_server": 4742,
+   "tokens_exact_from_usage": 4742,
+   "vram_mib_max": 31752,
+   "decode_tok_s_engine": 68.4,
+   "prompt_tok_s_engine": 588.8,
+   "prompt_tokens_total": 11257,
+   "pred_n_total": 4742,
+   "pred_s_total": 69.293,
+   "gpu_w_mean": 248.3,
+   "gpu_w_max": 318.0,
+   "tool_calls": 17,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "cache-2": {
+   "dir": "cache-2",
+   "tag": "cache",
+   "end": "done",
+   "finish_s": 82.5,
+   "requests": 11,
+   "request_errors": 0,
+   "tokens_server": 4412,
+   "tokens_exact_from_usage": 4412,
+   "vram_mib_max": 31752,
+   "decode_tok_s_engine": 68.6,
+   "prompt_tok_s_engine": 519.7,
+   "prompt_tokens_total": 8033,
+   "pred_n_total": 4412,
+   "pred_s_total": 64.343,
+   "gpu_w_mean": 249.6,
+   "gpu_w_max": 312.6,
+   "tool_calls": 16,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "cache-3": {
+   "dir": "cache-3",
+   "tag": "cache",
+   "end": "done",
+   "finish_s": 79.5,
+   "requests": 7,
+   "request_errors": 0,
+   "tokens_server": 4305,
+   "tokens_exact_from_usage": 4305,
+   "vram_mib_max": 31752,
+   "decode_tok_s_engine": 69.1,
+   "prompt_tok_s_engine": 576.6,
+   "prompt_tokens_total": 8865,
+   "pred_n_total": 4305,
+   "pred_s_total": 62.275,
+   "gpu_w_mean": 252.6,
+   "gpu_w_max": 324.3,
+   "tool_calls": 16,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "plain-1": {
+   "dir": "plain-1",
+   "tag": "plain",
+   "end": "done",
+   "finish_s": 118.5,
+   "requests": 7,
+   "request_errors": 0,
+   "tokens_server": 4043,
+   "tokens_exact_from_usage": 4043,
+   "vram_mib_max": 28850,
+   "decode_tok_s_engine": 42.5,
+   "prompt_tok_s_engine": 490.4,
+   "prompt_tokens_total": 10342,
+   "pred_n_total": 4043,
+   "pred_s_total": 95.031,
+   "gpu_w_mean": 174.3,
+   "gpu_w_max": 190.8,
+   "tool_calls": 15,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "plain-2": {
+   "dir": "plain-2",
+   "tag": "plain",
+   "end": "done",
+   "finish_s": 130.6,
+   "requests": 8,
+   "request_errors": 0,
+   "tokens_server": 4658,
+   "tokens_exact_from_usage": 4658,
+   "vram_mib_max": 28850,
+   "decode_tok_s_engine": 42.4,
+   "prompt_tok_s_engine": 469.1,
+   "prompt_tokens_total": 8488,
+   "pred_n_total": 4658,
+   "pred_s_total": 109.93,
+   "gpu_w_mean": 174.5,
+   "gpu_w_max": 191.5,
+   "tool_calls": 16,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  },
+  "plain-3": {
+   "dir": "plain-3",
+   "tag": "plain",
+   "end": "done",
+   "finish_s": 112.7,
+   "requests": 9,
+   "request_errors": 0,
+   "tokens_server": 3832,
+   "tokens_exact_from_usage": 3832,
+   "vram_mib_max": 28850,
+   "decode_tok_s_engine": 42.7,
+   "prompt_tok_s_engine": 485.5,
+   "prompt_tokens_total": 9882,
+   "pred_n_total": 3832,
+   "pred_s_total": 89.753,
+   "gpu_w_mean": 173.4,
+   "gpu_w_max": 189.9,
+   "tool_calls": 16,
+   "peeked_outside": false,
+   "agent_last_pytest": "5 passed in 0.00s",
+   "gate_pass": true,
+   "gate_passed": 5,
+   "gate_failed": 0,
+   "tests_touched": false,
+   "files_changed": [
+    "cart.py",
+    "paging.py",
+    "pricing.py",
+    "text.py"
+   ],
+   "clean": true,
+   "pass": true
+  }
+ },
+ "clip_pair": {
+  "left": "takes/plain-1",
+  "right": "takes/cache-1",
+  "why": {
+   "plain": "take 1",
+   "cache": "take 1"
+  }
+ },
+ "tune": {
+  "mib": 24896,
+  "share": 0,
+  "source": "tuner",
+  "tuner_rc": 0
+ },
+ "probe": {
+  "plain": {
+   "runs": [
+    {
+     "decode_tok_s": 43.49,
+     "predicted_n": 256,
+     "prompt_tok_s": 109.4
+    },
+    {
+     "decode_tok_s": 45.39,
+     "predicted_n": 256,
+     "prompt_tok_s": 118.1
+    }
+   ],
+   "decode_tok_s": 45.39
+  },
+  "cache": {
+   "runs": [
+    {
+     "decode_tok_s": 81.04,
+     "predicted_n": 256,
+     "prompt_tok_s": 151.8
+    },
+    {
+     "decode_tok_s": 95.47,
+     "predicted_n": 256,
+     "prompt_tok_s": 261.6
+    }
+   ],
+   "decode_tok_s": 95.47
+  }
+ },
+ "race": {
+  "clip": "out/race.mp4",
+  "frames": 1437,
+  "seconds": 57.5,
+  "race_s": 99.5,
+  "segments": [
+   [
+    -3.0,
+    10.0,
+    1.0
+   ],
+   [
+    10.0,
+    87.5,
+    2.6
+   ],
+   [
+    87.5,
+    99.5,
+    1.0
+   ]
+  ],
+  "left": {
+   "finish_s": 118.5,
+   "end": "done",
+   "tokens_server": 4014,
+   "tokens_stream_deltas": 3523,
+   "tokens_exact_from_usage": 4043,
+   "tok_s_mean_while_generating": 36.5,
+   "tok_s_peak_6s": 62.7,
+   "tok_s_mean_over_take": 33.9,
+   "engine": "llama",
+   "vram_mib_max": 28850,
+   "requests": 7,
+   "request_errors": 0,
+   "leak_masked_states": 391,
+   "counter_vs_usage_pct": -0.72
+  },
+  "right": {
+   "finish_s": 91.5,
+   "end": "done",
+   "tokens_server": 4742,
+   "tokens_stream_deltas": 4210,
+   "tokens_exact_from_usage": 4742,
+   "tok_s_mean_while_generating": 56.8,
+   "tok_s_peak_6s": 86.7,
+   "tok_s_mean_over_take": 51.9,
+   "engine": "llama",
+   "vram_mib_max": 31752,
+   "requests": 9,
+   "request_errors": 0,
+   "leak_masked_states": 343,
+   "counter_vs_usage_pct": 0.0
+  },
+  "ffmpeg_rc": 0
+ },
+ "final_clip": true,
+ "line1": "on one RTX 5090 (32 GB) a 122B model, run by Hermes Agent: llama.cpp's new MoE cache took decode from 42.5 to 68.7 tok/s (1.61x) with the same model file"
+}
