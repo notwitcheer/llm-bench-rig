@@ -1,0 +1,548 @@
+{
+ "verdict": "DOES NOT HOLD, TRAPS",
+ "holds": false,
+ "trap": true,
+ "line1": "NVIDIA says a CPU can replay a big model's reasoning from a cache. I rebuilt it on my 5090 and it does not hold here: 83% against 96% for the 27B from scratch (a stock 1B alone gets 48%), and on near-miss questions it was confidently wrong 92% of the time.",
+ "counts": {
+  "n_held": 200,
+  "n_near": 200,
+  "entries": 20,
+  "entries_failed": 0,
+  "A_held_k": 193,
+  "Bg_held_k": 166,
+  "Crule_held_k": 96,
+  "near_hit_wrong_k": 185,
+  "incomplete": false,
+  "build_complete": true,
+  "min_entries": 10
+ },
+ "threshold": {
+  "tau": 0.4517694380594038,
+  "rule": "largest s keeping >= 90% of held-out main as served hits",
+  "floor_unreachable": false,
+  "served_held": 200,
+  "needed": 180
+ },
+ "held": {
+  "n": 200,
+  "A_k": 193,
+  "hit_k": 180,
+  "hit_right_k": 146,
+  "hit_wrong_k": 34,
+  "Bg_k": 166,
+  "Bc_k": 146,
+  "C_k": 96,
+  "Cd_k": 4,
+  "Crule_k": 96,
+  "b_AonlyRight": 29,
+  "c_BonlyRight": 2,
+  "b_AonlyRight_cacheonly": 49,
+  "c_BonlyRight_cacheonly": 2,
+  "mcnemar_gated_p": 4.628673195838928e-07,
+  "mcnemar_cacheonly_p": 1.1786127629420662e-12,
+  "A_acc": 0.965,
+  "A_ci": [
+   0.9295293881131225,
+   0.9829444580847418
+  ],
+  "Bg_acc": 0.83,
+  "Bg_ci": [
+   0.7718411632128769,
+   0.8757209211856075
+  ],
+  "Bc_acc": 0.73,
+  "Bc_ci": [
+   0.6645656474709799,
+   0.786765502261297
+  ],
+  "C_acc": 0.48,
+  "C_ci": [
+   0.41179166325825434,
+   0.548962149808504
+  ],
+  "Cd_acc": 0.02,
+  "Cd_ci": [
+   0.007804426362159347,
+   0.05028708724004507
+  ],
+  "hit_acc": 0.9,
+  "hit_ci": [
+   0.8505941871160769,
+   0.9343295515487526
+  ],
+  "hit_wrong_acc": 0.17,
+  "hit_wrong_ci": [
+   0.12427907881439243,
+   0.22815883678712312
+  ],
+  "s_median": 0.5897332210665593,
+  "routing_to_own_entry": 1.0,
+  "cpu_ms_B_median": 1803.0500000000002,
+  "cpu_ms_B_mean": 1940.45,
+  "lm_tokens_B_mean": 51.875,
+  "lm_tokens_C_mean": 162.66,
+  "lm_tokens_Cd_mean": 8.485,
+  "cpu_ms_C_mean": 3770.8785,
+  "A_tokens_mean": 852.43,
+  "A_wall_s_mean": 17.11015
+ },
+ "near": {
+  "n": 200,
+  "A_k": 189,
+  "hit_k": 186,
+  "hit_right_k": 1,
+  "hit_wrong_k": 185,
+  "Bg_k": 15,
+  "Bc_k": 1,
+  "C_k": 41,
+  "Cd_k": 1,
+  "Crule_k": 41,
+  "b_AonlyRight": 174,
+  "c_BonlyRight": 0,
+  "b_AonlyRight_cacheonly": 188,
+  "c_BonlyRight_cacheonly": 0,
+  "mcnemar_gated_p": 8.352389719038111e-53,
+  "mcnemar_cacheonly_p": 5.0978941156238473e-57,
+  "A_acc": 0.945,
+  "A_ci": [
+   0.904213000830331,
+   0.9690146584342919
+  ],
+  "Bg_acc": 0.075,
+  "Bg_ci": [
+   0.04597491700833055,
+   0.12004361066028794
+  ],
+  "Bc_acc": 0.005,
+  "Bc_ci": [
+   0.0008831687058453754,
+   0.02777370469642793
+  ],
+  "C_acc": 0.205,
+  "C_ci": [
+   0.1548617616890618,
+   0.2662569810456263
+  ],
+  "Cd_acc": 0.005,
+  "Cd_ci": [
+   0.0008831687058453754,
+   0.02777370469642793
+  ],
+  "hit_acc": 0.93,
+  "hit_ci": [
+   0.8859451907260928,
+   0.957847828338599
+  ],
+  "hit_wrong_acc": 0.925,
+  "hit_wrong_ci": [
+   0.8799563893397121,
+   0.9540250829916695
+  ],
+  "s_median": 0.5605823037412693,
+  "routing_to_own_entry": 0.99,
+  "cpu_ms_B_median": 1859.9,
+  "cpu_ms_B_mean": 2030.6525,
+  "lm_tokens_B_mean": 53.85,
+  "lm_tokens_C_mean": 205.29,
+  "lm_tokens_Cd_mean": 8.76,
+  "cpu_ms_C_mean": 4738.853,
+  "A_tokens_mean": 1172.375,
+  "A_wall_s_mean": 23.6479
+ },
+ "per_template": [
+  {
+   "tid": 320,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 9,
+    "hit": 10,
+    "hit_right": 8,
+    "hit_wrong": 2
+   },
+   "near": {
+    "n": 10,
+    "A": 9,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 103,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 10,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 873,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 6,
+    "hit_right": 6,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 9,
+    "hit_right": 0,
+    "hit_wrong": 9
+   }
+  },
+  {
+   "tid": 459,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 10,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 1053,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 8,
+    "hit_wrong": 2
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 242,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 10,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 728,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 7,
+    "hit_right": 7,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 8,
+    "hit_right": 0,
+    "hit_wrong": 8
+   }
+  },
+  {
+   "tid": 636,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 10,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 20,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 5,
+    "hit_wrong": 5
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 800,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 0,
+    "hit_right": 0,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 2,
+    "hit_right": 0,
+    "hit_wrong": 2
+   }
+  },
+  {
+   "tid": 158,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 9,
+    "hit_right": 8,
+    "hit_wrong": 1
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 364,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 9,
+    "hit_right": 6,
+    "hit_wrong": 3
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 918,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 10,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 365,
+   "entry": true,
+   "source_build_matches_golden": false,
+   "held": {
+    "n": 10,
+    "A": 4,
+    "hit": 10,
+    "hit_right": 1,
+    "hit_wrong": 9
+   },
+   "near": {
+    "n": 10,
+    "A": 3,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 269,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 9,
+    "hit_wrong": 1
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 480,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 9,
+    "hit_right": 4,
+    "hit_wrong": 5
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 7,
+    "hit_right": 0,
+    "hit_wrong": 7
+   }
+  },
+  {
+   "tid": 1088,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 10,
+    "hit_wrong": 0
+   },
+   "near": {
+    "n": 10,
+    "A": 8,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 469,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 8,
+    "hit_wrong": 2
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 1,
+    "hit_wrong": 9
+   }
+  },
+  {
+   "tid": 677,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 8,
+    "hit_wrong": 2
+   },
+   "near": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  },
+  {
+   "tid": 1021,
+   "entry": true,
+   "source_build_matches_golden": true,
+   "held": {
+    "n": 10,
+    "A": 10,
+    "hit": 10,
+    "hit_right": 8,
+    "hit_wrong": 2
+   },
+   "near": {
+    "n": 10,
+    "A": 9,
+    "hit": 10,
+    "hit_right": 0,
+    "hit_wrong": 10
+   }
+  }
+ ],
+ "entries": {
+  "validated": 20,
+  "failed": 0,
+  "source_build_answer_equals_golden": 19,
+  "attempts_mean": 1,
+  "builder_tokens_mean": 7367.2
+ },
+ "card": {
+  "card_min": 52,
+  "blocks": 1,
+  "gpu_w_max": 585.57,
+  "vram_mib_max": 26732
+ },
+ "A_decode_tok_s_median": 50.78281180223429
+}

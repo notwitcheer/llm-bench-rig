@@ -1,0 +1,29 @@
+VERDICT DOES NOT HOLD, TRAPS | holds=False trap=True | entries 20/20 validated
+LINE1 NVIDIA says a CPU can replay a big model's reasoning from a cache. I rebuilt it on my 5090 and it does not hold here: 83% against 96% for the 27B from scratch (a stock 1B alone gets 48%), and on near-miss questions it was confidently wrong 92% of the time.
+
+threshold tau=0.4518 (largest s keeping >= 90% of held-out main as served hits); served held-out 200, needed 180
+
+held-out main (n=200), accuracy with Wilson 95%:
+  A source, from scratch             193/200   96.5%  [93.0-98.3]
+  B gated (cache, miss -> A)         166/200   83.0%  [77.2-87.6]
+  B cache-only (miss = wrong)        146/200   73.0%  [66.5-78.7]
+  C 1B alone, brief reasoning         96/200   48.0%  [41.2-54.9]
+  Cd 1B alone, number only             4/200    2.0%  [0.8-5.0]
+  cache hits                         180/200   90.0%  [85.1-93.4]
+  cache hits that are WRONG           34/200   17.0%  [12.4-22.8]
+  McNemar exact A vs B gated: A-only-right 29, B-only-right 2, p=0.0000 ; A vs B cache-only: 49 / 2, p=0.0000
+  median s 0.590 ; routed to own template's entry 100% ; B cpu ms/query median 1803 mean 1940 ; 1B tokens/query B 51.9, C 163, Cd 8.5 ; A tokens/query 852, wall 17 s
+
+near-miss p1 (n=200), accuracy with Wilson 95%:
+  A source, from scratch             189/200   94.5%  [90.4-96.9]
+  B gated (cache, miss -> A)          15/200    7.5%  [4.6-12.0]
+  B cache-only (miss = wrong)          1/200    0.5%  [0.1-2.8]
+  C 1B alone, brief reasoning         41/200   20.5%  [15.5-26.6]
+  Cd 1B alone, number only             1/200    0.5%  [0.1-2.8]
+  cache hits                         186/200   93.0%  [88.6-95.8]
+  cache hits that are WRONG          185/200   92.5%  [88.0-95.4]
+  McNemar exact A vs B gated: A-only-right 174, B-only-right 0, p=0.0000 ; A vs B cache-only: 188 / 0, p=0.0000
+  median s 0.561 ; routed to own template's entry 99% ; B cpu ms/query median 1860 mean 2031 ; 1B tokens/query B 53.9, C 205, Cd 8.8 ; A tokens/query 1172, wall 24 s
+
+entries: 20 validated, 0 failed; the source's build-instance answer equalled the golden label on 19 of 20 (logged only, never used in the build loop); builder attempts mean 1.00, builder tokens mean 7367
+card: {"card_min": 52, "blocks": 1, "gpu_w_max": 585.57, "vram_mib_max": 26732}
