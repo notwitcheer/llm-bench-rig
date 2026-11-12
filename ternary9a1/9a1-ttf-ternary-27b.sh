@@ -21,7 +21,7 @@
 #   worst extension = 10 more takes x 10 min cap + 2 loads ~ 110 min, so the 8-per-arm total worst is ~190 min across blocks.
 #   typical is UNKNOWN until a take runs.
 # DISK: 0 GB new download here (the 6.74 GB file and the 22.88 GB Q6_K are already on disk, size-checked). floor 122 GB (brief). nothing deleted.
-# WINDOW: real runs refuse (exit 3, nothing drained) before NOT_BEFORE (Sat 2026-11-14 00:10 CET, epoch 1794611400; the weekend block is empty
+# WINDOW: real runs refuse (exit 3, nothing drained) before NOT_BEFORE (Fri 2026-11-13 14:10 CET, epoch 1794575400 (moved from Sat 00:10 on 2026-11-12); the weekend block is empty
 #   and the 9a1 extension is what fills it). needs >= 60 min left in the block or exits 3 without draining Donald; a take is skipped when < 11 min remain.
 # GPU lock: flock -w 1800 /home/witcheer/.gpu-smoke.lock for the card section.
 #
@@ -48,7 +48,7 @@ STOCK_M=/home/witcheer/models/qwen38-27b/Qwen3.8-27B-Q6_K.gguf
 TTF_BYTES=6741621728
 STOCK_BYTES=22884408288
 TTF_SHA=4afa91d03; TTF_TREE=92d53f02d; STOCK_SHA=cf34d3113
-NOTBEFORE=${NOT_BEFORE:-1794611400}
+NOTBEFORE=${NOT_BEFORE:-1794575400}
 LPORT=8294; PPORT=8295
 CTXCFG=65536; THREADS=6; KVQ=q8_0
 RB=8192; RB_MSG="Thinking budget reached. Act now with your commands."
