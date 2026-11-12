@@ -1,0 +1,17 @@
+# Adım 4 — ana deney (docs/adim4_zincir_tanimlar.md)
+# 9a2 headline config: identical to configs/chains-card5090.yaml except the model (the paper's Base checkpoint).
+model: Qwen/Qwen3-1.7B-Base
+dtype: bfloat16                 # float32 boş GPU belleğine sığmaz; gürültü tabanı ölçülüp raporlanır
+lm_head_fp32: false
+device: cuda
+cache_dir: null                 # varsayılan Hugging Face önbelleği
+data: data/chains.jsonl
+min_margin: 1.0
+pool: 300
+n_single: 6
+batch: 64
+noise_sets: 30
+gen_sets: 4
+seed: 20261106
+mem_fraction: 0.5
+mem_margin_mb: 600
