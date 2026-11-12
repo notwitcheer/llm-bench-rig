@@ -1,0 +1,4 @@
+The directory __WORKDIR__ holds a small Python library called shopcart (a shopping cart, money in integer cents) and its tests. Four tests fail right now.
+Find the cause of each failing test in the library code under shopcart/ and fix it there. Do not edit anything under tests/ and do not add test files. Do not touch anything outside __WORKDIR__.
+Run the tests from __WORKDIR__ with: __PYTEST__ -q
+When every test passes, reply with one short paragraph that names each bug and its fix.
